@@ -11,7 +11,17 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
     const [isDragging, setIsDragging] = useState(false);
     const interactionStartRef = useRef(0);
     const wasDraggedRef = useRef(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const interactionStartRef = useRef(0);
+    const wasDraggedRef = useRef(false);
     const filmstripRef = useRef<HTMLDivElement>(null);
+
+    const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setCurrentIndex(index);
+        }
+    };
 
     const goToPrev = () => setCurrentIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
     const goToNext = () => setCurrentIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
@@ -96,7 +106,17 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
             </div>
             <div className="gallery-thumbnails">
                 {images.map((src, index) => (
-                    <img key={src} src={src} alt={`Thumbnail ${index + 1}`} className={`gallery-thumbnail ${index === currentIndex ? 'active' : ''}`} onClick={() => setCurrentIndex(index)} loading="lazy" />
+                    <img
+                        key={src}
+                        src={src}
+                        alt={`View product view ${index + 1}`}
+                        className={`gallery-thumbnail ${index === currentIndex ? 'active' : ''}`}
+                        onClick={() => setCurrentIndex(index)}
+                        loading="lazy"
+                        tabIndex={0}
+                        role="button"
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                    />
                 ))}
             </div>
         </div>

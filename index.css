@@ -4,7 +4,8 @@
     --white: #FFFFFF;
     --card-bg: #FFFFFF;
     --card-text: #1a1a1a;
-    --red: #d9534f;
+    --red: #ff5c5c;
+    /* Brighter for better contrast on black */
     --light-gray: #f7f7f7;
 }
 

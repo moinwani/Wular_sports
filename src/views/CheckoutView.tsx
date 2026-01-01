@@ -21,6 +21,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         zip: '',
         paymentMethod: 'cod' // Default to COD
     });
+    const [formError, setFormError] = useState('');
 
     const calculateTotal = () => {
         return total;
@@ -37,9 +38,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         e.preventDefault();
         // Basic validation
         if (!formData.address || !formData.phone || !formData.firstName) {
-            alert("Please fill in all required fields.");
+            setFormError("Please fill in all required fields (marked associated with *).");
+            // Focus on the first invalid field could be implemented here
             return;
         }
+        setFormError('');
 
         onPlaceOrder({
             items: cart,
@@ -63,6 +66,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         <div className="checkout-page">
             <div className="container">
                 <h1 className="page-title">Checkout</h1>
+                {formError && (
+                    <div className="alert-error" role="alert" aria-live="aggressive">
+                        <i className="fas fa-exclamation-circle"></i> {formError}
+                    </div>
+                )}
 
                 <div className="checkout-grid">
                     {/* Left Column: Shipping Details */}

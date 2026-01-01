@@ -12,6 +12,7 @@ import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
+import { SearchResultsView } from './views/SearchResultsView';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
@@ -125,6 +126,11 @@ const AppContent: React.FC = () => {
                     />} />
                     <Route path="/collection" element={<CollectionView
                         products={products}
+                        onAddToCart={addToCart}
+                        onImageClick={() => { }}
+                        onWatchVideo={() => { }}
+                    />} />
+                    <Route path="/search" element={<SearchResultsView
                         onAddToCart={addToCart}
                         onImageClick={() => { }}
                         onWatchVideo={() => { }}

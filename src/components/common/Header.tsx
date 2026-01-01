@@ -1,6 +1,7 @@
 import { FC, useState, memo, MouseEvent } from 'react';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
+import { SearchBar } from './SearchBar';
 
 export interface HeaderProps {
     onCartClick: () => void;
@@ -48,6 +49,12 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
                         />
                     </a>
+
+                    {/* Search Bar (Desktop Only) */}
+                    <div className="nav-search-wrapper">
+                        <SearchBar />
+                    </div>
+
                     <div className="nav-section-right">
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">

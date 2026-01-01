@@ -67,7 +67,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             <div className="container">
                 <h1 className="page-title">Checkout</h1>
                 {formError && (
-                    <div className="alert-error" role="alert" aria-live="aggressive">
+                    <div className="alert-error" role="alert" aria-live="assertive">
                         <i className="fas fa-exclamation-circle"></i> {formError}
                     </div>
                 )}

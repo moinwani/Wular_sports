@@ -11,9 +11,6 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
     const [isDragging, setIsDragging] = useState(false);
     const interactionStartRef = useRef(0);
     const wasDraggedRef = useRef(false);
-    const [isDragging, setIsDragging] = useState(false);
-    const interactionStartRef = useRef(0);
-    const wasDraggedRef = useRef(false);
     const filmstripRef = useRef<HTMLDivElement>(null);
 
     const handleKeyDown = (e: React.KeyboardEvent, index: number) => {

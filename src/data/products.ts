@@ -2,6 +2,37 @@ import { ProductFull } from '../types';
 
 export const products: ProductFull[] = [
     {
+        id: "legacy-edition-2.0",
+        name: "Legacy Edition 2.0",
+        category: ["Hard Tennis"],
+        description: "The Legacy Edition 2.0 represents the pinnacle of hard tennis cricket bat engineering. Designed exclusively for tournament-level professionals, this bat combines 3 years of natural wood seasoning with precision hard-press manufacturing to deliver unmatched power and control. Featuring a premium ramp scoop profile with minimal scooping, it offers the perfect balance between aggressive stroke play and defensive stability. This is not a bat for casual cricket—it's built for champions who demand excellence in every shot.",
+        image: [
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249706/6246894018251918561_eksu4e.jpg",
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249931/6183803886431308813_ezpezu.jpg",
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249930/6183803886431308816_csxwt7.jpg",
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249930/6183803886431308815_dp26za.jpg",
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767250044/6246894018251918568_byi6nf.jpg",
+            "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249929/6183803886431308817_uybkuj.jpg"
+        ],
+        price: 3500,
+        originalPrice: 4600,
+        specs: [
+            "Weight: 980-1100 grams",
+            "Edge: 48 to 52 mm",
+            "Height: Available in 35 and 36 inches",
+            "Face: 4.5 inches",
+            "Handle: Premium Singapore cane handle",
+            "Profile: Ramp scoop (minimal scoop)",
+            "Wood: Naturally seasoned for 3 years",
+            "Processing: Hard pressed for durability",
+            "Free delivery",
+            "Free bat bag",
+            "Premium toe guard",
+            "Fully knocked and oiled",
+            "Extra grip provided"
+        ]
+    },
+    {
         id: "legacy-edition",
         name: "Legacy Edition",
         category: ["Hard Tennis"],

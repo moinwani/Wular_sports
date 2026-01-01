@@ -4,7 +4,7 @@ import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { HomeView } from './views/HomeView';
 import { ProductDetailsView } from './views/ProductDetailsView';
-import { CartSidebar } from './components/cart/CartSidebar';
+import { CartSidebar } from './components/checkout/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { ProductFull, CartItem } from './types';

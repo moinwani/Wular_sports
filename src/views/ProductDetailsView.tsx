@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
@@ -15,7 +15,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const [product, setProduct] = useState<ProductFull | null>(null);
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [sizeError, setSizeError] = useState(false);
-    const videoButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);

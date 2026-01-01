@@ -2,7 +2,8 @@ import React, { FC, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
-import { getSpecIcon } from '../utils/helpers';
+import { getSpecIcon, createWhatsAppLink } from '../utils/helpers';
+import { Lightbox } from '../components/common/Lightbox';
 import { ImageGallery } from '../components/product/ImageGallery';
 
 export interface ProductDetailsViewProps {
@@ -12,18 +13,18 @@ export interface ProductDetailsViewProps {
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart }) => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [product, setProduct] = useState<ProductFull | null>(null);
-    const [selectedSize, setSelectedSize] = useState<string>('');
+    const [openSection, setOpenSection] = useState<string | null>('description');
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        const foundProduct = products.find(p => p.id === id);
-        if (foundProduct) {
-            setProduct(foundProduct);
-        } else {
-            navigate('/'); // Redirect to home if product not found
-        }
-    }, [id, navigate]);
+    const toggleSection = (section: string) => {
+        setOpenSection(openSection === section ? null : section);
+    };
+
+    const handleOpenLightbox = (index: number) => {
+        setLightboxIndex(index);
+        setIsLightboxOpen(true);
+    };
 
     if (!product) return null;
 
@@ -31,7 +32,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
     const handleAddToCartClick = () => {
         if (hasSizes && !selectedSize) {
-            // Show alert or toast if size not selected
             alert("Please select a size to continue");
             return;
         }
@@ -46,7 +46,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         <div className="product-details-page">
             <div className="container">
                 <button className="back-btn" onClick={() => navigate(-1)}>
-                    <i className="fas fa-arrow-left"></i> Back to Collection
+                    <i className="fas fa-arrow-left"></i> Back
                 </button>
 
                 <div className="product-details-grid">
@@ -56,121 +56,154 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                             <ImageGallery
                                 images={product.image}
                                 altText={product.name}
-                                onImageClick={(index) => {
-                                    // Optional: Implement lightbox or full-screen view
-                                    console.log("Image clicked:", index);
-                                }}
+                                onImageClick={handleOpenLightbox}
                             />
                         ) : (
-                            <img src={product.image} alt={product.name} className="product-main-image" />
-                        )}
-
-                        {/* Video Button */}
-                        {product.videoUrl && (
-                            <div className="product-video-section">
-                                <a
-                                    href={product.videoUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn video-btn"
-                                >
-                                    <i className="fab fa-youtube"></i> Watch Product Video
-                                </a>
-                            </div>
+                            <img
+                                src={product.image}
+                                alt={product.name}
+                                className="product-main-image"
+                                onClick={() => {
+                                    setLightboxIndex(0);
+                                    setIsLightboxOpen(true);
+                                }}
+                            />
                         )}
                     </div>
 
                     {/* Right Column: Product Info */}
                     <div className="product-info-section">
                         <div className="product-header-group">
-                            <div className="product-tags">
-                                <span className="tag category-tag">{product.category.join(' / ')}</span>
-                                {product.originalPrice && <span className="tag sale-tag">Sale</span>}
+                            <div className="product-badge-row">
+                                <span className="tramboo-badge-red">#1 BEST SELLER</span>
                             </div>
-                            <h1 className="product-title">{product.name}</h1>
-                            <div className="product-price-large">
-                                <span className="current-price">₹{product.price.toLocaleString('en-IN')}</span>
-                                {product.originalPrice && <span className="original-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>}
-                            </div>
-                        </div>
 
-                        <div className="product-description-full">
-                            <p>{product.description}</p>
+                            <h1 className="product-title-condensed">{product.name}</h1>
+
+                            <div className="product-price-row">
+                                <span className="price-main">Rs. {product.price.toLocaleString('en-IN')}.00</span>
+                                {product.originalPrice && (
+                                    <>
+                                        <span className="price-crossed">Rs. {product.originalPrice.toLocaleString('en-IN')}.00</span>
+                                        <span className="badge-save">SAVE {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Features Grid Compact */}
+                            <div className="features-grid-compact">
+                                <div className="feature-item-compact">
+                                    <i className="fas fa-magic feature-icon-red"></i> READY TO PLAY
+                                </div>
+                                <div className="feature-item-compact">
+                                    <i className="far fa-clock feature-icon-red"></i> 1 YEAR HANDLE WARRANTY
+                                </div>
+                                <div className="feature-item-compact">
+                                    <i className="fas fa-feather feature-icon-red"></i> LIGHTWEIGHT
+                                </div>
+                                <div className="feature-item-compact">
+                                    <i className="fas fa-certificate feature-icon-red"></i> PINGS LIKE A ROCKET
+                                </div>
+                            </div>
                         </div>
 
                         {hasSizes && (
-                            <div className="size-selector-container">
-                                <label className="size-label">Select Size:</label>
+                            <div className="size-selector-clean">
                                 <div className="size-options-grid">
-                                    <label className={`size-option-box ${selectedSize === '35 inch' ? 'selected' : ''}`}>
-                                        <input
-                                            type="radio"
-                                            name="bat-size"
-                                            value="35 inch"
-                                            checked={selectedSize === '35 inch'}
-                                            onChange={handleSizeChange}
-                                        />
-                                        <span>35 inch</span>
-                                    </label>
-                                    <label className={`size-option-box ${selectedSize === '36 inch' ? 'selected' : ''}`}>
-                                        <input
-                                            type="radio"
-                                            name="bat-size"
-                                            value="36 inch"
-                                            checked={selectedSize === '36 inch'}
-                                            onChange={handleSizeChange}
-                                        />
-                                        <span>36 inch</span>
-                                    </label>
+                                    {['35 inch', '36 inch'].map(size => (
+                                        <label key={size} className={`size-option-box ${selectedSize === size ? 'selected' : ''}`}>
+                                            <input
+                                                type="radio"
+                                                name="bat-size"
+                                                value={size}
+                                                checked={selectedSize === size}
+                                                onChange={handleSizeChange}
+                                            />
+                                            <span>{size}</span>
+                                        </label>
+                                    ))}
                                 </div>
-                                {selectedSize === '' && <p className="size-guide-text">Please select a size</p>}
                             </div>
                         )}
-
-                        <div className="specs-container">
-                            <h3>Specifications</h3>
-                            <div className="specs-list">
-                                {product.specs.map((spec, i) => (
-                                    <div key={i} className="spec-row">
-                                        <i className={`fas ${getSpecIcon(spec)}`}></i>
-                                        <span>{spec}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
 
                         <div className="action-area">
-                            <button className="btn add-to-cart-large" onClick={handleAddToCartClick}>
-                                <i className="fas fa-shopping-cart"></i> Add to Cart - ₹{product.price.toLocaleString('en-IN')}
+                            <button className="add-to-cart-large" onClick={handleAddToCartClick}>
+                                <i className="fas fa-shopping-bag"></i> Buy Now - Rs. {product.price.toLocaleString('en-IN')}.00
                             </button>
 
-                            <div className="trust-badges-row">
-                                <div className="trust-badge">
-                                    <i className="fas fa-shield-alt"></i>
-                                    <span>Secure Payment</span>
+                            <div className="contact-options-row">
+                                <a
+                                    href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-contact-option btn-whatsapp-opt"
+                                >
+                                    <i className="fab fa-whatsapp"></i> SHOP ON WHATSAPP
+                                </a>
+                                <a
+                                    href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-contact-option btn-video-opt"
+                                >
+                                    <i className="fas fa-video"></i> SHOP ON VIDEO CALL
+                                </a>
+                            </div>
+
+                            <p className="shipping-note">
+                                NOTE: IT CAN TAKE UPTO 2-3 WORKING DAYS FOR THE BAT TO BE DISPATCHED. ALL ORDERS ARE DISPATCHED BY AIR FOR EXPRESS DELIVERY.
+                            </p>
+                        </div>
+
+                        {/* Collapsible Sections */}
+                        <div className="product-sections-container">
+                            <div className="collapsible-section">
+                                <button className="section-header" onClick={() => toggleSection('description')}>
+                                    DESCRIPTION
+                                    <i className={`fas ${openSection === 'description' ? 'fa-minus' : 'fa-plus'}`}></i>
+                                </button>
+                                <div className={`section-content ${openSection === 'description' ? 'open' : ''}`}>
+                                    <p>{product.description}</p>
+                                    <ul className="description-list">
+                                        <li>Premium Kashmir Willow</li>
+                                        <li>Full Cane Handle</li>
+                                        <li>Double Blade / Single Blade Options</li>
+                                        <li>Toe Guard Fitted</li>
+                                    </ul>
                                 </div>
-                                <div className="trust-badge">
-                                    <i className="fas fa-truck"></i>
-                                    <span>Fast Delivery</span>
+                            </div>
+
+                            <div className="collapsible-section">
+                                <button className="section-header" onClick={() => toggleSection('usage')}>
+                                    HOW TO USE
+                                    <i className={`fas ${openSection === 'usage' ? 'fa-minus' : 'fa-plus'}`}></i>
+                                </button>
+                                <div className={`section-content ${openSection === 'usage' ? 'open' : ''}`}>
+                                    <p>Recommended for use with hard tennis balls (Guru, Nivia, etc). Avoid using with heavy leather balls unless specified.</p>
                                 </div>
-                                <div className="trust-badge">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>100% Authentic</span>
+                            </div>
+
+                            <div className="collapsible-section">
+                                <button className="section-header" onClick={() => toggleSection('shipping')}>
+                                    SHIPPING & RETURNS
+                                    <i className={`fas ${openSection === 'shipping' ? 'fa-minus' : 'fa-plus'}`}></i>
+                                </button>
+                                <div className={`section-content ${openSection === 'shipping' ? 'open' : ''}`}>
+                                    <p>Free shipping across India. Returns accepted within 3 days of delivery if the product is defective. See our Return Policy for details.</p>
                                 </div>
                             </div>
                         </div>
-
-                        {product.reviewLink && (
-                            <div className="review-box">
-                                <div className="verified-label"><i className="fas fa-check"></i> Verified Review</div>
-                                <a href={product.reviewLink} target="_blank" rel="noopener noreferrer" className="review-link">
-                                    <i className="fab fa-instagram"></i> Watch Customer Review
-                                </a>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
+
+            {/* Lightbox Component */}
+            {isLightboxOpen && (
+                <Lightbox
+                    gallery={{ images: Array.isArray(product.image) ? product.image : [product.image], startIndex: lightboxIndex }}
+                    onClose={() => setIsLightboxOpen(false)}
+                />
+            )}
         </div>
     );
 };

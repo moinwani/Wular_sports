@@ -220,15 +220,94 @@ section {
 }
 
 
-/* Hero Section */
+/* Hero Section with Background Slider */
 .hero {
+    position: relative;
     min-height: 80vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 0 2rem;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://res.cloudinary.com/ddahm5ebv/image/upload/v1752736684/20250717_1246_Cricket_Bat_Mastery_simple_compose_01k0bkrjwwfd68h8a5ft8b5gzg_gghp4t.png') center center / cover no-repeat;
+    overflow: hidden;
+}
+
+/* Background Slider Container */
+.hero-background-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* Individual Background Slides */
+.hero-background-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.hero-background-slide.active {
+    opacity: 1;
+}
+
+/* Dark overlay for better text readability */
+.hero-background-slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+}
+
+/* Hero Content Wrapper */
+.hero-content-wrapper {
+    position: relative;
+    z-index: 2;
+}
+
+/* Slider Indicators */
+.hero-slider-indicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.slider-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.slider-indicator:hover {
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+}
+
+.slider-indicator.active {
+    background-color: var(--golden);
+    border-color: var(--golden);
+    transform: scale(1.3);
 }
 
 .hero-title {
@@ -238,6 +317,7 @@ section {
     cursor: pointer;
     transition: transform 0.3s ease, color 0.3s ease;
     will-change: transform, text-shadow;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 .hero-title:hover,
@@ -288,6 +368,7 @@ section {
     font-family: 'Lato';
     font-style: italic;
     color: #ccc;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .hero-cta-box {

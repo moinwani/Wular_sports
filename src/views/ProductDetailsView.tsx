@@ -13,9 +13,17 @@ export interface ProductDetailsViewProps {
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart }) => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const [selectedSize, setSelectedSize] = useState<string>('');
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+
+    const product = products.find(p => p.id === id);
+
+    if (!product) {
+        // Ideally we might want to redirect, but returning null or a not found message is safe
+        return <div className="container">Product not found</div>;
+    }
 
     const toggleSection = (section: string) => {
         setOpenSection(openSection === section ? null : section);

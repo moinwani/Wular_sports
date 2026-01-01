@@ -33,17 +33,12 @@ const AppContent: React.FC = () => {
     };
 
     const navigateTo = (view: View) => {
-        if (view === 'home') {
-            navigate('/');
-        } else if (view === 'collection') {
-            navigate('/');
-            // Ideally scroll to collection, but for now just go home
-            setTimeout(() => {
-                const catalogSnippet = document.getElementById('catalog');
-                if (catalogSnippet) catalogSnippet.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        } else {
-            // Placeholder for other views (privacy, return, terms) which might be static pages or modals
+        if (view === 'home') navigate('/');
+        else if (view === 'collection') navigate('/collection');
+        else if (view === 'privacy') navigate('/privacy-policy');
+        else if (view === 'return') navigate('/return-policy');
+        else if (view === 'terms') navigate('/terms-conditions');
+        else {
             navigate('/');
             showToast(`Navigating to ${view}... (Coming Soon)`, 'info');
         }
@@ -99,7 +94,16 @@ const AppContent: React.FC = () => {
                         onImageClick={() => { }} // Placeholder
                         onWatchVideo={() => { }} // Placeholder
                     />} />
+                    <Route path="/collection" element={<CollectionView
+                        products={products}
+                        onAddToCart={addToCart}
+                        onImageClick={() => { }}
+                        onWatchVideo={() => { }}
+                    />} />
                     <Route path="/product/:id" element={<ProductDetailsView onAddToCart={(p, s) => addToCart(p, s)} />} />
+                    <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
+                    <Route path="/return-policy" element={<ReturnPolicyView />} />
+                    <Route path="/terms-conditions" element={<TermsAndConditionsView />} />
                 </Routes>
             </main>
 

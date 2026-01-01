@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
@@ -8,7 +8,7 @@ import { CartSidebar } from './components/cart/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { ProductFull, CartItem } from './types';
-import { products } from './data/constants';
+import { products } from './data/products';
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {

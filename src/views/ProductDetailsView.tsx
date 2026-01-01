@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { products } from '../data/constants';
+import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { getSpecIcon } from '../utils/helpers';
 import { ImageGallery } from '../components/product/ImageGallery';

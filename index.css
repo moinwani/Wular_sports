@@ -1759,6 +1759,39 @@ text-align: center;
 .product-gallery-section {
     position: sticky;
     top: 2rem;
+    height: fit-content;
+}
+
+@media (max-width: 768px) {
+    .product-gallery-section {
+        position: relative;
+        top: 0;
+    }
+}
+
+.fab-call {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 999;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--golden);
+    color: var(--black);
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.fab-call:hover {
+    transform: scale(1.1);
 }
 
 .product-main-image {

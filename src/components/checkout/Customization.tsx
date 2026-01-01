@@ -35,14 +35,14 @@ const CustomizationRadioGroup: FC<CustomizationRadioGroupProps> = memo(({ name, 
 
 export const Customization = memo(() => {
     const [batType, setBatType] = useState<'tennis' | 'leather' | null>(null);
-    const [formData, setFormData] = useState<any>({});
-    const [errors, setErrors] = useState<any>({});
+    const [formData, setFormData] = useState<Record<string, string>>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const tennisOptionFields = ['bladeType', 'nameEngraving', 'toeGuard', 'finish', 'sticker', 'bag'];
     const leatherOptionFields = ['weight', 'nameEngraving', 'sticker', 'toeGuard', 'bag'];
 
-    const options = {
+    const options: Record<string, string[]> = {
         bladeType: ['Single Blade', 'Double Blade'],
         nameEngraving: ['Yes', 'No'],
         toeGuard: ['Premium Toe Guard', 'Normal Toe Guard'],
@@ -61,9 +61,9 @@ export const Customization = memo(() => {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prev: any) => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ ...prev, [name]: value }));
         if (errors[name]) {
-            setErrors((prev: any) => {
+            setErrors(prev => {
                 const newErrors = { ...prev };
                 delete newErrors[name];
                 return newErrors;
@@ -72,7 +72,7 @@ export const Customization = memo(() => {
     };
 
     const validate = (): boolean => {
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         const requiredFields = batType === 'tennis' ? tennisOptionFields : leatherOptionFields;
 
         requiredFields.forEach(field => {

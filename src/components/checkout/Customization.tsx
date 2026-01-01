@@ -1,4 +1,4 @@
-import React, { FC, ChangeEvent, FormEvent, useState, memo } from 'react';
+import { FC, ChangeEvent, FormEvent, useState, memo } from 'react';
 import { createWhatsAppLink } from '../../utils/helpers';
 
 interface CustomizationRadioGroupProps {

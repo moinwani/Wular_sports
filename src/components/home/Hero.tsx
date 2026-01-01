@@ -1,4 +1,4 @@
-import React, { FC, useState, memo, useEffect } from 'react';
+import { FC, useState, memo, useEffect } from 'react';
 
 export interface HeroProps {
     onShopCollectionClick: () => void;

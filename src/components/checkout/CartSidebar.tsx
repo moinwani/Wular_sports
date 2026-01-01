@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { Sidebar } from '../common/Sidebar';
 import { CartItem } from '../../types';
 

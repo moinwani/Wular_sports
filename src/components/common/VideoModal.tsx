@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import { FC, useRef } from 'react';
 
 export interface VideoModalProps {
     videoUrl: string | null;

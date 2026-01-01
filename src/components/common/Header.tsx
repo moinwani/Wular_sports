@@ -1,4 +1,4 @@
-import React, { FC, useState, memo } from 'react';
+import { FC, useState, memo, MouseEvent } from 'react';
 import { View } from '../../types';
 
 export interface HeaderProps {
@@ -10,7 +10,7 @@ export interface HeaderProps {
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
 
-    const handleLogoClick = (e: React.MouseEvent) => {
+    const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();
 
         // Dim the logo

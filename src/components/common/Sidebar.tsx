@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, memo } from 'react';
+import { FC, ReactNode, memo } from 'react';
 
 export interface SidebarProps {
     title: string;

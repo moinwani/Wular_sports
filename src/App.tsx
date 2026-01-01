@@ -8,7 +8,6 @@ import { CartSidebar } from './components/checkout/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { ProductFull, CartItem } from './types';
-import { products } from './data/products';
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {

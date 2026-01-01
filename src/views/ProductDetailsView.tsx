@@ -14,7 +14,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const navigate = useNavigate();
     const [product, setProduct] = useState<ProductFull | null>(null);
     const [selectedSize, setSelectedSize] = useState<string>('');
-    const [sizeError, setSizeError] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -40,7 +39,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
     const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedSize(e.target.value);
-        if (sizeError) setSizeError(false);
     };
 
     return (

@@ -31,7 +31,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
     const handleAddToCartClick = () => {
         if (hasSizes && !selectedSize) {
-            setSizeError(true);
+            // Show alert or toast if size not selected
+            alert("Please select a size to continue");
             return;
         }
         onAddToCart(product, selectedSize);
@@ -52,7 +53,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                     {/* Left Column: Images */}
                     <div className="product-gallery-section">
                         {Array.isArray(product.image) ? (
-                            <ImageGallery images={product.image} altText={product.name} />
+                            <ImageGallery
+                                images={product.image}
+                                altText={product.name}
+                                onImageClick={(index) => {
+                                    // Optional: Implement lightbox or full-screen view
+                                    console.log("Image clicked:", index);
+                                }}
+                            />
                         ) : (
                             <img src={product.image} alt={product.name} className="product-main-image" />
                         )}

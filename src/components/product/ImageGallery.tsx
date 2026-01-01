@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from 'react';
+import { FC, useState, useRef, TouchEvent, MouseEvent } from 'react';
 
 export interface ImageGalleryProps {
     images: string[];
@@ -17,24 +17,24 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
     const goToNext = () => setCurrentIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
 
     // Touch handlers
-    const handleTouchStart = (e: React.TouchEvent) => {
+    const handleTouchStart = (e: TouchEvent) => {
         interactionStartRef.current = e.targetTouches[0].clientX;
         wasDraggedRef.current = false;
     };
-    const handleTouchMove = (e: React.TouchEvent) => {
+    const handleTouchMove = (e: TouchEvent) => {
         if (Math.abs(interactionStartRef.current - e.targetTouches[0].clientX) > 10) {
             e.preventDefault();
             wasDraggedRef.current = true;
         }
     };
-    const handleTouchEnd = (e: React.TouchEvent) => {
+    const handleTouchEnd = (e: TouchEvent) => {
         const delta = interactionStartRef.current - e.changedTouches[0].clientX;
         if (delta > 50) goToNext();
         else if (delta < -50) goToPrev();
     };
 
     // Mouse handlers
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (e: MouseEvent) => {
         e.preventDefault();
         setIsDragging(true);
         wasDraggedRef.current = false;
@@ -44,7 +44,7 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
         }
     };
 
-    const handleMouseMove = (e: React.MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
         if (!isDragging) return;
         e.preventDefault();
         if (Math.abs(interactionStartRef.current - e.clientX) > 10) {
@@ -52,7 +52,7 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
         }
     };
 
-    const handleMouseUp = (e: React.MouseEvent) => {
+    const handleMouseUp = (e: MouseEvent) => {
         if (!isDragging) return;
         setIsDragging(false);
         if (filmstripRef.current) {
@@ -63,7 +63,7 @@ export const ImageGallery: FC<ImageGalleryProps> = ({ images, altText, onImageCl
         else if (delta < -50) goToPrev();
     };
 
-    const handleMouseLeave = (e: React.MouseEvent) => {
+    const handleMouseLeave = (e: MouseEvent) => {
         if (isDragging) {
             handleMouseUp(e);
         }

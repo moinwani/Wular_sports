@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef, useMemo, useEffect, useCallback } from 'react';
+import { FC, useState, useRef, useMemo, useEffect, useCallback, TouchEvent, MouseEvent } from 'react';
 
 export interface LightboxProps {
     gallery: {
@@ -50,13 +50,13 @@ export const Lightbox: FC<LightboxProps> = ({ gallery, onClose }) => {
 
     if (!gallery) return null;
 
-    const handleTouchStart = (e: React.TouchEvent) => {
+    const handleTouchStart = (e: TouchEvent) => {
         if (isZoomed) return;
         interactionStartRef.current = e.targetTouches[0].clientX;
         wasDraggedRef.current = false;
     };
 
-    const handleTouchMove = (e: React.TouchEvent) => {
+    const handleTouchMove = (e: TouchEvent) => {
         if (isZoomed) return;
         if (Math.abs(interactionStartRef.current - e.targetTouches[0].clientX) > 10) {
             e.preventDefault();
@@ -64,7 +64,7 @@ export const Lightbox: FC<LightboxProps> = ({ gallery, onClose }) => {
         }
     };
 
-    const handleTouchEnd = (e: React.TouchEvent) => {
+    const handleTouchEnd = (e: TouchEvent) => {
         if (isZoomed) return;
         const delta = interactionStartRef.current - e.changedTouches[0].clientX;
         if (delta > 50) goToNext();
@@ -77,7 +77,7 @@ export const Lightbox: FC<LightboxProps> = ({ gallery, onClose }) => {
         }
     };
 
-    const handleCloseClick = (e: React.MouseEvent) => {
+    const handleCloseClick = (e: MouseEvent) => {
         e.stopPropagation();
         onClose();
     };

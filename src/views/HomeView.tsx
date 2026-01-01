@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import { FC, useRef, RefObject } from 'react';
 import { Hero } from '../components/home/Hero';
 import { Catalog } from '../components/product/Catalog';
 import { Customization } from '../components/checkout/Customization';
@@ -10,7 +10,7 @@ interface HomeViewProps {
     onShopCollectionClick: () => void;
     onAddToCart: (product: ProductFull, size: string | null) => void;
     onImageClick: (images: string[], startIndex: number) => void;
-    onWatchVideo: (url: string, ref: React.RefObject<HTMLButtonElement>) => void;
+    onWatchVideo: (url: string, ref: RefObject<HTMLButtonElement>) => void;
 }
 
 export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart, onImageClick, onWatchVideo }) => {

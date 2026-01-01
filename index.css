@@ -2262,3 +2262,15 @@ section {
         grid-template-columns: 1fr;
     }
 }
+.alert-error {
+    background-color: rgba(217, 83, 79, 0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+}

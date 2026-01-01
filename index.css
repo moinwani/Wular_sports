@@ -1428,6 +1428,22 @@ section {
     border-radius: 5px;
 }
 
+/* Instagram embed specific styling */
+.video-modal-player.instagram-embed {
+    width: 400px;
+    height: 700px;
+    max-height: 90vh;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .video-modal-player.instagram-embed {
+        width: 100%;
+        max-width: 400px;
+        height: 600px;
+    }
+}
+
 /* Floating Action Buttons */
 .fab-container {
     position: fixed;

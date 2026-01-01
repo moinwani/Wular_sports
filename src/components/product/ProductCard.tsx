@@ -136,9 +136,9 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart, o
                         <i className="fas fa-check-circle"></i>
                         <span>Verified Customer Review</span>
                     </div>
-                    <a href={product.reviewLink} target="_blank" rel="noopener noreferrer" className="btn review-btn">
+                    <button className="btn review-btn" onClick={() => onWatchVideo(product.reviewLink!, videoButtonRef)}>
                         <i className="fab fa-instagram"></i> Watch Real Customer Review
-                    </a>
+                    </button>
                 </div>
             )}
         </div>

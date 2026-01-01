@@ -10,6 +10,8 @@ import { products } from './data/products';
 import { CartSidebar } from './components/checkout/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
+import { CheckoutView } from './views/CheckoutView';
+import { OrderSuccessView } from './views/OrderSuccessView';
 import { ProductFull, CartItem, View } from './types';
 
 
@@ -105,6 +107,17 @@ const AppContent: React.FC = () => {
                     <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
                     <Route path="/return-policy" element={<ReturnPolicyView />} />
                     <Route path="/terms-conditions" element={<TermsAndConditionsView />} />
+                    <Route path="/checkout" element={<CheckoutView
+                        cart={cart}
+                        total={cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
+                        onPlaceOrder={(order) => {
+                            console.log('Order Placed:', order); // In a real app, send to backend
+                            setCart([]);
+                            navigate('/order-success');
+                            showToast('Order Placed Successfully!', 'success');
+                        }}
+                    />} />
+                    <Route path="/order-success" element={<OrderSuccessView />} />
                 </Routes>
             </main>
 
@@ -116,7 +129,10 @@ const AppContent: React.FC = () => {
                 cart={cart}
                 onUpdateQuantity={updateQuantity}
                 onRemoveItem={removeFromCart}
-                onCheckout={() => showToast('Checkout functionality coming soon!', 'info')}
+                onCheckout={() => {
+                    setIsCartOpen(false);
+                    navigate('/checkout');
+                }}
                 total={cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
             />
 

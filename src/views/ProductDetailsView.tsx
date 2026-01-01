@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';

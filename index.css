@@ -595,10 +595,174 @@ section {
     color: var(--black);
 }
 
+
 .product-name {
     font-size: 1.8rem;
     color: var(--golden);
+    margin-bottom: 0.5rem;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* Compact Product Card Styles */
+.product-card.compact {
+    cursor: pointer;
+    padding: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card.compact:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+}
+
+.product-info-compact {
+    width: 100%;
     text-align: center;
+}
+
+.product-description-short {
+    font-size: 0.95rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.btn-view-details {
+    background-color: transparent;
+    border: 1px solid var(--golden);
+    color: var(--golden);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+}
+
+.btn-view-details:hover {
+    background-color: var(--golden);
+    color: var(--black);
+}
+
+/* Product Detail Modal */
+.product-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    opacity: 0;
+    animation: fadeIn 0.3s forwards;
+}
+
+.product-detail-content {
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: var(--black);
+    border: 2px solid var(--golden);
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+    transform: scale(0.9);
+    animation: modalSlideUp 0.3s forwards;
+    /* Custom Scrollbar for modal */
+    scrollbar-width: thin;
+    scrollbar-color: var(--golden) #333;
+}
+
+.product-detail-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.product-detail-content::-webkit-scrollbar-track {
+    background: #333;
+}
+
+.product-detail-content::-webkit-scrollbar-thumb {
+    background-color: var(--golden);
+    border-radius: 4px;
+}
+
+.close-detail-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: var(--white);
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.close-detail-btn:hover {
+    background-color: var(--golden);
+    color: var(--black);
+    transform: rotate(90deg);
+}
+
+.product-card.full-detail {
+    border: none;
+    padding: 2rem;
+    height: auto;
+    background: transparent;
+    pointer-events: auto;
+    /* Re-enable pointer events inside */
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    to {
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .product-detail-content {
+        height: 95vh;
+        max-height: 95vh;
+        width: 95%;
+    }
+
+    .product-card.full-detail {
+        padding: 1.5rem 1rem;
+    }
+
+    .close-detail-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+}
+
+text-align: center;
 }
 
 .product-description {

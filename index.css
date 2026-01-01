@@ -1534,73 +1534,30 @@ section {
 }
 
 /* Floating Action Buttons */
-.fab-container {
+.fab-whatsapp {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
     z-index: 999;
-}
-
-.fab-main {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: var(--golden);
-    color: var(--black);
+    background-color: #25D366;
+    color: white;
     border: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.8rem;
+    font-size: 2rem;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease;
-}
-
-.fab-main:hover {
-    transform: scale(1.1);
-}
-
-.fab-options {
-    position: absolute;
-    bottom: 70px;
-    right: 5px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-}
-
-.fab-container.open .fab-options {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.fab-option {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: var(--white);
-    color: var(--black);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
     text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease;
 }
 
-.fab-option:hover {
+.fab-whatsapp:hover {
     transform: scale(1.1);
-}
-
-.fab-container.open .fab-main {
-    transform: rotate(135deg);
+    background-color: #128C7E;
 }
 
 .fab-call {

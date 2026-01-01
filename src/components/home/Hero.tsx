@@ -52,22 +52,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                     Unleash Your Power
                 </h1>
                 <p className="hero-subtitle">Crafted for Champions. Built for Victory.</p>
-                <div className="hero-cta-box">
-                    <p>We support Cash on Delivery. Only ₹300 advance booking required!</p>
-                    <button onClick={onShopCollectionClick} className="btn">Shop Collection</button>
-                </div>
-            </div>
-
-            {/* Slide Indicators */}
-            <div className="hero-slider-indicators">
-                {BACKGROUND_IMAGES.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`slider-indicator ${index === currentSlide ? 'active' : ''}`}
-                        onClick={() => setCurrentSlide(index)}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))}
+                <button onClick={onShopCollectionClick} className="btn">Shop Collection</button>
             </div>
         </section>
     );

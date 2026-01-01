@@ -131,9 +131,13 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart, o
             </div>
 
             {product.reviewLink && (
-                <div className="product-review-section">
+                <div className="product-review-section verified-review">
+                    <div className="verified-badge">
+                        <i className="fas fa-check-circle"></i>
+                        <span>Verified Customer Review</span>
+                    </div>
                     <a href={product.reviewLink} target="_blank" rel="noopener noreferrer" className="btn review-btn">
-                        <i className="fab fa-instagram"></i> Watch Customer Review
+                        <i className="fab fa-instagram"></i> Watch Real Customer Review
                     </a>
                 </div>
             )}

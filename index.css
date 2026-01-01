@@ -709,6 +709,14 @@ section {
     color: var(--black);
 }
 
+.review-note {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
 /* Collection View */
 .collection-view {
     background-color: var(--black);

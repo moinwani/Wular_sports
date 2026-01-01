@@ -136,9 +136,18 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart, o
                         <i className="fas fa-check-circle"></i>
                         <span>Verified Customer Review</span>
                     </div>
-                    <button className="btn review-btn" onClick={() => onWatchVideo(product.reviewLink!, videoButtonRef)}>
-                        <i className="fab fa-instagram"></i> Watch Real Customer Review
-                    </button>
+                    <a
+                        href={product.reviewLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn review-btn"
+                        onClick={(e) => {
+                            // Optional: You could add analytics tracking here
+                        }}
+                    >
+                        <i className="fab fa-instagram"></i> Watch Real Customer Review on Instagram
+                    </a>
+                    <p className="review-note">Opens in new tab • Real customer feedback</p>
                 </div>
             )}
         </div>

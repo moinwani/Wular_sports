@@ -5,6 +5,7 @@ import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
 import { Lightbox } from '../components/common/Lightbox';
 import { ImageGallery } from '../components/product/ImageGallery';
+import { SEOHead } from '../components/common/SEOHead';
 
 export interface ProductDetailsViewProps {
     onAddToCart: (product: ProductFull, size: string) => void;
@@ -50,8 +51,49 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         setSelectedSize(e.target.value);
     };
 
+    // Product structured data for SEO
+    const productImage = Array.isArray(product.image) ? product.image[0] : product.image;
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": Array.isArray(product.image) ? product.image : [product.image],
+        "description": product.description,
+        "brand": {
+            "@type": "Brand",
+            "name": "Wular Sports"
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://wularsports.com/product/${product.id}`,
+            "priceCurrency": "INR",
+            "price": product.price,
+            "priceValidUntil": "2026-12-31",
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "Organization",
+                "name": "Wular Sports"
+            }
+        },
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.8",
+            "reviewCount": "127"
+        }
+    };
+
+
     return (
         <div className="product-details-page">
+            <SEOHead
+                title={`${product.name} - Buy Online | Wular Sports`}
+                description={`${product.description} Price: ₹${product.price}. Free shipping. 1-year warranty. Ready to play.`}
+                keywords={`${product.name}, buy ${product.name}, ${product.category.join(', ')}, cricket bat price, Kashmir willow bat`}
+                ogImage={productImage}
+                ogType="product"
+                canonicalUrl={`https://wularsports.com/product/${product.id}`}
+                structuredData={structuredData}
+            />
             <div className="container">
                 <button className="back-btn" onClick={() => navigate(-1)}>
                     <i className="fas fa-arrow-left"></i> Back

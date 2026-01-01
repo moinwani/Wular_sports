@@ -12,16 +12,29 @@ import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
+import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
+import { cartStorage } from './utils/localStorage';
 
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {
     const { pathname } = useLocation();
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
+        setIsLoading(true);
         window.scrollTo(0, 0);
+
+        // Simulate loading state for smooth transitions
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+
+        return () => clearTimeout(timer);
     }, [pathname]);
-    return null;
+
+    return isLoading ? <LoadingSpinner fullScreen /> : null;
 };
 
 const AppContent: React.FC = () => {
@@ -29,6 +42,19 @@ const AppContent: React.FC = () => {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+    // Load cart from localStorage on mount
+    useEffect(() => {
+        const savedCart = cartStorage.load();
+        if (savedCart.length > 0) {
+            setCart(savedCart);
+        }
+    }, []);
+
+    // Save cart to localStorage whenever it changes
+    useEffect(() => {
+        cartStorage.save(cart);
+    }, [cart]);
 
     const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
         setToast({ message, type });
@@ -113,6 +139,7 @@ const AppContent: React.FC = () => {
                         onPlaceOrder={(order) => {
                             console.log('Order Placed:', order); // In a real app, send to backend
                             setCart([]);
+                            cartStorage.clear(); // Clear cart from localStorage
                             navigate('/order-success');
                             showToast('Order Placed Successfully!', 'success');
                         }}

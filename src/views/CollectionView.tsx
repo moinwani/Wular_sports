@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { ProductFull } from '../types';
 import { ProductCard } from '../components/product/ProductCard';
+import { SEOHead } from '../components/common/SEOHead';
 
 interface CollectionViewProps {
     products: ProductFull[];
@@ -16,8 +17,24 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
         "Leather Bat Collection": products.filter(p => p.category.includes("Leather Ball")),
     };
 
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Cricket Bats Collection",
+        "description": "Browse our complete collection of handcrafted cricket bats",
+        "numberOfItems": products.length
+    };
+
     return (
         <div className="view collection-view">
+            <SEOHead
+                title="Shop Cricket Bats Collection | Wular Sports - Hard Tennis, Soft Tennis & Leather Ball Bats"
+                description="Browse our complete collection of premium handcrafted cricket bats. Hard tennis bats, soft tennis bats, and leather ball bats. All bats ready to play with 1-year warranty."
+                keywords="buy cricket bats, cricket bat collection, hard tennis bats, soft tennis bats, leather ball bats, Kashmir willow, cricket equipment online"
+                ogType="website"
+                canonicalUrl="https://wularsports.com/collection"
+                structuredData={structuredData}
+            />
             <section>
                 <div className="container">
                     <h2 className="section-title">Our Collection</h2>

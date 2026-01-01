@@ -1,5 +1,6 @@
 import { FC, useState, memo, MouseEvent } from 'react';
 import { View } from '../../types';
+import { MobileMenu } from './MobileMenu';
 
 export interface HeaderProps {
     onCartClick: () => void;
@@ -9,6 +10,7 @@ export interface HeaderProps {
 
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();
@@ -26,24 +28,43 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
     };
 
     return (
-        <header className="header">
-            <nav className="nav">
-                <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
-                    <img
-                        src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png"
-                        alt="Wular Sports Logo"
-                        className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
-                    />
-                </a>
-                <div className="nav-section-right">
-                    <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
-                    <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
-                        <i className="fas fa-shopping-cart" aria-hidden="true"></i>
-                        {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
-                        <span className="cart-text">Cart</span>
+        <>
+            <header className="header">
+                <nav className="nav">
+                    {/* Hamburger Menu Button (Mobile Only) */}
+                    <button
+                        className="hamburger-btn"
+                        onClick={() => setIsMobileMenuOpen(true)}
+                        aria-label="Open menu"
+                        aria-expanded={isMobileMenuOpen}
+                    >
+                        <i className="fas fa-bars"></i>
+                    </button>
+
+                    <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
+                        <img
+                            src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png"
+                            alt="Wular Sports Logo"
+                            className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
+                        />
+                    </a>
+                    <div className="nav-section-right">
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
+                        <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
+                            <i className="fas fa-shopping-cart" aria-hidden="true"></i>
+                            {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
+                            <span className="cart-text">Cart</span>
+                        </div>
                     </div>
-                </div>
-            </nav>
-        </header>
+                </nav>
+            </header>
+
+            {/* Mobile Menu */}
+            <MobileMenu
+                isOpen={isMobileMenuOpen}
+                onClose={() => setIsMobileMenuOpen(false)}
+                onNavigate={onNavigate}
+            />
+        </>
     );
 });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { HomeView } from './views/HomeView';
@@ -7,7 +7,7 @@ import { ProductDetailsView } from './views/ProductDetailsView';
 import { CartSidebar } from './components/checkout/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
-import { ProductFull, CartItem } from './types';
+import { ProductFull, CartItem, View } from './types';
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {
@@ -19,6 +19,7 @@ const ScrollToTop = () => {
 };
 
 const AppContent: React.FC = () => {
+    const navigate = useNavigate();
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
@@ -28,30 +29,51 @@ const AppContent: React.FC = () => {
         setTimeout(() => setToast(null), 3000);
     };
 
-    const addToCart = (product: ProductFull, size: string) => {
+    const navigateTo = (view: View) => {
+        if (view === 'home') {
+            navigate('/');
+        } else if (view === 'collection') {
+            navigate('/');
+            // Ideally scroll to collection, but for now just go home
+            setTimeout(() => {
+                const catalogSnippet = document.getElementById('catalog');
+                if (catalogSnippet) catalogSnippet.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        } else {
+            // Placeholder for other views (privacy, return, terms) which might be static pages or modals
+            navigate('/');
+            showToast(`Navigating to ${view}... (Coming Soon)`, 'info');
+        }
+    };
+
+    const addToCart = (product: ProductFull, size: string | null) => {
         setCart(prev => {
-            const existing = prev.find(item => item.id === product.id && item.size === size);
+            const sizeKey = size || 'default';
+            const existing = prev.find(item => item.id === product.id && (item.size || 'default') === sizeKey);
+
             if (existing) {
                 return prev.map(item =>
-                    (item.id === product.id && item.size === size)
+                    (item.id === product.id && (item.size || 'default') === sizeKey)
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
             }
-            return [...prev, { ...product, size, quantity: 1 }];
+            return [...prev, { ...product, size: size || undefined, quantity: 1 }];
         });
         setIsCartOpen(true);
         showToast(`${product.name} added to cart!`);
     };
 
-    const removeFromCart = (id: string, size: string) => {
-        setCart(prev => prev.filter(item => !(item.id === id && item.size === size)));
+    const removeFromCart = (id: string, size?: string) => {
+        const sizeKey = size || 'default';
+        setCart(prev => prev.filter(item => !(item.id === id && (item.size || 'default') === sizeKey)));
     };
 
-    const updateQuantity = (id: string, size: string, delta: number) => {
+    const updateQuantity = (id: string, quantity: number, size?: string) => {
+        const sizeKey = size || 'default';
         setCart(prev => prev.map(item => {
-            if (item.id === id && item.size === size) {
-                return { ...item, quantity: Math.max(1, item.quantity + delta) };
+            if (item.id === id && (item.size || 'default') === sizeKey) {
+                return { ...item, quantity: Math.max(1, quantity) };
             }
             return item;
         }));
@@ -60,26 +82,42 @@ const AppContent: React.FC = () => {
     return (
         <div className="app">
             <ScrollToTop />
-            <Header cartCount={cart.reduce((acc, item) => acc + item.quantity, 0)} onCartClick={() => setIsCartOpen(true)} />
+            <Header
+                cartItemCount={cart.reduce((acc, item) => acc + item.quantity, 0)}
+                onCartClick={() => setIsCartOpen(true)}
+                onNavigate={navigateTo}
+            />
 
             <main>
                 <Routes>
-                    <Route path="/" element={<HomeView onAddToCart={addToCart} />} />
-                    <Route path="/product/:id" element={<ProductDetailsView onAddToCart={addToCart} />} />
+                    <Route path="/" element={<HomeView
+                        onShopCollectionClick={() => navigateTo('collection')}
+                        onAddToCart={addToCart}
+                        onImageClick={() => { }} // Placeholder
+                        onWatchVideo={() => { }} // Placeholder
+                    />} />
+                    <Route path="/product/:id" element={<ProductDetailsView onAddToCart={(p, s) => addToCart(p, s)} />} />
                 </Routes>
             </main>
 
-            <Footer />
+            <Footer onNavigate={navigateTo} />
 
             <CartSidebar
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
                 cart={cart}
                 onUpdateQuantity={updateQuantity}
-                onRemove={removeFromCart}
+                onRemoveItem={removeFromCart}
+                onCheckout={() => showToast('Checkout functionality coming soon!', 'info')}
+                total={cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
             />
 
-            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+            <Toast
+                message={toast?.message || ''}
+                isVisible={!!toast}
+                type={toast?.type}
+                onClose={() => setToast(null)}
+            />
             <FloatingButtons />
             <FloatingCallButton />
         </div>

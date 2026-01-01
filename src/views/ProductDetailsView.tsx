@@ -123,7 +123,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                         <span>36 inch</span>
                                     </label>
                                 </div>
-                                {sizeError && <p className="error-text">Please select a size to continue</p>}
+                                {selectedSize === '' && <p className="size-guide-text">Please select a size</p>}
                             </div>
                         )}
 

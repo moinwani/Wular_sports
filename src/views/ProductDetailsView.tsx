@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
-import { createWhatsAppLink } from '../utils/helpers';
+import { getSpecIcon, createWhatsAppLink } from '../utils/helpers';
 import { Lightbox } from '../components/common/Lightbox';
 import { ImageGallery } from '../components/product/ImageGallery';
 
@@ -89,10 +89,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                             <h1 className="product-title-condensed">{product.name}</h1>
 
                             <div className="product-price-row">
-                                <span className="price-main">Rs. {product.price.toLocaleString('en-IN')}.00</span>
+                                <span className="price-main">RS. {product.price.toLocaleString('en-IN')}.00</span>
                                 {product.originalPrice && (
                                     <>
-                                        <span className="price-crossed">Rs. {product.originalPrice.toLocaleString('en-IN')}.00</span>
+                                        <span className="price-crossed">RS. {product.originalPrice.toLocaleString('en-IN')}.00</span>
                                         <span className="badge-save">SAVE {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%</span>
                                     </>
                                 )}
@@ -136,7 +136,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
                         <div className="action-area">
                             <button className="add-to-cart-large" onClick={handleAddToCartClick}>
-                                <i className="fas fa-shopping-bag"></i> Buy Now - Rs. {product.price.toLocaleString('en-IN')}.00
+                                <span><i className="fas fa-shopping-bag"></i> BUY NOW - RS. {product.price.toLocaleString('en-IN')}.00</span>
+                                {product.originalPrice && <span className="btn-crossed-price">RS. {product.originalPrice.toLocaleString('en-IN')}.00</span>}
                             </button>
 
                             <div className="contact-options-row">

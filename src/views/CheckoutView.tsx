@@ -1,6 +1,9 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
+import { useRazorpay } from '../hooks/useRazorpay';
+import { createOrder, updateOrderStatus, updatePaymentStatus } from '../services/orders';
+import { sendOrderConfirmation } from '../services/email';
 
 interface CheckoutViewProps {
     cart: CartItem[];
@@ -8,8 +11,22 @@ interface CheckoutViewProps {
     onPlaceOrder: (orderDetails: any) => void;
 }
 
+// Declare Razorpay on window
+declare global {
+    interface Window {
+        Razorpay: any;
+    }
+}
+
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const navigate = useNavigate();
+    const { isLoaded, loadRazorpay } = useRazorpay();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    useEffect(() => {
+        loadRazorpay();
+    }, [loadRazorpay]);
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -19,7 +36,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         city: '',
         state: '',
         zip: '',
-        paymentMethod: 'cod' // Default to COD
+        paymentMethod: 'cod'
     });
     const [formError, setFormError] = useState('');
 
@@ -34,23 +51,141 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        // Basic validation
-        if (!formData.address || !formData.phone || !formData.firstName) {
-            setFormError("Please fill in all required fields (marked associated with *).");
-            // Focus on the first invalid field could be implemented here
+    const handlePayment = async (orderId: string, orderDetails: any) => {
+        if (!isLoaded) {
+            setFormError('Payment gateway failed to load. Please verify your internet connection.');
+            setIsProcessing(false);
             return;
         }
-        setFormError('');
 
-        onPlaceOrder({
-            items: cart,
-            total: calculateTotal(),
-            shipping: formData,
-            paymentMethod: formData.paymentMethod,
-            orderDate: new Date().toISOString()
+        const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+            amount: total * 100, // Amount in paise
+            currency: "INR",
+            name: "Wular Sports",
+            description: "Purchase from Wular Sports",
+            image: "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png",
+            order_id: "", // In production, generate this on backend!
+            handler: async function (response: any) {
+                try {
+                    // Payment successful
+                    await updatePaymentStatus(orderId, 'completed', response.razorpay_payment_id);
+                    await updateOrderStatus(orderId, 'confirmed');
+
+                    // Send email confirmation
+                    sendOrderConfirmation(orderDetails);
+
+                    onPlaceOrder({
+                        id: orderId,
+                        items: cart,
+                        total: calculateTotal(),
+                        shipping: formData,
+                        paymentMethod: 'online',
+                        paymentId: response.razorpay_payment_id,
+                        orderDate: new Date().toISOString()
+                    });
+                } catch (error) {
+                    console.error("Error updating order after payment:", error);
+                    setFormError("Payment successful but failed to update order. Please contact support.");
+                } finally {
+                    setIsProcessing(false);
+                }
+            },
+            prefill: {
+                name: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                contact: formData.phone
+            },
+            notes: {
+                address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
+            },
+            theme: {
+                color: "#d4af37"
+            },
+            modal: {
+                ondismiss: function () {
+                    setIsProcessing(false);
+                }
+            }
+        };
+
+        const rzp1 = new window.Razorpay(options);
+        rzp1.on('payment.failed', function (response: any) {
+            console.error("Payment failed:", response.error);
+            setFormError(`Payment failed: ${response.error.description}`);
+            setIsProcessing(false);
         });
+        rzp1.open();
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!formData.address || !formData.phone || !formData.firstName) {
+            setFormError("Please fill in all required fields (marked associated with *).");
+            return;
+        }
+
+        setFormError('');
+        setIsProcessing(true);
+
+        try {
+            // 1. Create Order in Firebase
+            const orderData = {
+                customerName: `${formData.firstName} ${formData.lastName}`,
+                customerEmail: formData.email,
+                customerPhone: formData.phone,
+                customerAddress: {
+                    street: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    pincode: formData.zip
+                },
+                items: cart.map(item => ({
+                    productId: item.id,
+                    productName: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    size: item.size
+                })),
+                total: total,
+                status: 'pending' as const,
+                paymentStatus: 'pending' as const,
+                paymentMethod: formData.paymentMethod
+            };
+
+            const orderId = await createOrder(orderData);
+
+            // Prepare order object for email (combining ID with data)
+            const fullOrderDetails = {
+                id: orderId,
+                ...orderData
+            };
+
+            if (formData.paymentMethod === 'cod') {
+                // Send email confirmation
+                await sendOrderConfirmation(fullOrderDetails);
+
+                // For COD, we are done
+                onPlaceOrder({
+                    id: orderId,
+                    items: cart,
+                    total: calculateTotal(),
+                    shipping: formData,
+                    paymentMethod: 'cod',
+                    orderDate: new Date().toISOString()
+                });
+                setIsProcessing(false);
+            } else {
+                // For Online Payment, trigger Razorpay
+                await handlePayment(orderId, fullOrderDetails);
+            }
+
+        } catch (error) {
+            console.error("Order creation failed:", error);
+            setFormError("Failed to place order. Please try again.");
+            setIsProcessing(false);
+        }
     };
 
     if (cart.length === 0) {
@@ -86,6 +221,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value={formData.firstName}
                                         onChange={handleInputChange}
                                         required
+                                        disabled={isProcessing}
                                     />
                                 </div>
                                 <div className="form-group">
@@ -96,6 +232,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value={formData.lastName}
                                         onChange={handleInputChange}
                                         required
+                                        disabled={isProcessing}
                                     />
                                 </div>
                             </div>
@@ -108,6 +245,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     value={formData.phone}
                                     onChange={handleInputChange}
                                     required
+                                    disabled={isProcessing}
                                 />
                             </div>
 
@@ -118,6 +256,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     name="email"
                                     value={formData.email}
                                     onChange={handleInputChange}
+                                    disabled={isProcessing}
                                 />
                             </div>
 
@@ -130,6 +269,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     onChange={handleInputChange}
                                     placeholder="House no., Street name"
                                     required
+                                    disabled={isProcessing}
                                 />
                             </div>
 
@@ -142,6 +282,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value={formData.city}
                                         onChange={handleInputChange}
                                         required
+                                        disabled={isProcessing}
                                     />
                                 </div>
                                 <div className="form-group">
@@ -152,6 +293,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value={formData.state}
                                         onChange={handleInputChange}
                                         required
+                                        disabled={isProcessing}
                                     />
                                 </div>
                                 <div className="form-group">
@@ -162,6 +304,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value={formData.zip}
                                         onChange={handleInputChange}
                                         required
+                                        disabled={isProcessing}
                                     />
                                 </div>
                             </div>
@@ -208,6 +351,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value="cod"
                                         checked={formData.paymentMethod === 'cod'}
                                         onChange={handleInputChange}
+                                        disabled={isProcessing}
                                     />
                                     <span>Cash on Delivery (COD)</span>
                                 </label>
@@ -218,17 +362,27 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         value="online"
                                         checked={formData.paymentMethod === 'online'}
                                         onChange={handleInputChange}
+                                        disabled={isProcessing}
                                     />
                                     <span>Online Payment (Razorpay)</span>
                                 </label>
                             </div>
                             {formData.paymentMethod === 'online' && (
-                                <p className="payment-note">Redirecting to secure payment gateway...</p>
+                                <p className="payment-note">You will be redirected to Razorpay to complete your secure payment.</p>
                             )}
                         </div>
 
-                        <button type="submit" form="checkout-form" className="btn-place-order">
-                            PLACE ORDER
+                        <button
+                            type="submit"
+                            form="checkout-form"
+                            className="btn-place-order"
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? (
+                                <span className="btn-spinner"><i className="fas fa-spinner fa-spin"></i> Processing...</span>
+                            ) : (
+                                "PLACE ORDER"
+                            )}
                         </button>
                     </div>
                 </div>

@@ -3209,3 +3209,21 @@ img[loading="lazy"] {
         margin-bottom: 1.5rem;
     }
 }
+
+/* Checkout Button Loading State */
+.btn-place-order:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-spinner i {
+    font-size: 1.1rem;
+}

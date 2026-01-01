@@ -1,12 +1,6 @@
 import emailjs from '@emailjs/browser';
 import { Order } from './orders';
-import { ProductFull, CartItem } from '../types';
-
-// Initialize EmailJS with your Public Key
-// You should call this in your main App.tsx or use it directly here
-const initEmail = () => {
-    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "your-public-key");
-};
+import { CartItem } from '../types';
 
 /**
  * Send order confirmation email to customer
@@ -45,13 +39,4 @@ export const sendOrderConfirmation = async (order: Order | any) => {
         console.error('Failed to send order confirmation email:', error);
         return false;
     }
-};
-
-/**
- * Send notification to admin about new order
- */
-export const sendAdminNotification = async (order: Order | any) => {
-    // Similar logic, potentially using a different template
-    // For MVP, we might just rely on the customer email template cc'd to admin
-    // or set up a specific "New Order" template for admins
 };

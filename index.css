@@ -1890,6 +1890,25 @@ section {
     transform: scale(1.1);
 }
 
+/* Mobile Floating Button Adjustments */
+@media (max-width: 768px) {
+    .fab-whatsapp {
+        bottom: 2rem;
+        right: 1rem;
+        width: 55px;
+        height: 55px;
+        font-size: 1.8rem;
+    }
+    
+    .fab-call {
+        bottom: 2rem;
+        left: 1rem;
+        width: 55px;
+        height: 55px;
+        font-size: 1.4rem;
+    }
+}
+
 .product-main-image {
     width: 100%;
     border-radius: 10px;
@@ -3674,127 +3693,6 @@ img[loading="lazy"] {
     animation: fadeIn 0.3s ease;
 }
 
-/* Sticky Help Bar */
-.help-bar-sticky {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, rgba(10, 10, 10, 0.98), rgba(0, 0, 0, 0.98));
-    backdrop-filter: blur(10px);
-    border-top: 2px solid var(--golden);
-    padding: 1rem 1.5rem;
-    z-index: 998;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-}
-
-.help-bar-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-}
-
-.help-bar-text {
-    color: var(--white);
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-.help-bar-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
-
-.help-bar-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.2rem;
-    border-radius: 25px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.help-bar-btn.whatsapp {
-    background-color: #25D366;
-    color: white;
-}
-
-.help-bar-btn.whatsapp:hover {
-    background-color: #128C7E;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-}
-
-.help-bar-btn.call {
-    background-color: var(--golden);
-    color: var(--black);
-}
-
-.help-bar-btn.call:hover {
-    background-color: #c49d2f;
-    transform: translateY(-2px);
-}
-
-.help-response-time {
-    position: absolute;
-    bottom: -1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.7rem;
-    color: #aaa;
-    white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-    .help-bar-sticky {
-        padding: 0.75rem 1rem;
-    }
-    
-    .help-bar-content {
-        flex-direction: column;
-        gap: 0.75rem;
-        text-align: center;
-    }
-    
-    .help-bar-text {
-        font-size: 0.85rem;
-    }
-    
-    .help-bar-actions {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    .help-bar-btn {
-        flex: 1;
-        min-width: 140px;
-        justify-content: center;
-    }
-    
-    .help-response-time {
-        display: none;
-    }
-    
-    /* Adjust floating buttons when help bar is visible */
-    .fab-whatsapp {
-        bottom: 6rem !important;
-    }
-    
-    .fab-call {
-        bottom: 6rem !important;
-    }
-}
-
 /* Price Formatting Consistency */
 .product-price-row .price-main {
     font-size: 2rem;
@@ -3815,16 +3713,6 @@ img[loading="lazy"] {
     }
 }
 
-/* Ensure body has padding for sticky help bar */
-body {
-    padding-bottom: 80px;
-}
-
-@media (max-width: 768px) {
-    body {
-        padding-bottom: 120px;
-    }
-}
 
 /* Secure Payment Badges (Checkout) */
 .secure-payment-badges {

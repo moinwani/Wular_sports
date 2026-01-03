@@ -115,57 +115,41 @@ section {
     height: 70px;
     display: flex;
     align-items: center;
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(0);
+    will-change: transform;
 }
 
 .header.header-visible {
-    transform: translateY(0);
+    transform: translateY(0) !important;
 }
 
 .header.header-hidden {
-    transform: translateY(-100%);
+    transform: translateY(-100%) !important;
+}
+
+/* When trust banner is visible, header should be below it */
+body:has(.trust-banner.visible) .header {
+    top: 40px;
+}
+
+body:has(.trust-banner.hidden) .header {
+    top: 0;
 }
 
 /* Add padding to body to account for fixed header */
 body {
-    padding-top: 70px !important;
+    padding-top: 70px;
+}
+
+/* When trust banner is visible, add more padding */
+body:has(.trust-banner.visible) {
+    padding-top: 110px;
 }
 
 /* Ensure main content accounts for fixed header */
 main {
     position: relative;
-}
-
-/* Trust banner positioning when header is fixed */
-.trust-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-    transform: translateY(0);
-}
-
-.trust-banner.visible {
-    transform: translateY(0);
-}
-
-.trust-banner.hidden {
-    transform: translateY(-100%);
-}
-
-/* Adjust header position when trust banner is visible */
-.header {
-    top: 0;
-}
-
-:has(.trust-banner.visible) .header {
-    top: 0;
-}
-
-:has(.trust-banner.hidden) .header {
-    top: 0;
 }
 
 /* Trust Banner Auto-Hide */
@@ -3660,6 +3644,36 @@ img[loading="lazy"] {
     padding: 0.5rem 1rem;
     text-align: center;
     font-size: 0.85rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.trust-banner.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.trust-banner.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Adjust header position when trust banner exists */
+:has(.trust-banner.visible) + .header,
+.header:has(~ .trust-banner.visible) {
+    top: 0;
+}
+
+.trust-banner.visible ~ .header,
+.trust-banner.visible + .header {
+    top: auto;
 }
 
 .trust-banner-content {

@@ -111,100 +111,152 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         }
     }, [scrollPhase, isMobile]);
 
-    // Handle wheel event for controlled scrolling - intercept ALL scroll events
+    // Handle wheel event - STRICT SEQUENTIAL SCROLL BEHAVIOR
     const handleWheel = useCallback((e: WheelEvent) => {
-        if (isMobile || isScrollingRef.current) return;
+        // Ignore on mobile - use normal scroll
+        if (isMobile) return;
         
-        // Only prevent default during controlled scroll phases
+        // Only intercept during controlled phases (images or content)
         if (scrollPhase === 'images' || scrollPhase === 'content') {
+            // ALWAYS prevent default page scroll during controlled phases
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
             
+            // Prevent simultaneous scrolling
             if (isScrollingRef.current) return;
             isScrollingRef.current = true;
             
             const delta = e.deltaY;
-            const scrollSpeed = 1.2; // Adjust scroll sensitivity
+            const scrollSpeed = 1.5; // Smooth scroll speed
             
+            // STEP 1: Scroll Images (Left Side) - FIRST PRIORITY
             if (scrollPhase === 'images' && imageScrollContainerRef.current) {
                 const scrollContainer = imageScrollContainerRef.current;
                 const currentScroll = scrollContainer.scrollTop;
-                const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+                const scrollHeight = scrollContainer.scrollHeight;
+                const clientHeight = scrollContainer.clientHeight;
+                const maxScroll = scrollHeight - clientHeight;
                 
-                if (maxScroll > 0) {
+                // Check if there's anything to scroll
+                if (maxScroll > 10) {
+                    // Calculate new scroll position
                     const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-                    scrollContainer.scrollTop = newScroll; // Direct assignment for immediate effect
                     
-                    // Check if we've reached the end
+                    // Scroll the images container
+                    scrollContainer.scrollTop = newScroll;
+                    
+                    // Check completion after scroll
                     requestAnimationFrame(() => {
-                        checkImageScrollComplete();
+                        const newScrollTop = scrollContainer.scrollTop;
+                        const remainingScroll = maxScroll - newScrollTop;
+                        
+                        // If we've reached the bottom (within 10px threshold), move to next phase
+                        if (remainingScroll <= 10) {
+                            scrollContainer.scrollTop = maxScroll; // Ensure we're exactly at bottom
+                            setScrollPhase('content'); // STEP 2: Move to content scroll phase
+                        }
                         isScrollingRef.current = false;
                     });
                 } else {
-                    // No scroll needed, move to next phase
+                    // No images to scroll, immediately move to content phase
                     setScrollPhase('content');
                     isScrollingRef.current = false;
                 }
-            } else if (scrollPhase === 'content' && contentSectionRef.current) {
+            }
+            // STEP 3: Scroll Content (Right Side) - SECOND PRIORITY  
+            else if (scrollPhase === 'content' && contentSectionRef.current) {
                 const content = contentSectionRef.current;
                 const currentScroll = content.scrollTop;
-                const maxScroll = content.scrollHeight - content.clientHeight;
+                const scrollHeight = content.scrollHeight;
+                const clientHeight = content.clientHeight;
+                const maxScroll = scrollHeight - clientHeight;
                 
-                if (maxScroll > 0) {
+                // Check if there's anything to scroll
+                if (maxScroll > 10) {
+                    // Calculate new scroll position
                     const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-                    content.scrollTop = newScroll; // Direct assignment for immediate effect
                     
-                    // Check if we've reached the end
+                    // Scroll the content container
+                    content.scrollTop = newScroll;
+                    
+                    // Check completion after scroll
                     requestAnimationFrame(() => {
-                        checkContentScrollComplete();
+                        const newScrollTop = content.scrollTop;
+                        const remainingScroll = maxScroll - newScrollTop;
+                        
+                        // If we've reached the bottom (within 10px threshold), move to normal scroll
+                        if (remainingScroll <= 10) {
+                            content.scrollTop = maxScroll; // Ensure we're exactly at bottom
+                            setScrollPhase('normal'); // STEP 4: Allow normal page scroll
+                        }
                         isScrollingRef.current = false;
                     });
                 } else {
-                    // No scroll needed, move to normal phase
+                    // No content to scroll, immediately allow normal page scroll
                     setScrollPhase('normal');
                     isScrollingRef.current = false;
                 }
-            } else {
-                isScrollingRef.current = false;
             }
         }
-    }, [scrollPhase, isMobile, checkImageScrollComplete, checkContentScrollComplete]);
+        // STEP 4: Normal page scroll (scrollPhase === 'normal')
+        // Don't prevent default - allow normal browser scroll behavior
+    }, [scrollPhase, isMobile]);
 
-    // Attach wheel event listener to WINDOW (not container) to catch ALL scroll events
+    // Attach wheel event listener to WINDOW to catch ALL scroll events from anywhere on page
     useEffect(() => {
         if (isMobile) {
+            // Mobile: Normal scroll behavior
             document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
             return;
         }
         
-        // Prevent body scroll during controlled scroll phases
+        // Desktop: Control scroll behavior based on phase
         if (scrollPhase === 'images' || scrollPhase === 'content') {
+            // STRICTLY prevent body/page scroll during controlled phases
             document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
             document.documentElement.style.overflow = 'hidden';
+            
+            // Lock window scroll position
+            const scrollY = window.scrollY;
+            window.scrollTo(0, scrollY);
         } else {
+            // Normal scroll phase - allow page scrolling
             document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
             document.documentElement.style.overflow = '';
         }
         
-        // Attach to window to catch ALL scroll events anywhere on the page
+        // Listen to ALL wheel events on the window (capture phase to catch early)
         window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-        window.addEventListener('scroll', (e) => {
+        
+        // Also prevent any scroll events during controlled phases
+        const preventScroll = (e: Event) => {
             if (scrollPhase === 'images' || scrollPhase === 'content') {
                 e.preventDefault();
-                window.scrollTo(0, 0);
+                e.stopPropagation();
+                window.scrollTo(window.scrollX, window.scrollY); // Maintain position
             }
-        }, { passive: false, capture: true });
+        };
+        
+        window.addEventListener('scroll', preventScroll, { passive: false, capture: true });
         
         return () => {
             window.removeEventListener('wheel', handleWheel, { capture: true });
-            window.removeEventListener('scroll', () => {}, { capture: true });
+            window.removeEventListener('scroll', preventScroll, { capture: true });
+            // Cleanup styles
             document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
             document.documentElement.style.overflow = '';
         };
     }, [handleWheel, isMobile, scrollPhase]);
 
-    // Monitor image gallery scroll
+    // Monitor image gallery scroll for phase transition detection
     useEffect(() => {
         if (isMobile || scrollPhase !== 'images') return;
         
@@ -212,14 +264,22 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         if (!scrollContainer) return;
         
         const handleScroll = () => {
-            checkImageScrollComplete();
+            // Check if images are fully scrolled
+            const scrollTop = scrollContainer.scrollTop;
+            const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+            const remainingScroll = maxScroll - scrollTop;
+            
+            // If at bottom (within 10px), transition to content phase
+            if (remainingScroll <= 10 && scrollPhase === 'images') {
+                setScrollPhase('content');
+            }
         };
         
         scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
         return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }, [scrollPhase, isMobile, checkImageScrollComplete]);
+    }, [scrollPhase, isMobile]);
 
-    // Monitor content scroll
+    // Monitor content scroll for phase transition detection
     useEffect(() => {
         if (isMobile || scrollPhase !== 'content') return;
         
@@ -227,19 +287,37 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         if (!content) return;
         
         const handleScroll = () => {
-            checkContentScrollComplete();
+            // Check if content is fully scrolled
+            const scrollTop = content.scrollTop;
+            const maxScroll = content.scrollHeight - content.clientHeight;
+            const remainingScroll = maxScroll - scrollTop;
+            
+            // If at bottom (within 10px), transition to normal scroll phase
+            if (remainingScroll <= 10 && scrollPhase === 'content') {
+                setScrollPhase('normal');
+            }
         };
         
         content.addEventListener('scroll', handleScroll, { passive: true });
         return () => content.removeEventListener('scroll', handleScroll);
-    }, [scrollPhase, isMobile, checkContentScrollComplete]);
+    }, [scrollPhase, isMobile]);
 
-    // Reset scroll phase when product changes
+    // Reset scroll phase when product changes or component mounts
     useEffect(() => {
-        setScrollPhase('images');
-        imageScrollProgressRef.current = 0;
-        contentScrollProgressRef.current = 0;
-    }, [id]);
+        if (!isMobile) {
+            setScrollPhase('images');
+            imageScrollProgressRef.current = 0;
+            contentScrollProgressRef.current = 0;
+            
+            // Reset scroll positions
+            if (imageScrollContainerRef.current) {
+                imageScrollContainerRef.current.scrollTop = 0;
+            }
+            if (contentSectionRef.current) {
+                contentSectionRef.current.scrollTop = 0;
+            }
+        }
+    }, [id, isMobile]);
 
     if (!product) {
         return <div className="container">Product not found</div>;

@@ -199,7 +199,10 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                     </div>
                 </div>
             )}
-            <header className={`header ${isHeaderVisible ? 'header-visible' : 'header-hidden'}`}>
+            <header 
+                className={`header ${isHeaderVisible ? 'header-visible' : 'header-hidden'} ${isHomePage && isHeaderVisible ? 'with-trust-banner' : ''}`}
+                style={isHomePage && isHeaderVisible ? { top: '40px' } : { top: '0' }}
+            >
                 <nav className="nav">
                     {/* Hamburger Menu Button (Mobile Only) */}
                     <button

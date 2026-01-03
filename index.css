@@ -128,44 +128,14 @@ section {
     transform: translateY(-100%) !important;
 }
 
-/* When trust banner is visible, header should be below it */
-body:has(.trust-banner.visible) .header {
-    top: 40px;
-}
-
-body:has(.trust-banner.hidden) .header {
-    top: 0;
-}
-
 /* Add padding to body to account for fixed header */
 body {
     padding-top: 70px;
 }
 
-/* When trust banner is visible, add more padding */
-body:has(.trust-banner.visible) {
-    padding-top: 110px;
-}
-
 /* Ensure main content accounts for fixed header */
 main {
     position: relative;
-}
-
-/* Trust Banner Auto-Hide */
-.trust-banner {
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-}
-
-.trust-banner.visible {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.trust-banner.hidden {
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
 }
 
 /* Nav Container */
@@ -3665,15 +3635,19 @@ img[loading="lazy"] {
     pointer-events: none;
 }
 
-/* Adjust header position when trust banner exists */
-:has(.trust-banner.visible) + .header,
-.header:has(~ .trust-banner.visible) {
-    top: 0;
+/* When trust banner is visible, adjust header position and body padding */
+.trust-banner.visible ~ .header,
+body:has(.trust-banner.visible) .header {
+    top: 40px;
 }
 
-.trust-banner.visible ~ .header,
-.trust-banner.visible + .header {
-    top: auto;
+body:has(.trust-banner.visible) {
+    padding-top: 110px;
+}
+
+body:has(.trust-banner.hidden) .header,
+body:not(:has(.trust-banner.visible)) .header {
+    top: 0;
 }
 
 .trust-banner-content {

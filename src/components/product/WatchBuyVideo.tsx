@@ -1,4 +1,4 @@
-import { FC, useState, useRef, useEffect } from 'react';
+import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import { ProductFull } from '../../types';
 
 interface WatchBuyVideoProps {
@@ -13,32 +13,10 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const floatingVideoRef = useRef<HTMLVideoElement>(null);
     const modalVideoRef = useRef<HTMLVideoElement>(null);
 
-    // Listen for Buy Now button clicks to close video (from main product page)
-    useEffect(() => {
-        if (!isVisible && !isModalOpen) return;
-
-        const handleBuyNowClick = (e: Event) => {
-            // Close video when Buy Now is clicked anywhere on the page
-            handleCloseComplete();
-        };
-
-        // Listen for clicks on Buy Now button
-        const buyNowButtons = document.querySelectorAll('.btn-primary-premium, .add-to-cart-large');
-        buyNowButtons.forEach(btn => {
-            btn.addEventListener('click', handleBuyNowClick);
-        });
-
-        return () => {
-            buyNowButtons.forEach(btn => {
-                btn.removeEventListener('click', handleBuyNowClick);
-            });
-        };
-    }, [isVisible, isModalOpen]);
-
     const videoUrl = "https://res.cloudinary.com/ddahm5ebv/video/upload/v1767461480/for_tevxdy.mp4";
 
     // Close completely - hide floating video and modal
-    const handleCloseComplete = () => {
+    const handleCloseComplete = useCallback(() => {
         setIsVisible(false);
         setIsModalOpen(false);
         // Pause both videos
@@ -51,7 +29,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         if (onClose) {
             onClose();
         }
-    };
+    }, [onClose]);
 
     // Open modal on video click
     const handleVideoClick = () => {
@@ -87,10 +65,10 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         }
         // Close everything
         handleCloseComplete();
-    };
+    }, [product, onAddToCart, handleCloseComplete]);
 
     // More Info handler - closes video and scrolls to tabs
-    const handleMoreInfo = () => {
+    const handleMoreInfo = useCallback(() => {
         // Close everything first
         handleCloseComplete();
         
@@ -106,7 +84,29 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                 }
             }
         }, 300);
-    };
+    }, [handleCloseComplete]);
+
+    // Listen for Buy Now button clicks to close video (from main product page)
+    useEffect(() => {
+        if (!isVisible && !isModalOpen) return;
+
+        const handleBuyNowClick = (e: Event) => {
+            // Close video when Buy Now is clicked anywhere on the page
+            handleCloseComplete();
+        };
+
+        // Listen for clicks on Buy Now button
+        const buyNowButtons = document.querySelectorAll('.btn-primary-premium, .add-to-cart-large');
+        buyNowButtons.forEach(btn => {
+            btn.addEventListener('click', handleBuyNowClick);
+        });
+
+        return () => {
+            buyNowButtons.forEach(btn => {
+                btn.removeEventListener('click', handleBuyNowClick);
+            });
+        };
+    }, [isVisible, isModalOpen, handleCloseComplete]);
 
     // Auto-play floating video (muted)
     useEffect(() => {

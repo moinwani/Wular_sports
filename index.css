@@ -129,7 +129,43 @@ section {
 
 /* Add padding to body to account for fixed header */
 body {
-    padding-top: 70px;
+    padding-top: 70px !important;
+}
+
+/* Ensure main content accounts for fixed header */
+main {
+    position: relative;
+}
+
+/* Trust banner positioning when header is fixed */
+.trust-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    transform: translateY(0);
+}
+
+.trust-banner.visible {
+    transform: translateY(0);
+}
+
+.trust-banner.hidden {
+    transform: translateY(-100%);
+}
+
+/* Adjust header position when trust banner is visible */
+.header {
+    top: 0;
+}
+
+:has(.trust-banner.visible) .header {
+    top: 0;
+}
+
+:has(.trust-banner.hidden) .header {
+    top: 0;
 }
 
 /* Trust Banner Auto-Hide */

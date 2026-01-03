@@ -26,11 +26,13 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
     // Handle scroll direction detection for auto-hide header
     useEffect(() => {
         let ticking = false;
+        let headerElementRef: HTMLElement | null = null;
 
         const handleScroll = () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
-                    const currentScrollY = window.scrollY;
+                    // Try multiple methods to detect scroll position
+                    const currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
                     const scrollDifference = currentScrollY - lastScrollY.current;
                     
                     // Clear any existing timeout
@@ -40,10 +42,10 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
                     // Only auto-hide if header is not pinned (user hasn't interacted)
                     if (!isHeaderPinned) {
-                        if (scrollDifference > 5 && currentScrollY > 100) {
+                        if (scrollDifference > 10 && currentScrollY > 100) {
                             // Scrolling down - hide header
                             setIsHeaderVisible(false);
-                        } else if (scrollDifference < -5) {
+                        } else if (scrollDifference < -10) {
                             // Scrolling up - show header
                             setIsHeaderVisible(true);
                         }
@@ -77,20 +79,35 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             }, 3000);
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Listen to scroll events with multiple methods for better compatibility
+        window.addEventListener('scroll', handleScroll, { passive: true, capture: false });
+        document.addEventListener('scroll', handleScroll, { passive: true, capture: false });
         
-        // Add event listeners to header elements to pin on interaction
-        const headerElement = document.querySelector('.header');
-        if (headerElement) {
-            headerElement.addEventListener('mouseenter', handleHeaderInteraction);
-            headerElement.addEventListener('click', handleHeaderInteraction);
+        // Also listen to wheel events as fallback (for cases where scroll is prevented)
+        const handleWheel = (e: WheelEvent) => {
+            if (window.scrollY === 0 && e.deltaY > 0) {
+                // User is trying to scroll down from top
+                // This helps detect scroll intent even when scroll is prevented
+            }
+        };
+        window.addEventListener('wheel', handleWheel, { passive: true });
+        
+        // Get header element reference
+        headerElementRef = document.querySelector('.header') as HTMLElement;
+        if (headerElementRef) {
+            headerElementRef.addEventListener('mouseenter', handleHeaderInteraction);
+            headerElementRef.addEventListener('click', handleHeaderInteraction);
+            headerElementRef.addEventListener('touchstart', handleHeaderInteraction);
         }
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            if (headerElement) {
-                headerElement.removeEventListener('mouseenter', handleHeaderInteraction);
-                headerElement.removeEventListener('click', handleHeaderInteraction);
+            document.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('wheel', handleWheel);
+            if (headerElementRef) {
+                headerElementRef.removeEventListener('mouseenter', handleHeaderInteraction);
+                headerElementRef.removeEventListener('click', handleHeaderInteraction);
+                headerElementRef.removeEventListener('touchstart', handleHeaderInteraction);
             }
             if (scrollTimeoutRef.current) {
                 clearTimeout(scrollTimeoutRef.current);

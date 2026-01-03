@@ -1,5 +1,4 @@
 import { FC, useState, memo, MouseEvent, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
 import { SearchBar } from './SearchBar';
@@ -11,7 +10,6 @@ export interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
-    const location = useLocation();
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -19,9 +17,6 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
     const [isHeaderPinned, setIsHeaderPinned] = useState(false);
     const lastScrollY = useRef(0);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    
-    // Only show trust banner on homepage
-    const isHomePage = location.pathname === '/';
 
     // Handle scroll direction detection for auto-hide header
     useEffect(() => {
@@ -188,17 +183,6 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
     return (
         <>
-            {/* Trust Banner - Only on Homepage */}
-            {isHomePage && (
-                <div className={`trust-banner ${isHeaderVisible ? 'visible' : 'hidden'}`}>
-                    <div className="trust-banner-content">
-                        <span><i className="fas fa-shield-alt"></i> Secure Checkout</span>
-                        <span><i className="fas fa-truck"></i> Free Shipping</span>
-                        <span><i className="fas fa-undo"></i> Easy Returns</span>
-                        <span><i className="fas fa-certificate"></i> Authentic Products</span>
-                    </div>
-                </div>
-            )}
             <header className={`header ${isHeaderVisible ? 'header-visible' : 'header-hidden'}`}>
                 <nav className="nav">
                     {/* Hamburger Menu Button (Mobile Only) */}

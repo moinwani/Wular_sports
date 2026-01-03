@@ -3635,20 +3635,6 @@ img[loading="lazy"] {
     pointer-events: none;
 }
 
-/* When trust banner is visible, adjust header position and body padding */
-.trust-banner.visible ~ .header,
-body:has(.trust-banner.visible) .header {
-    top: 40px;
-}
-
-body:has(.trust-banner.visible) {
-    padding-top: 110px;
-}
-
-body:has(.trust-banner.hidden) .header,
-body:not(:has(.trust-banner.visible)) .header {
-    top: 0;
-}
 
 .trust-banner-content {
     display: flex;

@@ -468,240 +468,203 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                         ref={contentSectionRef}
                         className={`product-info-section-sticky ${scrollPhase === 'content' && !isMobile ? 'scroll-active' : ''} ${scrollPhase === 'normal' && !isMobile ? 'scroll-normal' : ''}`}
                     >
-                        <div className="product-header-group">
-                            <div className="product-badge-row">
-                                <span className="tramboo-badge-red">#1 BEST SELLER</span>
-                            </div>
+                        {/* Above the Fold Section - Clean & Premium */}
+                        <div className="product-header-clean">
+                            <h1 className="product-title-premium">{product.name}</h1>
+                            
+                            {/* Short one-line description */}
+                            <p className="product-subtitle-premium">
+                                {product.category.join(' | ')} Cricket Bat
+                            </p>
 
-                            <h1 className="product-title-condensed">{product.name}</h1>
-
-                            {/* Social Proof Banner */}
-                            <div className="social-proof-banner">
-                                <span><i className="fas fa-star"></i> 4.8/5</span>
-                                <span>|</span>
-                                <span><i className="fas fa-users"></i> 127+ Reviews</span>
-                                <span>|</span>
-                                <span><i className="fas fa-fire"></i> 50+ Sold This Month</span>
-                            </div>
-
-                            <div className="product-price-row">
-                                <span className="price-main">₹{product.price.toLocaleString('en-IN')}</span>
+                            {/* Price Section */}
+                            <div className="product-price-section-premium">
+                                <div className="price-main-premium">₹{product.price.toLocaleString('en-IN')}</div>
                                 {product.originalPrice && (
-                                    <>
-                                        <span className="price-crossed">₹{product.originalPrice.toLocaleString('en-IN')}</span>
-                                        <span className="badge-save discount-badge-large">SAVE {discountPercentage}%</span>
-                                    </>
+                                    <div className="price-secondary-premium">
+                                        <span className="price-original-strike">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+                                        <span className="discount-badge-premium">Save {discountPercentage}%</span>
+                                    </div>
                                 )}
                             </div>
 
-                            {/* Features Grid Compact */}
-                            <div className="features-grid-compact">
-                                <div className="feature-item-compact">
-                                    <i className="fas fa-magic feature-icon-red"></i> READY TO PLAY
-                                </div>
-                                <div className="feature-item-compact">
-                                    <i className="far fa-clock feature-icon-red"></i> 1 YEAR HANDLE WARRANTY
-                                </div>
-                                <div className="feature-item-compact">
-                                    <i className="fas fa-feather feature-icon-red"></i> LIGHTWEIGHT
-                                </div>
-                                <div className="feature-item-compact">
-                                    <i className="fas fa-certificate feature-icon-red"></i> PINGS LIKE A ROCKET
-                                </div>
-                            </div>
-                        </div>
-
-                        {hasSizes && (
-                            <div className={`size-selector-container ${sizeError ? 'error-state' : ''}`}>
-                                <div className="size-selector-header">
-                                    <label className="size-label">
+                            {/* Size Selector */}
+                            {hasSizes && (
+                                <div className={`size-selector-premium ${sizeError ? 'error-state' : ''}`}>
+                                    <label className="size-label-premium">
                                         Select Size <span className="required-asterisk">*</span>
                                     </label>
-                                </div>
-                                <div className="size-options-grid">
-                                    {['35 inch', '36 inch'].map(size => (
-                                        <label key={size} className={`size-option-box ${selectedSize === size ? 'selected' : ''} ${sizeError ? 'error' : ''}`}>
-                                            <input
-                                                type="radio"
-                                                name="bat-size"
-                                                value={size}
-                                                checked={selectedSize === size}
-                                                onChange={handleSizeChange}
-                                            />
-                                            <span>{size}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                                {sizeError && (
-                                    <p className="size-error-message">
-                                        <i className="fas fa-exclamation-circle"></i> Please select a size to continue
-                                    </p>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Trust Box */}
-                        <div className="product-trust-box">
-                            <div className="trust-item">
-                                <i className="fas fa-shield-check"></i>
-                                <div>
-                                    <strong>1 Year Handle Warranty</strong>
-                                    <p>Coverage on manufacturing defects</p>
-                                </div>
-                            </div>
-                            <div className="trust-item">
-                                <i className="fas fa-truck-fast"></i>
-                                <div>
-                                    <strong>Free Shipping Across India</strong>
-                                    <p>Delivered in 3-5 business days</p>
-                                </div>
-                            </div>
-                            <div className="trust-item">
-                                <i className="fas fa-undo-alt"></i>
-                                <div>
-                                    <strong>7-Day Return Policy</strong>
-                                    <p>Hassle-free returns if not satisfied</p>
-                                </div>
-                            </div>
-                            <div className="trust-item">
-                                <i className="fas fa-certificate"></i>
-                                <div>
-                                    <strong>Authentic Kashmir Willow</strong>
-                                    <p>Handcrafted with premium materials</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* What's Included Section */}
-                        <div className="whats-included-box">
-                            <h4>What's Included</h4>
-                            <div className="included-items">
-                                <div className="included-item">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>Premium Cricket Bat</span>
-                                </div>
-                                <div className="included-item">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>Free Bat Bag (Worth ₹200)</span>
-                                </div>
-                                <div className="included-item">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>Premium Toe Guard</span>
-                                </div>
-                                <div className="included-item">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>Extra Grip</span>
-                                </div>
-                                <div className="included-item">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>Fully Knocked & Oiled (Ready to Play)</span>
-                                </div>
-                            </div>
-                            <p className="total-value">Total Value: ₹{(product.price + 200).toLocaleString('en-IN')} | You Save: ₹200</p>
-                        </div>
-
-                        {/* Key Specs Visual Cards */}
-                        <div className="product-key-specs">
-                            {getWeightSpec() && (
-                                <div className="spec-card highlighted">
-                                    <i className="fas fa-weight"></i>
-                                    <div>
-                                        <strong>Weight</strong>
-                                        <p>{getWeightSpec()}</p>
+                                    <div className="size-options-premium">
+                                        {['35 inch', '36 inch'].map(size => (
+                                            <label key={size} className={`size-option-premium ${selectedSize === size ? 'selected' : ''} ${sizeError ? 'error' : ''}`}>
+                                                <input
+                                                    type="radio"
+                                                    name="bat-size"
+                                                    value={size}
+                                                    checked={selectedSize === size}
+                                                    onChange={handleSizeChange}
+                                                />
+                                                <span>{size}</span>
+                                            </label>
+                                        ))}
                                     </div>
+                                    {sizeError && (
+                                        <p className="size-error-premium">
+                                            <i className="fas fa-exclamation-circle"></i> Please select a size
+                                        </p>
+                                    )}
                                 </div>
                             )}
-                            <div className="spec-card">
-                                <i className="fas fa-ruler-vertical"></i>
-                                <div>
-                                    <strong>Available Sizes</strong>
-                                    <p>35" & 36"</p>
-                                </div>
-                            </div>
-                            {getEdgeSpec() && (
-                                <div className="spec-card">
-                                    <i className="fas fa-ruler-combined"></i>
-                                    <div>
-                                        <strong>Edge Thickness</strong>
-                                        <p>{getEdgeSpec()}</p>
-                                    </div>
-                                </div>
-                            )}
-                            <div className="spec-card">
-                                <i className="fas fa-tree"></i>
-                                <div>
-                                    <strong>Willow Grade</strong>
-                                    <p>Premium Kashmir Willow</p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="action-area">
-                            <button className="add-to-cart-large" onClick={handleAddToCartClick}>
-                                <span><i className="fas fa-shopping-bag"></i> BUY NOW - ₹{product.price.toLocaleString('en-IN')}</span>
-                                {product.originalPrice && <span className="btn-crossed-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>}
+                            {/* Primary CTA */}
+                            <button className="btn-primary-premium" onClick={handleAddToCartClick}>
+                                <i className="fas fa-shopping-bag"></i>
+                                BUY NOW - ₹{product.price.toLocaleString('en-IN')}
                             </button>
-
-                            <div className="contact-options-row">
-                                <a
-                                    href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-contact-option btn-whatsapp-opt"
-                                >
-                                    <i className="fab fa-whatsapp"></i> SHOP ON WHATSAPP
-                                </a>
-                                <a
-                                    href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-contact-option btn-video-opt"
-                                >
-                                    <i className="fas fa-video"></i> SHOP ON VIDEO CALL
-                                </a>
-                            </div>
-
-                            <p className="shipping-note">
-                                NOTE: IT CAN TAKE UPTO 2-3 WORKING DAYS FOR THE BAT TO BE DISPATCHED. ALL ORDERS ARE DISPATCHED BY AIR FOR EXPRESS DELIVERY.
-                            </p>
                         </div>
 
-                        {/* Collapsible Sections */}
-                        <div className="product-sections-container">
-                            <div className="collapsible-section">
-                                <button className="section-header" onClick={() => toggleSection('description')}>
+                        {/* Tabs Section */}
+                        <div className="product-tabs-container">
+                            <div className="product-tabs">
+                                <button 
+                                    className={`product-tab ${openSection === 'description' ? 'active' : ''}`}
+                                    onClick={() => toggleSection('description')}
+                                >
                                     DESCRIPTION
-                                    <i className={`fas ${openSection === 'description' ? 'fa-minus' : 'fa-plus'}`}></i>
                                 </button>
-                                <div className={`section-content ${openSection === 'description' ? 'open' : ''}`}>
-                                    <p>{product.description}</p>
-                                    <ul className="description-list">
-                                        <li>Premium Kashmir Willow</li>
-                                        <li>Full Cane Handle</li>
-                                        <li>Double Blade / Single Blade Options</li>
-                                        <li>Toe Guard Fitted</li>
-                                    </ul>
-                                </div>
+                                <button 
+                                    className={`product-tab ${openSection === 'included' ? 'active' : ''}`}
+                                    onClick={() => toggleSection('included')}
+                                >
+                                    WHAT'S INCLUDED
+                                </button>
+                                <button 
+                                    className={`product-tab ${openSection === 'contact' ? 'active' : ''}`}
+                                    onClick={() => toggleSection('contact')}
+                                >
+                                    CONTACT
+                                </button>
                             </div>
 
-                            <div className="collapsible-section">
-                                <button className="section-header" onClick={() => toggleSection('usage')}>
-                                    HOW TO USE
-                                    <i className={`fas ${openSection === 'usage' ? 'fa-minus' : 'fa-plus'}`}></i>
-                                </button>
-                                <div className={`section-content ${openSection === 'usage' ? 'open' : ''}`}>
-                                    <p>Recommended for use with hard tennis balls (Guru, Nivia, etc). Avoid using with heavy leather balls unless specified.</p>
-                                </div>
-                            </div>
+                            {/* Tab Content */}
+                            <div className="product-tab-content">
+                                {/* DESCRIPTION Tab */}
+                                {openSection === 'description' && (
+                                    <div className="tab-panel active">
+                                        <div className="product-specs-clean">
+                                            <h3 className="specs-title">Product Details</h3>
+                                            <ul className="specs-list-clean">
+                                                {product.specs
+                                                    .filter(spec => 
+                                                        !spec.toLowerCase().includes('free') && 
+                                                        !spec.toLowerCase().includes('delivery') &&
+                                                        !spec.toLowerCase().includes('included')
+                                                    )
+                                                    .map((spec, index) => (
+                                                        <li key={index}>
+                                                            <i className="fas fa-check"></i>
+                                                            <span>{spec}</span>
+                                                        </li>
+                                                    ))
+                                                }
+                                            </ul>
+                                            <div className="description-text-clean">
+                                                <p>{product.description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
 
-                            <div className="collapsible-section">
-                                <button className="section-header" onClick={() => toggleSection('shipping')}>
-                                    SHIPPING & RETURNS
-                                    <i className={`fas ${openSection === 'shipping' ? 'fa-minus' : 'fa-plus'}`}></i>
-                                </button>
-                                <div className={`section-content ${openSection === 'shipping' ? 'open' : ''}`}>
-                                    <p>Free shipping across India. Returns accepted within 3 days of delivery if the product is defective. See our Return Policy for details.</p>
-                                </div>
+                                {/* WHAT'S INCLUDED Tab */}
+                                {openSection === 'included' && (
+                                    <div className="tab-panel active">
+                                        <div className="included-section-clean">
+                                            <h3 className="included-title">What Comes With Your Bat</h3>
+                                            <ul className="included-list-clean">
+                                                <li>
+                                                    <i className="fas fa-check-circle"></i>
+                                                    <span>Premium Cricket Bat</span>
+                                                </li>
+                                                <li>
+                                                    <i className="fas fa-check-circle"></i>
+                                                    <span>Free Bat Bag (Worth ₹200)</span>
+                                                </li>
+                                                <li>
+                                                    <i className="fas fa-check-circle"></i>
+                                                    <span>Premium Toe Guard</span>
+                                                </li>
+                                                <li>
+                                                    <i className="fas fa-check-circle"></i>
+                                                    <span>Extra Grip</span>
+                                                </li>
+                                                <li>
+                                                    <i className="fas fa-check-circle"></i>
+                                                    <span>Fully Knocked & Oiled (Ready to Play)</span>
+                                                </li>
+                                            </ul>
+                                            <div className="value-highlight">
+                                                <strong>Total Value: ₹{(product.price + 200).toLocaleString('en-IN')}</strong>
+                                                <span className="you-save">You Save: ₹200</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* CONTACT Tab */}
+                                {openSection === 'contact' && (
+                                    <div className="tab-panel active">
+                                        <div className="contact-section-clean">
+                                            <h3 className="contact-title">Need Help Choosing?</h3>
+                                            <p className="contact-subtitle">Contact us for personalized assistance</p>
+                                            
+                                            <div className="contact-options-clean">
+                                                <a
+                                                    href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="contact-option-btn whatsapp"
+                                                >
+                                                    <i className="fab fa-whatsapp"></i>
+                                                    <div>
+                                                        <strong>Chat on WhatsApp</strong>
+                                                        <span>Typically replies within 5 minutes</span>
+                                                    </div>
+                                                </a>
+                                                
+                                                <a
+                                                    href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="contact-option-btn video"
+                                                >
+                                                    <i className="fas fa-video"></i>
+                                                    <div>
+                                                        <strong>Video Call</strong>
+                                                        <span>See the bat live before buying</span>
+                                                    </div>
+                                                </a>
+                                                
+                                                <a
+                                                    href="tel:+919320622451"
+                                                    className="contact-option-btn call"
+                                                >
+                                                    <i className="fas fa-phone"></i>
+                                                    <div>
+                                                        <strong>Call Us</strong>
+                                                        <span>+91 9320622451</span>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                            <div className="shipping-info-clean">
+                                                <p className="shipping-note-clean">
+                                                    <i className="fas fa-info-circle"></i>
+                                                    <strong>Note:</strong> Orders take 2-3 working days to dispatch. All orders shipped by air for express delivery.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 import { FC, useState, memo, MouseEvent } from 'react';
+import { useLocation } from 'react-router-dom';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
 import { SearchBar } from './SearchBar';
@@ -10,9 +11,13 @@ export interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
+    const location = useLocation();
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    
+    // Only show trust banner on homepage
+    const isHomePage = location.pathname === '/';
 
     const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();
@@ -31,15 +36,17 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
     return (
         <>
-            {/* Trust Banner */}
-            <div className="trust-banner">
-                <div className="trust-banner-content">
-                    <span><i className="fas fa-shield-alt"></i> Secure Checkout</span>
-                    <span><i className="fas fa-truck"></i> Free Shipping</span>
-                    <span><i className="fas fa-undo"></i> Easy Returns</span>
-                    <span><i className="fas fa-certificate"></i> Authentic Products</span>
+            {/* Trust Banner - Only on Homepage */}
+            {isHomePage && (
+                <div className="trust-banner">
+                    <div className="trust-banner-content">
+                        <span><i className="fas fa-shield-alt"></i> Secure Checkout</span>
+                        <span><i className="fas fa-truck"></i> Free Shipping</span>
+                        <span><i className="fas fa-undo"></i> Easy Returns</span>
+                        <span><i className="fas fa-certificate"></i> Authentic Products</span>
+                    </div>
                 </div>
-            </div>
+            )}
             <header className="header">
                 <nav className="nav">
                     {/* Hamburger Menu Button (Mobile Only) */}

@@ -415,10 +415,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 structuredData={structuredData}
             />
             <div className="container">
-                <button className="back-btn" onClick={() => navigate(-1)}>
-                    <i className="fas fa-arrow-left"></i> Back
-                </button>
-
                 <div className={`product-details-grid-vertical ${isMobile ? 'mobile-layout' : ''}`}>
                     {/* Left Column: Images (Vertical on Desktop, Horizontal Swipe on Mobile) */}
                     <div 

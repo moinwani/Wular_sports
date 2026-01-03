@@ -1,15 +1,18 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
 import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
+import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
 
 export interface ProductDetailsViewProps {
     onAddToCart: (product: ProductFull, size: string) => void;
 }
+
+type ScrollPhase = 'images' | 'content' | 'normal';
 
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart }) => {
     const { id } = useParams<{ id: string }>();
@@ -19,11 +22,189 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
+    
+    // Scroll control state
+    const [scrollPhase, setScrollPhase] = useState<ScrollPhase>('images');
+    const [isMobile, setIsMobile] = useState(false);
+    const imageGalleryRef = useRef<HTMLDivElement | null>(null);
+    const imageScrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const contentSectionRef = useRef<HTMLDivElement>(null);
+    const productPageRef = useRef<HTMLDivElement>(null);
+    const isScrollingRef = useRef(false);
+    const imageScrollProgressRef = useRef(0);
+    const contentScrollProgressRef = useRef(0);
 
     const product = products.find(p => p.id === id);
 
+    // Check if mobile on mount and resize
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Store scroll container ref from VerticalImageGallery
+    const handleImageScrollContainerRef = useCallback((ref: HTMLDivElement | null) => {
+        imageScrollContainerRef.current = ref;
+    }, []);
+
+    // Check image scroll completion
+    const checkImageScrollComplete = useCallback(() => {
+        const scrollContainer = imageScrollContainerRef.current;
+        if (!scrollContainer || isMobile) return;
+        
+        const scrollTop = scrollContainer.scrollTop;
+        const scrollHeight = scrollContainer.scrollHeight;
+        const clientHeight = scrollContainer.clientHeight;
+        const maxScroll = scrollHeight - clientHeight;
+        
+        if (maxScroll <= 0) {
+            // No scroll needed, move to content phase
+            setScrollPhase('content');
+            return;
+        }
+        
+        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+        imageScrollProgressRef.current = progress;
+        
+        if (progress >= 0.99 && scrollPhase === 'images') {
+            setScrollPhase('content');
+        }
+    }, [scrollPhase, isMobile]);
+
+    // Check content scroll completion
+    const checkContentScrollComplete = useCallback(() => {
+        if (!contentSectionRef.current || isMobile || scrollPhase !== 'content') return;
+        
+        const content = contentSectionRef.current;
+        const scrollTop = content.scrollTop;
+        const scrollHeight = content.scrollHeight;
+        const clientHeight = content.clientHeight;
+        const maxScroll = scrollHeight - clientHeight;
+        
+        if (maxScroll <= 0) {
+            setScrollPhase('normal');
+            return;
+        }
+        
+        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+        contentScrollProgressRef.current = progress;
+        
+        if (progress >= 0.99 && scrollPhase === 'content') {
+            setScrollPhase('normal');
+        }
+    }, [scrollPhase, isMobile]);
+
+    // Handle wheel event for controlled scrolling
+    const handleWheel = useCallback((e: WheelEvent) => {
+        if (isMobile || isScrollingRef.current) return;
+        
+        // Only prevent default during controlled scroll phases
+        if (scrollPhase === 'images' || scrollPhase === 'content') {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (isScrollingRef.current) return;
+            isScrollingRef.current = true;
+            
+            const delta = e.deltaY;
+            
+            if (scrollPhase === 'images' && imageScrollContainerRef.current) {
+                const scrollContainer = imageScrollContainerRef.current;
+                const currentScroll = scrollContainer.scrollTop;
+                const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+                const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * 0.5));
+                
+                scrollContainer.scrollTo({ top: newScroll, behavior: 'auto' });
+                
+                setTimeout(() => {
+                    checkImageScrollComplete();
+                    isScrollingRef.current = false;
+                }, 50);
+            } else if (scrollPhase === 'content' && contentSectionRef.current) {
+                const content = contentSectionRef.current;
+                const currentScroll = content.scrollTop;
+                const maxScroll = content.scrollHeight - content.clientHeight;
+                const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * 0.5));
+                
+                content.scrollTo({ top: newScroll, behavior: 'auto' });
+                
+                setTimeout(() => {
+                    checkContentScrollComplete();
+                    isScrollingRef.current = false;
+                }, 50);
+            } else {
+                isScrollingRef.current = false;
+            }
+        }
+    }, [scrollPhase, isMobile, checkImageScrollComplete, checkContentScrollComplete]);
+
+    // Attach wheel event listener and prevent body scroll during controlled phases
+    useEffect(() => {
+        if (isMobile) {
+            document.body.style.overflow = '';
+            return;
+        }
+        
+        const container = productPageRef.current;
+        if (!container) return;
+        
+        // Prevent body scroll during controlled scroll phases
+        if (scrollPhase === 'images' || scrollPhase === 'content') {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        
+        container.addEventListener('wheel', handleWheel, { passive: false });
+        
+        return () => {
+            container.removeEventListener('wheel', handleWheel);
+            document.body.style.overflow = '';
+        };
+    }, [handleWheel, isMobile, scrollPhase]);
+
+    // Monitor image gallery scroll
+    useEffect(() => {
+        if (isMobile || scrollPhase !== 'images') return;
+        
+        const scrollContainer = imageScrollContainerRef.current;
+        if (!scrollContainer) return;
+        
+        const handleScroll = () => {
+            checkImageScrollComplete();
+        };
+        
+        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+        return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    }, [scrollPhase, isMobile, checkImageScrollComplete]);
+
+    // Monitor content scroll
+    useEffect(() => {
+        if (isMobile || scrollPhase !== 'content') return;
+        
+        const content = contentSectionRef.current;
+        if (!content) return;
+        
+        const handleScroll = () => {
+            checkContentScrollComplete();
+        };
+        
+        content.addEventListener('scroll', handleScroll, { passive: true });
+        return () => content.removeEventListener('scroll', handleScroll);
+    }, [scrollPhase, isMobile, checkContentScrollComplete]);
+
+    // Reset scroll phase when product changes
+    useEffect(() => {
+        setScrollPhase('images');
+        imageScrollProgressRef.current = 0;
+        contentScrollProgressRef.current = 0;
+    }, [id]);
+
     if (!product) {
-        // Ideally we might want to redirect, but returning null or a not found message is safe
         return <div className="container">Product not found</div>;
     }
 
@@ -108,7 +289,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
 
     return (
-        <div className="product-details-page">
+        <div className="product-details-page" ref={productPageRef}>
             <SEOHead
                 title={`${product.name} - Buy Online | Wular Sports`}
                 description={`${product.description} Price: ₹${product.price}. Free shipping. 1-year warranty. Ready to play.`}
@@ -123,22 +304,39 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                     <i className="fas fa-arrow-left"></i> Back
                 </button>
 
-                <div className="product-details-grid-vertical">
-                    {/* Left Column: Vertical Scrollable Images */}
-                    <div className="product-gallery-section-vertical">
+                <div className={`product-details-grid-vertical ${isMobile ? 'mobile-layout' : ''}`}>
+                    {/* Left Column: Images (Vertical on Desktop, Horizontal Swipe on Mobile) */}
+                    <div 
+                        ref={imageGalleryRef}
+                        className={`product-gallery-section-vertical ${scrollPhase === 'images' && !isMobile ? 'scroll-active' : ''}`}
+                    >
                         {Array.isArray(product.image) ? (
-                            <VerticalImageGallery
-                                images={product.image}
-                                altText={product.name}
-                                onImageClick={(index) => {
-                                    setLightboxIndex(index);
-                                    setIsLightboxOpen(true);
-                                }}
-                            />
+                            isMobile ? (
+                                <HorizontalImageGallery
+                                    images={product.image}
+                                    altText={product.name}
+                                    onImageClick={(index) => {
+                                        setLightboxIndex(index);
+                                        setIsLightboxOpen(true);
+                                    }}
+                                />
+                            ) : (
+                                <VerticalImageGallery
+                                    images={product.image}
+                                    altText={product.name}
+                                    onImageClick={(index) => {
+                                        setLightboxIndex(index);
+                                        setIsLightboxOpen(true);
+                                    }}
+                                    onScrollComplete={checkImageScrollComplete}
+                                    scrollProgress={imageScrollProgressRef.current}
+                                    onScrollContainerRef={handleImageScrollContainerRef}
+                                />
+                            )
                         ) : (
-                            <div className="vertical-gallery-scroll-container">
+                            <div className={isMobile ? "horizontal-image-gallery-mobile" : "vertical-gallery-scroll-container"}>
                                 <div 
-                                    className="vertical-gallery-image-item"
+                                    className={isMobile ? "horizontal-gallery-slide" : "vertical-gallery-image-item"}
                                     onClick={() => {
                                         setLightboxIndex(0);
                                         setIsLightboxOpen(true);
@@ -147,7 +345,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                     <img
                                         src={product.image}
                                         alt={product.name}
-                                        className="vertical-gallery-image"
+                                        className={isMobile ? "horizontal-gallery-image" : "vertical-gallery-image"}
                                     />
                                 </div>
                             </div>
@@ -155,7 +353,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                     </div>
 
                     {/* Right Column: Product Info - Sticky */}
-                    <div className="product-info-section-sticky">
+                    <div 
+                        ref={contentSectionRef}
+                        className={`product-info-section-sticky ${scrollPhase === 'content' && !isMobile ? 'scroll-active' : ''} ${scrollPhase === 'normal' && !isMobile ? 'scroll-normal' : ''}`}
+                    >
                         <div className="product-header-group">
                             <div className="product-badge-row">
                                 <span className="tramboo-badge-red">#1 BEST SELLER</span>

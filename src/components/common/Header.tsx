@@ -31,6 +31,15 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
     return (
         <>
+            {/* Trust Banner */}
+            <div className="trust-banner">
+                <div className="trust-banner-content">
+                    <span><i className="fas fa-shield-alt"></i> Secure Checkout</span>
+                    <span><i className="fas fa-truck"></i> Free Shipping</span>
+                    <span><i className="fas fa-undo"></i> Easy Returns</span>
+                    <span><i className="fas fa-certificate"></i> Authentic Products</span>
+                </div>
+            </div>
             <header className="header">
                 <nav className="nav">
                     {/* Hamburger Menu Button (Mobile Only) */}

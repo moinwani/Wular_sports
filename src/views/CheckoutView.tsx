@@ -341,6 +341,22 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             </div>
                         </div>
 
+                        {/* Secure Payment Badges */}
+                        <div className="secure-payment-badges">
+                            <div className="secure-badge">
+                                <i className="fas fa-lock"></i>
+                                <span>SSL Secured</span>
+                            </div>
+                            <div className="secure-badge">
+                                <i className="fas fa-shield-alt"></i>
+                                <span>256-bit Encryption</span>
+                            </div>
+                            <div className="secure-badge">
+                                <i className="fas fa-check-circle"></i>
+                                <span>PCI Compliant</span>
+                            </div>
+                        </div>
+
                         <div className="payment-section">
                             <h3>Payment Method</h3>
                             <div className="payment-options">
@@ -353,7 +369,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         disabled={isProcessing}
                                     />
-                                    <span>Cash on Delivery (COD)</span>
+                                    <div className="payment-option-content">
+                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery (COD)</span>
+                                        <small>Pay when you receive</small>
+                                    </div>
                                 </label>
                                 <label className={`payment-option ${formData.paymentMethod === 'online' ? 'selected' : ''}`}>
                                     <input
@@ -364,11 +383,17 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         disabled={isProcessing}
                                     />
-                                    <span>Online Payment (Razorpay)</span>
+                                    <div className="payment-option-content">
+                                        <span><i className="fas fa-credit-card"></i> Online Payment (Razorpay)</span>
+                                        <small>Secure payment gateway</small>
+                                    </div>
                                 </label>
                             </div>
                             {formData.paymentMethod === 'online' && (
-                                <p className="payment-note">You will be redirected to Razorpay to complete your secure payment.</p>
+                                <div className="payment-security-note">
+                                    <i className="fas fa-info-circle"></i>
+                                    <p>You will be redirected to Razorpay to complete your secure payment. All transactions are encrypted and secure.</p>
+                                </div>
                             )}
                         </div>
 

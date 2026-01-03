@@ -16,6 +16,11 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
         navigate(`/product/${product.id}`);
     };
 
+    const discountPercentage = product.originalPrice 
+        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+        : 0;
+    const discountAmount = product.originalPrice ? product.originalPrice - product.price : 0;
+
     let imageElement;
     if (Array.isArray(product.image) && product.image.length > 0) {
         // Use the first image for listing card
@@ -35,7 +40,24 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
         <div className="product-card compact" onClick={handleCardClick}>
             <div className="product-tags">
                 <span className="tag category-tag">{product.category[0]}</span>
-                {product.originalPrice && <span className="tag sale-tag">Sale</span>}
+                {product.originalPrice && (
+                    <span className="tag sale-tag discount-badge-large">
+                        SAVE {discountPercentage}%
+                    </span>
+                )}
+            </div>
+
+            {/* Trust Badges */}
+            <div className="product-trust-badges">
+                <span className="trust-badge-mini">
+                    <i className="fas fa-truck"></i> Free Ship
+                </span>
+                <span className="trust-badge-mini">
+                    <i className="fas fa-shield-alt"></i> Warranty
+                </span>
+                <span className="trust-badge-mini">
+                    <i className="fas fa-check-circle"></i> Ready
+                </span>
             </div>
 
             {imageElement}
@@ -44,7 +66,12 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
                 <h3 className="product-name">{product.name}</h3>
                 <div className="product-price">
                     <span className="current-price">₹{product.price.toLocaleString('en-IN')}</span>
-                    {product.originalPrice && <span className="original-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>}
+                    {product.originalPrice && (
+                        <>
+                            <span className="original-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+                            <span className="discount-amount">Save ₹{discountAmount.toLocaleString('en-IN')}</span>
+                        </>
+                    )}
                 </div>
                 <p className="product-description-short">
                     {product.description.length > 70 ? product.description.substring(0, 70) + '...' : product.description}

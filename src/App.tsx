@@ -10,6 +10,7 @@ import { products } from './data/products';
 import { CartSidebar } from './components/checkout/CartSidebar';
 import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
+import { StickyHelpBar } from './components/common/StickyHelpBar';
 import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
 import { SearchResultsView } from './views/SearchResultsView';
@@ -175,6 +176,7 @@ const AppContent: React.FC = () => {
                 type={toast?.type}
                 onClose={() => setToast(null)}
             />
+            <StickyHelpBar />
             <FloatingButtons />
             <FloatingCallButton />
         </div>

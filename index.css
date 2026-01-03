@@ -1843,6 +1843,15 @@ section {
     height: calc(100vh - 100px);
     overflow-y: auto;
     overflow-x: hidden;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.product-gallery-section-vertical::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
 }
 
 /* Scroll phase control - prevent body scroll during controlled phases */
@@ -1854,29 +1863,45 @@ section {
 .product-gallery-section-vertical.scroll-active {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.product-gallery-section-vertical.scroll-active::-webkit-scrollbar {
+    display: none;
+}
+
+.product-info-section-sticky {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.product-info-section-sticky::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
 }
 
 .product-info-section-sticky.scroll-active {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.product-info-section-sticky.scroll-active::-webkit-scrollbar {
+    display: none;
 }
 
 .product-info-section-sticky.scroll-normal {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.product-gallery-section-vertical::-webkit-scrollbar {
-    width: 6px;
-}
-
-.product-gallery-section-vertical::-webkit-scrollbar-track {
-    background: #1a1a1a;
-}
-
-.product-gallery-section-vertical::-webkit-scrollbar-thumb {
-    background: var(--golden);
-    border-radius: 3px;
+.product-info-section-sticky.scroll-normal::-webkit-scrollbar {
+    display: none;
 }
 
 .vertical-image-gallery {
@@ -1924,19 +1949,15 @@ section {
     max-height: calc(100vh - 100px);
     overflow-y: auto;
     padding-right: 1rem;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
 }
 
 .product-info-section-sticky::-webkit-scrollbar {
-    width: 6px;
-}
-
-.product-info-section-sticky::-webkit-scrollbar-track {
-    background: #1a1a1a;
-}
-
-.product-info-section-sticky::-webkit-scrollbar-thumb {
-    background: var(--golden);
-    border-radius: 3px;
+    display: none; /* Chrome, Safari, Opera */
+    width: 0;
+    height: 0;
 }
 
 @media (max-width: 1024px) {

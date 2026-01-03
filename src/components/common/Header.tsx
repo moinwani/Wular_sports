@@ -12,6 +12,7 @@ export interface HeaderProps {
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();
@@ -50,12 +51,31 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                         />
                     </a>
 
-                    {/* Search Bar (Desktop Only) */}
-                    <div className="nav-search-wrapper">
-                        <SearchBar />
-                    </div>
-
                     <div className="nav-section-right">
+                        {/* Desktop Search Icon */}
+                        <div className="desktop-search-toggle">
+                            {isSearchOpen ? (
+                                <div className="search-expanded-wrapper">
+                                    <SearchBar autoFocus />
+                                    <button
+                                        className="search-close-btn"
+                                        onClick={() => setIsSearchOpen(false)}
+                                        aria-label="Close search"
+                                    >
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    className="search-icon-btn"
+                                    onClick={() => setIsSearchOpen(true)}
+                                    aria-label="Open search"
+                                >
+                                    <i className="fas fa-search"></i>
+                                </button>
+                            )}
+                        </div>
+
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
                             <i className="fas fa-shopping-cart" aria-hidden="true"></i>

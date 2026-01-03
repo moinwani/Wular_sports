@@ -118,31 +118,32 @@ section {
     align-items: center;
 }
 
-/* Nav Container - Flexbox Layout */
+/* Nav Container */
 .nav {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    gap: 1rem;
+    position: relative;
+    /* Context for Logo */
+    height: 100%;
 }
 
-/* Brand/Logo - Flexible layout for Mobile/Desktop */
+/* Brand/Logo - Absolute Center (User Requirement) */
 .nav-brand-centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
-    text-decoration: none;
-    z-index: 10;
-    /* Mobile: Center the logo by filling space */
-    flex: 1;
     justify-content: center;
+    z-index: 10;
 }
 
 .nav-logo-centered {
-    height: 40px;
-    /* Mobile Size */
+    height: 50px;
     width: auto;
     transition: filter 0.3s ease;
     animation: subtle-glow 3s infinite ease-in-out;
@@ -153,22 +154,59 @@ section {
     filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.3));
 }
 
-/* Search Wrapper - Flex 1 to take available space */
-.nav-search-wrapper {
-    flex: 1;
-    max-width: 600px;
-    margin: 0 2rem;
-    display: none;
-    /* Hidden on Mobile */
-}
-
 /* Right Navigation Section */
 .nav-section-right {
     display: flex;
     align-items: center;
     gap: 1rem;
-    flex-shrink: 0;
-    /* Prevent shrinking */
+    margin-left: auto;
+    /* Force Right Alignment */
+}
+
+/* Search Icon Button (Circle) */
+.search-icon-btn {
+    background: transparent;
+    border: 1px solid var(--golden);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--golden);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-icon-btn:hover {
+    background-color: var(--golden);
+    color: var(--black);
+}
+
+/* Expanded Search Overlay */
+.search-expanded-wrapper {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    z-index: 20;
+    border-left: 1px solid var(--golden);
+    border-bottom: 1px solid var(--golden);
+    min-width: 300px;
+    justify-content: flex-end;
+}
+
+.search-close-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    margin-left: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
 }
 
 /* Mobile Hamburger */

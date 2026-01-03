@@ -79,11 +79,8 @@ export const highlightSearchTerm = (text: string, searchTerm: string): string =>
  */
 export const getPopularSearches = (): string[] => {
     return [
-        'Hard Tennis Bat',
-        'Soft Tennis Bat',
-        'Leather Ball Bat',
-        'Kashmir Willow',
-        'English Willow',
-        'Cricket Bat'
+        'Hard Tennis',
+        'Soft Tennis',
+        'Leather Bat'
     ];
 };

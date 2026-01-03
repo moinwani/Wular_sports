@@ -103,54 +103,47 @@ section {
 
 
 /* Header */
+/* Header */
 .header {
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
-    padding: 0 2rem;
+    padding: 0 1rem;
     position: sticky;
     top: 0;
     width: 100%;
     z-index: 1000;
     border-bottom: 1px solid var(--golden);
     height: 70px;
-    /* Set a fixed, balanced height */
+    display: flex;
+    align-items: center;
 }
 
+/* Nav Container - Flexbox Layout */
 .nav {
     display: flex;
-    justify-content: flex-end;
-    /* Aligns children (nav-section-right) to the end */
+    justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
-    height: 100%;
-    position: relative;
-    /* Needed for absolute positioning of the logo */
+    gap: 1rem;
 }
 
-/* The empty .nav-section-left is removed from JSX and its style is no longer needed */
-
-.nav-section-right {
-    /* This container for links no longer needs flex: 1 */
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
+/* Brand/Logo - Flexible layout for Mobile/Desktop */
 .nav-brand-centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    /* Perfect centering trick */
     display: flex;
     align-items: center;
+    text-decoration: none;
+    z-index: 10;
+    /* Mobile: Center the logo by filling space */
+    flex: 1;
     justify-content: center;
 }
 
 .nav-logo-centered {
-    height: 65px;
-    /* Logo is now contained within the 70px header */
+    height: 40px;
+    /* Mobile Size */
+    width: auto;
     transition: filter 0.3s ease;
     animation: subtle-glow 3s infinite ease-in-out;
 }
@@ -158,6 +151,70 @@ section {
 .nav-logo-centered.dimming {
     animation: none;
     filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.3));
+}
+
+/* Search Wrapper - Flex 1 to take available space */
+.nav-search-wrapper {
+    flex: 1;
+    max-width: 600px;
+    margin: 0 2rem;
+    display: none;
+    /* Hidden on Mobile */
+}
+
+/* Right Navigation Section */
+.nav-section-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+/* Mobile Hamburger */
+.hamburger-btn {
+    background: none;
+    border: none;
+    color: var(--golden);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: block;
+    padding: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+    .header {
+        padding: 0 2rem;
+    }
+
+    /* Hide Hamburger on Desktop */
+    .hamburger-btn {
+        display: none;
+    }
+
+    /* Show Search on Desktop */
+    .nav-search-wrapper {
+        display: block;
+    }
+
+    /* Logo Styling for Desktop */
+    .nav-brand-centered {
+        flex: 0 0 auto;
+        /* Don't stretch */
+        justify-content: flex-start;
+        margin-right: 1rem;
+    }
+
+    .nav-logo-centered {
+        height: 55px;
+        /* Desktop Size */
+    }
+
+    .nav-section-right {
+        gap: 1.5rem;
+    }
 }
 
 .nav-link {

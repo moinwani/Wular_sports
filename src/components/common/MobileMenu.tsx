@@ -1,4 +1,6 @@
 import { FC, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { SearchBar } from './SearchBar';
 import { View } from '../../types';
 
 interface MobileMenuProps {
@@ -8,6 +10,7 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate }) => {
+    const navigate = useNavigate();
     // Prevent body scroll when menu is open
     useEffect(() => {
         if (isOpen) {
@@ -48,6 +51,12 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
                     </button>
                 </div>
 
+                <div style={{ padding: '0 1.5rem 1.5rem' }}>
+                    <SearchBar onSearch={(q) => {
+                        navigate(`/search?q=${encodeURIComponent(q)}`);
+                        onClose();
+                    }} />
+                </div>
                 <nav className="mobile-menu-nav">
                     <a
                         href="#"

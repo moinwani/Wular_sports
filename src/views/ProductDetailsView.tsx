@@ -7,6 +7,7 @@ import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
+import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 
 export interface ProductDetailsViewProps {
     onAddToCart: (product: ProductFull, size: string) => void;
@@ -676,6 +677,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 <Lightbox
                     gallery={{ images: Array.isArray(product.image) ? product.image : [product.image], startIndex: lightboxIndex }}
                     onClose={() => setIsLightboxOpen(false)}
+                />
+            )}
+
+            {/* Watch & Buy Video - Only for Legacy Edition */}
+            {product.id === 'legacy-edition' && (
+                <WatchBuyVideo
+                    product={product}
+                    onAddToCart={onAddToCart}
                 />
             )}
         </div>

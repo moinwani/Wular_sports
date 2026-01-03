@@ -2,7 +2,6 @@ import { FC, useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductCard } from '../components/product/ProductCard';
-import { SearchBar } from '../components/common/SearchBar';
 import { SEOHead } from '../components/common/SEOHead';
 import { searchProducts } from '../utils/search';
 import { ProductFull } from '../types';
@@ -32,9 +31,7 @@ export const SearchResultsView: FC<SearchResultsViewProps> = ({
         }
     }, [query]);
 
-    const handleNewSearch = (newQuery: string) => {
-        navigate(`/search?q=${encodeURIComponent(newQuery)}`);
-    };
+
 
     return (
         <div className="view search-results-view">
@@ -48,12 +45,7 @@ export const SearchResultsView: FC<SearchResultsViewProps> = ({
             <section className="search-results-section">
                 <div className="container">
                     {/* Search Bar */}
-                    <div className="search-results-header">
-                        <SearchBar
-                            onSearch={handleNewSearch}
-                            autoFocus={false}
-                        />
-                    </div>
+
 
                     {/* Results Header */}
                     {query && (

@@ -530,12 +530,19 @@ section {
 }
 
 .product-tags {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
+    position: static;
     display: flex;
     gap: 0.5rem;
-    z-index: 1;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.product-tags-below-image {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .tag {
@@ -3627,16 +3634,9 @@ img[loading="lazy"] {
     }
 }
 
-/* Product Trust Badges (on cards) */
+/* Product Trust Badges (on cards) - REMOVED from overlay position */
 .product-trust-badges {
-    position: absolute;
-    top: 4rem;
-    left: 1rem;
-    right: 1rem;
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    z-index: 2;
+    display: none; /* Hide trust badges that were overlaying images */
 }
 
 .trust-badge-mini {

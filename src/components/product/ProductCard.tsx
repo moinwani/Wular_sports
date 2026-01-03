@@ -38,7 +38,9 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
 
     return (
         <div className="product-card compact" onClick={handleCardClick}>
-            <div className="product-tags">
+            {imageElement}
+            
+            <div className="product-tags-below-image">
                 <span className="tag category-tag">{product.category[0]}</span>
                 {product.originalPrice && (
                     <span className="tag sale-tag discount-badge-large">
@@ -46,21 +48,6 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
                     </span>
                 )}
             </div>
-
-            {/* Trust Badges */}
-            <div className="product-trust-badges">
-                <span className="trust-badge-mini">
-                    <i className="fas fa-truck"></i> Free Ship
-                </span>
-                <span className="trust-badge-mini">
-                    <i className="fas fa-shield-alt"></i> Warranty
-                </span>
-                <span className="trust-badge-mini">
-                    <i className="fas fa-check-circle"></i> Ready
-                </span>
-            </div>
-
-            {imageElement}
 
             <div className="product-info-compact">
                 <h3 className="product-name">{product.name}</h3>

@@ -1,4 +1,4 @@
-import { FC, useState, memo, MouseEvent } from 'react';
+import { FC, useState, memo, MouseEvent, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
@@ -15,9 +15,88 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+    const [isHeaderPinned, setIsHeaderPinned] = useState(false);
+    const lastScrollY = useRef(0);
+    const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     
     // Only show trust banner on homepage
     const isHomePage = location.pathname === '/';
+
+    // Handle scroll direction detection for auto-hide header
+    useEffect(() => {
+        let ticking = false;
+
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
+                    const scrollDifference = currentScrollY - lastScrollY.current;
+                    
+                    // Clear any existing timeout
+                    if (scrollTimeoutRef.current) {
+                        clearTimeout(scrollTimeoutRef.current);
+                    }
+
+                    // Only auto-hide if header is not pinned (user hasn't interacted)
+                    if (!isHeaderPinned) {
+                        if (scrollDifference > 5 && currentScrollY > 100) {
+                            // Scrolling down - hide header
+                            setIsHeaderVisible(false);
+                        } else if (scrollDifference < -5) {
+                            // Scrolling up - show header
+                            setIsHeaderVisible(true);
+                        }
+                    }
+
+                    // If at top of page, always show header
+                    if (currentScrollY < 50) {
+                        setIsHeaderVisible(true);
+                    }
+
+                    lastScrollY.current = currentScrollY;
+                    ticking = false;
+                });
+
+                ticking = true;
+            }
+        };
+
+        // Pin header when user interacts with it
+        const handleHeaderInteraction = () => {
+            setIsHeaderPinned(true);
+            setIsHeaderVisible(true);
+            
+            // Unpin after 3 seconds of no scroll
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+            
+            scrollTimeoutRef.current = setTimeout(() => {
+                setIsHeaderPinned(false);
+            }, 3000);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        
+        // Add event listeners to header elements to pin on interaction
+        const headerElement = document.querySelector('.header');
+        if (headerElement) {
+            headerElement.addEventListener('mouseenter', handleHeaderInteraction);
+            headerElement.addEventListener('click', handleHeaderInteraction);
+        }
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (headerElement) {
+                headerElement.removeEventListener('mouseenter', handleHeaderInteraction);
+                headerElement.removeEventListener('click', handleHeaderInteraction);
+            }
+            if (scrollTimeoutRef.current) {
+                clearTimeout(scrollTimeoutRef.current);
+            }
+        };
+    }, [isHeaderPinned]);
 
     const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();
@@ -38,7 +117,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
         <>
             {/* Trust Banner - Only on Homepage */}
             {isHomePage && (
-                <div className="trust-banner">
+                <div className={`trust-banner ${isHeaderVisible ? 'visible' : 'hidden'}`}>
                     <div className="trust-banner-content">
                         <span><i className="fas fa-shield-alt"></i> Secure Checkout</span>
                         <span><i className="fas fa-truck"></i> Free Shipping</span>
@@ -47,7 +126,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                     </div>
                 </div>
             )}
-            <header className="header">
+            <header className={`header ${isHeaderVisible ? 'header-visible' : 'header-hidden'}`}>
                 <nav className="nav">
                     {/* Hamburger Menu Button (Mobile Only) */}
                     <button

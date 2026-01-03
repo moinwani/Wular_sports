@@ -4,7 +4,7 @@ import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
 import { Lightbox } from '../components/common/Lightbox';
-import { ImageGallery } from '../components/product/ImageGallery';
+import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
 
 export interface ProductDetailsViewProps {
@@ -123,30 +123,39 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                     <i className="fas fa-arrow-left"></i> Back
                 </button>
 
-                <div className="product-details-grid">
-                    {/* Left Column: Images */}
-                    <div className="product-gallery-section">
+                <div className="product-details-grid-vertical">
+                    {/* Left Column: Vertical Scrollable Images */}
+                    <div className="product-gallery-section-vertical">
                         {Array.isArray(product.image) ? (
-                            <ImageGallery
+                            <VerticalImageGallery
                                 images={product.image}
                                 altText={product.name}
-                                onImageClick={handleOpenLightbox}
-                            />
-                        ) : (
-                            <img
-                                src={product.image}
-                                alt={product.name}
-                                className="product-main-image"
-                                onClick={() => {
-                                    setLightboxIndex(0);
+                                onImageClick={(index) => {
+                                    setLightboxIndex(index);
                                     setIsLightboxOpen(true);
                                 }}
                             />
+                        ) : (
+                            <div className="vertical-gallery-scroll-container">
+                                <div 
+                                    className="vertical-gallery-image-item"
+                                    onClick={() => {
+                                        setLightboxIndex(0);
+                                        setIsLightboxOpen(true);
+                                    }}
+                                >
+                                    <img
+                                        src={product.image}
+                                        alt={product.name}
+                                        className="vertical-gallery-image"
+                                    />
+                                </div>
+                            </div>
                         )}
                     </div>
 
-                    {/* Right Column: Product Info */}
-                    <div className="product-info-section">
+                    {/* Right Column: Product Info - Sticky */}
+                    <div className="product-info-section-sticky">
                         <div className="product-header-group">
                             <div className="product-badge-row">
                                 <span className="tramboo-badge-red">#1 BEST SELLER</span>

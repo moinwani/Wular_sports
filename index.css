@@ -1829,6 +1829,128 @@ section {
     min-height: 100vh;
 }
 
+/* Vertical Scrollable Image Gallery Layout */
+.product-details-grid-vertical {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.product-gallery-section-vertical {
+    position: sticky;
+    top: 90px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.product-gallery-section-vertical::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-gallery-section-vertical::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.product-gallery-section-vertical::-webkit-scrollbar-thumb {
+    background: var(--golden);
+    border-radius: 3px;
+}
+
+.vertical-image-gallery {
+    width: 100%;
+}
+
+.vertical-gallery-scroll-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.vertical-gallery-image-item {
+    width: 100%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: var(--black);
+}
+
+.vertical-gallery-image-item:hover {
+    border-color: var(--golden);
+    transform: scale(1.02);
+}
+
+.vertical-gallery-image-item.selected {
+    border-color: var(--golden);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+
+.vertical-gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    background-color: var(--black);
+}
+
+.product-info-section-sticky {
+    position: sticky;
+    top: 90px;
+    align-self: start;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+
+.product-info-section-sticky::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-info-section-sticky::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.product-info-section-sticky::-webkit-scrollbar-thumb {
+    background: var(--golden);
+    border-radius: 3px;
+}
+
+@media (max-width: 1024px) {
+    .product-details-grid-vertical {
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-details-grid-vertical {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .product-gallery-section-vertical {
+        position: relative;
+        top: 0;
+        height: auto;
+        max-height: 70vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    .product-info-section-sticky {
+        position: relative;
+        top: 0;
+        max-height: none;
+        padding-right: 0;
+    }
+    
+    .vertical-gallery-scroll-container {
+        gap: 1rem;
+    }
+}
+
 .back-btn {
     background: transparent;
     border: none;

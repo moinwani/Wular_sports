@@ -619,7 +619,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                                 </li>
                                             </ul>
                                             <div className="value-highlight">
-                                                <strong>Total Value: ₹{(product.price + 800).toLocaleString('en-IN')}</strong>
+                                                <strong>Total Value: ₹{product.price.toLocaleString('en-IN')}</strong>
                                                 <span className="you-save">You Save: ₹800 (All Free)</span>
                                             </div>
                                         </div>

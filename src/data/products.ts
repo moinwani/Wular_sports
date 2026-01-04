@@ -48,7 +48,7 @@ export const products: ProductFull[] = [
         price: 2700,
         originalPrice: 4000,
         specs: [
-            "Weight: 850-1050 grams",
+            "Weight: 950-1050 grams",
             "Edge: 48 to 52 mm",
             "Height: Available in 35 and 36 inches",
             "Face: 4.4 inches",

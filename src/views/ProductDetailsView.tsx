@@ -583,29 +583,44 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                             <h3 className="included-title">What Comes With Your Bat</h3>
                                             <ul className="included-list-clean">
                                                 <li>
-                                                    <i className="fas fa-check-circle"></i>
-                                                    <span>Free Bat Cover (Worth ₹300)</span>
+                                                    <div className="included-item-left">
+                                                        <i className="fas fa-check-circle"></i>
+                                                        <span>Free Bat Cover</span>
+                                                    </div>
+                                                    <span className="included-item-value">₹300</span>
                                                 </li>
                                                 <li>
-                                                    <i className="fas fa-check-circle"></i>
-                                                    <span>Premium Toe Guard (Worth ₹100)</span>
+                                                    <div className="included-item-left">
+                                                        <i className="fas fa-check-circle"></i>
+                                                        <span>Premium Toe Guard</span>
+                                                    </div>
+                                                    <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
-                                                    <i className="fas fa-check-circle"></i>
-                                                    <span>Extra Grip (Worth ₹100)</span>
+                                                    <div className="included-item-left">
+                                                        <i className="fas fa-check-circle"></i>
+                                                        <span>Extra Grip</span>
+                                                    </div>
+                                                    <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
-                                                    <i className="fas fa-check-circle"></i>
-                                                    <span>Fully Knocked & Oiled (Ready to Play) (Worth ₹100)</span>
+                                                    <div className="included-item-left">
+                                                        <i className="fas fa-check-circle"></i>
+                                                        <span>Fully Knocked & Oiled (Ready to Play)</span>
+                                                    </div>
+                                                    <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
-                                                    <i className="fas fa-check-circle"></i>
-                                                    <span>Free Shipping</span>
+                                                    <div className="included-item-left">
+                                                        <i className="fas fa-check-circle"></i>
+                                                        <span>Free Shipping</span>
+                                                    </div>
+                                                    <span className="included-item-value">₹200</span>
                                                 </li>
                                             </ul>
                                             <div className="value-highlight">
-                                                <strong>Total Value: ₹{(product.price + 600).toLocaleString('en-IN')}</strong>
-                                                <span className="you-save">You Save: ₹600 (All Free)</span>
+                                                <strong>Total Value: ₹{(product.price + 800).toLocaleString('en-IN')}</strong>
+                                                <span className="you-save">You Save: ₹800 (All Free)</span>
                                             </div>
                                         </div>
                                     </div>

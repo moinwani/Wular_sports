@@ -2478,6 +2478,7 @@ main {
 .included-list-clean li {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1rem;
     padding: 1rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
@@ -2489,10 +2490,26 @@ main {
     border-bottom: none;
 }
 
+.included-item-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
 .included-list-clean li i {
     color: #4caf50;
     font-size: 1.2rem;
     flex-shrink: 0;
+}
+
+.included-item-value {
+    color: var(--golden);
+    font-weight: 600;
+    font-size: 1rem;
+    white-space: nowrap;
+    margin-left: auto;
+    padding-left: 1rem;
 }
 
 .value-highlight {

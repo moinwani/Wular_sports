@@ -4,6 +4,7 @@ import { CartItem } from '../types';
 import { useRazorpay } from '../hooks/useRazorpay';
 import { createOrder, updateOrderStatus, updatePaymentStatus } from '../services/orders';
 import { sendOrderConfirmation } from '../services/email';
+import { createRazorpayOrder, verifyPayment } from '../services/razorpay';
 
 interface CheckoutViewProps {
     cart: CartItem[];
@@ -58,64 +59,101 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             return;
         }
 
-        const options = {
-            key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-            amount: total * 100, // Amount in paise
-            currency: "INR",
-            name: "Wular Sports",
-            description: "Purchase from Wular Sports",
-            image: "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png",
-            order_id: "", // In production, generate this on backend!
-            handler: async function (response: any) {
-                try {
-                    // Payment successful
-                    await updatePaymentStatus(orderId, 'completed', response.razorpay_payment_id);
-                    await updateOrderStatus(orderId, 'confirmed');
-
-                    // Send email confirmation
-                    sendOrderConfirmation(orderDetails);
-
-                    onPlaceOrder({
-                        id: orderId,
-                        items: cart,
-                        total: calculateTotal(),
-                        shipping: formData,
-                        paymentMethod: 'online',
-                        paymentId: response.razorpay_payment_id,
-                        orderDate: new Date().toISOString()
-                    });
-                } catch (error) {
-                    console.error("Error updating order after payment:", error);
-                    setFormError("Payment successful but failed to update order. Please contact support.");
-                } finally {
-                    setIsProcessing(false);
+        try {
+            // Step 1: Create Razorpay order on backend (SECURE)
+            const razorpayOrder = await createRazorpayOrder({
+                amount: total,
+                currency: 'INR',
+                receipt: orderId,
+                notes: {
+                    order_id: orderId,
+                    customer_name: `${formData.firstName} ${formData.lastName}`,
+                    customer_email: formData.email || '',
+                    customer_phone: formData.phone,
+                    address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
                 }
-            },
-            prefill: {
-                name: `${formData.firstName} ${formData.lastName}`,
-                email: formData.email,
-                contact: formData.phone
-            },
-            notes: {
-                address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
-            },
-            theme: {
-                color: "#d4af37"
-            },
-            modal: {
-                ondismiss: function () {
-                    setIsProcessing(false);
-                }
-            }
-        };
+            });
 
-        const rzp1 = new window.Razorpay(options);
-        rzp1.on('payment.failed', function (response: any) {
-            console.error("Payment failed:", response.error);
-            setFormError(`Payment failed: ${response.error.description}`);
+            // Step 2: Open Razorpay checkout with order ID from backend
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: razorpayOrder.amount, // Amount from backend (already in paise)
+                currency: razorpayOrder.currency,
+                name: "Wular Sports",
+                description: `Order #${orderDetails.orderNumber || orderId}`,
+                image: "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png",
+                order_id: razorpayOrder.id, // Order ID from backend (SECURE)
+                handler: async function (response: any) {
+                    try {
+                        // Step 3: Verify payment signature on backend (SECURE)
+                        const verification = await verifyPayment({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature
+                        });
+
+                        if (!verification.success) {
+                            setFormError('Payment verification failed. Please contact support.');
+                            setIsProcessing(false);
+                            return;
+                        }
+
+                        // Step 4: Payment verified - Update order in database
+                        await updatePaymentStatus(orderId, 'completed', response.razorpay_payment_id);
+                        await updateOrderStatus(orderId, 'confirmed');
+
+                        // Step 5: Send email confirmation
+                        await sendOrderConfirmation(orderDetails);
+
+                        // Step 6: Redirect to success page
+                        onPlaceOrder({
+                            id: orderId,
+                            items: cart,
+                            total: calculateTotal(),
+                            shipping: formData,
+                            paymentMethod: 'online',
+                            paymentId: response.razorpay_payment_id,
+                            razorpayOrderId: response.razorpay_order_id,
+                            orderDate: new Date().toISOString()
+                        });
+                    } catch (error) {
+                        console.error("Error processing payment:", error);
+                        setFormError("Payment successful but failed to verify. Please contact support with payment ID.");
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                },
+                prefill: {
+                    name: `${formData.firstName} ${formData.lastName}`,
+                    email: formData.email || '',
+                    contact: formData.phone
+                },
+                notes: {
+                    order_id: orderId,
+                    address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
+                },
+                theme: {
+                    color: "#d4af37"
+                },
+                modal: {
+                    ondismiss: function () {
+                        setIsProcessing(false);
+                    }
+                }
+            };
+
+            const rzp1 = new window.Razorpay(options);
+            rzp1.on('payment.failed', function (response: any) {
+                console.error("Payment failed:", response.error);
+                setFormError(`Payment failed: ${response.error.description || 'Please try again'}`);
+                setIsProcessing(false);
+            });
+            rzp1.open();
+        } catch (error: any) {
+            console.error("Error creating Razorpay order:", error);
+            setFormError(error.message || 'Failed to initialize payment. Please try again.');
             setIsProcessing(false);
-        });
-        rzp1.open();
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {

@@ -50,7 +50,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     };
 
     // Add to Cart handler - closes everything
-    const handleAddToCart = () => {
+    const handleAddToCart = useCallback(() => {
         const hasSizes = product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
         if (hasSizes) {
             // Scroll to size selector

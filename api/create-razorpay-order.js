@@ -1,20 +1,83 @@
 // Vercel Serverless Function - Create Razorpay Order
 // This runs on your backend (Vercel serverless) - SECURE
+// Following OWASP best practices for security
 
 const Razorpay = require('razorpay');
+const rateLimit = require('../_middleware/rate-limiter');
+const { validateSchema } = require('../_middleware/input-validator');
+const setSecurityHeaders = require('../_middleware/security-headers');
+
+// Validation schema for create order request
+const createOrderSchema = {
+  amount: {
+    required: true,
+    type: 'number',
+  },
+  currency: {
+    required: false,
+    type: 'string',
+    maxLength: 3,
+  },
+  receipt: {
+    required: false,
+    type: 'string',
+    maxLength: 100,
+  },
+  notes: {
+    required: false,
+    type: 'object',
+    schema: {
+      order_id: { required: false, type: 'string', maxLength: 100 },
+      customer_name: { required: false, type: 'string', maxLength: 200 },
+      customer_email: { required: false, type: 'string', maxLength: 254, format: 'email' },
+      customer_phone: { required: false, type: 'string', maxLength: 15, format: 'phone' },
+      address: { required: false, type: 'string', maxLength: 500 },
+    },
+  },
+};
 
 module.exports = async function handler(req, res) {
+  // Set security headers (OWASP best practices)
+  setSecurityHeaders(res);
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const { amount, currency = 'INR', receipt, notes } = req.body;
+  // Apply rate limiting
+  const rateLimitResult = rateLimit(req, res);
+  if (!rateLimitResult.allowed) {
+    return; // Response already sent by rate limiter
+  }
 
-    // Validate input
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ error: 'Invalid amount' });
+  try {
+    // Strict input validation & sanitization
+    const validation = validateSchema(req.body, createOrderSchema);
+    
+    if (!validation.valid) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: validation.errors,
+      });
+    }
+
+    const { amount, currency = 'INR', receipt, notes } = validation.sanitized;
+
+    // Additional amount validation (must be positive and within limits)
+    if (amount <= 0 || amount > 1000000) {
+      return res.status(400).json({ 
+        error: 'Invalid amount',
+        message: 'Amount must be between 1 and 10,00,000 INR'
+      });
+    }
+
+    // Validate currency (only allow INR for now)
+    if (currency !== 'INR') {
+      return res.status(400).json({ 
+        error: 'Invalid currency',
+        message: 'Only INR currency is supported'
+      });
     }
 
     // Initialize Razorpay with credentials from environment

@@ -5,6 +5,7 @@ import { useRazorpay } from '../hooks/useRazorpay';
 import { createOrder, updateOrderStatus, updatePaymentStatus } from '../services/orders';
 import { sendOrderConfirmation } from '../services/email';
 import { createRazorpayOrder, verifyPayment } from '../services/razorpay';
+import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 
 interface CheckoutViewProps {
     cart: CartItem[];
@@ -46,17 +47,40 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        
+        // Clear field error when user starts typing
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
+        
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [name]: value
         });
     };
 
-    const handlePayment = async (orderId: string, orderDetails: any) => {
+    const handlePayment = async (orderId: string, orderDetails: any, sanitizedFormData?: typeof formData) => {
         if (!isLoaded) {
             setFormError('Payment gateway failed to load. Please verify your internet connection.');
             setIsProcessing(false);
             return;
+        }
+
+        // Use sanitized data if provided, otherwise re-validate
+        let safeFormData = sanitizedFormData || formData;
+        if (!sanitizedFormData) {
+            const validation = validateFormData(formData, checkoutSchema);
+            if (!validation.valid || !validation.sanitized) {
+                setFormError('Invalid form data. Please refresh and try again.');
+                setIsProcessing(false);
+                return;
+            }
+            safeFormData = validation.sanitized;
         }
 
         try {
@@ -67,10 +91,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 receipt: orderId,
                 notes: {
                     order_id: orderId,
-                    customer_name: `${formData.firstName} ${formData.lastName}`,
-                    customer_email: formData.email || '',
-                    customer_phone: formData.phone,
-                    address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
+                    customer_name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
+                    customer_email: safeFormData.email || '',
+                    customer_phone: safeFormData.phone,
+                    address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
                 }
             });
 
@@ -124,13 +148,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     }
                 },
                 prefill: {
-                    name: `${formData.firstName} ${formData.lastName}`,
-                    email: formData.email || '',
-                    contact: formData.phone
+                    name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
+                    email: safeFormData.email || '',
+                    contact: safeFormData.phone
                 },
                 notes: {
                     order_id: orderId,
-                    address: `${formData.address}, ${formData.city}, ${formData.state} - ${formData.zip}`
+                    address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
                 },
                 theme: {
                     color: "#d4af37"
@@ -159,25 +183,32 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.address || !formData.phone || !formData.firstName) {
-            setFormError("Please fill in all required fields (marked associated with *).");
+        // Strict input validation & sanitization (OWASP best practices)
+        const validation = validateFormData(formData, checkoutSchema);
+
+        if (!validation.valid) {
+            setFieldErrors(validation.errors);
+            setFormError("Please correct the errors in the form.");
             return;
         }
 
+        // Use sanitized data
+        const sanitizedData = validation.sanitized!;
         setFormError('');
+        setFieldErrors({});
         setIsProcessing(true);
 
         try {
-            // 1. Create Order in Firebase
+            // 1. Create Order in Firebase (using sanitized data)
             const orderData = {
-                customerName: `${formData.firstName} ${formData.lastName}`,
-                customerEmail: formData.email,
-                customerPhone: formData.phone,
+                customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
+                customerEmail: sanitizedData.email || '',
+                customerPhone: sanitizedData.phone,
                 customerAddress: {
-                    street: formData.address,
-                    city: formData.city,
-                    state: formData.state,
-                    pincode: formData.zip
+                    street: sanitizedData.address,
+                    city: sanitizedData.city,
+                    state: sanitizedData.state,
+                    pincode: sanitizedData.zip
                 },
                 items: cart.map(item => ({
                     productId: item.id,
@@ -189,7 +220,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 total: total,
                 status: 'pending' as const,
                 paymentStatus: 'pending' as const,
-                paymentMethod: formData.paymentMethod
+                paymentMethod: sanitizedData.paymentMethod as 'cod' | 'online'
             };
 
             const orderId = await createOrder(orderData);
@@ -200,7 +231,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 ...orderData
             };
 
-            if (formData.paymentMethod === 'cod') {
+            if (sanitizedData.paymentMethod === 'cod') {
                 // Send email confirmation
                 await sendOrderConfirmation(fullOrderDetails);
 
@@ -209,14 +240,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     id: orderId,
                     items: cart,
                     total: calculateTotal(),
-                    shipping: formData,
+                    shipping: sanitizedData,
                     paymentMethod: 'cod',
                     orderDate: new Date().toISOString()
                 });
                 setIsProcessing(false);
             } else {
-                // For Online Payment, trigger Razorpay
-                await handlePayment(orderId, fullOrderDetails);
+                // For Online Payment, trigger Razorpay (pass sanitized data)
+                await handlePayment(orderId, fullOrderDetails, sanitizedData);
             }
 
         } catch (error) {
@@ -260,7 +291,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
+                                        className={fieldErrors.firstName ? 'error' : ''}
                                     />
+                                    {fieldErrors.firstName && (
+                                        <span className="error-message">{fieldErrors.firstName}</span>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label>Last Name *</label>
@@ -271,7 +306,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
+                                        className={fieldErrors.lastName ? 'error' : ''}
                                     />
+                                    {fieldErrors.lastName && (
+                                        <span className="error-message">{fieldErrors.lastName}</span>
+                                    )}
                                 </div>
                             </div>
 
@@ -284,7 +323,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     onChange={handleInputChange}
                                     required
                                     disabled={isProcessing}
+                                    className={fieldErrors.phone ? 'error' : ''}
                                 />
+                                {fieldErrors.phone && (
+                                    <span className="error-message">{fieldErrors.phone}</span>
+                                )}
                             </div>
 
                             <div className="form-group">
@@ -295,7 +338,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     value={formData.email}
                                     onChange={handleInputChange}
                                     disabled={isProcessing}
+                                    className={fieldErrors.email ? 'error' : ''}
                                 />
+                                {fieldErrors.email && (
+                                    <span className="error-message">{fieldErrors.email}</span>
+                                )}
                             </div>
 
                             <div className="form-group">
@@ -308,7 +355,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     placeholder="House no., Street name"
                                     required
                                     disabled={isProcessing}
+                                    className={fieldErrors.address ? 'error' : ''}
                                 />
+                                {fieldErrors.address && (
+                                    <span className="error-message">{fieldErrors.address}</span>
+                                )}
                             </div>
 
                             <div className="form-row">
@@ -321,7 +372,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
+                                        className={fieldErrors.city ? 'error' : ''}
                                     />
+                                    {fieldErrors.city && (
+                                        <span className="error-message">{fieldErrors.city}</span>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label>State *</label>
@@ -332,7 +387,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
+                                        className={fieldErrors.state ? 'error' : ''}
                                     />
+                                    {fieldErrors.state && (
+                                        <span className="error-message">{fieldErrors.state}</span>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label>ZIP Code *</label>
@@ -343,7 +402,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
+                                        maxLength={6}
+                                        className={fieldErrors.zip ? 'error' : ''}
                                     />
+                                    {fieldErrors.zip && (
+                                        <span className="error-message">{fieldErrors.zip}</span>
+                                    )}
                                 </div>
                             </div>
                         </form>

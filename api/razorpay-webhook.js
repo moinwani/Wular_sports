@@ -1,15 +1,25 @@
 // Vercel Serverless Function - Razorpay Webhook Handler
 // Handles payment status updates from Razorpay
+// Following OWASP best practices for security
 
 const crypto = require('crypto');
+const setSecurityHeaders = require('../_middleware/security-headers');
 
 module.exports = async function handler(req, res) {
+  // Set security headers (OWASP best practices)
+  setSecurityHeaders(res);
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    // Validate webhook payload structure
+    if (!req.body || typeof req.body !== 'object') {
+      return res.status(400).json({ error: 'Invalid webhook payload' });
+    }
+
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const signature = req.headers['x-razorpay-signature'];
 

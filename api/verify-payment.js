@@ -1,21 +1,61 @@
 // Vercel Serverless Function - Verify Razorpay Payment
 // This verifies payment signatures - SECURE
+// Following OWASP best practices for security
 
 const crypto = require('crypto');
+const rateLimit = require('../_middleware/rate-limiter');
+const { validateSchema } = require('../_middleware/input-validator');
+const setSecurityHeaders = require('../_middleware/security-headers');
+
+// Validation schema for payment verification
+const verifyPaymentSchema = {
+  razorpay_order_id: {
+    required: true,
+    type: 'string',
+    format: 'razorpay_order_id',
+    maxLength: 50,
+  },
+  razorpay_payment_id: {
+    required: true,
+    type: 'string',
+    format: 'razorpay_payment_id',
+    maxLength: 50,
+  },
+  razorpay_signature: {
+    required: true,
+    type: 'string',
+    format: 'razorpay_signature',
+    maxLength: 64,
+  },
+};
 
 module.exports = async function handler(req, res) {
+  // Set security headers (OWASP best practices)
+  setSecurityHeaders(res);
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+  // Apply rate limiting
+  const rateLimitResult = rateLimit(req, res);
+  if (!rateLimitResult.allowed) {
+    return; // Response already sent by rate limiter
+  }
 
-    // Validate input
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.status(400).json({ error: 'Missing required payment fields' });
+  try {
+    // Strict input validation & sanitization
+    const validation = validateSchema(req.body, verifyPaymentSchema);
+    
+    if (!validation.valid) {
+      return res.status(400).json({
+        error: 'Validation failed',
+        details: validation.errors,
+      });
     }
+
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = validation.sanitized;
 
     // Get secret from environment
     const secret = process.env.RAZORPAY_KEY_SECRET;

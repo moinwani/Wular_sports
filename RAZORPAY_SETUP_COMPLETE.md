@@ -8,8 +8,10 @@ Your Razorpay backend integration is complete! Now you just need to configure en
 
 ## 🔑 Your Razorpay Live Keys
 
-✅ **Key ID:** `rzp_live_RzoBAX8SQwb6SQ`  
-✅ **Key Secret:** `Y0dlH8YzGdxqlpZXLQPVbzME` ⚠️ KEEP SECRET!
+⚠️ **IMPORTANT:** Use your actual keys from Razorpay Dashboard
+
+✅ **Key ID:** `rzp_live_xxxxxxxxxxxxx` (Get from Razorpay Dashboard)  
+✅ **Key Secret:** `xxxxxxxxxxxxx` ⚠️ KEEP SECRET! (Get from Razorpay Dashboard)
 
 ---
 
@@ -28,13 +30,13 @@ Your Razorpay backend integration is complete! Now you just need to configure en
 3. **Add These Variables:**
 
    #### Backend Variables (For API Functions):
-   - **`RAZORPAY_KEY_ID`** = `rzp_live_RzoBAX8SQwb6SQ`
-   - **`RAZORPAY_KEY_SECRET`** = `Y0dlH8YzGdxqlpZXLQPVbzME`
+   - **`RAZORPAY_KEY_ID`** = `rzp_live_xxxxxxxxxxxxx` (Your actual Key ID)
+   - **`RAZORPAY_KEY_SECRET`** = `xxxxxxxxxxxxx` (Your actual Key Secret - KEEP SECRET!)
    
    **Environment:** Select all (Production, Preview, Development)
 
    #### Frontend Variables:
-   - **`VITE_RAZORPAY_KEY_ID`** = `rzp_live_RzoBAX8SQwb6SQ`
+   - **`VITE_RAZORPAY_KEY_ID`** = `rzp_live_xxxxxxxxxxxxx` (Your actual Key ID)
    - **`VITE_RAZORPAY_BACKEND_URL`** = `https://your-project.vercel.app/api`
      *(Update this with your actual Vercel domain after deployment)*
    

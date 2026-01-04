@@ -2,8 +2,9 @@
 
 ## ✅ Your Razorpay Live Keys
 
-- **Key ID:** `rzp_live_RzoBAX8SQwb6SQ`
-- **Key Secret:** `Y0dlH8YzGdxqlpZXLQPVbzME` ⚠️ KEEP SECRET!
+⚠️ **IMPORTANT:** Replace these with your actual keys from Razorpay Dashboard
+- **Key ID:** `rzp_live_xxxxxxxxxxxxx` (Get from Razorpay Dashboard)
+- **Key Secret:** `xxxxxxxxxxxxx` ⚠️ KEEP SECRET! (Get from Razorpay Dashboard)
 
 ---
 
@@ -22,17 +23,17 @@ Click **Add New** and add these variables:
 
 #### 1. RAZORPAY_KEY_ID
 - **Key:** `RAZORPAY_KEY_ID`
-- **Value:** `rzp_live_RzoBAX8SQwb6SQ`
+- **Value:** `rzp_live_xxxxxxxxxxxxx` (Your actual Key ID from Razorpay)
 - **Environment:** Select all (Production, Preview, Development)
 
 #### 2. RAZORPAY_KEY_SECRET
 - **Key:** `RAZORPAY_KEY_SECRET`
-- **Value:** `Y0dlH8YzGdxqlpZXLQPVbzME`
+- **Value:** `xxxxxxxxxxxxx` (Your actual Key Secret from Razorpay - KEEP SECRET!)
 - **Environment:** Select all (Production, Preview, Development)
 
 #### 3. VITE_RAZORPAY_KEY_ID (Frontend)
 - **Key:** `VITE_RAZORPAY_KEY_ID`
-- **Value:** `rzp_live_RzoBAX8SQwb6SQ`
+- **Value:** `rzp_live_xxxxxxxxxxxxx` (Your actual Key ID from Razorpay)
 - **Environment:** Select all (Production, Preview, Development)
 
 #### 4. VITE_RAZORPAY_BACKEND_URL (Frontend - Update after deployment)

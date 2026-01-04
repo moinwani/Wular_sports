@@ -2,8 +2,10 @@
 
 ## ✅ Your Razorpay Live Keys
 
-- **Key ID (Public):** `rzp_live_RzoBAX8SQwb6SQ`
-- **Key Secret (Private):** `Y0dlH8YzGdxqlpZXLQPVbzME` ⚠️ KEEP SECRET!
+⚠️ **IMPORTANT:** Replace these with your actual keys from Razorpay Dashboard
+
+- **Key ID (Public):** `rzp_live_xxxxxxxxxxxxx` (Get from Razorpay Dashboard)
+- **Key Secret (Private):** `xxxxxxxxxxxxx` ⚠️ KEEP SECRET! (Get from Razorpay Dashboard)
 
 ---
 
@@ -13,7 +15,8 @@ Create a `.env` file in your project root with:
 
 ```env
 # Razorpay Live Key (Public - Frontend)
-VITE_RAZORPAY_KEY_ID=rzp_live_RzoBAX8SQwb6SQ
+# Replace with your actual Key ID from Razorpay Dashboard
+VITE_RAZORPAY_KEY_ID=rzp_live_xxxxxxxxxxxxx
 
 # Backend API URL (Update after Vercel deployment)
 VITE_RAZORPAY_BACKEND_URL=https://your-project.vercel.app/api
@@ -45,22 +48,25 @@ Add these variables:
 ### Production Environment:
 
 ```env
-RAZORPAY_KEY_ID=rzp_live_RzoBAX8SQwb6SQ
-RAZORPAY_KEY_SECRET=Y0dlH8YzGdxqlpZXLQPVbzME
+# Replace with your actual keys from Razorpay Dashboard
+RAZORPAY_KEY_ID=rzp_live_xxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxxxxx
 ```
 
 ### Preview Environment (Optional - for testing):
 
 ```env
-RAZORPAY_KEY_ID=rzp_live_RzoBAX8SQwb6SQ
-RAZORPAY_KEY_SECRET=Y0dlH8YzGdxqlpZXLQPVbzME
+# Replace with your actual keys from Razorpay Dashboard
+RAZORPAY_KEY_ID=rzp_live_xxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxxxxx
 ```
 
 ### Development Environment (Optional - for local testing):
 
 ```env
-RAZORPAY_KEY_ID=rzp_live_RzoBAX8SQwb6SQ
-RAZORPAY_KEY_SECRET=Y0dlH8YzGdxqlpZXLQPVbzME
+# Replace with your actual keys from Razorpay Dashboard
+RAZORPAY_KEY_ID=rzp_live_xxxxxxxxxxxxx
+RAZORPAY_KEY_SECRET=xxxxxxxxxxxxx
 ```
 
 ---

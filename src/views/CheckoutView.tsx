@@ -171,17 +171,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             console.log('Creating Razorpay order for amount:', total);
             
             // Step 1: Create Razorpay order on backend (SECURE)
-            const razorpayOrder = await createRazorpayOrder({
-                amount: total,
-                currency: 'INR',
-                receipt: orderId,
-                notes: {
-                    order_id: orderId,
-                    customer_name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
-                    customer_email: safeFormData.email || '',
-                    customer_phone: safeFormData.phone,
-                    address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
-                }
+            let razorpayOrder;
+            try {
+                razorpayOrder = await createRazorpayOrder({
+                    amount: total,
+                    currency: 'INR',
+                    receipt: orderId,
+                    notes: {
+                        order_id: orderId,
+                        customer_name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
+                        customer_email: safeFormData.email || '',
+                        customer_phone: safeFormData.phone,
+                        address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
+                    }
                 });
                 console.log('Razorpay order created:', razorpayOrder);
             } catch (orderError: any) {

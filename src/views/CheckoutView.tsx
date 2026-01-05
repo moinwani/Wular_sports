@@ -182,9 +182,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     customer_phone: safeFormData.phone,
                     address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
                 }
-            });
-
-            console.log('Razorpay order created:', razorpayOrder);
+                });
+                console.log('Razorpay order created:', razorpayOrder);
+            } catch (orderError: any) {
+                console.error('Failed to create Razorpay order:', orderError);
+                setFormError(`Failed to create payment order: ${orderError?.message || 'Unknown error'}. Please check your backend API or use Cash on Delivery.`);
+                setIsProcessing(false);
+                return;
+            }
 
             // Step 2: Open Razorpay checkout with order ID from backend
             console.log('Opening Razorpay checkout with order ID:', razorpayOrder.id);
@@ -277,22 +282,29 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             }
         } catch (error: any) {
             console.error("Error in payment flow:", error);
+            console.error("Error details:", {
+                message: error?.message,
+                stack: error?.stack,
+                name: error?.name
+            });
             
             // Provide user-friendly error messages
-            let errorMessage = 'Failed to initialize payment. Please try again.';
+            let errorMessage = 'Failed to initialize payment. Please try again or use Cash on Delivery.';
             
-            if (error.message) {
-                if (error.message.includes('Failed to create order')) {
-                    errorMessage = 'Failed to create payment order. Please check your connection and try again.';
-                } else if (error.message.includes('Network')) {
-                    errorMessage = 'Network error. Please check your internet connection and try again.';
-                } else if (error.message.includes('429')) {
+            if (error?.message) {
+                const msg = error.message.toLowerCase();
+                if (msg.includes('failed to create order') || msg.includes('network') || msg.includes('fetch')) {
+                    errorMessage = 'Cannot connect to payment server. Please check your internet connection and try again.';
+                } else if (msg.includes('429')) {
                     errorMessage = 'Too many requests. Please wait a moment and try again.';
+                } else if (msg.includes('key') || msg.includes('razorpay')) {
+                    errorMessage = 'Payment gateway configuration error. Please contact support.';
                 } else {
                     errorMessage = error.message;
                 }
             }
             
+            console.error('Setting error message:', errorMessage);
             setFormError(errorMessage);
             setIsProcessing(false);
         }
@@ -365,12 +377,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 setIsProcessing(false);
             } else {
                 // For Online Payment, trigger Razorpay (pass sanitized data)
-                await handlePayment(orderId, fullOrderDetails, sanitizedData);
+                try {
+                    await handlePayment(orderId, fullOrderDetails, sanitizedData);
+                } catch (paymentError: any) {
+                    console.error("Payment initialization failed:", paymentError);
+                    setFormError(`Payment failed: ${paymentError?.message || 'Unable to initialize payment gateway. Please try again or use Cash on Delivery.'}`);
+                    setIsProcessing(false);
+                }
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Order creation failed:", error);
-            setFormError("Failed to place order. Please try again.");
+            setFormError(`Failed to place order: ${error?.message || 'Please try again.'}`);
             setIsProcessing(false);
         }
     };
@@ -389,8 +407,32 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             <div className="container">
                 <h1 className="page-title">Checkout</h1>
                 {formError && (
-                    <div className="alert-error" role="alert" aria-live="assertive">
-                        <i className="fas fa-exclamation-circle"></i> {formError}
+                    <div className="alert-error" role="alert" aria-live="assertive" style={{ 
+                        backgroundColor: '#d32f2f', 
+                        color: 'white', 
+                        padding: '1rem', 
+                        borderRadius: '5px', 
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem'
+                    }}>
+                        <i className="fas fa-exclamation-circle"></i> 
+                        <strong>{formError}</strong>
+                        <button 
+                            onClick={() => setFormError('')} 
+                            style={{ 
+                                marginLeft: 'auto', 
+                                background: 'transparent', 
+                                border: 'none', 
+                                color: 'white', 
+                                cursor: 'pointer',
+                                fontSize: '1.2rem'
+                            }}
+                            aria-label="Close error"
+                        >
+                            ×
+                        </button>
                     </div>
                 )}
 

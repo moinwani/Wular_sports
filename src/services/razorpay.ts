@@ -36,6 +36,14 @@ export interface VerifyPaymentResponse {
  * Create Razorpay order on backend
  */
 export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
+    const API_BASE_URL = import.meta.env.VITE_RAZORPAY_BACKEND_URL || '/api';
+    
+    console.log('Creating Razorpay order:', {
+        url: `${API_BASE_URL}/create-razorpay-order`,
+        amount: data.amount,
+        backendUrl: API_BASE_URL
+    });
+
     try {
         const response = await fetch(`${API_BASE_URL}/create-razorpay-order`, {
             method: 'POST',
@@ -50,15 +58,28 @@ export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<Cre
             }),
         });
 
+        console.log('Razorpay order response status:', response.status);
+
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to create order');
+            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+            console.error('Razorpay order creation failed:', errorData);
+            throw new Error(errorData.error || errorData.message || `Failed to create order (${response.status})`);
         }
 
-        return await response.json();
-    } catch (error) {
+        const result = await response.json();
+        console.log('Razorpay order created successfully:', result);
+        return result;
+    } catch (error: any) {
         console.error('Error creating Razorpay order:', error);
-        throw error;
+        
+        // Provide more specific error messages
+        if (error.message) {
+            throw error;
+        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('Network error: Cannot reach payment server. Please check your internet connection.');
+        } else {
+            throw new Error('Failed to create payment order. Please try again.');
+        }
     }
 };
 

@@ -26,7 +26,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
-        loadRazorpay();
+        // Load Razorpay script on mount
+        loadRazorpay().then((loaded) => {
+            if (loaded) {
+                console.log('✅ Razorpay ready for payments');
+            } else {
+                console.warn('⚠️ Razorpay script failed to load');
+            }
+        });
     }, [loadRazorpay]);
 
     const [formData, setFormData] = useState({
@@ -65,8 +72,30 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     };
 
     const handlePayment = async (orderId: string, orderDetails: any, sanitizedFormData?: typeof formData) => {
+        // Check if Razorpay script is loaded
         if (!isLoaded) {
-            setFormError('Payment gateway failed to load. Please verify your internet connection.');
+            console.error('Razorpay script not loaded, attempting to load...');
+            const loaded = await loadRazorpay();
+            if (!loaded) {
+                setFormError('Payment gateway failed to load. Please refresh the page and try again.');
+                setIsProcessing(false);
+                return;
+            }
+        }
+
+        // Verify Razorpay is available on window
+        if (!window.Razorpay) {
+            console.error('Razorpay not available on window object');
+            setFormError('Payment gateway not available. Please refresh the page and try again.');
+            setIsProcessing(false);
+            return;
+        }
+
+        // Check if Razorpay Key ID is configured
+        const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+        if (!razorpayKeyId) {
+            console.error('Razorpay Key ID not configured');
+            setFormError('Payment gateway not configured. Please contact support.');
             setIsProcessing(false);
             return;
         }
@@ -84,6 +113,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         }
 
         try {
+            console.log('Creating Razorpay order for amount:', total);
+            
             // Step 1: Create Razorpay order on backend (SECURE)
             const razorpayOrder = await createRazorpayOrder({
                 amount: total,
@@ -98,9 +129,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 }
             });
 
+            console.log('Razorpay order created:', razorpayOrder);
+
             // Step 2: Open Razorpay checkout with order ID from backend
+            console.log('Opening Razorpay checkout with order ID:', razorpayOrder.id);
+            
             const options = {
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                key: razorpayKeyId,
                 amount: razorpayOrder.amount, // Amount from backend (already in paise)
                 currency: razorpayOrder.currency,
                 name: "Wular Sports",
@@ -108,6 +143,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 image: "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png",
                 order_id: razorpayOrder.id, // Order ID from backend (SECURE)
                 handler: async function (response: any) {
+                    console.log('Payment successful, response:', response);
                     try {
                         // Step 3: Verify payment signature on backend (SECURE)
                         const verification = await verifyPayment({
@@ -167,15 +203,42 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             };
 
             const rzp1 = new window.Razorpay(options);
+            
             rzp1.on('payment.failed', function (response: any) {
                 console.error("Payment failed:", response.error);
-                setFormError(`Payment failed: ${response.error.description || 'Please try again'}`);
+                setFormError(`Payment failed: ${response.error?.description || 'Please try again'}`);
                 setIsProcessing(false);
             });
-            rzp1.open();
+
+            // Open Razorpay checkout
+            console.log('Attempting to open Razorpay checkout modal...');
+            try {
+                rzp1.open();
+                console.log('Razorpay checkout modal opened successfully');
+            } catch (openError: any) {
+                console.error('Error opening Razorpay checkout:', openError);
+                setFormError(`Failed to open payment gateway: ${openError?.message || 'Unknown error'}`);
+                setIsProcessing(false);
+            }
         } catch (error: any) {
-            console.error("Error creating Razorpay order:", error);
-            setFormError(error.message || 'Failed to initialize payment. Please try again.');
+            console.error("Error in payment flow:", error);
+            
+            // Provide user-friendly error messages
+            let errorMessage = 'Failed to initialize payment. Please try again.';
+            
+            if (error.message) {
+                if (error.message.includes('Failed to create order')) {
+                    errorMessage = 'Failed to create payment order. Please check your connection and try again.';
+                } else if (error.message.includes('Network')) {
+                    errorMessage = 'Network error. Please check your internet connection and try again.';
+                } else if (error.message.includes('429')) {
+                    errorMessage = 'Too many requests. Please wait a moment and try again.';
+                } else {
+                    errorMessage = error.message;
+                }
+            }
+            
+            setFormError(errorMessage);
             setIsProcessing(false);
         }
     };

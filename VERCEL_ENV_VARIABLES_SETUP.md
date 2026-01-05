@@ -79,20 +79,25 @@ You need to add these variables **one by one**. For each variable:
 
 ### Variable 4: VITE_RAZORPAY_BACKEND_URL (Frontend)
 
+**Why this variable?** This tells your React app where to send API requests for payment processing.
+
 1. **Click "Add New" again**
-2. **Find your Vercel domain:**
-   - Go to your project's **"Deployments"** tab
-   - Copy your production URL (e.g., `https://wular-sports.vercel.app`)
+2. **Find your website URL:**
+   - From your screenshot, I can see your custom domains: `wularsports.com` and `www.wularsports.com`
+   - Use your main custom domain (recommended): `wularsports.com`
+   - OR use your Vercel deployment URL if you prefer
 3. **Fill in the form:**
    - **Key:** `VITE_RAZORPAY_BACKEND_URL`
-   - **Value:** `https://your-project.vercel.app/api` 
-     - Replace `your-project` with your actual Vercel project URL
-     - Example: `https://wular-sports.vercel.app/api`
+   - **Value:** `https://wularsports.com/api`
+     - ⚠️ **Important:** Use your actual custom domain + `/api`
+     - This is where your React app will send payment requests
    - **Environment:** Select **all three** (Production, Preview, Development)
    - ✅ Check: Production
    - ✅ Check: Preview
    - ✅ Check: Development
 4. **Click "Save"**
+
+**Note:** This URL tells your frontend: "When creating a payment, send the request to `https://wularsports.com/api/create-razorpay-order`"
 
 ---
 

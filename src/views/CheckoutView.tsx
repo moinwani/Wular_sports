@@ -48,6 +48,61 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         paymentMethod: 'cod'
     });
     const [formError, setFormError] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    // Validation schema for checkout form (OWASP best practices)
+    const checkoutSchema: ValidationSchema = {
+        firstName: {
+            required: true,
+            type: 'name',
+            minLength: 2,
+            maxLength: 50,
+        },
+        lastName: {
+            required: false,
+            type: 'name',
+            minLength: 1,
+            maxLength: 50,
+        },
+        email: {
+            required: false,
+            type: 'email',
+            maxLength: 254,
+        },
+        phone: {
+            required: true,
+            type: 'phone',
+            minLength: 10,
+            maxLength: 15,
+        },
+        address: {
+            required: true,
+            type: 'address',
+            minLength: 10,
+            maxLength: 500,
+        },
+        city: {
+            required: true,
+            type: 'string',
+            minLength: 2,
+            maxLength: 100,
+        },
+        state: {
+            required: true,
+            type: 'string',
+            minLength: 2,
+            maxLength: 100,
+        },
+        zip: {
+            required: true,
+            type: 'zip',
+            maxLength: 6,
+        },
+        paymentMethod: {
+            required: true,
+            type: 'string',
+        },
+    };
 
     const calculateTotal = () => {
         return total;

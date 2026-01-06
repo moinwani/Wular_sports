@@ -12,7 +12,7 @@ import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
-import { SearchResultsView } from './views/SearchResultsView';
+// import { SearchResultsView } from './views/SearchResultsView';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
@@ -130,11 +130,7 @@ const AppContent: React.FC = () => {
                         onImageClick={() => { }}
                         onWatchVideo={() => { }}
                     />} />
-                    <Route path="/search" element={<SearchResultsView
-                        onAddToCart={addToCart}
-                        onImageClick={() => { }}
-                        onWatchVideo={() => { }}
-                    />} />
+
                     <Route path="/product/:id" element={<ProductDetailsView onAddToCart={(p, s) => addToCart(p, s)} />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
                     <Route path="/return-policy" element={<ReturnPolicyView />} />

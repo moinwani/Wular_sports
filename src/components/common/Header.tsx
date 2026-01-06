@@ -1,7 +1,7 @@
 import { FC, useState, memo, MouseEvent, useEffect, useRef } from 'react';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
-import { SearchBar } from './SearchBar';
+// import { SearchBar } from './SearchBar';
 
 export interface HeaderProps {
     onCartClick: () => void;
@@ -12,7 +12,7 @@ export interface HeaderProps {
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    // const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const [isHeaderPinned, setIsHeaderPinned] = useState(false);
     const lastScrollY = useRef(0);
@@ -29,25 +29,25 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                 window.requestAnimationFrame(() => {
                     // Try multiple methods to detect scroll position
                     let currentScrollY = 0;
-                    
+
                     // Check window scroll first
                     currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-                    
+
                     // If window scroll is 0 (might be locked), check scrollable containers
                     if (currentScrollY === 0) {
                         // Check for scrollable containers (product page image gallery, content section)
                         const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
                         const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
-                        
+
                         if (imageGallery && imageGallery.scrollTop > 0) {
                             currentScrollY = imageGallery.scrollTop + 100; // Add offset to simulate scroll
                         } else if (contentSection && contentSection.scrollTop > 0) {
                             currentScrollY = contentSection.scrollTop + 200; // Add offset
                         }
                     }
-                    
+
                     const scrollDifference = currentScrollY - lastScrollY.current;
-                    
+
                     // Clear any existing timeout
                     if (scrollTimeoutRef.current) {
                         clearTimeout(scrollTimeoutRef.current);
@@ -87,12 +87,12 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
         const handleHeaderInteraction = () => {
             setIsHeaderPinned(true);
             setIsHeaderVisible(true);
-            
+
             // Unpin after 3 seconds of no scroll
             if (scrollTimeoutRef.current) {
                 clearTimeout(scrollTimeoutRef.current);
             }
-            
+
             scrollTimeoutRef.current = setTimeout(() => {
                 setIsHeaderPinned(false);
             }, 3000);
@@ -102,18 +102,18 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
         window.addEventListener('scroll', handleScroll, { passive: true, capture: false });
         document.addEventListener('scroll', handleScroll, { passive: true, capture: false });
         document.documentElement.addEventListener('scroll', handleScroll, { passive: true });
-        
+
         // Also listen to scroll on scrollable containers (for product pages)
         const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
         const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
-        
+
         if (imageGallery) {
             imageGallery.addEventListener('scroll', handleContainerScroll, { passive: true });
         }
         if (contentSection) {
             contentSection.addEventListener('scroll', handleContainerScroll, { passive: true });
         }
-        
+
         // Listen to wheel events to detect scroll intent (works even when scroll is prevented)
         const handleWheel = (e: WheelEvent) => {
             if (!isHeaderPinned) {
@@ -127,10 +127,10 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             }
         };
         window.addEventListener('wheel', handleWheel, { passive: true });
-        
+
         // Initial scroll position check
         handleScroll();
-        
+
         // Get header element reference
         headerElementRef = document.querySelector('.header') as HTMLElement;
         if (headerElementRef) {
@@ -144,7 +144,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             document.removeEventListener('scroll', handleScroll);
             document.documentElement.removeEventListener('scroll', handleScroll);
             window.removeEventListener('wheel', handleWheel);
-            
+
             // Remove container scroll listeners
             const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
             const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
@@ -154,7 +154,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             if (contentSection) {
                 contentSection.removeEventListener('scroll', handleContainerScroll);
             }
-            
+
             if (headerElementRef) {
                 headerElementRef.removeEventListener('mouseenter', handleHeaderInteraction);
                 headerElementRef.removeEventListener('click', handleHeaderInteraction);
@@ -204,29 +204,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                     </a>
 
                     <div className="nav-section-right">
-                        {/* Desktop Search Icon */}
-                        <div className="desktop-search-toggle">
-                            {isSearchOpen ? (
-                                <div className="search-expanded-wrapper">
-                                    <SearchBar autoFocus />
-                                    <button
-                                        className="search-close-btn"
-                                        onClick={() => setIsSearchOpen(false)}
-                                        aria-label="Close search"
-                                    >
-                                        <i className="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            ) : (
-                                <button
-                                    className="search-icon-btn"
-                                    onClick={() => setIsSearchOpen(true)}
-                                    aria-label="Open search"
-                                >
-                                    <i className="fas fa-search"></i>
-                                </button>
-                            )}
-                        </div>
+
 
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">

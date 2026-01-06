@@ -1,17 +1,7 @@
-import React, { FC, useState, useMemo } from 'react';
+import React, { FC } from 'react';
 import { ProductFull } from '../types';
 import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
-import { FilterPanel } from '../components/product/FilterPanel';
-import { SortDropdown } from '../components/product/SortDropdown';
-import {
-    filterProducts,
-    sortProducts,
-    getAllCategories,
-    getPriceRange,
-    FilterOptions,
-    SortOption
-} from '../utils/filtering';
 
 interface CollectionViewProps {
     products: ProductFull[];
@@ -21,27 +11,12 @@ interface CollectionViewProps {
 }
 
 export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick, onAddToCart, onWatchVideo }) => {
-    const availableCategories = useMemo(() => getAllCategories(products), [products]);
-    const priceRange = useMemo(() => getPriceRange(products), [products]);
 
-    const [filters, setFilters] = useState<FilterOptions>({
-        categories: [],
-        priceRange: priceRange,
-        inStockOnly: false
-    });
-
-    const [sortOption, setSortOption] = useState<SortOption>('default');
-
-    // Apply filters and sorting
-    const filteredAndSortedProducts = useMemo(() => {
-        const filtered = filterProducts(products, filters);
-        return sortProducts(filtered, sortOption);
-    }, [products, filters, sortOption]);
-
+    // Simple categorization without filtering logic
     const categories = {
-        "Hard Tennis Bats": filteredAndSortedProducts.filter(p => p.category.includes("Hard Tennis")),
-        "Soft Tennis Bats": filteredAndSortedProducts.filter(p => p.category.includes("Soft Tennis")),
-        "Leather Bat Collection": filteredAndSortedProducts.filter(p => p.category.includes("Leather Ball")),
+        "Hard Tennis Bats": products.filter(p => p.category.includes("Hard Tennis")),
+        "Soft Tennis Bats": products.filter(p => p.category.includes("Soft Tennis")),
+        "Leather Bat Collection": products.filter(p => p.category.includes("Leather Ball")),
     };
 
     const structuredData = {
@@ -49,7 +24,7 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
         "@type": "CollectionPage",
         "name": "Cricket Bats Collection",
         "description": "Browse our complete collection of handcrafted cricket bats",
-        "numberOfItems": filteredAndSortedProducts.length
+        "numberOfItems": products.length
     };
 
     return (
@@ -66,27 +41,7 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
                 <div className="container">
                     <h2 className="section-title">Our Collection</h2>
 
-                    {/* Filter and Sort Controls */}
-                    <div className="collection-controls">
-                        <FilterPanel
-                            filters={filters}
-                            onFilterChange={setFilters}
-                            availableCategories={availableCategories}
-                            priceRange={priceRange}
-                        />
-                        <div className="collection-controls-right">
-                            <div className="collection-results-count">
-                                {filteredAndSortedProducts.length} {filteredAndSortedProducts.length === 1 ? 'product' : 'products'}
-                            </div>
-                            <SortDropdown
-                                value={sortOption}
-                                onChange={setSortOption}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Products Grid */}
-                    {filteredAndSortedProducts.length > 0 ? (
+                    {products.length > 0 ? (
                         <div className="collection-categories">
                             {Object.entries(categories).map(([title, productsInCategory]) => (
                                 productsInCategory.length > 0 && (
@@ -102,10 +57,8 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
                             ))}
                         </div>
                     ) : (
-                        <div className="no-products-found">
-                            <i className="fas fa-search"></i>
-                            <h3>No products found</h3>
-                            <p>Try adjusting your filters to see more results</p>
+                        <div className="no-products-found" style={{ textAlign: 'center', padding: '4rem' }}>
+                            <p>No products available at the moment.</p>
                         </div>
                     )}
                 </div>

@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { useRazorpay } from '../hooks/useRazorpay';
@@ -25,16 +25,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const { isLoaded, loadRazorpay } = useRazorpay();
     const [isProcessing, setIsProcessing] = useState(false);
 
-    useEffect(() => {
-        // Load Razorpay script on mount
-        loadRazorpay().then((loaded) => {
-            if (loaded) {
-                console.log('✅ Razorpay ready for payments');
-            } else {
-                console.warn('⚠️ Razorpay script failed to load');
-            }
-        });
-    }, [loadRazorpay]);
+    // NOTE: Razorpay script will load only when user clicks "Place Order" with online payment
+    // This happens in handlePayment function (lines 138-147)
+    // No need to load it on component mount
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -110,7 +103,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        
+
         // Clear field error when user starts typing
         if (fieldErrors[name]) {
             setFieldErrors(prev => {
@@ -119,7 +112,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 return newErrors;
             });
         }
-        
+
         setFormData({
             ...formData,
             [name]: value
@@ -166,20 +159,20 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 return;
             }
 
-        // Use sanitized data if provided, otherwise re-validate
-        let safeFormData = sanitizedFormData || formData;
-        if (!sanitizedFormData) {
-            const validation = validateFormData(formData, checkoutSchema);
-            if (!validation.valid || !validation.sanitized) {
-                setFormError('Invalid form data. Please refresh and try again.');
-                setIsProcessing(false);
-                return;
+            // Use sanitized data if provided, otherwise re-validate
+            let safeFormData: typeof formData = sanitizedFormData || formData;
+            if (!sanitizedFormData) {
+                const validation = validateFormData(formData, checkoutSchema);
+                if (!validation.valid || !validation.sanitized) {
+                    setFormError('Invalid form data. Please refresh and try again.');
+                    setIsProcessing(false);
+                    return;
+                }
+                safeFormData = validation.sanitized as typeof formData;
             }
-            safeFormData = validation.sanitized;
-        }
 
             console.log('Creating Razorpay order for amount:', total);
-            
+
             // Step 1: Create Razorpay order on backend (SECURE)
             let razorpayOrder;
             try {
@@ -206,7 +199,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
             // Step 2: Open Razorpay checkout with order ID from backend
             console.log('Opening Razorpay checkout with order ID:', razorpayOrder.id);
-            
+
             const options = {
                 key: razorpayKeyId,
                 amount: razorpayOrder.amount, // Amount from backend (already in paise)
@@ -276,7 +269,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             };
 
             const rzp1 = new window.Razorpay(options);
-            
+
             rzp1.on('payment.failed', function (response: any) {
                 console.error("Payment failed:", response.error);
                 setFormError(`Payment failed: ${response.error?.description || 'Please try again'}`);
@@ -286,7 +279,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             // Open Razorpay checkout
             console.log('Attempting to open Razorpay checkout modal...');
             clearTimeout(timeoutId); // Clear timeout since we're about to open
-            
+
             try {
                 rzp1.open();
                 console.log('✅ Razorpay checkout modal opened successfully');
@@ -305,10 +298,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 stack: error?.stack,
                 name: error?.name
             });
-            
+
             // Provide user-friendly error messages
             let errorMessage = 'Failed to initialize payment. Please try again or use Cash on Delivery.';
-            
+
             if (error?.message) {
                 const msg = error.message.toLowerCase();
                 if (msg.includes('failed to create order') || msg.includes('network') || msg.includes('fetch')) {
@@ -321,7 +314,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     errorMessage = error.message;
                 }
             }
-            
+
             console.error('Setting error message:', errorMessage);
             setFormError(errorMessage);
             setIsProcessing(false);
@@ -341,7 +334,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         }
 
         // Use sanitized data
-        const sanitizedData = validation.sanitized!;
+        const sanitizedData = validation.sanitized! as typeof formData;
         setFormError('');
         setFieldErrors({});
         setIsProcessing(true);
@@ -425,25 +418,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             <div className="container">
                 <h1 className="page-title">Checkout</h1>
                 {formError && (
-                    <div className="alert-error" role="alert" aria-live="assertive" style={{ 
-                        backgroundColor: '#d32f2f', 
-                        color: 'white', 
-                        padding: '1rem', 
-                        borderRadius: '5px', 
+                    <div className="alert-error" role="alert" aria-live="assertive" style={{
+                        backgroundColor: '#d32f2f',
+                        color: 'white',
+                        padding: '1rem',
+                        borderRadius: '5px',
                         marginBottom: '1rem',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <i className="fas fa-exclamation-circle"></i> 
+                        <i className="fas fa-exclamation-circle"></i>
                         <strong>{formError}</strong>
-                        <button 
-                            onClick={() => setFormError('')} 
-                            style={{ 
-                                marginLeft: 'auto', 
-                                background: 'transparent', 
-                                border: 'none', 
-                                color: 'white', 
+                        <button
+                            onClick={() => setFormError('')}
+                            style={{
+                                marginLeft: 'auto',
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'white',
                                 cursor: 'pointer',
                                 fontSize: '1.2rem'
                             }}

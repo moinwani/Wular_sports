@@ -34,7 +34,7 @@ export const products: ProductFull[] = [
     },
     {
         id: "legacy-edition",
-        name: "Legacy Edition",
+        name: "Legacy Edition 1.0",
         category: ["Hard Tennis"],
         description: "A premium hard tennis bat for the serious player. Comes with a full professional kit to get you started.",
         image: [

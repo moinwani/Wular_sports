@@ -178,7 +178,6 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             safeFormData = validation.sanitized;
         }
 
-        try {
             console.log('Creating Razorpay order for amount:', total);
             
             // Step 1: Create Razorpay order on backend (SECURE)
@@ -198,6 +197,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 });
                 console.log('Razorpay order created:', razorpayOrder);
             } catch (orderError: any) {
+                clearTimeout(timeoutId);
                 console.error('Failed to create Razorpay order:', orderError);
                 setFormError(`Failed to create payment order: ${orderError?.message || 'Unknown error'}. Please check your backend API or use Cash on Delivery.`);
                 setIsProcessing(false);

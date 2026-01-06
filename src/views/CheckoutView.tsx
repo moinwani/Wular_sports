@@ -1,11 +1,10 @@
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
-import { useRazorpay } from '../hooks/useRazorpay';
-import { createOrder, updateOrderStatus, updatePaymentStatus } from '../services/orders';
+import { createOrder } from '../services/orders';
 import { sendOrderConfirmation } from '../services/email';
-import { createRazorpayOrder, verifyPayment } from '../services/razorpay';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
+import { WHATSAPP_NUMBER } from '../data/constants';
 
 interface CheckoutViewProps {
     cart: CartItem[];
@@ -13,21 +12,9 @@ interface CheckoutViewProps {
     onPlaceOrder: (orderDetails: any) => void;
 }
 
-// Declare Razorpay on window
-declare global {
-    interface Window {
-        Razorpay: any;
-    }
-}
-
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const navigate = useNavigate();
-    const { isLoaded, loadRazorpay } = useRazorpay();
     const [isProcessing, setIsProcessing] = useState(false);
-
-    // NOTE: Razorpay script will load only when user clicks "Place Order" with online payment
-    // This happens in handlePayment function (lines 138-147)
-    // No need to load it on component mount
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -119,206 +106,24 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         });
     };
 
-    const handlePayment = async (orderId: string, orderDetails: any, sanitizedFormData?: typeof formData) => {
-        // Set a timeout to prevent infinite processing
-        const timeoutId = setTimeout(() => {
-            console.error('Payment initialization timeout - taking too long');
-            setFormError('Payment is taking too long. Please refresh and try again, or use Cash on Delivery.');
-            setIsProcessing(false);
-        }, 30000); // 30 second timeout
+    const openWhatsAppOrder = (orderId: string, orderDetails: any, sanitizedData: typeof formData) => {
+        // Construct WhatsApp message
+        const itemsList = cart.map((item, idx) =>
+            `${idx + 1}. ${item.name} (${item.size || 'N/A'}) x${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
+        ).join('%0A');
 
-        try {
-            // Check if Razorpay script is loaded
-            if (!isLoaded) {
-                console.log('Razorpay script not loaded, attempting to load...');
-                const loaded = await loadRazorpay();
-                if (!loaded) {
-                    clearTimeout(timeoutId);
-                    setFormError('Payment gateway failed to load. Please refresh the page and try again.');
-                    setIsProcessing(false);
-                    return;
-                }
-            }
+        const message = `*New Order Request! 🏏*%0A%0A` +
+            `*Order ID:* ${orderId}%0A` +
+            `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
+            `*Phone:* ${sanitizedData.phone}%0A` +
+            `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}%0A%0A` +
+            `*Items:*%0A${itemsList}%0A%0A` +
+            `*Total Amount:* ₹${total.toLocaleString('en-IN')}%0A` +
+            `*Payment Method:* Online Payment Request (Please share payment details)`;
 
-            // Verify Razorpay is available on window
-            if (!window.Razorpay) {
-                clearTimeout(timeoutId);
-                console.error('Razorpay not available on window object');
-                setFormError('Payment gateway not available. Please refresh the page and try again.');
-                setIsProcessing(false);
-                return;
-            }
-
-            // Check if Razorpay Key ID is configured
-            const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
-            if (!razorpayKeyId) {
-                clearTimeout(timeoutId);
-                console.error('Razorpay Key ID not configured');
-                setFormError('Payment gateway not configured. Please contact support.');
-                setIsProcessing(false);
-                return;
-            }
-
-            // Use sanitized data if provided, otherwise re-validate
-            let safeFormData: typeof formData = sanitizedFormData || formData;
-            if (!sanitizedFormData) {
-                const validation = validateFormData(formData, checkoutSchema);
-                if (!validation.valid || !validation.sanitized) {
-                    setFormError('Invalid form data. Please refresh and try again.');
-                    setIsProcessing(false);
-                    return;
-                }
-                safeFormData = validation.sanitized as typeof formData;
-            }
-
-            console.log('Creating Razorpay order for amount:', total);
-
-            // Step 1: Create Razorpay order on backend (SECURE)
-            let razorpayOrder;
-            try {
-                razorpayOrder = await createRazorpayOrder({
-                    amount: total,
-                    currency: 'INR',
-                    receipt: orderId,
-                    notes: {
-                        order_id: orderId,
-                        customer_name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
-                        customer_email: safeFormData.email || '',
-                        customer_phone: safeFormData.phone,
-                        address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
-                    }
-                });
-                console.log('Razorpay order created:', razorpayOrder);
-            } catch (orderError: any) {
-                clearTimeout(timeoutId);
-                console.error('Failed to create Razorpay order:', orderError);
-                setFormError(`Failed to create payment order: ${orderError?.message || 'Unknown error'}. Please check your backend API or use Cash on Delivery.`);
-                setIsProcessing(false);
-                return;
-            }
-
-            // Step 2: Open Razorpay checkout with order ID from backend
-            console.log('Opening Razorpay checkout with order ID:', razorpayOrder.id);
-
-            const options = {
-                key: razorpayKeyId,
-                amount: razorpayOrder.amount, // Amount from backend (already in paise)
-                currency: razorpayOrder.currency,
-                name: "Wular Sports",
-                description: `Order #${orderDetails.orderNumber || orderId}`,
-                image: "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png",
-                order_id: razorpayOrder.id, // Order ID from backend (SECURE)
-                handler: async function (response: any) {
-                    console.log('Payment successful, response:', response);
-                    try {
-                        // Step 3: Verify payment signature on backend (SECURE)
-                        const verification = await verifyPayment({
-                            razorpay_order_id: response.razorpay_order_id,
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_signature: response.razorpay_signature
-                        });
-
-                        if (!verification.success) {
-                            setFormError('Payment verification failed. Please contact support.');
-                            setIsProcessing(false);
-                            return;
-                        }
-
-                        // Step 4: Payment verified - Update order in database
-                        await updatePaymentStatus(orderId, 'completed', response.razorpay_payment_id);
-                        await updateOrderStatus(orderId, 'confirmed');
-
-                        // Step 5: Send email confirmation
-                        await sendOrderConfirmation(orderDetails);
-
-                        // Step 6: Redirect to success page
-                        onPlaceOrder({
-                            id: orderId,
-                            items: cart,
-                            total: calculateTotal(),
-                            shipping: formData,
-                            paymentMethod: 'online',
-                            paymentId: response.razorpay_payment_id,
-                            razorpayOrderId: response.razorpay_order_id,
-                            orderDate: new Date().toISOString()
-                        });
-                    } catch (error) {
-                        console.error("Error processing payment:", error);
-                        setFormError("Payment successful but failed to verify. Please contact support with payment ID.");
-                    } finally {
-                        setIsProcessing(false);
-                    }
-                },
-                prefill: {
-                    name: `${safeFormData.firstName} ${safeFormData.lastName || ''}`.trim(),
-                    email: safeFormData.email || '',
-                    contact: safeFormData.phone
-                },
-                notes: {
-                    order_id: orderId,
-                    address: `${safeFormData.address}, ${safeFormData.city}, ${safeFormData.state} - ${safeFormData.zip}`
-                },
-                theme: {
-                    color: "#d4af37"
-                },
-                modal: {
-                    ondismiss: function () {
-                        setIsProcessing(false);
-                    }
-                }
-            };
-
-            const rzp1 = new window.Razorpay(options);
-
-            rzp1.on('payment.failed', function (response: any) {
-                console.error("Payment failed:", response.error);
-                setFormError(`Payment failed: ${response.error?.description || 'Please try again'}`);
-                setIsProcessing(false);
-            });
-
-            // Open Razorpay checkout
-            console.log('Attempting to open Razorpay checkout modal...');
-            clearTimeout(timeoutId); // Clear timeout since we're about to open
-
-            try {
-                rzp1.open();
-                console.log('✅ Razorpay checkout modal opened successfully');
-                // Don't set isProcessing to false here - let Razorpay handle it
-            } catch (openError: any) {
-                clearTimeout(timeoutId);
-                console.error('❌ Error opening Razorpay checkout:', openError);
-                setFormError(`Failed to open payment gateway: ${openError?.message || 'Unknown error'}. Please try again or use Cash on Delivery.`);
-                setIsProcessing(false);
-            }
-        } catch (error: any) {
-            clearTimeout(timeoutId);
-            console.error("Error in payment flow:", error);
-            console.error("Error details:", {
-                message: error?.message,
-                stack: error?.stack,
-                name: error?.name
-            });
-
-            // Provide user-friendly error messages
-            let errorMessage = 'Failed to initialize payment. Please try again or use Cash on Delivery.';
-
-            if (error?.message) {
-                const msg = error.message.toLowerCase();
-                if (msg.includes('failed to create order') || msg.includes('network') || msg.includes('fetch')) {
-                    errorMessage = 'Cannot connect to payment server. Please check your internet connection and try again.';
-                } else if (msg.includes('429')) {
-                    errorMessage = 'Too many requests. Please wait a moment and try again.';
-                } else if (msg.includes('key') || msg.includes('razorpay')) {
-                    errorMessage = 'Payment gateway configuration error. Please contact support.';
-                } else {
-                    errorMessage = error.message;
-                }
-            }
-
-            console.error('Setting error message:', errorMessage);
-            setFormError(errorMessage);
-            setIsProcessing(false);
-        }
+        // Open WhatsApp
+        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+        window.open(whatsappUrl, '_blank');
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -372,30 +177,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 ...orderData
             };
 
-            if (sanitizedData.paymentMethod === 'cod') {
-                // Send email confirmation
-                await sendOrderConfirmation(fullOrderDetails);
+            // Send email confirmation for both methods
+            await sendOrderConfirmation(fullOrderDetails);
 
-                // For COD, we are done
-                onPlaceOrder({
-                    id: orderId,
-                    items: cart,
-                    total: calculateTotal(),
-                    shipping: sanitizedData,
-                    paymentMethod: 'cod',
-                    orderDate: new Date().toISOString()
-                });
-                setIsProcessing(false);
-            } else {
-                // For Online Payment, trigger Razorpay (pass sanitized data)
-                try {
-                    await handlePayment(orderId, fullOrderDetails, sanitizedData);
-                } catch (paymentError: any) {
-                    console.error("Payment initialization failed:", paymentError);
-                    setFormError(`Payment failed: ${paymentError?.message || 'Unable to initialize payment gateway. Please try again or use Cash on Delivery.'}`);
-                    setIsProcessing(false);
-                }
+            if (sanitizedData.paymentMethod === 'online') {
+                // Open WhatsApp for online payment coordination
+                openWhatsAppOrder(orderId, fullOrderDetails, sanitizedData);
             }
+
+            // Complete the order flow
+            onPlaceOrder({
+                id: orderId,
+                items: cart,
+                total: calculateTotal(),
+                shipping: sanitizedData,
+                paymentMethod: sanitizedData.paymentMethod,
+                orderDate: new Date().toISOString()
+            });
+
+            setIsProcessing(false);
 
         } catch (error: any) {
             console.error("Order creation failed:", error);
@@ -657,15 +457,15 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                     />
                                     <div className="payment-option-content">
-                                        <span><i className="fas fa-credit-card"></i> Online Payment (Razorpay)</span>
-                                        <small>Secure payment gateway</small>
+                                        <span><i className="fas fa-brands fa-whatsapp"></i> Order via WhatsApp</span>
+                                        <small>Coordinate payment securely on WhatsApp</small>
                                     </div>
                                 </label>
                             </div>
                             {formData.paymentMethod === 'online' && (
                                 <div className="payment-security-note">
                                     <i className="fas fa-info-circle"></i>
-                                    <p>You will be redirected to Razorpay to complete your secure payment. All transactions are encrypted and secure.</p>
+                                    <p>You will be redirected to WhatsApp to confirm your order and receive payment details (UPI/Bank Transfer). It's fast and personal!</p>
                                 </div>
                             )}
                         </div>

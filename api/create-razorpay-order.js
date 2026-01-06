@@ -2,10 +2,10 @@
 // This runs on your backend (Vercel serverless) - SECURE
 // Following OWASP best practices for security
 
-const Razorpay = require('razorpay');
-const rateLimit = require('../_middleware/rate-limiter');
-const { validateSchema } = require('../_middleware/input-validator');
-const setSecurityHeaders = require('../_middleware/security-headers');
+import Razorpay from 'razorpay';
+import rateLimit from '../_middleware/rate-limiter.js';
+import { validateSchema } from '../_middleware/input-validator.js';
+import setSecurityHeaders from '../_middleware/security-headers.js';
 
 // Validation schema for create order request
 const createOrderSchema = {
@@ -36,7 +36,7 @@ const createOrderSchema = {
   },
 };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Set security headers (OWASP best practices)
   setSecurityHeaders(res);
 
@@ -54,7 +54,7 @@ module.exports = async function handler(req, res) {
   try {
     // Strict input validation & sanitization
     const validation = validateSchema(req.body, createOrderSchema);
-    
+
     if (!validation.valid) {
       return res.status(400).json({
         error: 'Validation failed',
@@ -66,7 +66,7 @@ module.exports = async function handler(req, res) {
 
     // Additional amount validation (must be positive and within limits)
     if (amount <= 0 || amount > 1000000) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Invalid amount',
         message: 'Amount must be between 1 and 10,00,000 INR'
       });
@@ -74,7 +74,7 @@ module.exports = async function handler(req, res) {
 
     // Validate currency (only allow INR for now)
     if (currency !== 'INR') {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: 'Invalid currency',
         message: 'Only INR currency is supported'
       });

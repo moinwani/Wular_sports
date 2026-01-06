@@ -2,10 +2,10 @@
 // This verifies payment signatures - SECURE
 // Following OWASP best practices for security
 
-const crypto = require('crypto');
-const rateLimit = require('../_middleware/rate-limiter');
-const { validateSchema } = require('../_middleware/input-validator');
-const setSecurityHeaders = require('../_middleware/security-headers');
+import crypto from 'crypto';
+import rateLimit from '../_middleware/rate-limiter.js';
+import { validateSchema } from '../_middleware/input-validator.js';
+import setSecurityHeaders from '../_middleware/security-headers.js';
 
 // Validation schema for payment verification
 const verifyPaymentSchema = {
@@ -29,7 +29,7 @@ const verifyPaymentSchema = {
   },
 };
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Set security headers (OWASP best practices)
   setSecurityHeaders(res);
 
@@ -47,7 +47,7 @@ module.exports = async function handler(req, res) {
   try {
     // Strict input validation & sanitization
     const validation = validateSchema(req.body, verifyPaymentSchema);
-    
+
     if (!validation.valid) {
       return res.status(400).json({
         error: 'Validation failed',

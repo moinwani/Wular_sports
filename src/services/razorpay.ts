@@ -37,7 +37,7 @@ export interface VerifyPaymentResponse {
  */
 export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
     const API_BASE_URL = import.meta.env.VITE_RAZORPAY_BACKEND_URL || '/api';
-    
+
     console.log('🚀 Creating Razorpay order:', {
         url: `${API_BASE_URL}/create-razorpay-order`,
         amount: data.amount,
@@ -84,16 +84,16 @@ export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<Cre
     } catch (error: any) {
         clearTimeout(timeoutId);
         console.error('❌ Error creating Razorpay order:', error);
-        
+
         // Provide more specific error messages
         if (error.name === 'AbortError') {
             throw new Error('Request timeout: Payment server is not responding. Please check your connection and try again.');
         } else if (error.message) {
             throw error;
         } else if (error.name === 'TypeError' && error.message?.includes('fetch')) {
-            throw new Error('Network error: Cannot reach payment server. Please check your internet connection and verify the backend URL is correct.');
+            throw new Error(`Network error: Cannot reach payment server at ${API_BASE_URL}. Please check your internet connection.`);
         } else {
-            throw new Error('Failed to create payment order. Please try again or use Cash on Delivery.');
+            throw new Error(`Failed to create payment order. Error: ${error.message || 'Unknown error'}`);
         }
     }
 };

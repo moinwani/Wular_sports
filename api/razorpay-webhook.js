@@ -2,10 +2,10 @@
 // Handles payment status updates from Razorpay
 // Following OWASP best practices for security
 
-const crypto = require('crypto');
-const setSecurityHeaders = require('../_middleware/security-headers');
+import crypto from 'crypto';
+import setSecurityHeaders from '../_middleware/security-headers.js';
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   // Set security headers (OWASP best practices)
   setSecurityHeaders(res);
 

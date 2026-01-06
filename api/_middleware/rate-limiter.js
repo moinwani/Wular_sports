@@ -26,7 +26,7 @@ function getClientIP(req) {
   const forwarded = req.headers['x-forwarded-for'];
   const realIP = req.headers['x-real-ip'];
   const cfConnectingIP = req.headers['cf-connecting-ip'];
-  
+
   if (forwarded) {
     // x-forwarded-for can contain multiple IPs, take the first one
     return forwarded.split(',')[0].trim();
@@ -37,7 +37,7 @@ function getClientIP(req) {
   if (cfConnectingIP) {
     return cfConnectingIP;
   }
-  
+
   // Fallback to connection remote address
   return req.headers['x-client-ip'] || 'unknown';
 }
@@ -60,12 +60,12 @@ function cleanupStore() {
 function checkRateLimit(identifier, maxRequests) {
   const now = Date.now();
   const key = identifier;
-  
+
   // Cleanup old entries periodically (every 100 requests)
   if (rateLimitStore.size > 1000) {
     cleanupStore();
   }
-  
+
   if (!rateLimitStore.has(key)) {
     // First request - initialize
     rateLimitStore.set(key, {
@@ -75,9 +75,9 @@ function checkRateLimit(identifier, maxRequests) {
     });
     return { allowed: true, remaining: maxRequests - 1 };
   }
-  
+
   const data = rateLimitStore.get(key);
-  
+
   // Check if currently blocked
   if (data.blockedUntil && now < data.blockedUntil) {
     const retryAfter = Math.ceil((data.blockedUntil - now) / 1000);
@@ -88,7 +88,7 @@ function checkRateLimit(identifier, maxRequests) {
       resetTime: data.blockedUntil,
     };
   }
-  
+
   // Reset window if expired
   if (now - data.windowStart > RATE_LIMIT_CONFIG.windowMs) {
     data.count = 1;
@@ -97,7 +97,7 @@ function checkRateLimit(identifier, maxRequests) {
     rateLimitStore.set(key, data);
     return { allowed: true, remaining: maxRequests - 1 };
   }
-  
+
   // Check if limit exceeded
   if (data.count >= maxRequests) {
     // Block for specified duration
@@ -111,11 +111,11 @@ function checkRateLimit(identifier, maxRequests) {
       resetTime: data.blockedUntil,
     };
   }
-  
+
   // Increment counter
   data.count++;
   rateLimitStore.set(key, data);
-  
+
   return {
     allowed: true,
     remaining: maxRequests - data.count,
@@ -129,10 +129,10 @@ function checkRateLimit(identifier, maxRequests) {
 function rateLimit(req, res, next) {
   const clientIP = getClientIP(req);
   const userIdentifier = req.headers['x-user-id'] || clientIP; // User-based if available
-  
+
   // Check IP-based rate limit
   const ipLimit = checkRateLimit(`ip:${clientIP}`, RATE_LIMIT_CONFIG.maxRequestsPerIP);
-  
+
   if (!ipLimit.allowed) {
     return res.status(429).json({
       error: 'Too Many Requests',
@@ -141,11 +141,11 @@ function rateLimit(req, res, next) {
       resetTime: new Date(ipLimit.resetTime).toISOString(),
     });
   }
-  
+
   // Check user-based rate limit (if user identifier available)
   if (userIdentifier !== clientIP) {
     const userLimit = checkRateLimit(`user:${userIdentifier}`, RATE_LIMIT_CONFIG.maxRequests);
-    
+
     if (!userLimit.allowed) {
       return res.status(429).json({
         error: 'Too Many Requests',
@@ -154,23 +154,23 @@ function rateLimit(req, res, next) {
         resetTime: new Date(userLimit.resetTime).toISOString(),
       });
     }
-    
+
     // Add rate limit headers
     res.setHeader('X-RateLimit-Limit', RATE_LIMIT_CONFIG.maxRequests);
     res.setHeader('X-RateLimit-Remaining', userLimit.remaining);
     res.setHeader('X-RateLimit-Reset', new Date(userLimit.resetTime).toISOString());
   }
-  
+
   // Add IP rate limit headers
   res.setHeader('X-RateLimit-Limit-IP', RATE_LIMIT_CONFIG.maxRequestsPerIP);
   res.setHeader('X-RateLimit-Remaining-IP', ipLimit.remaining);
   res.setHeader('X-RateLimit-Reset-IP', new Date(ipLimit.resetTime).toISOString());
-  
+
   // Continue to next middleware or handler
   // Note: In Vercel serverless functions, we don't use express-style next()
   // Instead, we return a result object that the handler checks
   return { allowed: true };
 }
 
-module.exports = rateLimit;
+export default rateLimit;
 

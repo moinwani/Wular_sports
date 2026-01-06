@@ -755,7 +755,30 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                                     </div>
                                                     <div className="step-content">
                                                         <h4>3. Live Tracking</h4>
-                                                        <p>You will receive a <strong>Tracking ID</strong> within 24 hours. You can track your package daily on the India Post website to see exactly where it has reached.</p>
+                                                        <p>You will receive a <strong>Tracking ID</strong> within 24 hours. You can track your package daily on the India Post website.</p>
+                                                        <a
+                                                            href="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="track-btn-india-post"
+                                                            style={{
+                                                                display: 'inline-flex',
+                                                                alignItems: 'center',
+                                                                gap: '0.5rem',
+                                                                marginTop: '0.8rem',
+                                                                padding: '0.6rem 1rem',
+                                                                backgroundColor: '#fff',
+                                                                color: '#d00202', /* India Post Red */
+                                                                border: '1px solid #d00202',
+                                                                borderRadius: '5px',
+                                                                textDecoration: 'none',
+                                                                fontWeight: 'bold',
+                                                                fontSize: '0.9rem',
+                                                                transition: 'all 0.2s'
+                                                            }}
+                                                        >
+                                                            Track on India Post <i className="fas fa-external-link-alt"></i>
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>

@@ -757,7 +757,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                                         <h4>3. Live Tracking</h4>
                                                         <p>You will receive a <strong>Tracking ID</strong> within 24 hours. You can track your package daily on the India Post website.</p>
                                                         <a
-                                                            href="https://www.indiapost.gov.in/_layouts/15/dop.portal.tracking/trackconsignment.aspx"
+                                                            href="https://www.indiapost.gov.in/home"
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="track-btn-india-post"

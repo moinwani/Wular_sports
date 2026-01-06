@@ -583,6 +583,35 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                     BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
                                 </button>
                             </div>
+
+                            {/* Order on WhatsApp Button */}
+                            <a
+                                href={createWhatsAppLink(`Hi, I want to order: ${product.name} (Qty: ${quantity})`)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-whatsapp-order-premium"
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '0.8rem',
+                                    width: '100%',
+                                    padding: '1rem',
+                                    marginTop: '1rem',
+                                    backgroundColor: '#25D366',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '1.1rem',
+                                    fontWeight: '600',
+                                    textDecoration: 'none',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                    transition: 'transform 0.2s ease'
+                                }}
+                            >
+                                <i className="fab fa-whatsapp" style={{ fontSize: '1.4rem' }}></i>
+                                ORDER ON WHATSAPP
+                            </a>
                         </div>
 
                         {/* Tabs Section */}

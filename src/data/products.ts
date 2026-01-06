@@ -120,7 +120,7 @@ export const products: ProductFull[] = [
     {
         id: "ak-47-honeycomb",
         name: "AK-47 Edition (Honeycomb Scoop)",
-        category: ["Hard Tennis", "Soft Tennis"],
+        category: ["Soft Tennis"],
         description: "Experience explosive hitting with the honeycomb scoop design. Lightweight yet powerful, it's engineered for dominating both hard and soft tennis ball games.",
         image: [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752932038/6332452326584994781_oau6do.jpg",

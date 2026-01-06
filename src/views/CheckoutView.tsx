@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
-import { sendOrderConfirmation } from '../services/email';
+// import { sendOrderConfirmation } from '../services/email';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 
@@ -171,9 +171,6 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             const orderId = await createOrder(orderData);
             console.log("Background order saved:", orderId);
 
-            // Try to send email
-            await sendOrderConfirmation({ id: orderId, ...orderData });
-
         } catch (err) {
             console.error("Background task failed:", err);
         }
@@ -260,8 +257,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 ...orderData
             };
 
-            // Send email confirmation (don't let this block execution)
-            sendOrderConfirmation(fullOrderDetails).catch(err => console.error("Email failed:", err));
+            // Email sending skipped as per request
+            // sendOrderConfirmation(fullOrderDetails).catch(err => console.error("Email failed:", err));
 
             // Complete the order flow
             onPlaceOrder({

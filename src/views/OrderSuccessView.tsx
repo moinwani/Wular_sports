@@ -41,8 +41,7 @@ export const OrderSuccessView: FC = () => {
                     lineHeight: '1.6',
                     color: '#ddd'
                 }}>
-                    Thank you for shopping with Wular Sports. We have sent a confirmation email to your inbox.
-                    Our team will process your order shortly.
+                    Your order has been placed successfully. Thanks for shopping with Wular Sports.
                 </p>
 
                 <div className="actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>

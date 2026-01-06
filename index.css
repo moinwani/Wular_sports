@@ -5139,3 +5139,45 @@ img[loading="lazy"] {
     }
 }
 
+
+
+/* Correcting Mobile Layout for Action Buttons as per User Request */
+@media (max-width: 768px) {
+    /* Override standard mobile column layout - forcing row */
+    .actions-row-premium {
+        flex-direction: row !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+    }
+
+    /* Quantity selector: compact on left */
+    .quantity-selector-premium {
+        width: auto !important;
+        flex: 0 0 auto !important; /* Do not grow */
+        padding: 0 0.2rem !important; /* Compact padding */
+    }
+    
+    .quantity-selector-premium button {
+        padding: 0 0.8rem !important;
+    }
+    
+    .quantity-selector-premium span {
+        min-width: 1.5rem !important;
+    }
+
+    /* Buy Now button: takes remaining space on right */
+    .btn-primary-premium {
+        width: auto !important;
+        flex: 1 !important; /* Take remaining space */
+        margin: 0 !important;
+        font-size: 0.95rem !important; /* Adjust text size to fit */
+        padding: 0 0.5rem !important;
+    }
+    
+    /* WhatsApp button stays full width below */
+    .btn-whatsapp-order-premium {
+        width: 100% !important;
+        margin-top: 1rem !important;
+    }
+}
+

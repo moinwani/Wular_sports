@@ -130,13 +130,13 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752932037/6332452326584994784_vfrqzg.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752932037/6332452326584994785_ovfohm.jpg"
         ],
-        price: 1850,
+        price: 1799,
         originalPrice: 3000,
         specs: [
-            "Weight: 900g – 1100g",
-            "Edge Thickness: 44mm – 48mm",
-            "Height: 35–36 inches",
-            "Face Width: 4.4 inches",
+            "Weight: 820g – 950g",
+            "Edge Thickness: 40mm – 45mm",
+            "Height: 35 inches",
+            "Face Width: 4.3 inches",
             "Free Delivery",
             "Free Bat Bag",
             "Premium Toe Guard",

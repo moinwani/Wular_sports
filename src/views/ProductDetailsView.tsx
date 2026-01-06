@@ -23,7 +23,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
-    
+
     // Scroll control state
     const [scrollPhase, setScrollPhase] = useState<ScrollPhase>('images');
     const [isMobile, setIsMobile] = useState(false);
@@ -56,15 +56,15 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const checkImageScrollComplete = useCallback(() => {
         const scrollContainer = imageScrollContainerRef.current;
         if (!scrollContainer || isMobile) return;
-        
+
         const scrollTop = scrollContainer.scrollTop;
         const scrollHeight = scrollContainer.scrollHeight;
         const clientHeight = scrollContainer.clientHeight;
         const maxScroll = scrollHeight - clientHeight;
-        
+
         // Add small threshold to account for rounding
         const threshold = 5;
-        
+
         if (maxScroll <= threshold) {
             // No scroll needed or already at bottom, move to content phase
             if (scrollPhase === 'images') {
@@ -72,10 +72,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             }
             return;
         }
-        
+
         const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
         imageScrollProgressRef.current = progress;
-        
+
         // Check if we're at or near the bottom (with threshold)
         if (scrollTop >= maxScroll - threshold && scrollPhase === 'images') {
             setScrollPhase('content');
@@ -85,16 +85,16 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     // Check content scroll completion
     const checkContentScrollComplete = useCallback(() => {
         if (!contentSectionRef.current || isMobile || scrollPhase !== 'content') return;
-        
+
         const content = contentSectionRef.current;
         const scrollTop = content.scrollTop;
         const scrollHeight = content.scrollHeight;
         const clientHeight = content.clientHeight;
         const maxScroll = scrollHeight - clientHeight;
-        
+
         // Add small threshold to account for rounding
         const threshold = 5;
-        
+
         if (maxScroll <= threshold) {
             // No scroll needed or already at bottom, move to normal phase
             if (scrollPhase === 'content') {
@@ -102,10 +102,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             }
             return;
         }
-        
+
         const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
         contentScrollProgressRef.current = progress;
-        
+
         // Check if we're at or near the bottom (with threshold)
         if (scrollTop >= maxScroll - threshold && scrollPhase === 'content') {
             setScrollPhase('normal');
@@ -116,21 +116,21 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const handleWheel = useCallback((e: WheelEvent) => {
         // Ignore on mobile - use normal scroll
         if (isMobile) return;
-        
+
         // Only intercept during controlled phases (images or content)
         if (scrollPhase === 'images' || scrollPhase === 'content') {
             // ALWAYS prevent default page scroll during controlled phases
             e.preventDefault();
             e.stopPropagation();
             e.stopImmediatePropagation();
-            
+
             // Prevent simultaneous scrolling
             if (isScrollingRef.current) return;
             isScrollingRef.current = true;
-            
+
             const delta = e.deltaY;
             const scrollSpeed = 1.5; // Smooth scroll speed
-            
+
             // STEP 1: Scroll Images (Left Side) - FIRST PRIORITY
             if (scrollPhase === 'images' && imageScrollContainerRef.current) {
                 const scrollContainer = imageScrollContainerRef.current;
@@ -138,20 +138,20 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 const scrollHeight = scrollContainer.scrollHeight;
                 const clientHeight = scrollContainer.clientHeight;
                 const maxScroll = scrollHeight - clientHeight;
-                
+
                 // Check if there's anything to scroll
                 if (maxScroll > 10) {
                     // Calculate new scroll position
                     const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-                    
+
                     // Scroll the images container
                     scrollContainer.scrollTop = newScroll;
-                    
+
                     // Check completion after scroll
                     requestAnimationFrame(() => {
                         const newScrollTop = scrollContainer.scrollTop;
                         const remainingScroll = maxScroll - newScrollTop;
-                        
+
                         // If we've reached the bottom (within 10px threshold), move to next phase
                         if (remainingScroll <= 10) {
                             scrollContainer.scrollTop = maxScroll; // Ensure we're exactly at bottom
@@ -172,20 +172,20 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 const scrollHeight = content.scrollHeight;
                 const clientHeight = content.clientHeight;
                 const maxScroll = scrollHeight - clientHeight;
-                
+
                 // Check if there's anything to scroll
                 if (maxScroll > 10) {
                     // Calculate new scroll position
                     const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-                    
+
                     // Scroll the content container
                     content.scrollTop = newScroll;
-                    
+
                     // Check completion after scroll
                     requestAnimationFrame(() => {
                         const newScrollTop = content.scrollTop;
                         const remainingScroll = maxScroll - newScrollTop;
-                        
+
                         // If we've reached the bottom (within 10px threshold), move to normal scroll
                         if (remainingScroll <= 10) {
                             content.scrollTop = maxScroll; // Ensure we're exactly at bottom
@@ -212,7 +212,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             document.documentElement.style.overflow = '';
             return;
         }
-        
+
         // Desktop: Control scroll behavior based on phase
         if (scrollPhase === 'images' || scrollPhase === 'content') {
             // STRICTLY prevent body/page scroll during controlled phases
@@ -220,7 +220,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             document.body.style.position = 'fixed';
             document.body.style.width = '100%';
             document.documentElement.style.overflow = 'hidden';
-            
+
             // Lock window scroll position
             const scrollY = window.scrollY;
             window.scrollTo(0, scrollY);
@@ -231,10 +231,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             document.body.style.width = '';
             document.documentElement.style.overflow = '';
         }
-        
+
         // Listen to ALL wheel events on the window (capture phase to catch early)
         window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-        
+
         // Also prevent any scroll events during controlled phases
         const preventScroll = (e: Event) => {
             if (scrollPhase === 'images' || scrollPhase === 'content') {
@@ -243,9 +243,9 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 window.scrollTo(window.scrollX, window.scrollY); // Maintain position
             }
         };
-        
+
         window.addEventListener('scroll', preventScroll, { passive: false, capture: true });
-        
+
         return () => {
             window.removeEventListener('wheel', handleWheel, { capture: true });
             window.removeEventListener('scroll', preventScroll, { capture: true });
@@ -260,22 +260,22 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     // Monitor image gallery scroll for phase transition detection
     useEffect(() => {
         if (isMobile || scrollPhase !== 'images') return;
-        
+
         const scrollContainer = imageScrollContainerRef.current;
         if (!scrollContainer) return;
-        
+
         const handleScroll = () => {
             // Check if images are fully scrolled
             const scrollTop = scrollContainer.scrollTop;
             const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
             const remainingScroll = maxScroll - scrollTop;
-            
+
             // If at bottom (within 10px), transition to content phase
             if (remainingScroll <= 10 && scrollPhase === 'images') {
                 setScrollPhase('content');
             }
         };
-        
+
         scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
         return () => scrollContainer.removeEventListener('scroll', handleScroll);
     }, [scrollPhase, isMobile]);
@@ -283,22 +283,22 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     // Monitor content scroll for phase transition detection
     useEffect(() => {
         if (isMobile || scrollPhase !== 'content') return;
-        
+
         const content = contentSectionRef.current;
         if (!content) return;
-        
+
         const handleScroll = () => {
             // Check if content is fully scrolled
             const scrollTop = content.scrollTop;
             const maxScroll = content.scrollHeight - content.clientHeight;
             const remainingScroll = maxScroll - scrollTop;
-            
+
             // If at bottom (within 10px), transition to normal scroll phase
             if (remainingScroll <= 10 && scrollPhase === 'content') {
                 setScrollPhase('normal');
             }
         };
-        
+
         content.addEventListener('scroll', handleScroll, { passive: true });
         return () => content.removeEventListener('scroll', handleScroll);
     }, [scrollPhase, isMobile]);
@@ -309,7 +309,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             setScrollPhase('images');
             imageScrollProgressRef.current = 0;
             contentScrollProgressRef.current = 0;
-            
+
             // Reset scroll positions
             if (imageScrollContainerRef.current) {
                 imageScrollContainerRef.current.scrollTop = 0;
@@ -335,12 +335,20 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
     if (!product) return null;
 
-    const hasSizes = product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
-    const discountPercentage = product.originalPrice 
-        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+    // EXCEPTION: AK-47 Honeycomb is only 35 inch, so no size selector for it
+    const isHoneycomb = product.id === 'ak-47-honeycomb';
+    const hasSizes = !isHoneycomb && product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
+    const discountPercentage = product.originalPrice
+        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
 
     const handleAddToCartClick = () => {
+        if (isHoneycomb) {
+            // Automatically add 35 inch for Honeycomb
+            onAddToCart(product, '35 inch');
+            return;
+        }
+
         if (hasSizes && !selectedSize) {
             setSizeError(true);
             // Scroll to size selector smoothly
@@ -418,7 +426,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             <div className="container">
                 <div className={`product-details-grid-vertical ${isMobile ? 'mobile-layout' : ''}`}>
                     {/* Left Column: Images (Vertical on Desktop, Horizontal Swipe on Mobile) */}
-                    <div 
+                    <div
                         ref={imageGalleryRef}
                         className={`product-gallery-section-vertical ${scrollPhase === 'images' && !isMobile ? 'scroll-active' : ''}`}
                     >
@@ -447,7 +455,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                             )
                         ) : (
                             <div className={isMobile ? "horizontal-image-gallery-mobile" : "vertical-gallery-scroll-container"}>
-                                <div 
+                                <div
                                     className={isMobile ? "horizontal-gallery-slide" : "vertical-gallery-image-item"}
                                     onClick={() => {
                                         setLightboxIndex(0);
@@ -465,14 +473,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                     </div>
 
                     {/* Right Column: Product Info - Sticky */}
-                    <div 
+                    <div
                         ref={contentSectionRef}
                         className={`product-info-section-sticky ${scrollPhase === 'content' && !isMobile ? 'scroll-active' : ''} ${scrollPhase === 'normal' && !isMobile ? 'scroll-normal' : ''}`}
                     >
                         {/* Above the Fold Section - Clean & Premium */}
                         <div className="product-header-clean">
                             <h1 className="product-title-premium">{product.name}</h1>
-                            
+
                             {/* Short one-line description */}
                             <p className="product-subtitle-premium">
                                 {product.category.join(' | ')} Cricket Bat
@@ -527,19 +535,19 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                         {/* Tabs Section */}
                         <div className="product-tabs-container">
                             <div className="product-tabs">
-                                <button 
+                                <button
                                     className={`product-tab ${openSection === 'description' ? 'active' : ''}`}
                                     onClick={() => toggleSection('description')}
                                 >
                                     DESCRIPTION
                                 </button>
-                                <button 
+                                <button
                                     className={`product-tab ${openSection === 'included' ? 'active' : ''}`}
                                     onClick={() => toggleSection('included')}
                                 >
                                     WHAT'S INCLUDED
                                 </button>
-                                <button 
+                                <button
                                     className={`product-tab ${openSection === 'contact' ? 'active' : ''}`}
                                     onClick={() => toggleSection('contact')}
                                 >
@@ -556,8 +564,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                             <h3 className="specs-title">Product Details</h3>
                                             <ul className="specs-list-clean">
                                                 {product.specs
-                                                    .filter(spec => 
-                                                        !spec.toLowerCase().includes('free') && 
+                                                    .filter(spec =>
+                                                        !spec.toLowerCase().includes('free') &&
                                                         !spec.toLowerCase().includes('delivery') &&
                                                         !spec.toLowerCase().includes('included')
                                                     )
@@ -632,7 +640,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                         <div className="contact-section-clean">
                                             <h3 className="contact-title">Need Help Choosing?</h3>
                                             <p className="contact-subtitle">Contact us for personalized assistance</p>
-                                            
+
                                             <div className="contact-options-clean">
                                                 <a
                                                     href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
@@ -646,7 +654,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                                         <span>Typically replies within 5 minutes</span>
                                                     </div>
                                                 </a>
-                                                
+
                                                 <a
                                                     href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
                                                     target="_blank"
@@ -659,7 +667,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                                         <span>See the bat live before buying</span>
                                                     </div>
                                                 </a>
-                                                
+
                                                 <a
                                                     href="tel:+919320622451"
                                                     className="contact-option-btn call"

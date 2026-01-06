@@ -73,13 +73,14 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752218593/photo_6305555205562943194_w_qrlxpr.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752218593/photo_6305555205562943196_w_uosoj9.jpg"
         ],
-        price: 2400,
-        originalPrice: 3500,
+        price: 3000,
+        originalPrice: 4500,
         specs: [
-            "Weight: 800-1000 grams",
-            "Edge: 45-50 mm",
+            "Weight: 950-1100 grams",
+            "Edge: 46-52 mm",
             "Height: Available in 35 and 36 inches",
             "Face: 4.4 inches",
+            "Wood: Seasoned for approx. 1 year",
             "Free delivery",
             "Free bat bag",
             "Premium toe guard",

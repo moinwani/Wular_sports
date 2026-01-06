@@ -10,7 +10,7 @@ import { SEOHead } from '../components/common/SEOHead';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 
 export interface ProductDetailsViewProps {
-    onAddToCart: (product: ProductFull, size: string) => void;
+    onAddToCart: (product: ProductFull, size: string, quantity?: number) => void;
 }
 
 type ScrollPhase = 'images' | 'content' | 'normal';
@@ -19,6 +19,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [selectedSize, setSelectedSize] = useState<string>('');
+    const [quantity, setQuantity] = useState(1);
     const [sizeError, setSizeError] = useState(false);
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -361,8 +362,11 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             return;
         }
         setSizeError(false);
-        onAddToCart(product, selectedSize);
+        onAddToCart(product, selectedSize, quantity);
     };
+
+    const increaseQuantity = () => setQuantity(prev => prev + 1);
+    const decreaseQuantity = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
     const handleSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedSize(e.target.value);
@@ -525,11 +529,60 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                 </div>
                             )}
 
-                            {/* Primary CTA */}
-                            <button className="btn-primary-premium" onClick={handleAddToCartClick}>
-                                <i className="fas fa-shopping-bag"></i>
-                                BUY NOW - ₹{product.price.toLocaleString('en-IN')}
-                            </button>
+                            {/* Primary CTA with Quantity */}
+                            <div className="actions-row-premium" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch' }}>
+                                {/* Quantity Selector */}
+                                <div className="quantity-selector-premium" style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    borderRadius: '8px',
+                                    background: 'rgba(0,0,0,0.2)'
+                                }}>
+                                    <button
+                                        onClick={decreaseQuantity}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: 'white',
+                                            padding: '0 1rem',
+                                            fontSize: '1.2rem',
+                                            cursor: 'pointer',
+                                            height: '100%'
+                                        }}
+                                        aria-label="Decrease quantity"
+                                    >
+                                        −
+                                    </button>
+                                    <span style={{
+                                        color: 'white',
+                                        fontSize: '1.1rem',
+                                        fontWeight: '600',
+                                        minWidth: '2rem',
+                                        textAlign: 'center'
+                                    }}>{quantity}</span>
+                                    <button
+                                        onClick={increaseQuantity}
+                                        style={{
+                                            background: 'none',
+                                            border: 'none',
+                                            color: 'white',
+                                            padding: '0 1rem',
+                                            fontSize: '1.2rem',
+                                            cursor: 'pointer',
+                                            height: '100%'
+                                        }}
+                                        aria-label="Increase quantity"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+
+                                <button className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
+                                    <i className="fas fa-shopping-bag"></i>
+                                    BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
+                                </button>
+                            </div>
                         </div>
 
                         {/* Tabs Section */}

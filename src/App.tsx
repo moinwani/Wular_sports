@@ -74,7 +74,7 @@ const AppContent: React.FC = () => {
         }
     };
 
-    const addToCart = (product: ProductFull, size: string | null) => {
+    const addToCart = (product: ProductFull, size: string | null, quantity: number = 1) => {
         setCart(prev => {
             const sizeKey = size || 'default';
             const existing = prev.find(item => item.id === product.id && (item.size || 'default') === sizeKey);
@@ -82,11 +82,11 @@ const AppContent: React.FC = () => {
             if (existing) {
                 return prev.map(item =>
                     (item.id === product.id && (item.size || 'default') === sizeKey)
-                        ? { ...item, quantity: item.quantity + 1 }
+                        ? { ...item, quantity: item.quantity + quantity }
                         : item
                 );
             }
-            return [...prev, { ...product, size: size || undefined, quantity: 1 }];
+            return [...prev, { ...product, size: size || undefined, quantity: quantity }];
         });
         setIsCartOpen(true);
         showToast(`${product.name} added to cart!`);
@@ -131,7 +131,7 @@ const AppContent: React.FC = () => {
                         onWatchVideo={() => { }}
                     />} />
 
-                    <Route path="/product/:id" element={<ProductDetailsView onAddToCart={(p, s) => addToCart(p, s)} />} />
+                    <Route path="/product/:id" element={<ProductDetailsView onAddToCart={(p, s, q) => addToCart(p, s, q)} />} />
                     <Route path="/privacy-policy" element={<PrivacyPolicyView />} />
                     <Route path="/return-policy" element={<ReturnPolicyView />} />
                     <Route path="/terms-conditions" element={<TermsAndConditionsView />} />

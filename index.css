@@ -5181,3 +5181,40 @@ img[loading="lazy"] {
     }
 }
 
+
+
+/* Fix: Increase Button Height on Mobile */
+@media (max-width: 768px) {
+    /* Set consistent height for all main interaction elements */
+    .btn-primary-premium, 
+    .quantity-selector-premium,
+    .btn-whatsapp-order-premium,
+    .size-option-premium {
+        min-height: 50px !important;
+        height: 50px !important;
+    }
+
+    /* Vertical centering fix for buttons */
+    .btn-primary-premium {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 0.5rem !important; /* Keep side padding small to fit text */
+    }
+
+    /* Vertical centering fix for quantity selector */
+    .quantity-selector-premium {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 !important;
+    }
+    
+    .quantity-selector-premium button {
+        height: 100% !important; /* Full height touch target */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 1rem !important;
+    }
+}
+

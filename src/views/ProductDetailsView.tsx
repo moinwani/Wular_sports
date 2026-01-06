@@ -630,6 +630,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                     WHAT'S INCLUDED
                                 </button>
                                 <button
+                                    className={`product-tab ${openSection === 'shipping' ? 'active' : ''}`}
+                                    onClick={() => toggleSection('shipping')}
+                                >
+                                    SHIPPING
+                                </button>
+                                <button
                                     className={`product-tab ${openSection === 'contact' ? 'active' : ''}`}
                                     onClick={() => toggleSection('contact')}
                                 >
@@ -711,6 +717,51 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                             <div className="value-highlight">
                                                 <strong>Total Value: ₹{product.price.toLocaleString('en-IN')}</strong>
                                                 <span className="you-save">You Save: ₹800 (All Free)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* SHIPPING Tab */}
+                                {openSection === 'shipping' && (
+                                    <div className="tab-panel active">
+                                        <div className="shipping-section-clean">
+                                            <h3 className="shipping-title">When Will I Get My Order?</h3>
+
+                                            <div className="shipping-steps">
+                                                <div className="shipping-step">
+                                                    <div className="step-icon">
+                                                        <i className="fas fa-box-open"></i>
+                                                    </div>
+                                                    <div className="step-content">
+                                                        <h4>1. Fast Dispatch</h4>
+                                                        <p>We dispatch your bat within <strong>24 hours</strong> of placing the order.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="shipping-step">
+                                                    <div className="step-icon">
+                                                        <i className="fas fa-shipping-fast"></i>
+                                                    </div>
+                                                    <div className="step-content">
+                                                        <h4>2. Reliable Delivery</h4>
+                                                        <p>Shipped via <strong>India Post</strong> for secure and reliable handling. Expected delivery in <strong>6-7 business days</strong>.</p>
+                                                    </div>
+                                                </div>
+
+                                                <div className="shipping-step">
+                                                    <div className="step-icon">
+                                                        <i className="fas fa-map-marker-alt"></i>
+                                                    </div>
+                                                    <div className="step-content">
+                                                        <h4>3. Live Tracking</h4>
+                                                        <p>You will receive a <strong>Tracking ID</strong> within 24 hours. You can track your package daily on the India Post website to see exactly where it has reached.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="shipping-note-box">
+                                                <p><i className="fas fa-shield-alt"></i> <strong>Safe & Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p>
                                             </div>
                                         </div>
                                     </div>

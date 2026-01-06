@@ -127,33 +127,44 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     };
 
     const handlePayment = async (orderId: string, orderDetails: any, sanitizedFormData?: typeof formData) => {
-        // Check if Razorpay script is loaded
-        if (!isLoaded) {
-            console.error('Razorpay script not loaded, attempting to load...');
-            const loaded = await loadRazorpay();
-            if (!loaded) {
-                setFormError('Payment gateway failed to load. Please refresh the page and try again.');
+        // Set a timeout to prevent infinite processing
+        const timeoutId = setTimeout(() => {
+            console.error('Payment initialization timeout - taking too long');
+            setFormError('Payment is taking too long. Please refresh and try again, or use Cash on Delivery.');
+            setIsProcessing(false);
+        }, 30000); // 30 second timeout
+
+        try {
+            // Check if Razorpay script is loaded
+            if (!isLoaded) {
+                console.log('Razorpay script not loaded, attempting to load...');
+                const loaded = await loadRazorpay();
+                if (!loaded) {
+                    clearTimeout(timeoutId);
+                    setFormError('Payment gateway failed to load. Please refresh the page and try again.');
+                    setIsProcessing(false);
+                    return;
+                }
+            }
+
+            // Verify Razorpay is available on window
+            if (!window.Razorpay) {
+                clearTimeout(timeoutId);
+                console.error('Razorpay not available on window object');
+                setFormError('Payment gateway not available. Please refresh the page and try again.');
                 setIsProcessing(false);
                 return;
             }
-        }
 
-        // Verify Razorpay is available on window
-        if (!window.Razorpay) {
-            console.error('Razorpay not available on window object');
-            setFormError('Payment gateway not available. Please refresh the page and try again.');
-            setIsProcessing(false);
-            return;
-        }
-
-        // Check if Razorpay Key ID is configured
-        const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
-        if (!razorpayKeyId) {
-            console.error('Razorpay Key ID not configured');
-            setFormError('Payment gateway not configured. Please contact support.');
-            setIsProcessing(false);
-            return;
-        }
+            // Check if Razorpay Key ID is configured
+            const razorpayKeyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+            if (!razorpayKeyId) {
+                clearTimeout(timeoutId);
+                console.error('Razorpay Key ID not configured');
+                setFormError('Payment gateway not configured. Please contact support.');
+                setIsProcessing(false);
+                return;
+            }
 
         // Use sanitized data if provided, otherwise re-validate
         let safeFormData = sanitizedFormData || formData;
@@ -274,15 +285,20 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
             // Open Razorpay checkout
             console.log('Attempting to open Razorpay checkout modal...');
+            clearTimeout(timeoutId); // Clear timeout since we're about to open
+            
             try {
                 rzp1.open();
-                console.log('Razorpay checkout modal opened successfully');
+                console.log('✅ Razorpay checkout modal opened successfully');
+                // Don't set isProcessing to false here - let Razorpay handle it
             } catch (openError: any) {
-                console.error('Error opening Razorpay checkout:', openError);
-                setFormError(`Failed to open payment gateway: ${openError?.message || 'Unknown error'}`);
+                clearTimeout(timeoutId);
+                console.error('❌ Error opening Razorpay checkout:', openError);
+                setFormError(`Failed to open payment gateway: ${openError?.message || 'Unknown error'}. Please try again or use Cash on Delivery.`);
                 setIsProcessing(false);
             }
         } catch (error: any) {
+            clearTimeout(timeoutId);
             console.error("Error in payment flow:", error);
             console.error("Error details:", {
                 message: error?.message,

@@ -38,11 +38,16 @@ export interface VerifyPaymentResponse {
 export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<CreateOrderResponse> => {
     const API_BASE_URL = import.meta.env.VITE_RAZORPAY_BACKEND_URL || '/api';
     
-    console.log('Creating Razorpay order:', {
+    console.log('🚀 Creating Razorpay order:', {
         url: `${API_BASE_URL}/create-razorpay-order`,
         amount: data.amount,
-        backendUrl: API_BASE_URL
+        backendUrl: API_BASE_URL,
+        hasBackendUrl: !!import.meta.env.VITE_RAZORPAY_BACKEND_URL
     });
+
+    // Add timeout to prevent hanging
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
     try {
         const response = await fetch(`${API_BASE_URL}/create-razorpay-order`, {
@@ -56,29 +61,39 @@ export const createRazorpayOrder = async (data: CreateOrderRequest): Promise<Cre
                 receipt: data.receipt,
                 notes: data.notes || {},
             }),
+            signal: controller.signal
         });
 
-        console.log('Razorpay order response status:', response.status);
+        clearTimeout(timeoutId);
+        console.log('📡 Razorpay order response status:', response.status, response.statusText);
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-            console.error('Razorpay order creation failed:', errorData);
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch {
+                errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+            }
+            console.error('❌ Razorpay order creation failed:', errorData);
             throw new Error(errorData.error || errorData.message || `Failed to create order (${response.status})`);
         }
 
         const result = await response.json();
-        console.log('Razorpay order created successfully:', result);
+        console.log('✅ Razorpay order created successfully:', result);
         return result;
     } catch (error: any) {
-        console.error('Error creating Razorpay order:', error);
+        clearTimeout(timeoutId);
+        console.error('❌ Error creating Razorpay order:', error);
         
         // Provide more specific error messages
-        if (error.message) {
+        if (error.name === 'AbortError') {
+            throw new Error('Request timeout: Payment server is not responding. Please check your connection and try again.');
+        } else if (error.message) {
             throw error;
-        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
-            throw new Error('Network error: Cannot reach payment server. Please check your internet connection.');
+        } else if (error.name === 'TypeError' && error.message?.includes('fetch')) {
+            throw new Error('Network error: Cannot reach payment server. Please check your internet connection and verify the backend URL is correct.');
         } else {
-            throw new Error('Failed to create payment order. Please try again.');
+            throw new Error('Failed to create payment order. Please try again or use Cash on Delivery.');
         }
     }
 };

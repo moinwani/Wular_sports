@@ -25,7 +25,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         city: '',
         state: '',
         zip: '',
-        paymentMethod: 'cod'
+        paymentMethod: 'full'
     });
     const [formError, setFormError] = useState('');
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -84,9 +84,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         },
     };
 
-    const calculateTotal = () => {
-        return total;
-    };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -106,20 +104,35 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         });
     };
 
-    const openWhatsAppOrder = (orderId: string, orderDetails: any, sanitizedData: typeof formData) => {
+    const openWhatsAppOrder = (orderId: string, sanitizedData: typeof formData) => {
+        const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
+        const bookingAmount = totalQty * 300;
+        const balance = total - bookingAmount;
+        const isCOD = sanitizedData.paymentMethod === 'cod';
+
         // Construct WhatsApp message
         const itemsList = cart.map((item, idx) =>
             `${idx + 1}. ${item.name} (${item.size || 'N/A'}) x${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
         ).join('%0A');
 
-        const message = `*New Order Request! 🏏*%0A%0A` +
+        let paymentDetail = '';
+        if (isCOD) {
+            paymentDetail = `*Payment Method:* Cash on Delivery (COD)%0A` +
+                `*Booking Amount (Pre-paid):* ₹${bookingAmount.toLocaleString('en-IN')} (₹300/bat)%0A` +
+                `*Balance at Delivery:* ₹${balance.toLocaleString('en-IN')}`;
+        } else {
+            paymentDetail = `*Payment Method:* Full Payment (Pre-paid)%0A` +
+                `*Total Amount:* ₹${total.toLocaleString('en-IN')}`;
+        }
+
+        const message = `*New Order Request (${isCOD ? 'COD' : 'Full Payment'})! 🏏*%0A%0A` +
             `*Order ID:* ${orderId}%0A` +
             `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
             `*Phone:* ${sanitizedData.phone}%0A` +
             `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}%0A%0A` +
             `*Items:*%0A${itemsList}%0A%0A` +
-            `*Total Amount:* ₹${total.toLocaleString('en-IN')}%0A` +
-            `*Payment Method:* Online Payment Request (Please share payment details)`;
+            `${paymentDetail}%0A%0A` +
+            `Please share payment details to confirm my order!`;
 
         // Open WhatsApp
         const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
@@ -127,54 +140,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     };
 
     // Helper to create order with timeout so it doesn't hang forever
-    const createOrderWithTimeout = async (data: any): Promise<string> => {
-        const timeout = new Promise<string>((_, reject) =>
-            setTimeout(() => reject(new Error("Database timeout")), 10000)
-        );
 
-        try {
-            return await Promise.race([createOrder(data), timeout]);
-        } catch (e) {
-            console.error("Database save failed, generating local ID");
-            // Fallback: generate a local ID so the user flow doesn't break
-            return 'OFFLINE-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-        }
-    };
-
-    // Helper to handle background tasks for WhatsApp orders
-    const createOrderBackground = async (sanitizedData: any, tempId: string) => {
-        try {
-            const orderData = {
-                customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
-                customerEmail: sanitizedData.email || '',
-                customerPhone: sanitizedData.phone,
-                customerAddress: {
-                    street: sanitizedData.address,
-                    city: sanitizedData.city,
-                    state: sanitizedData.state,
-                    pincode: sanitizedData.zip
-                },
-                items: cart.map(item => ({
-                    productId: item.id,
-                    productName: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    size: item.size
-                })),
-                total: total,
-                status: 'pending' as const,
-                paymentStatus: 'pending' as const,
-                paymentMethod: 'online' as const
-            };
-
-            // Try to save to DB
-            const orderId = await createOrder(orderData);
-            console.log("Background order saved:", orderId);
-
-        } catch (err) {
-            console.error("Background task failed:", err);
-        }
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -195,37 +161,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         setIsProcessing(true);
 
         try {
-            // Priority 1: Open WhatsApp immediately for Online Payment
-            // We do this concurrently or first to ensure the user gets the action they want
-            if (sanitizedData.paymentMethod === 'online') {
+            // Generate order ID
+            const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-                // Create a temporary ID if we don't have one yet
-                const tempId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            // Open WhatsApp immediately - both flows now use WhatsApp
+            openWhatsAppOrder(orderId, sanitizedData);
 
-                // Open WhatsApp immediately
-                openWhatsAppOrder(tempId, { ...sanitizedData, items: cart, total }, sanitizedData);
-
-                // Continue with background tasks (saving order, sending email)
-                // We don't await these to slow down the UI
-                createOrderBackground(sanitizedData, tempId);
-
-                // Complete the flow immediately for the user
-                onPlaceOrder({
-                    id: tempId,
-                    items: cart,
-                    total: calculateTotal(),
-                    shipping: sanitizedData,
-                    paymentMethod: 'online',
-                    paymentId: 'whatsapp-pending',
-                    orderDate: new Date().toISOString()
-                });
-
-                setIsProcessing(false);
-                return;
-            }
-
-            // For COD, we follow the standard flow
-            // 1. Create Order in Firebase
+            // Execute background save to DB
             const orderData = {
                 customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
                 customerEmail: sanitizedData.email || '',
@@ -246,39 +188,27 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 total: total,
                 status: 'pending' as const,
                 paymentStatus: 'pending' as const,
-                paymentMethod: 'cod' as const
+                paymentMethod: sanitizedData.paymentMethod as any
             };
 
-            const orderId = await createOrderWithTimeout(orderData);
+            // Non-blocking background save
+            createOrder(orderData).catch(err => console.error("Firebase save failed:", err));
 
-            // Prepare order object for email (combining ID with data)
-            const fullOrderDetails = {
-                id: orderId,
-                ...orderData
-            };
-
-            // Email sending skipped as per request
-            // sendOrderConfirmation(fullOrderDetails).catch(err => console.error("Email failed:", err));
-
-            // Complete the order flow
+            // Complete the flow immediately for the user
             onPlaceOrder({
                 id: orderId,
                 items: cart,
-                total: calculateTotal(),
+                total: total,
                 shipping: sanitizedData,
-                paymentMethod: 'cod',
+                paymentMethod: sanitizedData.paymentMethod,
                 orderDate: new Date().toISOString()
             });
 
             setIsProcessing(false);
 
         } catch (error: any) {
-            console.error("Order creation failed:", error);
-            // Even if Firebase fails, if it's online payment, we trust the link opened.
-            // For COD, we show error.
-            if (sanitizedData.paymentMethod !== 'online') {
-                setFormError(`Failed to place order. Please try again or contact us on WhatsApp.`);
-            }
+            console.error("Order process failed:", error);
+            setFormError(`Something went wrong. Please contact us on WhatsApp.`);
             setIsProcessing(false);
         }
     };
@@ -512,6 +442,20 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         <div className="payment-section">
                             <h3>Payment Method</h3>
                             <div className="payment-options">
+                                <label className={`payment-option ${formData.paymentMethod === 'full' ? 'selected' : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="full"
+                                        checked={formData.paymentMethod === 'full'}
+                                        onChange={handleInputChange}
+                                        disabled={isProcessing}
+                                    />
+                                    <div className="payment-option-content">
+                                        <span><i className="fas fa-check-circle"></i> Full Payment (via WhatsApp)</span>
+                                        <small>Fastest processing & priority delivery</small>
+                                    </div>
+                                </label>
                                 <label className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
                                     <input
                                         type="radio"
@@ -522,31 +466,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                     />
                                     <div className="payment-option-content">
-                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery (COD)</span>
-                                        <small>Pay when you receive</small>
-                                    </div>
-                                </label>
-                                <label className={`payment-option ${formData.paymentMethod === 'online' ? 'selected' : ''}`}>
-                                    <input
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="online"
-                                        checked={formData.paymentMethod === 'online'}
-                                        onChange={handleInputChange}
-                                        disabled={isProcessing}
-                                    />
-                                    <div className="payment-option-content">
-                                        <span><i className="fas fa-brands fa-whatsapp"></i> Order via WhatsApp</span>
-                                        <small>Coordinate payment securely on WhatsApp</small>
+                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery (via WhatsApp)</span>
+                                        <small>Pay ₹300 per bat now to confirm</small>
                                     </div>
                                 </label>
                             </div>
-                            {formData.paymentMethod === 'online' && (
-                                <div className="payment-security-note">
-                                    <i className="fas fa-info-circle"></i>
-                                    <p>You will be redirected to WhatsApp to confirm your order and receive payment details (UPI/Bank Transfer). It's fast and personal!</p>
-                                </div>
-                            )}
+
+                            <div className="payment-security-note">
+                                <i className="fas fa-info-circle"></i>
+                                {formData.paymentMethod === 'cod' ? (
+                                    <p>
+                                        To confirm your COD order, a booking amount of
+                                        <strong> ₹{(cart.reduce((acc, item) => acc + item.quantity, 0) * 300).toLocaleString('en-IN')}</strong>
+                                        ({cart.reduce((acc, item) => acc + item.quantity, 0)} bat(s) × ₹300) is required.
+                                        The balance <strong> ₹{(total - cart.reduce((acc, item) => acc + item.quantity, 0) * 300).toLocaleString('en-IN')}</strong> will be paid at delivery.
+                                    </p>
+                                ) : (
+                                    <p>You will be redirected to WhatsApp to confirm your order and pay the full amount of <strong>₹{total.toLocaleString('en-IN')}</strong> securely. No extra fees!</p>
+                                )}
+                            </div>
                         </div>
 
                         <button

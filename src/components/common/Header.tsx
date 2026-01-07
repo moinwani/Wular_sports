@@ -197,7 +197,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
                     <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
                         <img
-                            src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1767773622/photo_6264592440312400739_y_o8uv3r.jpg"
+                            src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png"
                             alt="Wular Sports Logo"
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
                         />

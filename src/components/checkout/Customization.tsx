@@ -39,13 +39,14 @@ export const Customization = memo(() => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const tennisOptionFields = ['bladeType', 'finish', 'weight', 'height', 'toeGuard', 'sticker', 'bag'];
+    const tennisOptionFields = ['bladeType', 'finish', 'weight', 'height', 'handleType', 'toeGuard', 'sticker', 'bag'];
     const leatherOptionFields = ['weight', 'nameEngraving', 'toeGuard', 'sticker', 'bag'];
 
     const options: Record<string, string[]> = {
         bladeType: ['Single Blade', 'Double Blade'],
         finish: ['Polished', 'Raw (No Polish)', 'Burned', 'Burn + Polish'],
         height: ['35 inches', '36 inches'],
+        handleType: ['Alpine Handle', 'Singapore Cane Handle'],
         toeGuard: ['Premium Chemical Toe Guard', 'Normal Toe Guard'],
         sticker: ['Wular Sports Sticker', 'Other Brand Sticker', 'No Sticker'],
         bag: ['Cushioned Premium Bag', 'Normal Bag'],
@@ -65,12 +66,13 @@ export const Customization = memo(() => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        // Reset weight if blade type changes to ensure consistent options
+        // Reset dependent fields if blade type changes
         if (name === 'bladeType') {
             setFormData(prev => ({
                 ...prev,
                 [name]: value,
-                weight: ''
+                weight: '',
+                handleType: value === 'Double Blade' ? 'Singapore Cane Handle' : ''
             }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
@@ -90,6 +92,9 @@ export const Customization = memo(() => {
         const requiredFields = batType === 'tennis' ? tennisOptionFields : leatherOptionFields;
 
         requiredFields.forEach(field => {
+            // HandleType is only required for Single Blade in Tennis
+            if (field === 'handleType' && formData.bladeType === 'Double Blade') return;
+
             if (!formData[field]) {
                 newErrors[field] = 'Selection required';
             }
@@ -114,6 +119,7 @@ export const Customization = memo(() => {
             finish: "Finish Type",
             weight: "Weight Range",
             height: "Bat Height",
+            handleType: "Handle Type",
             nameEngraving: "Name Engraving",
             engravedName: "  - Name",
             toeGuard: "Toe Guard",
@@ -123,7 +129,7 @@ export const Customization = memo(() => {
         };
 
         const fieldOrder = batType === 'tennis'
-            ? ['bladeType', 'finish', 'weight', 'height', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
+            ? ['bladeType', 'finish', 'weight', 'height', 'handleType', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
             : ['weight', 'nameEngraving', 'engravedName', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag'];
 
         fieldOrder.forEach(key => {
@@ -190,6 +196,18 @@ export const Customization = memo(() => {
                                 )}
 
                                 <CustomizationRadioGroup name="height" label="Bat Height" options={options.height} selectedValue={formData.height} onChange={handleChange} error={errors.height} />
+
+                                {formData.bladeType === 'Single Blade' ? (
+                                    <CustomizationRadioGroup name="handleType" label="Handle Type" options={options.handleType} selectedValue={formData.handleType} onChange={handleChange} error={errors.handleType} />
+                                ) : formData.bladeType === 'Double Blade' ? (
+                                    <div className="form-group">
+                                        <label className="form-label">Handle Type</label>
+                                        <p style={{ color: 'var(--golden)', fontSize: '0.9rem', fontStyle: 'italic', background: 'rgba(212, 175, 55, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
+                                            <i className="fas fa-info-circle" style={{ marginRight: '8px' }}></i>
+                                            Double Blade bats always come with a premium Singapore Cane handle of top quality.
+                                        </p>
+                                    </div>
+                                ) : null}
                             </>
                         ) : (
                             <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weightLeather} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />

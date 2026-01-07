@@ -39,17 +39,19 @@ export const Customization = memo(() => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const tennisOptionFields = ['bladeType', 'finish', 'height', 'toeGuard', 'sticker', 'bag'];
+    const tennisOptionFields = ['bladeType', 'finish', 'weight', 'height', 'toeGuard', 'sticker', 'bag'];
     const leatherOptionFields = ['weight', 'nameEngraving', 'toeGuard', 'sticker', 'bag'];
 
     const options: Record<string, string[]> = {
         bladeType: ['Single Blade', 'Double Blade'],
-        finish: ['Ultra Polished', 'Polished', 'Raw (No Polish)', 'Burned', 'Burn + Polish'],
+        finish: ['Polished', 'Raw (No Polish)', 'Burned', 'Burn + Polish'],
         height: ['35 inches', '36 inches'],
         toeGuard: ['Premium Chemical Toe Guard', 'Normal Toe Guard'],
         sticker: ['Wular Sports Sticker', 'Other Brand Sticker', 'No Sticker'],
         bag: ['Cushioned Premium Bag', 'Normal Bag'],
-        weight: ['1100–1200g', '1200–1300g', '1300–1400g'],
+        weightLeather: ['1100–1200g', '1200–1300g', '1300–1400g'],
+        weightSingle: ['800–850g', '850–900g', '900–950g'],
+        weightDouble: ['950–1000g', '1000–1050g', '1050–1100g'],
         nameEngraving: ['Yes', 'No'],
     };
 
@@ -62,7 +64,18 @@ export const Customization = memo(() => {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Reset weight if blade type changes to ensure consistent options
+        if (name === 'bladeType') {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value,
+                weight: ''
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, [name]: value }));
+        }
+
         if (errors[name]) {
             setErrors(prev => {
                 const newErrors = { ...prev };
@@ -110,7 +123,7 @@ export const Customization = memo(() => {
         };
 
         const fieldOrder = batType === 'tennis'
-            ? ['bladeType', 'finish', 'height', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
+            ? ['bladeType', 'finish', 'weight', 'height', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
             : ['weight', 'nameEngraving', 'engravedName', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag'];
 
         fieldOrder.forEach(key => {
@@ -164,10 +177,22 @@ export const Customization = memo(() => {
                             <>
                                 <CustomizationRadioGroup name="bladeType" label="Blade Type" options={options.bladeType} selectedValue={formData.bladeType} onChange={handleChange} error={errors.bladeType} />
                                 <CustomizationRadioGroup name="finish" label="Finish Type" options={options.finish} selectedValue={formData.finish} onChange={handleChange} error={errors.finish} />
+
+                                {formData.bladeType && (
+                                    <CustomizationRadioGroup
+                                        name="weight"
+                                        label="Weight Range"
+                                        options={formData.bladeType === 'Single Blade' ? options.weightSingle : options.weightDouble}
+                                        selectedValue={formData.weight}
+                                        onChange={handleChange}
+                                        error={errors.weight}
+                                    />
+                                )}
+
                                 <CustomizationRadioGroup name="height" label="Bat Height" options={options.height} selectedValue={formData.height} onChange={handleChange} error={errors.height} />
                             </>
                         ) : (
-                            <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weight} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />
+                            <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weightLeather} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />
                         )}
 
                         {batType === 'leather' && (

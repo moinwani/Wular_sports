@@ -3,7 +3,6 @@ import { Hero } from '../components/home/Hero';
 import { Catalog } from '../components/product/Catalog';
 import { Customization } from '../components/checkout/Customization';
 import { About } from '../components/home/About';
-import { Contact } from '../components/home/Contact';
 import { SEOHead } from '../components/common/SEOHead';
 import { ProductFull } from '../types';
 
@@ -44,7 +43,6 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
             <Catalog ref={catalogRef} onAddToCart={onAddToCart} onImageClick={onImageClick} onWatchVideo={onWatchVideo} />
             <Customization />
             <About />
-            <Contact />
         </main>
     );
 };

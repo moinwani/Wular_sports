@@ -155,7 +155,7 @@ const AppContent: React.FC = () => {
                 </Routes>
             </main>
 
-            <Footer onNavigate={navigateTo} />
+            <Footer onNavigate={navigateTo} showToast={showToast} />
 
             <CartSidebar
                 isOpen={isCartOpen}

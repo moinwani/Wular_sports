@@ -1,5 +1,6 @@
 import { FC, useEffect } from 'react';
 import { View } from '../../types';
+import { WHATSAPP_NUMBER, INSTAGRAM_LINK } from '../../data/constants';
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -21,8 +22,17 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
         };
     }, [isOpen]);
 
-    const handleNavigate = (view: View) => {
+    const handleNavigate = (view: View, hash?: string) => {
         onNavigate(view);
+        if (hash) {
+            // Wait for navigation and then scroll to hash
+            setTimeout(() => {
+                const element = document.getElementById(hash);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 500);
+        }
         onClose();
     };
 
@@ -51,21 +61,37 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
                 <nav className="mobile-menu-nav">
                     <a
                         href="#"
-                        onClick={(e) => { e.preventDefault(); handleNavigate('home'); }}
-                        className="mobile-menu-link"
-                    >
-                        <i className="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-
-                    <a
-                        href="#"
                         onClick={(e) => { e.preventDefault(); handleNavigate('collection'); }}
                         className="mobile-menu-link"
                     >
                         <i className="fas fa-shopping-bag"></i>
                         <span>Shop Collection</span>
                     </a>
+
+                    {/* Category Links */}
+                    <div className="mobile-menu-sublinks" style={{ paddingLeft: '3rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1rem' }}>
+                        <a
+                            href="#"
+                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'hard-tennis'); }}
+                            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
+                        >
+                            Hard Tennis
+                        </a>
+                        <a
+                            href="#"
+                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'soft-tennis'); }}
+                            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
+                        >
+                            Soft Tennis
+                        </a>
+                        <a
+                            href="#"
+                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'leather-bat'); }}
+                            style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
+                        >
+                            Leather Bat
+                        </a>
+                    </div>
 
                     <div className="mobile-menu-divider"></div>
 
@@ -96,13 +122,10 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
 
                 <div className="mobile-menu-footer">
                     <div className="mobile-menu-social">
-                        <a href="https://instagram.com/wular_sports" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                             <i className="fab fa-instagram"></i>
                         </a>
-                        <a href="https://facebook.com/wularsports" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-                            <i className="fab fa-facebook"></i>
-                        </a>
-                        <a href="https://wa.me/919906353535" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                             <i className="fab fa-whatsapp"></i>
                         </a>
                     </div>

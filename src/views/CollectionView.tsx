@@ -43,9 +43,14 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
 
                     {products.length > 0 ? (
                         <div className="collection-categories">
-                            {Object.entries(categories).map(([title, productsInCategory]) => (
-                                productsInCategory.length > 0 && (
-                                    <div key={title} className="collection-category">
+                            {Object.entries(categories).map(([title, productsInCategory]) => {
+                                // Create simple IDs for linking
+                                const categoryId = title.toLowerCase().includes('hard') ? 'hard-tennis' :
+                                    title.toLowerCase().includes('soft') ? 'soft-tennis' :
+                                        title.toLowerCase().includes('leather') ? 'leather-bat' : title;
+
+                                return productsInCategory.length > 0 && (
+                                    <div key={title} className="collection-category" id={categoryId}>
                                         <h3 className="collection-category-title">{title}</h3>
                                         <div className="collection-grid">
                                             {productsInCategory.map(product => (
@@ -53,8 +58,8 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onImageClick
                                             ))}
                                         </div>
                                     </div>
-                                )
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="no-products-found" style={{ textAlign: 'center', padding: '4rem' }}>

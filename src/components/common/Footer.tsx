@@ -13,7 +13,7 @@ export const Footer: FC<FooterProps> = memo(({ onNavigate }) => (
                 <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('return'); }}>Return Policy</a> |
                 <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }}>Terms & Conditions</a>
             </div>
-            <p className="footer-copyright">© 2025 Wular Sports. All rights reserved.</p>
+            <p className="footer-copyright">© 2026 Wular Sports. All rights reserved.</p>
         </div>
     </footer>
 ));

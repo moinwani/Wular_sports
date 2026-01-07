@@ -39,17 +39,18 @@ export const Customization = memo(() => {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const tennisOptionFields = ['bladeType', 'nameEngraving', 'toeGuard', 'finish', 'sticker', 'bag'];
-    const leatherOptionFields = ['weight', 'nameEngraving', 'sticker', 'toeGuard', 'bag'];
+    const tennisOptionFields = ['bladeType', 'finish', 'height', 'toeGuard', 'sticker', 'bag'];
+    const leatherOptionFields = ['weight', 'nameEngraving', 'toeGuard', 'sticker', 'bag'];
 
     const options: Record<string, string[]> = {
         bladeType: ['Single Blade', 'Double Blade'],
-        nameEngraving: ['Yes', 'No'],
-        toeGuard: ['Premium Toe Guard', 'Normal Toe Guard'],
-        finish: ['Ultra Finish', 'Normal Finish'],
+        finish: ['Ultra Polished', 'Polished', 'Raw (No Polish)', 'Burned', 'Burn + Polish'],
+        height: ['35 inches', '36 inches'],
+        toeGuard: ['Premium Chemical Toe Guard', 'Normal Toe Guard'],
         sticker: ['Wular Sports Sticker', 'Other Brand Sticker', 'No Sticker'],
         bag: ['Cushioned Premium Bag', 'Normal Bag'],
         weight: ['1100–1200g', '1200–1300g', '1300–1400g'],
+        nameEngraving: ['Yes', 'No'],
     };
 
     const handleBatTypeSelect = (type: 'tennis' | 'leather') => {
@@ -81,7 +82,7 @@ export const Customization = memo(() => {
             }
         });
 
-        if (formData.nameEngraving === 'Yes' && (!formData.engravedName || formData.engravedName.trim() === '')) {
+        if (batType === 'leather' && formData.nameEngraving === 'Yes' && (!formData.engravedName || formData.engravedName.trim() === '')) {
             newErrors.engravedName = 'Please enter name';
         }
 
@@ -99,6 +100,7 @@ export const Customization = memo(() => {
             bladeType: "Blade Type",
             finish: "Finish Type",
             weight: "Weight Range",
+            height: "Bat Height",
             nameEngraving: "Name Engraving",
             engravedName: "  - Name",
             toeGuard: "Toe Guard",
@@ -108,7 +110,7 @@ export const Customization = memo(() => {
         };
 
         const fieldOrder = batType === 'tennis'
-            ? ['bladeType', 'finish', 'nameEngraving', 'engravedName', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
+            ? ['bladeType', 'finish', 'height', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag']
             : ['weight', 'nameEngraving', 'engravedName', 'toeGuard', 'sticker', 'otherStickerBrand', 'bag'];
 
         fieldOrder.forEach(key => {
@@ -162,18 +164,23 @@ export const Customization = memo(() => {
                             <>
                                 <CustomizationRadioGroup name="bladeType" label="Blade Type" options={options.bladeType} selectedValue={formData.bladeType} onChange={handleChange} error={errors.bladeType} />
                                 <CustomizationRadioGroup name="finish" label="Finish Type" options={options.finish} selectedValue={formData.finish} onChange={handleChange} error={errors.finish} />
+                                <CustomizationRadioGroup name="height" label="Bat Height" options={options.height} selectedValue={formData.height} onChange={handleChange} error={errors.height} />
                             </>
                         ) : (
                             <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weight} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />
                         )}
 
-                        <CustomizationRadioGroup name="nameEngraving" label="Name Engraving" options={options.nameEngraving} selectedValue={formData.nameEngraving} onChange={handleChange} error={errors.nameEngraving} />
-                        {formData.nameEngraving === 'Yes' && (
-                            <div className="form-group">
-                                <label className="form-label">Enter name (max 10 characters)</label>
-                                <input className="input-engraved" type="text" name="engravedName" value={formData.engravedName || ''} onChange={handleChange} maxLength={10} required />
-                                {errors.engravedName && <p className="error-message">{errors.engravedName}</p>}
-                            </div>
+                        {batType === 'leather' && (
+                            <>
+                                <CustomizationRadioGroup name="nameEngraving" label="Name Engraving" options={options.nameEngraving} selectedValue={formData.nameEngraving} onChange={handleChange} error={errors.nameEngraving} />
+                                {formData.nameEngraving === 'Yes' && (
+                                    <div className="form-group">
+                                        <label className="form-label">Enter name (max 10 characters)</label>
+                                        <input className="input-engraved" type="text" name="engravedName" value={formData.engravedName || ''} onChange={handleChange} maxLength={10} required />
+                                        {errors.engravedName && <p className="error-message">{errors.engravedName}</p>}
+                                    </div>
+                                )}
+                            </>
                         )}
 
                         <CustomizationRadioGroup name="toeGuard" label="Toe Guard" options={options.toeGuard} selectedValue={formData.toeGuard} onChange={handleChange} error={errors.toeGuard} />

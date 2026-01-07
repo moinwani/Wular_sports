@@ -14,7 +14,7 @@ export const SEOHead: FC<SEOHeadProps> = ({
     title = 'Wular Sports - Premium Handcrafted Cricket Bats & Sports Equipment',
     description = 'Discover premium handcrafted cricket bats and sports equipment from Wular Sports. Each piece is meticulously crafted by skilled artisans in Kashmir for champions who demand excellence.',
     keywords = 'cricket bats, handcrafted cricket bats, Kashmir willow bats, English willow bats, premium cricket equipment, sports equipment, Wular Sports',
-    ogImage = 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+    ogImage = 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767773622/photo_6264592440312400739_y_o8uv3r.jpg',
     ogType = 'website',
     canonicalUrl,
     structuredData

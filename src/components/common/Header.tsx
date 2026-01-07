@@ -24,7 +24,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
         let headerElementRef: HTMLElement | null = null;
         let lastKnownScroll = 0;
 
-        const handleScroll = (event?: Event) => {
+        const handleScroll = () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     // Try multiple methods to detect scroll position
@@ -197,7 +197,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
                     <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
                         <img
-                            src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1752992278/6334704126398678409-removebg-preview_dvxsud.png"
+                            src="https://res.cloudinary.com/ddahm5ebv/image/upload/v1767773622/photo_6264592440312400739_y_o8uv3r.jpg"
                             alt="Wular Sports Logo"
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
                         />

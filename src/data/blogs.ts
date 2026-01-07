@@ -59,7 +59,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Dec 20, 2025',
         readTime: '6 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767773622/photo_6264592440312400739_y_o8uv3r.jpg',
         content: `
             <p>In the world of cricket, "English Willow" is often used as a marketing buzzword to justify high prices. But for many players, especially those in the tennis ball circuit or those starting their professional careers, premium Kashmir Willow is often the superior choice.</p>
             

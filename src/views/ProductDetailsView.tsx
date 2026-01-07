@@ -8,6 +8,7 @@ import { VerticalImageGallery } from '../components/product/VerticalImageGallery
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
+import { ProductCard } from '../components/product/ProductCard';
 
 export interface ProductDetailsViewProps {
     onAddToCart: (product: ProductFull, size: string, quantity?: number) => void;
@@ -891,6 +892,45 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                 )}
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* RELATED PRODUCTS Section */}
+            <div className="related-products-section">
+                <div className="container">
+                    <h2 className="related-title">More to Explore</h2>
+
+                    <div className="related-categories">
+                        {[
+                            { title: "Hard Tennis Bats", type: "Hard Tennis" },
+                            { title: "Soft Tennis Bats", type: "Soft Tennis" },
+                            { title: "Leather Bat Collection", type: "Leather Ball" }
+                        ].map(category => {
+                            const otherProducts = products.filter(p =>
+                                p.id !== product.id &&
+                                p.category.includes(category.type as any)
+                            );
+
+                            if (otherProducts.length === 0) return null;
+
+                            return (
+                                <div key={category.type} className="related-category-group">
+                                    <h3 className="related-category-title">{category.title}</h3>
+                                    <div className="catalog-grid">
+                                        {otherProducts.map(p => (
+                                            <ProductCard
+                                                key={p.id}
+                                                product={p}
+                                                onAddToCart={(prod, size) => onAddToCart(prod, size || '')}
+                                                onImageClick={() => { }}
+                                                onWatchVideo={() => { }}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>

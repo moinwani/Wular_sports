@@ -16,9 +16,6 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
         navigate(`/product/${product.id}`);
     };
 
-    const discountPercentage = product.originalPrice 
-        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-        : 0;
     const discountAmount = product.originalPrice ? product.originalPrice - product.price : 0;
 
     let imageElement;

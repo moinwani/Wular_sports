@@ -13,9 +13,9 @@ interface CustomizationRadioGroupProps {
 const CustomizationRadioGroup: FC<CustomizationRadioGroupProps> = memo(({ name, label, options, selectedValue, onChange, error }) => (
     <div className="form-group">
         <label className="form-label">{label}</label>
-        <div className="radio-group">
+        <div className="radio-options-grid">
             {options.map(option => (
-                <div key={option} className="radio-option">
+                <div key={option} className="radio-card">
                     <input
                         type="radio"
                         id={`${name}-${option.replace(/\s+/g, '-')}`}
@@ -49,7 +49,7 @@ export const Customization = memo(() => {
         finish: ['Ultra Finish', 'Normal Finish'],
         sticker: ['Wular Sports Sticker', 'Other Brand Sticker', 'No Sticker'],
         bag: ['Cushioned Premium Bag', 'Normal Bag'],
-        weight: ['1100–1200 grams', '1200–1300 grams', '1300–1400 grams'],
+        weight: ['1100–1200g', '1200–1300g', '1300–1400g'],
     };
 
     const handleBatTypeSelect = (type: 'tennis' | 'leather') => {
@@ -77,15 +77,12 @@ export const Customization = memo(() => {
 
         requiredFields.forEach(field => {
             if (!formData[field]) {
-                newErrors[field] = 'Please make a selection for this option.';
+                newErrors[field] = 'Selection required';
             }
         });
 
         if (formData.nameEngraving === 'Yes' && (!formData.engravedName || formData.engravedName.trim() === '')) {
-            newErrors.engravedName = 'Please enter the name to engrave.';
-        }
-        if (formData.sticker === 'Other Brand Sticker' && (!formData.otherStickerBrand || formData.otherStickerBrand.trim() === '')) {
-            newErrors.otherStickerBrand = 'Please enter the sticker brand.';
+            newErrors.engravedName = 'Please enter name';
         }
 
         setErrors(newErrors);
@@ -104,9 +101,9 @@ export const Customization = memo(() => {
             weight: "Weight Range",
             nameEngraving: "Name Engraving",
             engravedName: "  - Name",
-            toeGuard: "Toe Guard Type",
-            sticker: "Sticker Type",
-            otherStickerBrand: "  - Sticker Brand",
+            toeGuard: "Toe Guard",
+            sticker: "Sticker",
+            otherStickerBrand: "  - Brand",
             bag: "Bag Type",
         };
 
@@ -124,74 +121,74 @@ export const Customization = memo(() => {
         setIsSubmitted(true);
     };
 
-    const renderFormSpecificOptions = () => {
-        if (!batType) return null;
-
-        if (batType === 'tennis') {
-            return (
-                <>
-                    <CustomizationRadioGroup name="bladeType" label="Blade Type" options={options.bladeType} selectedValue={formData.bladeType} onChange={handleChange} error={errors.bladeType} />
-                    <CustomizationRadioGroup name="finish" label="Finish Type" options={options.finish} selectedValue={formData.finish} onChange={handleChange} error={errors.finish} />
-                </>
-            );
-        }
-
-        if (batType === 'leather') {
-            return <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weight} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />;
-        }
-    };
-
     return (
         <section id="customize">
             <div className="container">
                 <h2 className="section-title">Customize Your Bat</h2>
 
                 {isSubmitted && (
-                    <div className="success-message">
-                        <p>✅ Your customization request has been sent to Wular Sports on WhatsApp. We will contact you shortly to finalize your order.</p>
-                        <button className="btn" onClick={() => { setIsSubmitted(false); setBatType(null); }}>Start a New Customization</button>
+                    <div className="success-message" style={{ textAlign: 'center', marginTop: '3rem' }}>
+                        <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>✅ Request sent! We'll contact you on WhatsApp to finalize.</p>
+                        <button className="btn" onClick={() => { setIsSubmitted(false); setBatType(null); }}>Start New Customization</button>
                     </div>
                 )}
 
                 {!batType && !isSubmitted && (
                     <div className="bat-type-selector">
-                        <p>First, select the type of bat you want to customize.</p>
-                        <div>
-                            <button className="btn bat-type-btn" onClick={() => handleBatTypeSelect('tennis')}>🏏 Tennis Bat</button>
-                            <button className="btn bat-type-btn" onClick={() => handleBatTypeSelect('leather')}>🏏 Leather Bat</button>
+                        <p>Select your bat type to start customizing</p>
+                        <div className="bat-type-grid">
+                            <div className="bat-type-card" onClick={() => handleBatTypeSelect('tennis')}>
+                                <div className="bat-icon-large">🏏</div>
+                                <span className="bat-type-name">Tennis Bat</span>
+                                <button className="btn btn-sm">Select</button>
+                            </div>
+                            <div className="bat-type-card" onClick={() => handleBatTypeSelect('leather')}>
+                                <div className="bat-icon-large">🏏</div>
+                                <span className="bat-type-name">Leather Bat</span>
+                                <button className="btn btn-sm">Select</button>
+                            </div>
                         </div>
                     </div>
                 )}
 
                 {batType && !isSubmitted && (
                     <form className="customization-form" onSubmit={handleSubmit} noValidate>
-                        <button type="button" className="btn back-to-type" onClick={() => setBatType(null)}>Change Bat Type</button>
-                        <h3 className="customization-heading">Customizing: {batType === 'tennis' ? 'Tennis Bat' : 'Leather Bat'}</h3>
+                        <div className="form-header-row">
+                            <h3 className="customization-heading">{batType === 'tennis' ? 'Tennis Bat' : 'Leather Bat'}</h3>
+                            <button type="button" className="back-to-type" onClick={() => setBatType(null)}>Change Type</button>
+                        </div>
 
-                        {renderFormSpecificOptions()}
+                        {batType === 'tennis' ? (
+                            <>
+                                <CustomizationRadioGroup name="bladeType" label="Blade Type" options={options.bladeType} selectedValue={formData.bladeType} onChange={handleChange} error={errors.bladeType} />
+                                <CustomizationRadioGroup name="finish" label="Finish Type" options={options.finish} selectedValue={formData.finish} onChange={handleChange} error={errors.finish} />
+                            </>
+                        ) : (
+                            <CustomizationRadioGroup name="weight" label="Weight Range" options={options.weight} selectedValue={formData.weight} onChange={handleChange} error={errors.weight} />
+                        )}
 
                         <CustomizationRadioGroup name="nameEngraving" label="Name Engraving" options={options.nameEngraving} selectedValue={formData.nameEngraving} onChange={handleChange} error={errors.nameEngraving} />
                         {formData.nameEngraving === 'Yes' && (
-                            <div className="form-group indented">
-                                <label className="form-label" htmlFor="engravedName">Enter the name to engrave (max 10 characters)</label>
-                                <input type="text" id="engravedName" name="engravedName" value={formData.engravedName || ''} onChange={handleChange} maxLength={10} required />
+                            <div className="form-group">
+                                <label className="form-label">Enter name (max 10 characters)</label>
+                                <input className="input-engraved" type="text" name="engravedName" value={formData.engravedName || ''} onChange={handleChange} maxLength={10} required />
                                 {errors.engravedName && <p className="error-message">{errors.engravedName}</p>}
                             </div>
                         )}
 
-                        <CustomizationRadioGroup name="toeGuard" label="Toe Guard Type" options={options.toeGuard} selectedValue={formData.toeGuard} onChange={handleChange} error={errors.toeGuard} />
-                        <CustomizationRadioGroup name="sticker" label="Sticker Type" options={options.sticker} selectedValue={formData.sticker} onChange={handleChange} error={errors.sticker} />
+                        <CustomizationRadioGroup name="toeGuard" label="Toe Guard" options={options.toeGuard} selectedValue={formData.toeGuard} onChange={handleChange} error={errors.toeGuard} />
+
+                        <CustomizationRadioGroup name="sticker" label="Sticker" options={options.sticker} selectedValue={formData.sticker} onChange={handleChange} error={errors.sticker} />
                         {formData.sticker === 'Other Brand Sticker' && (
-                            <div className="form-group indented">
-                                <label className="form-label" htmlFor="otherStickerBrand">Enter the sticker brand (e.g., SG, SS, TON)</label>
-                                <input type="text" id="otherStickerBrand" name="otherStickerBrand" value={formData.otherStickerBrand || ''} onChange={handleChange} required />
-                                {errors.otherStickerBrand && <p className="error-message">{errors.otherStickerBrand}</p>}
+                            <div className="form-group">
+                                <label className="form-label">Specify brand (SG, SS, etc.)</label>
+                                <input className="input-engraved" type="text" name="otherStickerBrand" value={formData.otherStickerBrand || ''} onChange={handleChange} required />
                             </div>
                         )}
 
                         <CustomizationRadioGroup name="bag" label="Bag Type" options={options.bag} selectedValue={formData.bag} onChange={handleChange} error={errors.bag} />
 
-                        <button type="submit" className="btn submit-customization">Submit Customization</button>
+                        <button type="submit" className="btn submit-customization">Request Customization via WhatsApp</button>
                     </form>
                 )}
             </div>

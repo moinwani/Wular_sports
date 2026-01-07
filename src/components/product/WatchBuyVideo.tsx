@@ -45,7 +45,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         setIsModalOpen(false);
         // Resume floating video
         if (floatingVideoRef.current) {
-            floatingVideoRef.current.play().catch(() => { });
+            floatingVideoRef.current.play().catch(() => {});
         }
     };
 
@@ -71,7 +71,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const handleMoreInfo = useCallback(() => {
         // Close everything first
         handleCloseComplete();
-
+        
         // Wait a bit for close animation, then scroll
         setTimeout(() => {
             const tabsContainer = document.querySelector('.product-tabs-container');
@@ -90,7 +90,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     useEffect(() => {
         if (!isVisible && !isModalOpen) return;
 
-        const handleBuyNowClick = () => {
+        const handleBuyNowClick = (e: Event) => {
             // Close video when Buy Now is clicked anywhere on the page
             handleCloseComplete();
         };
@@ -163,7 +163,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
             <div className="watch-buy-video-container">
                 <div className="watch-buy-video-header">
                     <span className="watch-buy-label">Watch & Buy</span>
-                    <button
+                    <button 
                         className="watch-buy-close-btn"
                         onClick={handleCloseComplete}
                         aria-label="Close video"
@@ -171,8 +171,8 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         <i className="fas fa-times"></i>
                     </button>
                 </div>
-
-                <div
+                
+                <div 
                     className="watch-buy-video-wrapper"
                     onClick={handleVideoClick}
                     role="button"
@@ -202,14 +202,14 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
 
             {/* Full-Screen Modal Video */}
             {isModalOpen && (
-                <div
-                    className="watch-buy-modal-overlay"
+                <div 
+                    className="watch-buy-modal-overlay" 
                     onClick={handleModalClose}
                     role="dialog"
                     aria-modal="true"
                     aria-label="Watch & Buy Video"
                 >
-                    <button
+                    <button 
                         className="watch-buy-modal-close"
                         onClick={handleModalClose}
                         aria-label="Close video"
@@ -217,7 +217,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         <i className="fas fa-times"></i>
                     </button>
 
-                    <div
+                    <div 
                         className="watch-buy-modal-content"
                         onClick={(e) => e.stopPropagation()}
                     >
@@ -234,14 +234,14 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         </div>
 
                         <div className="watch-buy-modal-actions">
-                            <button
+                            <button 
                                 className="modal-action-btn primary"
                                 onClick={handleAddToCart}
                             >
                                 <i className="fas fa-shopping-bag"></i>
                                 Add to Cart
                             </button>
-                            <button
+                            <button 
                                 className="modal-action-btn secondary"
                                 onClick={handleMoreInfo}
                             >

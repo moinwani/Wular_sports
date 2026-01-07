@@ -1,44 +1,89 @@
-import { FC, memo, RefObject } from 'react';
+import { FC, memo, useState, MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductFull } from '../../types';
 
 export interface ProductCardProps {
     product: ProductFull;
-    onAddToCart: (product: ProductFull, size: string | null) => void;
-    onImageClick: (images: string[], startIndex: number) => void;
-    onWatchVideo: (url: string, ref: RefObject<HTMLButtonElement>) => void;
+    onAddToCart?: (product: ProductFull, size: string | null) => void;
+    onImageClick?: (images: string[], startIndex: number) => void;
+    onWatchVideo?: (url: string, ref?: any) => void;
 }
 
 export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
     const navigate = useNavigate();
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+
+    const images = Array.isArray(product.image) ? product.image : [product.image];
 
     const handleCardClick = () => {
         navigate(`/product/${product.id}`);
     };
 
-    const discountPercentage = product.originalPrice 
-        ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-        : 0;
+    const handlePrevImage = (e: MouseEvent) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    };
+
+    const handleNextImage = (e: MouseEvent) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    };
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        if (touchStart === null) return;
+        const touchEnd = e.changedTouches[0].clientX;
+        const diff = touchStart - touchEnd;
+
+        if (diff > 50) {
+            // Swipe right
+            setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+        } else if (diff < -50) {
+            // Swipe left
+            setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        }
+        setTouchStart(null);
+    };
+
     const discountAmount = product.originalPrice ? product.originalPrice - product.price : 0;
 
-    let imageElement;
-    if (Array.isArray(product.image) && product.image.length > 0) {
-        // Use the first image for listing card
-        imageElement = (
-            <img
-                src={product.image[0]}
-                alt={product.name}
-                className="product-image"
-            />
-        );
-    } else if (typeof product.image === 'string') {
-        const imageUrl = product.image;
-        imageElement = <img src={imageUrl} alt={product.name} className="product-image" />;
-    }
-
     return (
-        <div className="product-card compact" onClick={handleCardClick}>
-            {imageElement}
+        <div
+            className="product-card compact"
+            onClick={handleCardClick}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
+            <div className="product-image-container">
+                <img
+                    src={images[currentImageIndex]}
+                    alt={`${product.name} - image ${currentImageIndex + 1}`}
+                    className="product-image"
+                />
+
+                {images.length > 1 && (
+                    <>
+                        <button className="carousel-nav-btn prev" onClick={handlePrevImage} aria-label="Previous image">
+                            <i className="fas fa-chevron-left"></i>
+                        </button>
+                        <button className="carousel-nav-btn next" onClick={handleNextImage} aria-label="Next image">
+                            <i className="fas fa-chevron-right"></i>
+                        </button>
+                        <div className="carousel-dots">
+                            {images.map((_, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`dot ${idx === currentImageIndex ? 'active' : ''}`}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
 
             <div className="product-info-compact">
                 <h3 className="product-name">{product.name}</h3>

@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
@@ -18,7 +18,7 @@ type ScrollPhase = 'images' | 'content' | 'normal';
 
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart }) => {
     const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [quantity, setQuantity] = useState(1);
     const [sizeError, setSizeError] = useState(false);
@@ -85,6 +85,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     }, [scrollPhase, isMobile]);
 
     // Check content scroll completion
+    /* checkContentScrollComplete is unused
     const checkContentScrollComplete = useCallback(() => {
         if (!contentSectionRef.current || isMobile || scrollPhase !== 'content') return;
 
@@ -113,6 +114,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             setScrollPhase('normal');
         }
     }, [scrollPhase, isMobile]);
+    */
 
     // Handle wheel event - STRICT SEQUENTIAL SCROLL BEHAVIOR
     const handleWheel = useCallback((e: WheelEvent) => {
@@ -330,10 +332,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         setOpenSection(openSection === section ? null : section);
     };
 
+    /* handleOpenLightbox is unused
     const handleOpenLightbox = (index: number) => {
         setLightboxIndex(index);
         setIsLightboxOpen(true);
     };
+    */
 
     if (!product) return null;
 
@@ -375,15 +379,18 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     };
 
     // Extract key specs for visual display
+    /* getWeightSpec is unused
     const getWeightSpec = () => {
         const weightSpec = product.specs.find(s => s.toLowerCase().includes('weight'));
         return weightSpec ? weightSpec.split(':')[1]?.trim() : null;
     };
+    */
 
-    const getEdgeSpec = () => {
-        const edgeSpec = product.specs.find(s => s.toLowerCase().includes('edge'));
-        return edgeSpec ? edgeSpec.split(':')[1]?.trim() : null;
-    };
+    /* getEdgeSpec is currently unused but kept for future reference */
+    // const getEdgeSpec = () => {
+    //     const edgeSpec = product.specs.find(s => s.toLowerCase().includes('edge'));
+    //     return edgeSpec ? edgeSpec.split(':')[1]?.trim() : null;
+    // };
 
     // Product structured data for SEO
     const productImage = Array.isArray(product.image) ? product.image[0] : product.image;

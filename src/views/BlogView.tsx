@@ -1,14 +1,35 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { View } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
+import { subscribeToNewsletter } from '../services/newsletter';
 
 interface BlogViewProps {
     onNavigate: (view: View, hash?: string) => void;
     onSelectPost: (postId: string) => void;
+    showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
 }
 
-export const BlogView: FC<BlogViewProps> = ({ onSelectPost }) => {
+export const BlogView: FC<BlogViewProps> = ({ onSelectPost, showToast }) => {
+    const [email, setEmail] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubscribe = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) return;
+
+        setSubmitting(true);
+        const result = await subscribeToNewsletter(email);
+
+        if (result.success) {
+            showToast(result.message, 'success');
+            setEmail('');
+        } else {
+            showToast(result.message, result.message.includes('already') ? 'info' : 'error');
+        }
+        setSubmitting(false);
+    };
+
     return (
         <div className="blog-page">
             <SEOHead
@@ -53,9 +74,18 @@ export const BlogView: FC<BlogViewProps> = ({ onSelectPost }) => {
                     <div className="blog-cta-box">
                         <h3>Stay in the Loop</h3>
                         <p>Get the latest bat maintenance tips and exclusive offers delivered to your inbox.</p>
-                        <form className="blog-newsletter-form" onSubmit={(e) => e.preventDefault()}>
-                            <input type="email" placeholder="Your email address" required />
-                            <button type="submit" className="btn">Subscribe</button>
+                        <form className="blog-newsletter-form" onSubmit={handleSubscribe}>
+                            <input
+                                type="email"
+                                placeholder="Your email address"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                disabled={submitting}
+                            />
+                            <button type="submit" className="btn" disabled={submitting}>
+                                {submitting ? 'Subscribing...' : 'Subscribe'}
+                            </button>
                         </form>
                     </div>
                 </div>

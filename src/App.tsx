@@ -150,7 +150,7 @@ const AppContent: React.FC = () => {
                         }}
                     />} />
                     <Route path="/order-success" element={<OrderSuccessView />} />
-                    <Route path="/blog" element={<BlogView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
+                    <Route path="/blog" element={<BlogView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} showToast={showToast} />} />
                     <Route path="/blog/:postId" element={<BlogPostView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
                 </Routes>
             </main>

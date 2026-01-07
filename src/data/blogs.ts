@@ -75,5 +75,108 @@ export const blogs: BlogPost[] = [
             <h3>Conclusion</h3>
             <p>Don't be fooled by the price tag. For durability, longevity, and incredible power-to-price ratio, a well-crafted Kashmir willow bat from Wular Sports is unbeatable.</p>
         `
+    },
+    {
+        id: 'cricket-bat-maintenance-care-guide',
+        title: 'Cricket Bat Maintenance & Care: Complete Guide for Long-Lasting Performance',
+        description: 'Learn how to knock-in a cricket bat, oil it properly, and protect it using essential accessories. A complete cricket bat maintenance guide for long-lasting performance.',
+        category: 'Maintenance',
+        author: 'Wular Sports Team',
+        date: 'Jan 07, 2026',
+        readTime: '8 min read',
+        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        content: `
+            <p>Buying a high-quality cricket bat is an investment. Whether you play with <a href="/collection#leather-bat">leather cricket bats</a> or <a href="/collection#hard-tennis">hard tennis cricket bats</a>, proper maintenance is the difference between a bat that lasts one season and one that lasts five. In this guide, we’ll cover everything you need to know about <strong>cricket bat maintenance</strong>.</p>
+
+            <h2>1. How to Knock-In a Cricket Bat (Step-by-Step)</h2>
+            <p><strong>How to knock in a cricket bat</strong> is the most critical question every new bat owner asks. Knocking-in is the process of compressing the wood fibers of the bat to make them resilient enough to withstand the impact of a cricket ball without cracking.</p>
+            
+            <h3>Why Knocking-In is Vital</h3>
+            <p>A new bat, even a high-quality one, has soft fibers. If you play a fast delivery immediately, the wood will likely dent or crack. Knocking-in hardens these fibers, ensuring the "ping" is maximized and the bat's life is extended.</p>
+
+            <h3>Tools Required</h3>
+            <ul>
+                <li><strong>Bat Mallet:</strong> A wooden mallet specifically designed for this purpose.</li>
+                <li><strong>Raw Linseed Oil:</strong> For initial seasoning.</li>
+                <li><strong>Anti-Scuff Sheet:</strong> For final protection.</li>
+            </ul>
+
+            <h3>Step-by-Step Knocking-In Process</h3>
+            <ol>
+                <li><strong>Oiling:</strong> Apply a light coat of linseed oil (see section 2) and let it dry for 24 hours.</li>
+                <li><strong>The Edge & Toe:</b> Start by gently tapping the edges and the toe of the bat. These are the most vulnerable areas. Work at a 45-degree angle to round off the edges.</li>
+                <li><strong>The Face:</strong> Gradually increase the force as you move to the face of the bat. Avoid hitting the back or the splice (where the handle meets the blade).</li>
+                <li><strong>Testing:</strong> Once you've spent 4-6 hours over several days, test it with a used leather ball in the nets. If it leaves deep dents, keep knocking!</li>
+            </ol>
+
+            <p><strong>Note:</strong> While <a href="/collection#soft-tennis">soft tennis cricket bats</a> require very little knocking, <a href="/collection#leather-bat">Kashmir willow bats</a> for leather balls require at least 6 hours of dedicated work.</p>
+
+            <div class="blog-cta-inline">
+                <h4>Ready to Play?</h4>
+                <p>Check out our collection of pre-knocked and oiled bats.</p>
+                <a href="/collection" class="btn">Shop Match-Ready Cricket Bats</a>
+            </div>
+
+            <h2>2. How to Oil Your Cricket Bat for Longer Life</h2>
+            <p><strong>Cricket bat oiling</strong> keeps the moisture level in the wood balanced, preventing it from becoming brittle and prone to surface cracks.</p>
+            
+            <h3>Why Oiling is Important</h3>
+            <p>Willow is a natural product. Without oil, it loses its natural moisture and becomes "dead." Proper oiling ensures the blade remains subtle and responsive.</p>
+
+            <h3>The Oiling Process</h3>
+            <ul>
+                <li>Use only <strong>Raw Linseed Oil</strong>. Do not use boiled linseed oil or vegetable oils.</li>
+                <li>Apply a teaspoon of oil to the face, edges, and toe.</li>
+                <li>Spread it evenly with a clean cloth. <strong>Avoid the splice and handle.</strong></li>
+                <li>Lay the bat horizontally for 24 hours to let the oil soak in.</li>
+            </ul>
+
+            <h3>Maintenance Tips & Common Mistakes</h3>
+            <ul>
+                <li><strong>Don't Over-Oil:</strong> Over-oiling makes the wood soggy and kills the "ping." 2-3 coats per year are usually enough.</li>
+                <li><strong>Avoid Heat:</strong> Never leave your bat in a hot car or near a heater. This will dry out the wood instantly.</li>
+                <li><strong>Storage:</strong> Store your bat in a cool, dry place, preferably in a bat bag.</li>
+            </ul>
+
+            <h2>3. Cricket Bat Accessories You Need</h2>
+            <p>Using the right <strong>cricket bat accessories</strong> can significantly increase the durability of your willow.</p>
+
+            <h3>Anti-Scuff Sheets</h3>
+            <p>An <strong>anti scuff sheet for cricket bat</strong> is a clear, self-adhesive PVC cover. It protects the face from moisture, surface cracks, and "grain swelling" caused by damp balls. Highly recommended for all <a href="/collection#hard-tennis">English willow bats</a> and <a href="/collection#leather-bat">premium Kashmir willow</a>.</p>
+
+            <h3>Toe Guards</h3>
+            <p>The toe is the most "at-risk" part of the bat. A <strong>toe guard for cricket bat</strong> prevents moisture from seeping into the bottom of the blade (which leads to "toe-swell" and cracking) and protects it from damage when you "dig out" a yorker.</p>
+
+            <h3>Bat Grips</h3>
+            <p>A fresh grip provides better shock absorption and control. Replace your grip as soon as it starts to feel slippery or wear thin.</p>
+
+            <div class="blog-cta-inline">
+                <h4>Protect Your Gear</h4>
+                <p>Find all the essential accessories to keep your bat in top shape.</p>
+                <a href="/collection" class="btn">Browse Cricket Bat Accessories</a>
+            </div>
+
+            <h2>Conclusion</h2>
+            <p>Maintaining your cricket bat is just as important as your practice in the nets. By following these steps—knocking-in properly, oiling regularly, and using protective accessories—you ensure that your bat stays powerful and reliable for years to come. Remember, a well-cared-for bat is a high-performing bat.</p>
+
+            <h2>Frequently Asked Questions (FAQ)</h2>
+            <h3>How many hours does it take to knock in a bat?</h3>
+            <p>For a brand new leather ball bat, it typically takes 4 to 6 hours. For tennis bats, 1-2 hours is usually sufficient as the impact is lower.</p>
+
+            <h3>Can I use olive oil on my cricket bat?</h3>
+            <p>No. Use only Raw Linseed Oil. Other oils can damage the fibers and cause the wood to rot from within.</p>
+
+            <h3>Should I oil a bat with an anti-scuff sheet?</h3>
+            <p>No, you should oil the bat first, let it dry completely (48 hours), and then apply the anti-scuff sheet. Do not oil over the top of a plastic sheet.</p>
+
+            <div class="blog-cta-final">
+                <h3>Elevate Your Game with Wular Sports</h3>
+                <p>We craft every bat with passion and precision. Explore our premium range and find your perfect match-winner today.</p>
+                <div class="cta-btns">
+                    <a href="/collection" class="btn">Shop Cricket Bats</a>
+                    <a href="/collection" class="btn btn-secondary">Explore Accessories</a>
+                </div>
+            </div>
+        `
     }
 ];

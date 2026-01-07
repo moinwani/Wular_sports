@@ -9,6 +9,7 @@ export const Footer: FC<FooterProps> = memo(({ onNavigate }) => (
     <footer className="footer">
         <div className="container">
             <div className="footer-links">
+                <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('blog'); }}>Blog</a> |
                 <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('privacy'); }}>Privacy Policy</a> |
                 <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('return'); }}>Return Policy</a> |
                 <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }}>Terms & Conditions</a>

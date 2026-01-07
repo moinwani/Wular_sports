@@ -207,6 +207,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
 
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('collection'); }} className="nav-link">Shop Collection</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('blog'); }} className="nav-link">Blog</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
                             <i className="fas fa-shopping-cart" aria-hidden="true"></i>
                             {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}

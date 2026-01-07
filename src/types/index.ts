@@ -1,6 +1,18 @@
 
-export type View = 'home' | 'collection' | 'privacy' | 'return' | 'terms';
-export type PaymentMethod = 'full' | 'partial';
+export type View = 'home' | 'collection' | 'privacy' | 'return' | 'terms' | 'blog' | 'blog-post';
+export type PaymentMethod = 'full' | 'partial' | 'cod';
+
+export interface BlogPost {
+    id: string;
+    title: string;
+    description: string;
+    content: string; // Markdown or HTML string
+    author: string;
+    date: string;
+    image: string;
+    category: string;
+    readTime: string;
+}
 
 export interface ProductFull {
     id: string;

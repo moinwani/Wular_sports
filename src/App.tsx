@@ -12,7 +12,8 @@ import { Toast } from './components/common/Toast';
 import { FloatingButtons, FloatingCallButton } from './components/common/FloatingButtons';
 import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
-// import { SearchResultsView } from './views/SearchResultsView';
+import { BlogView } from './views/BlogView';
+import { BlogPostView } from './views/BlogPostView';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
@@ -68,6 +69,8 @@ const AppContent: React.FC = () => {
         else if (view === 'privacy') navigate('/privacy-policy');
         else if (view === 'return') navigate('/return-policy');
         else if (view === 'terms') navigate('/terms-conditions');
+        else if (view === 'blog') navigate('/blog');
+        else if (view === 'blog-post') navigate('/blog'); // Default to hub if no ID
         else {
             navigate('/');
             showToast(`Navigating to ${view}... (Coming Soon)`, 'info');
@@ -147,6 +150,8 @@ const AppContent: React.FC = () => {
                         }}
                     />} />
                     <Route path="/order-success" element={<OrderSuccessView />} />
+                    <Route path="/blog" element={<BlogView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
+                    <Route path="/blog/:postId" element={<BlogPostView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
                 </Routes>
             </main>
 

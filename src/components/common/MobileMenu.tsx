@@ -93,6 +93,15 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
                         </a>
                     </div>
 
+                    <a
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); handleNavigate('blog'); }}
+                        className="mobile-menu-link"
+                    >
+                        <i className="fas fa-newspaper"></i>
+                        <span>Wular Insights (Blog)</span>
+                    </a>
+
                     <div className="mobile-menu-divider"></div>
 
                     <a

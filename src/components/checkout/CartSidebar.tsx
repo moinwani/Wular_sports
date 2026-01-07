@@ -20,8 +20,7 @@ export const CartSidebar: FC<CartSidebarProps> = memo(({ isOpen, onClose, cart, 
                     <div className="cart-cod-notice">
                         <i className="fas fa-truck-fast"></i>
                         <div className="cod-notice-text">
-                            <strong>COD Available!</strong>
-                            <p>Pay only ₹300 per bat now to confirm, balance at delivery.</p>
+                            <strong>Cash on Delivery Available!</strong>
                         </div>
                     </div>
                 )}

@@ -636,6 +636,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                     SHIPPING
                                 </button>
                                 <button
+                                    className={`product-tab ${openSection === 'returns' ? 'active' : ''}`}
+                                    onClick={() => toggleSection('returns')}
+                                >
+                                    RETURNS
+                                </button>
+                                <button
                                     className={`product-tab ${openSection === 'contact' ? 'active' : ''}`}
                                     onClick={() => toggleSection('contact')}
                                 >
@@ -785,6 +791,44 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
                                             <div className="shipping-note-box">
                                                 <p><i className="fas fa-shield-alt"></i> <strong>Safe & Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* RETURNS Tab */}
+                                {openSection === 'returns' && (
+                                    <div className="tab-panel active">
+                                        <div className="returns-section-clean">
+                                            <h3 className="returns-title">Hassle-Free Returns</h3>
+
+                                            <div className="returns-info">
+                                                <div className="policy-note">
+                                                    <i className="fas fa-undo-alt"></i>
+                                                    <p>We offer a <strong>7-day return policy</strong> for all our products.</p>
+                                                </div>
+
+                                                <div className="return-conditions">
+                                                    <h4>Return Conditions</h4>
+                                                    <ul>
+                                                        <li>Product must be <strong>unused</strong> and in its <strong>original condition</strong>.</li>
+                                                        <li>Original packaging must be intact.</li>
+                                                        <li>Used or damaged products will not be eligible for return.</li>
+                                                    </ul>
+                                                </div>
+
+                                                <div className="return-process">
+                                                    <h4>How to Initiate a Return</h4>
+                                                    <p>Contact us on <strong>WhatsApp</strong> within 7 days of delivery. Please provide:</p>
+                                                    <ol>
+                                                        <li>Your Order ID.</li>
+                                                        <li>Photo/Video proof showing the product is unused and in original condition.</li>
+                                                    </ol>
+                                                </div>
+                                            </div>
+
+                                            <div className="returns-note-box">
+                                                <p><i className="fas fa-info-circle"></i> Our team will review your request and guide you through the next steps within 24-48 hours.</p>
                                             </div>
                                         </div>
                                     </div>

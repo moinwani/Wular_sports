@@ -5359,3 +5359,121 @@ img[loading="lazy"] {
     }
 }
 
+
+
+/* === RETURNS SECTION STYLES === */
+.returns-section-clean {
+    padding: 1rem 0;
+    animation: fadeIn 0.4s ease;
+}
+
+.returns-title {
+    font-size: 1.3rem;
+    color: var(--golden);
+    margin-bottom: 2rem;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.returns-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.policy-note {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem;
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+}
+
+.policy-note i {
+    font-size: 1.8rem;
+    color: var(--golden);
+}
+
+.policy-note p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.return-conditions h4,
+.return-process h4 {
+    color: var(--golden);
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.return-conditions ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.return-conditions li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: #ccc;
+    font-size: 0.95rem;
+}
+
+.return-conditions li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    color: var(--golden);
+}
+
+.return-process p {
+    color: #ccc;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.return-process ol {
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    color: #ccc;
+}
+
+.return-process li {
+    font-size: 0.95rem;
+}
+
+.return-process strong {
+    color: #fff;
+}
+
+.returns-note-box {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #bbb;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.returns-note-box i {
+    color: var(--golden);
+}
+

@@ -51,7 +51,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                 >
                     Unleash Your Power
                 </h1>
-                <p className="hero-subtitle">Crafted for Champions. Built for Victory.</p>
+
                 <button onClick={onShopCollectionClick} className="btn">Shop Collection</button>
             </div>
         </section>

@@ -16,6 +16,15 @@ export const CartSidebar: FC<CartSidebarProps> = memo(({ isOpen, onClose, cart, 
     return (
         <Sidebar title="Your Cart" isOpen={isOpen} onClose={onClose} footer={
             <>
+                {cart.length > 0 && (
+                    <div className="cart-cod-notice">
+                        <i className="fas fa-truck-fast"></i>
+                        <div className="cod-notice-text">
+                            <strong>COD Available!</strong>
+                            <p>Pay only ₹300 per bat now to confirm, balance at delivery.</p>
+                        </div>
+                    </div>
+                )}
                 <div className="cart-total"><span>Total</span><span>₹{total.toLocaleString('en-IN')}</span></div>
                 <button className="btn checkout-btn" onClick={onCheckout} disabled={cart.length === 0}>Proceed to Checkout</button>
             </>

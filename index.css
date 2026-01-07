@@ -5312,3 +5312,50 @@ img[loading="lazy"] {
     font-size: 1.1rem;
 }
 
+
+
+/* === CART COD NOTICE === */
+.cart-cod-notice {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    animation: slideInDown 0.3s ease-out;
+}
+
+.cart-cod-notice i {
+    color: var(--golden);
+    font-size: 1.4rem;
+}
+
+.cod-notice-text strong {
+    display: block;
+    color: var(--golden);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+}
+
+.cod-notice-text p {
+    color: #eee;
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+

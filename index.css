@@ -6460,7 +6460,6 @@ img[loading="lazy"] {
     display: flex;
     justify-content: center;
     gap: 2rem;
-    flex-wrap: wrap;
 }
 
 .bat-type-card {
@@ -6618,6 +6617,28 @@ img[loading="lazy"] {
 }
 
 @media (max-width: 600px) {
+    .bat-type-grid {
+        gap: 0.75rem;
+        padding: 0 1rem;
+    }
+
+    .bat-type-card {
+        padding: 1.5rem 0.5rem;
+        flex: 1;
+        width: auto;
+        min-width: 0;
+        gap: 0.75rem;
+    }
+
+    .bat-icon-large {
+        font-size: 2rem;
+    }
+
+    .bat-type-name {
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
     .customization-form {
         padding: 1.5rem;
     }

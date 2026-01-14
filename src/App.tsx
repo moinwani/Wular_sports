@@ -17,6 +17,7 @@ import { BlogPostView } from './views/BlogPostView';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
+import { AdminView } from './views/AdminView';
 
 
 // Wrapper to handle scroll to top on route change
@@ -152,6 +153,7 @@ const AppContent: React.FC = () => {
                     <Route path="/order-success" element={<OrderSuccessView />} />
                     <Route path="/blog" element={<BlogView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} showToast={showToast} />} />
                     <Route path="/blog/:postId" element={<BlogPostView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
+                    <Route path="/admin" element={<AdminView />} />
                 </Routes>
             </main>
 

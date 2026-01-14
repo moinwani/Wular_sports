@@ -1,0 +1,66 @@
+import { FC, useState } from 'react';
+import { AdminRoute } from '../components/admin/AdminRoute';
+import { AdminDashboard } from '../components/admin/AdminDashboard';
+import { OrdersManagement } from '../components/admin/OrdersManagement';
+import { SubscribersManagement } from '../components/admin/SubscribersManagement';
+
+type AdminTab = 'dashboard' | 'orders' | 'subscribers';
+
+export const AdminView: FC = () => {
+    const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+
+    const handleLogout = () => {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = '/';
+        }
+    };
+
+    return (
+        <AdminRoute>
+            <div className="admin-panel">
+                <div className="admin-header">
+                    <div className="admin-header-content">
+                        <h1><i className="fas fa-shield-alt"></i> Wular Sports Admin</h1>
+                        <button className="btn-logout" onClick={handleLogout}>
+                            <i className="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+
+                <div className="admin-body">
+                    <div className="admin-sidebar">
+                        <nav className="admin-nav">
+                            <button
+                                className={`admin-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('dashboard')}
+                            >
+                                <i className="fas fa-chart-line"></i>
+                                <span>Dashboard</span>
+                            </button>
+                            <button
+                                className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('orders')}
+                            >
+                                <i className="fas fa-shopping-cart"></i>
+                                <span>Orders</span>
+                            </button>
+                            <button
+                                className={`admin-nav-item ${activeTab === 'subscribers' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('subscribers')}
+                            >
+                                <i className="fas fa-envelope"></i>
+                                <span>Subscribers</span>
+                            </button>
+                        </nav>
+                    </div>
+
+                    <div className="admin-content">
+                        {activeTab === 'dashboard' && <AdminDashboard />}
+                        {activeTab === 'orders' && <OrdersManagement />}
+                        {activeTab === 'subscribers' && <SubscribersManagement />}
+                    </div>
+                </div>
+            </div>
+        </AdminRoute>
+    );
+};

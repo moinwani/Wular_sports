@@ -57,47 +57,77 @@ export const useOrders = (customerEmail?: string) => {
 };
 
 /**
- * Hook to get all orders (admin use) with real-time updates
+ * Hook to get all orders (admin use ONLY) with real-time updates
+ * SECURITY: Only accessible to users with admin custom claim
  */
 export const useAllOrders = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isAuthorized, setIsAuthorized] = useState(false);
 
     useEffect(() => {
         setLoading(true);
         setError(null);
 
-        const q = query(
-            collection(db, 'orders'),
-            orderBy('createdAt', 'desc')
-        );
+        // SECURITY: Check if user is admin before fetching all orders
+        const checkAuthAndFetch = async () => {
+            try {
+                const { isAdmin } = await import('../services/auth');
+                const adminStatus = await isAdmin();
 
-        const unsubscribe = onSnapshot(
-            q,
-            (querySnapshot: QuerySnapshot<DocumentData>) => {
-                const ordersData: Order[] = querySnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    return {
-                        id: doc.id,
-                        ...data,
-                        createdAt: data.createdAt?.toDate(),
-                        updatedAt: data.updatedAt?.toDate()
-                    } as Order;
-                });
+                if (!adminStatus) {
+                    setError('Unauthorized: Admin access required');
+                    setLoading(false);
+                    setIsAuthorized(false);
+                    return;
+                }
 
-                setOrders(ordersData);
-                setLoading(false);
-            },
-            (err) => {
-                console.error('Error fetching all orders:', err);
-                setError('Failed to fetch orders');
+                setIsAuthorized(true);
+
+                // Only fetch orders if admin
+                const q = query(
+                    collection(db, 'orders'),
+                    orderBy('createdAt', 'desc')
+                );
+
+                const unsubscribe = onSnapshot(
+                    q,
+                    (querySnapshot: QuerySnapshot<DocumentData>) => {
+                        const ordersData: Order[] = querySnapshot.docs.map(doc => {
+                            const data = doc.data();
+                            return {
+                                id: doc.id,
+                                ...data,
+                                createdAt: data.createdAt?.toDate(),
+                                updatedAt: data.updatedAt?.toDate()
+                            } as Order;
+                        });
+
+                        setOrders(ordersData);
+                        setLoading(false);
+                    },
+                    (err) => {
+                        console.error('Error fetching all orders:', err);
+                        setError('Failed to fetch orders');
+                        setLoading(false);
+                    }
+                );
+
+                return unsubscribe;
+            } catch (err) {
+                console.error('Error checking admin status:', err);
+                setError('Authentication error');
                 setLoading(false);
             }
-        );
+        };
 
-        return () => unsubscribe();
+        const unsubscribePromise = checkAuthAndFetch();
+
+        return () => {
+            unsubscribePromise?.then(unsub => unsub?.());
+        };
     }, []);
 
-    return { orders, loading, error };
+    return { orders, loading, error, isAuthorized };
 };

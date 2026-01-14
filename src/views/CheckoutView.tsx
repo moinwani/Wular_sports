@@ -161,14 +161,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         setIsProcessing(true);
 
         try {
+            // SECURITY: Authenticate user before creating order
+            const { ensureAuthenticated } = await import('../services/auth');
+            const userId = await ensureAuthenticated();
+
             // Generate order ID
             const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
             // Open WhatsApp immediately - both flows now use WhatsApp
             openWhatsAppOrder(orderId, sanitizedData);
 
-            // Execute background save to DB
+            // Execute background save to DB with userId
             const orderData = {
+                userId: userId, // REQUIRED: Links order to authenticated user
                 customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
                 customerEmail: sanitizedData.email || '',
                 customerPhone: sanitizedData.phone,
@@ -208,7 +213,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
         } catch (error: any) {
             console.error("Order process failed:", error);
-            setFormError(`Something went wrong. Please contact us on WhatsApp.`);
+
+            // Better error handling for auth failures
+            if (error.message?.includes('authenticate')) {
+                setFormError('Unable to process order. Please refresh the page and try again.');
+            } else {
+                setFormError(`Something went wrong. Please contact us on WhatsApp.`);
+            }
             setIsProcessing(false);
         }
     };

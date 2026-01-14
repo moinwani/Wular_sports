@@ -15,6 +15,7 @@ const SUBSCRIBERS_COLLECTION = 'subscribers';
  */
 export const subscribeToNewsletter = async (email: string): Promise<{ success: boolean; message: string }> => {
     try {
+        // Sanitize: lowercase and trim (required by Firestore rules)
         const sanitizedEmail = email.toLowerCase().trim();
 
         // 1. Check if already subscribed
@@ -35,6 +36,14 @@ export const subscribeToNewsletter = async (email: string): Promise<{ success: b
         return { success: true, message: 'Successfully subscribed to Wular Insights!' };
     } catch (error) {
         console.error('Newsletter subscription failed:', error);
+
+        // Better error handling for permission errors
+        if (error && typeof error === 'object' && 'code' in error) {
+            if ((error as any).code === 'permission-denied') {
+                return { success: false, message: 'Unable to subscribe. Please try again later.' };
+            }
+        }
+
         return { success: false, message: 'Subscription failed. Please try again later.' };
     }
 };

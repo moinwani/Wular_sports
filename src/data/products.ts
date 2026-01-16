@@ -14,7 +14,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767250044/6246894018251918568_byi6nf.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1767249929/6183803886431308817_uybkuj.jpg"
         ],
-        price: 3500,
+        price: 3499,
         originalPrice: 4600,
         specs: [
             "Weight: 980-1100 grams",
@@ -45,7 +45,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752142267/photo_6098247283192742269_y_hpkuvf.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752142328/photo_6098247283192742270_y_fxeei5.jpg",
         ],
-        price: 2700,
+        price: 2799,
         originalPrice: 4000,
         specs: [
             "Weight: 950-1050 grams",
@@ -73,7 +73,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752218593/photo_6305555205562943194_w_qrlxpr.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752218593/photo_6305555205562943196_w_uosoj9.jpg"
         ],
-        price: 3000,
+        price: 2999,
         originalPrice: 4500,
         specs: [
             "Weight: 950-1100 grams",
@@ -102,7 +102,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752142647/photo_6305588890991445182_y_yv6yyk.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752142648/photo_6305588890991445180_y_x6l052.jpg"
         ],
-        price: 1700,
+        price: 1999,
         originalPrice: 2800,
         specs: [
             "Weight Range: 800 to 900 grams",
@@ -130,7 +130,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752932037/6332452326584994784_vfrqzg.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752932037/6332452326584994785_ovfohm.jpg"
         ],
-        price: 1799,
+        price: 1999,
         originalPrice: 3000,
         specs: [
             "Weight: 820g – 950g",
@@ -155,7 +155,7 @@ export const products: ProductFull[] = [
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752143102/photo_6305588890991445190_w_qxvqd7.jpg",
             "https://res.cloudinary.com/ddahm5ebv/image/upload/v1752143102/photo_6305588890991445189_w_amhn0n.jpg"
         ],
-        price: 4000,
+        price: 4799,
         originalPrice: 6500,
         specs: [
             "Grade A+ Kashmir Willow",

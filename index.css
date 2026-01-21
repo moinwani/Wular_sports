@@ -7411,14 +7411,45 @@ img[loading="lazy"] {
 
 @media (max-width: 768px) {
     .video-testimonials {
-        padding: 4rem 1.5rem;
+        padding: 2.5rem 1rem;
+    }
+
+    .video-testimonials .section-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .video-testimonials .section-subtitle {
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        padding: 0 1rem;
     }
 
     .testimonials-grid {
-        gap: 2rem;
+        display: flex;
+        overflow-x: auto;
+        gap: 1.5rem;
+        padding: 0 1rem 1.5rem;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        margin-top: 1rem;
+    }
+
+    .testimonials-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .testimonial-card {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
     }
 
     .testimonial-card .video-container {
         aspect-ratio: 9/16;
+    }
+
+    .testimonial-info {
+        padding: 1.5rem;
     }
 }

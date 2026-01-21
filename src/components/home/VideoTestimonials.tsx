@@ -47,11 +47,8 @@ export const VideoTestimonials: FC = () => {
                                     controls={false}
                                     muted
                                     playsInline
-                                    onMouseOver={(e) => e.currentTarget.play()}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.pause();
-                                        e.currentTarget.currentTime = 0;
-                                    }}
+                                    autoPlay
+                                    loop
                                     className="testimonial-video"
                                 />
                                 <div className="play-overlay">

@@ -1,6 +1,7 @@
 import { FC, useRef, RefObject } from 'react';
 import { Hero } from '../components/home/Hero';
 import { Catalog } from '../components/product/Catalog';
+import { VideoTestimonials } from '../components/home/VideoTestimonials';
 import { Customization } from '../components/checkout/Customization';
 import { About } from '../components/home/About';
 import { SEOHead } from '../components/common/SEOHead';
@@ -41,6 +42,7 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
             />
             <Hero onShopCollectionClick={onShopCollectionClick} />
             <Catalog ref={catalogRef} onAddToCart={onAddToCart} onImageClick={onImageClick} onWatchVideo={onWatchVideo} />
+            <VideoTestimonials />
             <Customization />
             <About />
         </main>

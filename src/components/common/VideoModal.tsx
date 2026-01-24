@@ -43,6 +43,8 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             if (items[initialIndex]) {
                 items[initialIndex].scrollIntoView({ behavior: 'auto', block: 'center' });
             }
+        } else if (!isMobile) {
+            setActiveIndex(initialIndex);
         }
     }, [initialIndex, isMobile]);
 
@@ -113,7 +115,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             )}
 
             <div
-                className={isMobile ? "video-reel-container" : "video-desktop-container"}
+                className={isMobile ? "video-reel-container" : "video-desktop-container-new"}
                 ref={containerRef}
                 onScroll={handleScroll}
                 onClick={(e) => e.stopPropagation()}
@@ -129,16 +131,17 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                     position: 'relative',
                     background: '#000'
                 } : {
-                    width: '90%',
-                    maxWidth: '1100px',
+                    width: '95%',
+                    maxWidth: '1200px',
                     height: 'auto',
-                    maxHeight: '85vh',
+                    maxHeight: '90vh',
                     position: 'relative',
-                    background: '#000',
+                    background: 'transparent',
                     display: 'flex',
-                    borderRadius: '15px',
-                    overflow: 'hidden',
-                    boxShadow: '0 0 50px rgba(0,0,0,0.8)'
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    overflowY: 'auto',
+                    scrollbarWidth: 'none'
                 }}
             >
                 {/* Desktop View: Render only active, Mobile View: Render all for scroll */}
@@ -151,24 +154,26 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                             key={t.id}
                             className="reel-item"
                             style={{
-                                flex: isMobile ? '0 0 100%' : '1',
-                                height: '100%',
-                                width: '100%',
+                                flex: isMobile ? '0 0 100%' : 'none',
+                                height: isMobile ? '100%' : 'auto',
+                                width: isMobile ? '100%' : 'auto',
                                 position: 'relative',
                                 scrollSnapAlign: 'start',
                                 display: 'flex',
-                                flexDirection: isMobile ? 'column' : 'row',
-                                overflow: 'hidden'
+                                flexDirection: 'column',
+                                alignItems: 'center'
                             }}
                         >
-                            {/* Video Player */}
+                            {/* Video Player Section */}
                             <div style={{
-                                flex: isMobile ? 1 : '0 0 60%',
+                                width: isMobile ? '100%' : 'max-content',
+                                flex: isMobile ? 1 : 'none',
                                 position: 'relative',
                                 background: '#000',
                                 display: 'flex',
-                                alignItems: 'center',
-                                borderRight: !isMobile ? '1px solid rgba(255,255,255,0.1)' : 'none'
+                                justifyContent: 'center',
+                                borderRadius: !isMobile ? '15px' : '0',
+                                overflow: 'hidden'
                             }}>
                                 <video
                                     ref={(el) => { videoRefs.current[idx] = el; }}
@@ -179,7 +184,13 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     webkit-playsinline="true"
                                     onClick={() => togglePlay(idx)}
                                     className="reel-video"
-                                    style={{ width: '100%', height: '100%', objectFit: isMobile ? 'cover' : 'contain', cursor: 'pointer' }}
+                                    style={{
+                                        width: isMobile ? '100%' : 'auto',
+                                        height: isMobile ? '100%' : '70vh',
+                                        objectFit: isMobile ? 'cover' : 'contain',
+                                        cursor: 'pointer',
+                                        maxHeight: isMobile ? 'none' : '65vh'
+                                    }}
                                 />
 
                                 <div style={{
@@ -193,44 +204,53 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                 }} />
                             </div>
 
-                            {/* Sidebar / Info (Desktop) or Footer (Mobile) */}
+                            {/* Info Section (Below Video for Desktop, Bottom Bar for Mobile) */}
                             <div style={isMobile ? {
                                 background: 'rgba(10, 10, 10, 0.95)',
                                 padding: '1rem',
-                                borderBottomLeftRadius: '10px',
-                                borderBottomRightRadius: '10px'
+                                width: '100%'
                             } : {
-                                flex: '1',
+                                width: '100%',
+                                maxWidth: '800px',
                                 background: '#111',
-                                padding: '2.5rem',
+                                padding: '2rem 3rem',
+                                marginTop: '1.5rem',
+                                borderRadius: '15px',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                textAlign: 'center',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'center',
-                                textAlign: 'left'
+                                alignItems: 'center'
                             }}>
                                 {!isMobile && (
                                     <>
-                                        <div className="rating" style={{ color: 'var(--golden)', marginBottom: '1rem' }}>
-                                            {[...Array(t.rating)].map((_, i) => <i key={i} className="fas fa-star"></i>)}
+                                        <div className="rating" style={{ color: 'var(--golden)', marginBottom: '0.75rem' }}>
+                                            {[...Array(t.rating)].map((_, i) => <i key={i} className="fas fa-star" style={{ fontSize: '1.2rem' }}></i>)}
                                         </div>
-                                        <p style={{ fontStyle: 'italic', fontSize: '1.2rem', color: '#ddd', marginBottom: '1.5rem', lineHeight: '1.6' }}>"{t.comment}"</p>
-                                        <h4 style={{ color: 'var(--golden)', fontSize: '1.3rem', letterSpacing: '1px' }}>{t.name}</h4>
-                                        <div style={{ height: '1px', background: 'rgba(212,175,55,0.2)', margin: '2rem 0' }} />
+                                        <p style={{ fontStyle: 'italic', fontSize: '1.4rem', color: '#fff', marginBottom: '1rem', lineHeight: '1.6', maxWidth: '700px' }}>"{t.comment}"</p>
+                                        <h4 style={{ color: 'var(--golden)', fontSize: '1.2rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{t.name}</h4>
+                                        <div style={{ height: '1px', width: '100px', background: 'rgba(212,175,55,0.4)', marginBottom: '1.5rem' }} />
                                     </>
                                 )}
 
                                 {product && (
-                                    <div className="modal-product-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <div className="modal-product-section" style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        gap: '2rem',
+                                        width: '100%'
+                                    }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', textAlign: 'left' }}>
                                             <img
                                                 src={Array.isArray(product.image) ? product.image[0] : product.image}
                                                 alt={product.name}
                                                 className="modal-product-img"
-                                                style={{ width: isMobile ? '40px' : '60px', height: isMobile ? '40px' : '60px' }}
+                                                style={{ width: isMobile ? '45px' : '70px', height: isMobile ? '45px' : '70px' }}
                                             />
                                             <div>
-                                                <h4 style={{ fontSize: isMobile ? '0.8rem' : '1rem', margin: 0 }}>{product.name}</h4>
-                                                <span className="modal-product-price" style={{ fontSize: isMobile ? '0.8rem' : '1.1rem' }}>₹{product.price.toLocaleString('en-IN')}</span>
+                                                <h4 style={{ fontSize: isMobile ? '0.85rem' : '1.1rem', margin: 0, color: 'var(--golden)' }}>{product.name}</h4>
+                                                <span className="modal-product-price" style={{ fontSize: isMobile ? '0.85rem' : '1.2rem', fontWeight: 'bold' }}>₹{product.price.toLocaleString('en-IN')}</span>
                                             </div>
                                         </div>
                                         <button
@@ -239,9 +259,16 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                 handleClose();
                                                 navigate(`/product/${product.id}`);
                                             }}
-                                            style={isMobile ? { fontSize: '0.75rem', padding: '0.4rem 0.8rem' } : { padding: '0.8rem 1.5rem' }}
+                                            style={isMobile ? {
+                                                fontSize: '0.8rem',
+                                                padding: '0.5rem 1rem'
+                                            } : {
+                                                padding: '1rem 2.5rem',
+                                                fontSize: '1rem',
+                                                boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)'
+                                            }}
                                         >
-                                            Shop Now
+                                            {isMobile ? "Shop Now" : "Shop This Bat"}
                                         </button>
                                     </div>
                                 )}
@@ -253,6 +280,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
 
             <style>{`
                 .video-reel-container::-webkit-scrollbar { display: none; }
+                .video-desktop-container-new::-webkit-scrollbar { display: none; }
                 @keyframes bounce {
                     0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
                     40% {transform: translateX(-50%) translateY(-10px);}

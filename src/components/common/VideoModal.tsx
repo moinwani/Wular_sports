@@ -22,23 +22,31 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const [activeIndex, setActiveIndex] = useState(initialIndex);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    // Track window size for hybrid behavior
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Set up video refs array
     useEffect(() => {
         videoRefs.current = videoRefs.current.slice(0, testimonials.length);
     }, [testimonials.length]);
 
-    // Initial scroll to starting video
+    // Initial scroll to starting video (Mobile only)
     useEffect(() => {
-        if (containerRef.current) {
+        if (isMobile && containerRef.current) {
             const items = containerRef.current.querySelectorAll('.reel-item');
             if (items[initialIndex]) {
                 items[initialIndex].scrollIntoView({ behavior: 'auto', block: 'center' });
             }
         }
-    }, [initialIndex]);
+    }, [initialIndex, isMobile]);
 
-    // Handle play/pause logic based on visible index
+    // Handle play/pause logic
     useEffect(() => {
         videoRefs.current.forEach((video, idx) => {
             if (video) {
@@ -53,7 +61,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     }, [activeIndex]);
 
     const handleScroll = useCallback(() => {
-        if (!containerRef.current) return;
+        if (!isMobile || !containerRef.current) return;
 
         const container = containerRef.current;
         const scrollPos = container.scrollTop;
@@ -63,7 +71,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
         if (index !== activeIndex && index >= 0 && index < testimonials.length) {
             setActiveIndex(index);
         }
-    }, [activeIndex, testimonials.length]);
+    }, [activeIndex, testimonials.length, isMobile]);
 
     const handleClose = () => {
         videoRefs.current.forEach(v => v?.pause());
@@ -78,22 +86,41 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
         }
     };
 
+    const navigateDesktop = (direction: 'next' | 'prev') => {
+        if (direction === 'next') {
+            setActiveIndex(prev => (prev + 1) % testimonials.length);
+        } else {
+            setActiveIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
+        }
+    };
+
     return (
         <div className="video-modal-overlay" onClick={handleClose}>
-            <button className="video-modal-close-btn" aria-label="Close reels" onClick={handleClose}>
+            <button className="video-modal-close-btn" aria-label="Close" onClick={handleClose}>
                 <i className="fas fa-times"></i>
             </button>
 
+            {/* Desktop Navigation Arrows */}
+            {!isMobile && (
+                <>
+                    <button className="reel-nav-btn prev" onClick={(e) => { e.stopPropagation(); navigateDesktop('prev'); }}>
+                        <i className="fas fa-chevron-left"></i>
+                    </button>
+                    <button className="reel-nav-btn next" onClick={(e) => { e.stopPropagation(); navigateDesktop('next'); }}>
+                        <i className="fas fa-chevron-right"></i>
+                    </button>
+                </>
+            )}
+
             <div
-                className="video-reel-container"
+                className={isMobile ? "video-reel-container" : "video-desktop-container"}
                 ref={containerRef}
                 onScroll={handleScroll}
                 onClick={(e) => e.stopPropagation()}
-                style={{
+                style={isMobile ? {
                     width: '100%',
                     maxWidth: '450px',
-                    height: '100%',
-                    maxHeight: '100vh',
+                    height: '100dvh', // Use dynamic viewport
                     overflowY: 'auto',
                     scrollSnapType: 'y mandatory',
                     scrollbarWidth: 'none',
@@ -101,9 +128,22 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                     flexDirection: 'column',
                     position: 'relative',
                     background: '#000'
+                } : {
+                    width: '90%',
+                    maxWidth: '1100px',
+                    height: 'auto',
+                    maxHeight: '85vh',
+                    position: 'relative',
+                    background: '#000',
+                    display: 'flex',
+                    borderRadius: '15px',
+                    overflow: 'hidden',
+                    boxShadow: '0 0 50px rgba(0,0,0,0.8)'
                 }}
             >
+                {/* Desktop View: Render only active, Mobile View: Render all for scroll */}
                 {testimonials.map((t, idx) => {
+                    if (!isMobile && idx !== activeIndex) return null;
                     const product = products.find(p => p.id === t.productId);
 
                     return (
@@ -111,20 +151,27 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                             key={t.id}
                             className="reel-item"
                             style={{
-                                flex: '0 0 100%',
+                                flex: isMobile ? '0 0 100%' : '1',
                                 height: '100%',
                                 width: '100%',
                                 position: 'relative',
                                 scrollSnapAlign: 'start',
                                 display: 'flex',
-                                flexDirection: 'column',
+                                flexDirection: isMobile ? 'column' : 'row',
                                 overflow: 'hidden'
                             }}
                         >
                             {/* Video Player */}
-                            <div style={{ flex: 1, position: 'relative', background: '#000', display: 'flex', alignItems: 'center' }}>
+                            <div style={{
+                                flex: isMobile ? 1 : '0 0 60%',
+                                position: 'relative',
+                                background: '#000',
+                                display: 'flex',
+                                alignItems: 'center',
+                                borderRight: !isMobile ? '1px solid rgba(255,255,255,0.1)' : 'none'
+                            }}>
                                 <video
-                                    ref={el => videoRefs.current[idx] = el}
+                                    ref={(el) => { videoRefs.current[idx] = el; }}
                                     src={t.url}
                                     preload="metadata"
                                     loop
@@ -132,64 +179,73 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     webkit-playsinline="true"
                                     onClick={() => togglePlay(idx)}
                                     className="reel-video"
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
+                                    style={{ width: '100%', height: '100%', objectFit: isMobile ? 'cover' : 'contain', cursor: 'pointer' }}
                                 />
 
-                                {/* Overlay Gradient for visibility */}
                                 <div style={{
                                     position: 'absolute',
                                     bottom: 0,
                                     left: 0,
                                     right: 0,
-                                    height: '40%',
-                                    background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+                                    height: '30%',
+                                    background: 'linear-gradient(transparent, rgba(0,0,0,0.6))',
                                     pointerEvents: 'none'
                                 }} />
+                            </div>
 
-                                {/* Reel Instructions (Subtle) */}
-                                {idx === 0 && (
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: '20px',
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        color: '#fff',
-                                        fontSize: '0.8rem',
-                                        opacity: 0.6,
-                                        pointerEvents: 'none',
-                                        animation: 'bounce 2s infinite'
-                                    }}>
-                                        <i className="fas fa-chevron-up"></i> Swipe up for more
+                            {/* Sidebar / Info (Desktop) or Footer (Mobile) */}
+                            <div style={isMobile ? {
+                                background: 'rgba(10, 10, 10, 0.95)',
+                                padding: '1rem',
+                                borderBottomLeftRadius: '10px',
+                                borderBottomRightRadius: '10px'
+                            } : {
+                                flex: '1',
+                                background: '#111',
+                                padding: '2.5rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                textAlign: 'left'
+                            }}>
+                                {!isMobile && (
+                                    <>
+                                        <div className="rating" style={{ color: 'var(--golden)', marginBottom: '1rem' }}>
+                                            {[...Array(t.rating)].map((_, i) => <i key={i} className="fas fa-star"></i>)}
+                                        </div>
+                                        <p style={{ fontStyle: 'italic', fontSize: '1.2rem', color: '#ddd', marginBottom: '1.5rem', lineHeight: '1.6' }}>"{t.comment}"</p>
+                                        <h4 style={{ color: 'var(--golden)', fontSize: '1.3rem', letterSpacing: '1px' }}>{t.name}</h4>
+                                        <div style={{ height: '1px', background: 'rgba(212,175,55,0.2)', margin: '2rem 0' }} />
+                                    </>
+                                )}
+
+                                {product && (
+                                    <div className="modal-product-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                            <img
+                                                src={Array.isArray(product.image) ? product.image[0] : product.image}
+                                                alt={product.name}
+                                                className="modal-product-img"
+                                                style={{ width: isMobile ? '40px' : '60px', height: isMobile ? '40px' : '60px' }}
+                                            />
+                                            <div>
+                                                <h4 style={{ fontSize: isMobile ? '0.8rem' : '1rem', margin: 0 }}>{product.name}</h4>
+                                                <span className="modal-product-price" style={{ fontSize: isMobile ? '0.8rem' : '1.1rem' }}>₹{product.price.toLocaleString('en-IN')}</span>
+                                            </div>
+                                        </div>
+                                        <button
+                                            className="btn"
+                                            onClick={() => {
+                                                handleClose();
+                                                navigate(`/product/${product.id}`);
+                                            }}
+                                            style={isMobile ? { fontSize: '0.75rem', padding: '0.4rem 0.8rem' } : { padding: '0.8rem 1.5rem' }}
+                                        >
+                                            Shop Now
+                                        </button>
                                     </div>
                                 )}
                             </div>
-
-                            {/* Product Info Bar */}
-                            {product && (
-                                <div className="modal-product-footer" style={{ borderTop: 'none', borderRadius: 0, background: 'rgba(10, 10, 10, 0.95)' }}>
-                                    <div className="modal-product-info">
-                                        <img
-                                            src={Array.isArray(product.image) ? product.image[0] : product.image}
-                                            alt={product.name}
-                                            className="modal-product-img"
-                                        />
-                                        <div className="modal-product-details">
-                                            <h4 style={{ fontSize: '0.85rem' }}>{product.name}</h4>
-                                            <span className="modal-product-price">₹{product.price.toLocaleString('en-IN')}</span>
-                                        </div>
-                                    </div>
-                                    <button
-                                        className="btn"
-                                        onClick={() => {
-                                            handleClose();
-                                            navigate(`/product/${product.id}`);
-                                        }}
-                                        style={{ fontSize: '0.8rem', padding: '0.5rem 1rem' }}
-                                    >
-                                        Shop Now
-                                    </button>
-                                </div>
-                            )}
                         </div>
                     );
                 })}

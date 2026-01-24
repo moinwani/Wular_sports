@@ -7536,3 +7536,52 @@ img[loading="lazy"] {
         justify-content: flex-start;
     }
 }
+
+
+/* Hybrid Modal Navigation */
+.reel-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(212, 175, 55, 0.2);
+    border: 1px solid var(--golden);
+    color: var(--golden);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1065;
+    font-size: 1.2rem;
+}
+
+.reel-nav-btn:hover {
+    background: var(--golden);
+    color: var(--black);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.reel-nav-btn.prev { left: -70px; }
+.reel-nav-btn.next { right: -70px; }
+
+@media (max-width: 1200px) {
+    .reel-nav-btn.prev { left: 10px; }
+    .reel-nav-btn.next { right: 10px; }
+}
+
+@media (max-width: 768px) {
+    .reel-nav-btn { display: none; }
+    /* Fix mobile product bar clipping */
+    .video-reel-container {
+        height: 100dvh !important; /* Use dynamic viewport height for mobile browsers */
+    }
+    .modal-product-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 10;
+        margin-top: auto;
+    }
+}

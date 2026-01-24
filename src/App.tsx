@@ -14,6 +14,7 @@ import { CheckoutView } from './views/CheckoutView';
 import { OrderSuccessView } from './views/OrderSuccessView';
 import { BlogView } from './views/BlogView';
 import { BlogPostView } from './views/BlogPostView';
+import { CategoryView } from './views/CategoryView';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
@@ -71,7 +72,10 @@ const AppContent: React.FC = () => {
         else if (view === 'return') navigate('/return-policy');
         else if (view === 'terms') navigate('/terms-conditions');
         else if (view === 'blog') navigate('/blog');
-        else if (view === 'blog-post') navigate('/blog'); // Default to hub if no ID
+        else if (view === 'blog-post') navigate('/blog');
+        else if (view === 'hard-tennis') navigate('/hard-tennis-bats');
+        else if (view === 'soft-tennis') navigate('/soft-tennis-bats');
+        else if (view === 'leather-bats') navigate('/leather-cricket-bats');
         else {
             navigate('/');
             showToast(`Navigating to ${view}... (Coming Soon)`, 'info');
@@ -129,7 +133,7 @@ const AppContent: React.FC = () => {
                         onWatchVideo={() => { }} // Placeholder
                     />} />
                     <Route path="/collection" element={<CollectionView
-                        products={products}
+                        onNavigate={navigateTo}
                         onAddToCart={addToCart}
                         onImageClick={() => { }}
                         onWatchVideo={() => { }}
@@ -153,6 +157,48 @@ const AppContent: React.FC = () => {
                     <Route path="/order-success" element={<OrderSuccessView />} />
                     <Route path="/blog" element={<BlogView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} showToast={showToast} />} />
                     <Route path="/blog/:postId" element={<BlogPostView onNavigate={navigateTo} onSelectPost={(id) => navigate(`/blog/${id}`)} />} />
+
+                    {/* Dedicated Category Pages */}
+                    <Route path="/hard-tennis-bats" element={
+                        <CategoryView
+                            title="Hard Tennis Bats"
+                            h1Title="Hard Tennis Cricket Bats by Wular Sports"
+                            description="Discover premium handcrafted hard tennis cricket bats. Optimized for performance and power play."
+                            keywords="hard tennis bats, cricket bats, Wular Sports, premium bats"
+                            canonicalUrl="https://wularsports.com/hard-tennis-bats"
+                            products={products.filter(p => p.category.some(c => c.toLowerCase().includes("hard")))}
+                            onAddToCart={addToCart}
+                            onImageClick={() => { }}
+                            onWatchVideo={() => { }}
+                        />
+                    } />
+                    <Route path="/soft-tennis-bats" element={
+                        <CategoryView
+                            title="Soft Tennis Bats"
+                            h1Title="Soft Tennis Cricket Bats by Wular Sports"
+                            description="Lightweight and powerful soft tennis bats for explosive hitting and control."
+                            keywords="soft tennis bats, light cricket bats, Wular Sports"
+                            canonicalUrl="https://wularsports.com/soft-tennis-bats"
+                            products={products.filter(p => p.category.some(c => c.toLowerCase().includes("soft")))}
+                            onAddToCart={addToCart}
+                            onImageClick={() => { }}
+                            onWatchVideo={() => { }}
+                        />
+                    } />
+                    <Route path="/leather-cricket-bats" element={
+                        <CategoryView
+                            title="Leather Cricket Bats"
+                            h1Title="Leather Cricket Bats by Wular Sports"
+                            description="Professional leather ball cricket bats handcrafted from the finest Kashmir willow."
+                            keywords="leather cricket bats, leather ball bats, professional cricket bats, Wular Sports"
+                            canonicalUrl="https://wularsports.com/leather-cricket-bats"
+                            products={products.filter(p => p.category.some(c => c.toLowerCase().includes("leather")))}
+                            onAddToCart={addToCart}
+                            onImageClick={() => { }}
+                            onWatchVideo={() => { }}
+                        />
+                    } />
+
                     <Route path="/admin" element={<AdminView />} />
                 </Routes>
             </main>

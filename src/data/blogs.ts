@@ -17,13 +17,15 @@ export const blogs: BlogPost[] = [
             <p>Power in cricket is a result of kinetic energy. The formula for kinetic energy is 1/2 * mass * velocity squared. While increasing the mass (weight of the bat) can increase power, it often significantly decreases your velocity (swing speed). If you can't swing a heavy bat fast enough, you'll actually lose power.</p>
 
             <h3>Why Swing Speed Matters</h3>
-            <p>Modern cricket, especially in the T20 format and Hard Tennis tournaments, requires quick reactions. A bat that is too heavy will slow down your transition from your stance to the point of impact. This is particularly crucial when facing fast bowlers or trying to execute innovative shots like the ramp or the reverse sweep.</p>
+            <p>Modern cricket, especially in the T20 format and Hard Tennis tournaments, requires quick reactiChoosing a bat that's too heavy can lead to poor timing and fatigue, while a bat that's too light might lack the power needed for boundary-hitting. For players looking for specific weight classes, our <a href="/hard-tennis-bats">Hard Tennis Bats</a> are balanced for power, while our <a href="/soft-tennis-bats">Soft Tennis Bats</a> prioritize speed and control.
+ This is particularly crucial when facing fast bowlers or trying to execute innovative shots like the ramp or the reverse sweep.</p>
 
             <h3>The "Perfect" Weight</h3>
             <p>For Hard Tennis bats, the ideal range is usually between 980g and 1100g. For Soft Tennis, it drops to 800g-900g. The best way to test if a bat is right for you is the "One-Hand Rule": Hold the bat vertically in your dominant hand and extend your arm straight out. If you can't hold it steady for 10 seconds, it's likely too heavy.</p>
 
             <h3>Conclusion</h3>
-            <p>At Wular Sports, we naturally season our wood for up to 3 years to ensure we maintain maximum power while keeping the weight balanced. Choose a bat that feels like an extension of your arm, not a burden.</p>
+            <p>At Wular Sports, we've perfected this myth-busting approach. Our <a href="/leather-cricket-bats">Leather Cricket Bats</a> are handcrafted from premium Kashmir willow that rivals the best in the world. Whether you prefer <a href="/hard-tennis-bats">Hard Tennis Bats</a> or professional leather gear, the quality is in the craft.
+ Choose a bat that feels like an extension of your arm, not a burden.</p>
         `
     },
     {

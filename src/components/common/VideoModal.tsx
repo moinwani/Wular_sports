@@ -21,39 +21,70 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     const navigate = useNavigate();
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-    const [activeIndex, setActiveIndex] = useState(initialIndex);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
-    // Track window size for hybrid behavior
+    // Looping state (Mobile only)
+    const loopedItems = isMobile ? [testimonials[testimonials.length - 1], ...testimonials, testimonials[0]] : testimonials;
+    const [activeIndex, setActiveIndex] = useState(isMobile ? initialIndex + 1 : initialIndex);
+    const isInteracting = useRef(false); // To prevent logic collisions during reset
+
+    // Track window size
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Set up video refs array
+    // Set up video refs array size
     useEffect(() => {
-        videoRefs.current = videoRefs.current.slice(0, testimonials.length);
-    }, [testimonials.length]);
+        videoRefs.current = new Array(loopedItems.length).fill(null);
+    }, [loopedItems.length]);
 
-    // Initial scroll to starting video (Mobile only)
+    // Initial positioning (Instant - fixes back-scroll)
     useEffect(() => {
         if (isMobile && containerRef.current) {
-            const items = containerRef.current.querySelectorAll('.reel-item');
-            if (items[initialIndex]) {
-                items[initialIndex].scrollIntoView({ behavior: 'auto', block: 'center' });
-            }
-        } else if (!isMobile) {
-            setActiveIndex(initialIndex);
+            const container = containerRef.current;
+            const targetPos = (initialIndex + 1) * container.clientHeight;
+            container.scrollTo({ top: targetPos, behavior: 'auto' });
         }
     }, [initialIndex, isMobile]);
 
-    // Handle play/pause logic
+    // Looping Reset Logic (Mobile only)
+    const handleScroll = useCallback(() => {
+        if (!isMobile || !containerRef.current || isInteracting.current) return;
+
+        const container = containerRef.current;
+        const scrollPos = container.scrollTop;
+        const h = container.clientHeight;
+        const floatIndex = scrollPos / h;
+        const intIndex = Math.round(floatIndex);
+
+        // SILENT RESET boundary checks
+        if (floatIndex <= 0.1) {
+            // Reached start clone -> jump to real end
+            isInteracting.current = true;
+            container.scrollTo({ top: testimonials.length * h, behavior: 'auto' });
+            setActiveIndex(testimonials.length);
+            setTimeout(() => { isInteracting.current = false; }, 50);
+        } else if (floatIndex >= (loopedItems.length - 1.1)) {
+            // Reached end clone -> jump to real start
+            isInteracting.current = true;
+            container.scrollTo({ top: h, behavior: 'auto' });
+            setActiveIndex(1);
+            setTimeout(() => { isInteracting.current = false; }, 50);
+        } else {
+            if (intIndex !== activeIndex) {
+                setActiveIndex(intIndex);
+            }
+        }
+    }, [activeIndex, isMobile, testimonials.length, loopedItems.length]);
+
+    // Handle Play/Pause
     useEffect(() => {
         videoRefs.current.forEach((video, idx) => {
             if (video) {
                 if (idx === activeIndex) {
-                    video.play().catch(e => console.log('Auto-play blocked:', e));
+                    video.play().catch(() => { });
                 } else {
                     video.pause();
                     video.currentTime = 0;
@@ -61,19 +92,6 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             }
         });
     }, [activeIndex]);
-
-    const handleScroll = useCallback(() => {
-        if (!isMobile || !containerRef.current) return;
-
-        const container = containerRef.current;
-        const scrollPos = container.scrollTop;
-        const height = container.clientHeight;
-        const index = Math.round(scrollPos / height);
-
-        if (index !== activeIndex && index >= 0 && index < testimonials.length) {
-            setActiveIndex(index);
-        }
-    }, [activeIndex, testimonials.length, isMobile]);
 
     const handleClose = () => {
         videoRefs.current.forEach(v => v?.pause());
@@ -145,13 +163,14 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                 }}
             >
                 {/* Desktop View: Render only active, Mobile View: Render all for scroll */}
-                {testimonials.map((t, idx) => {
+                {loopedItems.map((t, idx) => {
+                    // Desktop Optimization: Only render active item
                     if (!isMobile && idx !== activeIndex) return null;
                     const product = products.find(p => p.id === t.productId);
 
                     return (
                         <div
-                            key={t.id}
+                            key={`${t.id}-${idx}`}
                             className="reel-item"
                             style={{
                                 flex: isMobile ? '0 0 100%' : 'none',
@@ -281,11 +300,6 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             <style>{`
                 .video-reel-container::-webkit-scrollbar { display: none; }
                 .video-desktop-container-new::-webkit-scrollbar { display: none; }
-                @keyframes bounce {
-                    0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
-                    40% {transform: translateX(-50%) translateY(-10px);}
-                    60% {transform: translateX(-50%) translateY(-5px);}
-                }
             `}</style>
         </div>
     );

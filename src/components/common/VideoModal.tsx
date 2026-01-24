@@ -198,6 +198,8 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     ref={(el) => { videoRefs.current[idx] = el; }}
                                     src={t.url}
                                     preload="metadata"
+                                    autoPlay
+                                    muted
                                     loop
                                     playsInline
                                     webkit-playsinline="true"

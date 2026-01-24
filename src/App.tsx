@@ -133,6 +133,7 @@ const AppContent: React.FC = () => {
                         onWatchVideo={() => { }} // Placeholder
                     />} />
                     <Route path="/collection" element={<CollectionView
+                        products={products}
                         onNavigate={navigateTo}
                         onAddToCart={addToCart}
                         onImageClick={() => { }}

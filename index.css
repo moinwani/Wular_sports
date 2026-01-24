@@ -7453,3 +7453,86 @@ img[loading="lazy"] {
         padding: 1.5rem;
     }
 }
+
+/* Testimonial \u0026 Modal Mobile UI Optimizations */
+.testimonial-product-link {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.modal-product-footer {
+    background: #111;
+    border-top: 2px solid var(--golden);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.modal-product-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+}
+
+.modal-product-img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.modal-product-details h4 {
+    color: var(--golden);
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.modal-product-price {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .testimonial-product-link {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+        align-items: flex-start !important;
+        text-align: left;
+        padding-top: 1.25rem !important;
+    }
+
+    .testimonial-product-link .btn {
+        width: 100% !important;
+        margin-top: 0.25rem;
+    }
+
+    .modal-product-footer {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.25rem;
+        align-items: stretch;
+    }
+
+    .modal-product-footer .btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .modal-product-info {
+        justify-content: flex-start;
+    }
+}

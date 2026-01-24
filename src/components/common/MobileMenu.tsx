@@ -72,21 +72,21 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose, onNavigate })
                     <div className="mobile-menu-sublinks" style={{ paddingLeft: '3rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1rem' }}>
                         <a
                             href="#"
-                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'hard-tennis'); }}
+                            onClick={(e) => { e.preventDefault(); handleNavigate('hard-tennis'); }}
                             style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
                         >
                             Hard Tennis
                         </a>
                         <a
                             href="#"
-                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'soft-tennis'); }}
+                            onClick={(e) => { e.preventDefault(); handleNavigate('soft-tennis'); }}
                             style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
                         >
                             Soft Tennis
                         </a>
                         <a
                             href="#"
-                            onClick={(e) => { e.preventDefault(); handleNavigate('collection', 'leather-bat'); }}
+                            onClick={(e) => { e.preventDefault(); handleNavigate('leather-bats'); }}
                             style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}
                         >
                             Leather Bat

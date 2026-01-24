@@ -72,6 +72,11 @@ export const Footer: FC<FooterProps> = memo(({ onNavigate, showToast }) => {
             <div className="footer-bottom-bar">
                 <div className="container container-flex">
                     <div className="footer-legal">
+                        <div className="footer-seo-links" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                            <a href="/hard-tennis-bats" className="legal-link">Hard Tennis Bats</a>
+                            <a href="/soft-tennis-bats" className="legal-link">Soft Tennis Bats</a>
+                            <a href="/leather-cricket-bats" className="legal-link">Leather Cricket Bats</a>
+                        </div>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('terms'); }} className="legal-link">TERMS AND POLICIES</a>
                         <span className="copyright">© 2026 WULAR SPORTS</span>
                     </div>

@@ -32,16 +32,16 @@ const testimonials = [
 
 export const VideoTestimonials: FC = () => {
     const navigate = useNavigate();
-    const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
-    const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+    const [isReelOpen, setIsReelOpen] = useState(false);
+    const [startIndex, setStartIndex] = useState(0);
 
-    const handleCardClick = (url: string, productId: string) => {
-        setSelectedVideo(url);
-        setSelectedProductId(productId);
+    const openReel = (index: number) => {
+        setStartIndex(index);
+        setIsReelOpen(true);
     };
 
     const handleShopClick = (e: React.MouseEvent, productId: string) => {
-        e.stopPropagation(); // Prevent opening video modal
+        e.stopPropagation(); // Prevent opening reel
         navigate(`/product/${productId}`);
     };
 
@@ -52,14 +52,14 @@ export const VideoTestimonials: FC = () => {
                 <p className="section-subtitle">Real feedback from real players across the country</p>
 
                 <div className="testimonials-grid">
-                    {testimonials.map((t) => {
+                    {testimonials.map((t, idx) => {
                         const product = products.find(p => p.id === t.productId);
 
                         return (
                             <div
                                 key={t.id}
                                 className="testimonial-card"
-                                onClick={() => handleCardClick(t.url, t.productId)}
+                                onClick={() => openReel(idx)}
                                 style={{ display: 'flex', flexDirection: 'column' }}
                             >
                                 <div className="video-container">
@@ -114,14 +114,13 @@ export const VideoTestimonials: FC = () => {
                 </div>
             </div>
 
-            <VideoModal
-                videoUrl={selectedVideo}
-                productId={selectedProductId}
-                onClose={() => {
-                    setSelectedVideo(null);
-                    setSelectedProductId(null);
-                }}
-            />
+            {isReelOpen && (
+                <VideoModal
+                    testimonials={testimonials}
+                    initialIndex={startIndex}
+                    onClose={() => setIsReelOpen(false)}
+                />
+            )}
         </section>
     );
 };

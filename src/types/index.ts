@@ -1,5 +1,5 @@
 
-export type View = 'home' | 'collection' | 'privacy' | 'return' | 'terms' | 'blog' | 'blog-post';
+export type View = 'home' | 'collection' | 'hard-tennis' | 'soft-tennis' | 'leather-bats' | 'privacy' | 'return' | 'terms' | 'blog' | 'blog-post';
 export type PaymentMethod = 'full' | 'partial' | 'cod';
 
 export interface BlogPost {

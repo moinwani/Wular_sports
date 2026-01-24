@@ -19,15 +19,44 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
 
     const structuredData = {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Wular Sports",
-        "url": "https://wularsports.com",
-        "description": "Premium handcrafted cricket bats and sports equipment from Kashmir",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://wularsports.com/collection?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "name": "Wular Sports",
+                "url": "https://wularsports.com",
+                "description": "Premium handcrafted cricket bats and sports equipment from Kashmir",
+                "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": "https://wularsports.com/collection?q={search_term_string}",
+                    "query-input": "required name=search_term_string"
+                }
+            },
+            {
+                "@type": "SiteNavigationElement",
+                "hasPart": [
+                    {
+                        "@type": "WebPage",
+                        "name": "Hard Tennis Bats",
+                        "url": "https://wularsports.com/hard-tennis-bats"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "name": "Soft Tennis Bats",
+                        "url": "https://wularsports.com/soft-tennis-bats"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "name": "Leather Bats",
+                        "url": "https://wularsports.com/leather-cricket-bats"
+                    },
+                    {
+                        "@type": "WebPage",
+                        "name": "Wular Insights",
+                        "url": "https://wularsports.com/blog"
+                    }
+                ]
+            }
+        ]
     };
 
     return (

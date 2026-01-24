@@ -199,7 +199,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     src={t.url}
                                     preload="metadata"
                                     autoPlay
-                                    muted
+                                    muted={isMobile}
                                     loop
                                     playsInline
                                     webkit-playsinline="true"

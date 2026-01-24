@@ -180,5 +180,103 @@ export const blogs: BlogPost[] = [
                 </div>
             </div>
         `
+    },
+    {
+        id: 'from-tennis-to-leather-transition-guide',
+        title: 'From Tennis to Leather: The Ultimate Transition Guide',
+        description: 'Moving from tennis ball cricket to professional leather ball cricket? Here is everything you need to know about gear, technique, and safety.',
+        category: 'Guides',
+        author: 'Wular Sports Team',
+        date: 'Jan 22, 2026',
+        readTime: '7 min read',
+        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247422/6246894018251918553_s6dj7r.jpg',
+        content: `
+            <p>For many cricketers in India, the journey starts with a plastic or tennis ball on narrow streets. But there comes a time when every aspiring player wants to feel the weight of a seasoned leather ball. Transitioning from tennis to <a href="/leather-cricket-bats">leather ball cricket</a> is an exciting milestone, but it requires a significant shift in gear and mindset.</p>
+
+            <h3>1. The Weight Advantage</h3>
+            <p>In tennis ball cricket, bats are feather-light for maximum bat speed. However, a leather ball is significantly heavier. You need a bat with a thicker profile and more "meat" behind the sweet spot to ensure the ball travels. Our <a href="/leather-cricket-bats">Kashmiri Willow Leather Bats</a> are designed with this balance in mind—offering professional power without being overwhelmingly heavy for a transitioning player.</p>
+
+            <h3>2. Mastering the Defensive Technique</h3>
+            <p>Tennis ball cricket encourages "cross-bat" shots because the ball doesn't hurt. With a leather ball, playing with a straight bat is non-negotiable for safety and performance. You'll need to learn how to find the "middle" of the blade consistently.</p>
+
+            <h3>3. Essential Protective Gear</h3>
+            <p>You cannot play leather ball cricket without the right protection. At a minimum, you will need:</p>
+            <ul>
+                <li><strong>Padding:</strong> Leg guards that can withstand 140kmph impacts.</li>
+                <li><strong>Helmet:</strong> Never compromise on head safety.</li>
+                <li><strong>Gloves:</strong> High-density foam is your best friend.</li>
+            </ul>
+
+            <div class="blog-cta-inline">
+                <h4>Begin Your Professional Journey</h4>
+                <p>Explore our beginner-to-pro leather cricket kits.</p>
+                <a href="/leather-cricket-bats" class="btn">Shop Leather Bats</a>
+            </div>
+
+            <h3>Conclusion</h3>
+            <p>Transitioning is about patience. Don't expect to hit sixes on day one. Focus on your stance, your grip, and most importantly, choosing a bat like the <strong>Wular Legacy</strong> that gives you the confidence to stand your ground.</p>
+        `
+    },
+    {
+        id: 'mastering-hard-tennis-cricket-gear',
+        title: 'Mastering Hard Tennis Cricket: Why Specialized Gear Matters',
+        description: 'Hard tennis cricket is a different beast. Learn why using a regular bat is a mistake and how to dominate the T10/T20 circuit.',
+        category: 'Tactics',
+        author: 'Wular Sports Team',
+        date: 'Jan 24, 2026',
+        readTime: '6 min read',
+        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247423/6246894018251918552_c5k6qi.jpg',
+        content: `
+            <p>Hard tennis ball cricket has evolved into a high-stakes, professional format with massive tournaments across the globe. If you're still using a generic bat, you're giving your opponents an unfair advantage. Here’s why <a href="/hard-tennis-bats">specialized hard tennis bats</a> are essential.</p>
+
+            <h3>The Science of the "Ping"</h3>
+            <p>A hard tennis ball (like Nivia or Vicky) behaves differently than a leather ball. It compresses more on impact. A regular bat is often too thin to capitalize on this. Wular <a href="/hard-tennis-bats">Hard Tennis Bats</a> feature an extra-thick spine and exaggerated bows to create a "springboard effect," launching the ball further with less effort.</p>
+
+            <h3>Durability in High-Intensity T10s</h3>
+            <p>Hard tennis balls are notorious for breaking low-quality willow. Because we use premium, seasoned Kashmir Willow, our bats can withstand the repetitive high-impact force that modern power-hitting requires.</p>
+
+            <h3>Technique Tip: The Power Arc</h3>
+            <p>In hard tennis ball cricket, the follow-through is everything. Because the weight distribution in our bats is optimized for "Bottom-Hand" players, you can generate immense torque through the arc of your swing.</p>
+
+            <div class="blog-cta-inline">
+                <h4>Dominant Power for Your Next Match</h4>
+                <p>Check out the bats used by top tournament players.</p>
+                <a href="/hard-tennis-bats" class="btn">Shop Hard Tennis Range</a>
+            </div>
+
+            <h3>Final Thoughts</h3>
+            <p>Don't bring a knife to a gunfight. If you want to be the highest run-scorer in your local league, invest in gear that is engineered for the specific physics of the hard tennis ball.</p>
+        `
+    },
+    {
+        id: 'the-artisan-edge-handcrafted-vs-machine-made',
+        title: 'The Artisan’s Touch: Why Handcrafted Bats Outperform Machine-Made Ones',
+        description: 'Discover the meticulous process of hand-crafting a Wular Sports bat and why it gives you a superior edge on the field.',
+        category: 'Craftsmanship',
+        author: 'Wular Sports Team',
+        date: 'Jan 23, 2026',
+        readTime: '8 min read',
+        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        content: `
+            <p>In an era of mass production, Wular Sports remains committed to the ancient art of hand-crafting cricket bats. While machines can replicate shapes, they cannot "feel" the wood. Every piece of <a href="/hard-tennis-bats">premium Kashmir Willow</a> is unique, and our master craftsmen treat them that way.</p>
+
+            <h3>1. Reading the Grains</h3>
+            <p>A machine sees a block of wood. A craftsman sees the life of the tree. By hand-shaping each blade, we can optimize the sweet spot based on the natural density variations of that specific log. This results in a bat that is perfectly balanced, regardless of its weight.</p>
+
+            <h3>2. Manual Pressing for Maximum Life</h3>
+            <p>Machine-pressed bats are often over-compressed to ensure uniformity, which can kill the "ping" and make the wood brittle. We use manual rollers and hand-pressing techniques to gradually harden the fibers while retaining the natural "life" of the willow.</p>
+
+            <h3>3. Tailored Balance</h3>
+            <p>The "pick-up" of a bat is more important than its actual weight on a scale. A 1200g bat can feel like 1000g if the balance is right. Our artisans spend hours shaving off millimeters of wood from the right places (the shoulders and toe) to ensure your Wular bat feels like an extension of your arm.</p>
+
+            <div class="blog-cta-inline">
+                <h4>Experience the Artisan Difference</h4>
+                <p>Own a bat that was shaped for a champion.</p>
+                <a href="/collection" class="btn">Browse Handcrafted Collection</a>
+            </div>
+
+            <h3>Conclusion</h3>
+            <p>When you walk out to the crease with a Wular bat, you aren't just carrying a piece of equipment—you're carrying hours of human dedication and expertise. That’s the Artisan Edge.</p>
+        `
     }
 ];

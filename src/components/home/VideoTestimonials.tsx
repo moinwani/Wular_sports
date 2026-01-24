@@ -87,14 +87,7 @@ export const VideoTestimonials: FC = () => {
 
                                     {/* Product Purchase Link Section */}
                                     {product && (
-                                        <div className="testimonial-product-link" style={{
-                                            marginTop: '1.5rem',
-                                            paddingTop: '1rem',
-                                            borderTop: '1px solid rgba(212, 175, 55, 0.2)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between'
-                                        }}>
+                                        <div className="testimonial-product-link">
                                             <div style={{ textAlign: 'left' }}>
                                                 <span style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>Bat Shown:</span>
                                                 <span style={{ fontSize: '0.9rem', color: 'var(--white)', fontWeight: 'bold' }}>{product.name}</span>

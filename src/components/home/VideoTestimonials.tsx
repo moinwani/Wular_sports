@@ -96,16 +96,16 @@ export const VideoTestimonials: FC = () => {
                             >
                                 <div className="video-container vertical-reel">
                                     {videoId ? (
-                                        <div
-                                            className="youtube-thumbnail"
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg), url(https://img.youtube.com/vi/${videoId}/hqdefault.jpg)`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center'
-                                            }}
-                                        />
+                                        <div className="testimonial-youtube-preview">
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`}
+                                                title={`Testimonial ${t.id}`}
+                                                frameBorder="0"
+                                                allow="autoplay; encrypted-media"
+                                                className="testimonial-iframe-preview"
+                                            ></iframe>
+                                            <div className="iframe-click-overlay"></div>
+                                        </div>
                                     ) : (
                                         <video
                                             src={t.url}

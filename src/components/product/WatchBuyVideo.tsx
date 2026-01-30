@@ -134,19 +134,8 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         <>
             {/* Floating Preview Video */}
             <div className="watch-buy-video-container">
-                <div className="watch-buy-video-header">
-                    <span className="watch-buy-label">Watch & Buy</span>
-                    <button
-                        className="watch-buy-close-btn"
-                        onClick={handleCloseComplete}
-                        aria-label="Close video"
-                    >
-                        <i className="fas fa-times"></i>
-                    </button>
-                </div>
-
                 <div
-                    className="watch-buy-video-wrapper"
+                    className="watch-buy-video-wrapper vertical-preview-aspect"
                     onClick={handleVideoClick}
                     role="button"
                     tabIndex={0}
@@ -157,17 +146,28 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         }
                     }}
                 >
+                    <button
+                        className="watch-buy-close-btn absolute-top-right"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleCloseComplete();
+                        }}
+                        aria-label="Close video"
+                    >
+                        <i className="fas fa-times"></i>
+                    </button>
+
                     {videoId ? (
-                        <div
-                            className="watch-buy-youtube-preview"
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                backgroundImage: `url(https://img.youtube.com/vi/${videoId}/hqdefault.jpg)`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center'
-                            }}
-                        />
+                        <div className="watch-buy-youtube-preview-container">
+                            <iframe
+                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`}
+                                title="Product Preview"
+                                frameBorder="0"
+                                allow="autoplay; encrypted-media"
+                                className="watch-buy-preview-iframe"
+                            ></iframe>
+                            <div className="iframe-click-overlay"></div>
+                        </div>
                     ) : (
                         <video
                             ref={floatingVideoRef}
@@ -176,12 +176,12 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                             loop
                             playsInline
                             className="watch-buy-video"
-                            aria-label="Product demonstration video - Click to watch full screen"
+                            aria-label="Product demonstration video"
                         />
                     )}
-                    <div className="watch-buy-overlay">
-                        <i className="fas fa-play"></i>
-                        <span className="watch-buy-click-text">Click to Watch</span>
+
+                    <div className="watch-buy-bottom-shade">
+                        <span className="watch-buy-label-overlay">Watch & Buy</span>
                     </div>
                 </div>
             </div>

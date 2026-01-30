@@ -4391,144 +4391,111 @@ img[loading="lazy"] {
     }
 }
 
-/* Watch & Buy Floating Video - Legacy Edition Only */
+/* Watch & Buy Floating Video - Refined Clean Design */
 .watch-buy-video-container {
     position: fixed;
     bottom: 100px;
     right: 20px;
-    width: 280px;
-    background: rgba(10, 10, 10, 0.95);
+    width: 200px;
+    /* Slimmer, more like a reel preview */
+    background: #000;
     border: 2px solid var(--golden);
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
     z-index: 998;
     overflow: hidden;
-    transition: all 0.3s ease;
-    animation: slideInUp 0.5s ease-out;
-    backdrop-filter: blur(10px);
-}
-
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: slideInUp 0.6s ease-out;
 }
 
 .watch-buy-video-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.3);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
-
-.watch-buy-video-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
-    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-}
-
-.watch-buy-label {
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--golden);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.watch-buy-close-btn {
-    background: transparent;
-    border: none;
-    color: var(--white);
-    font-size: 1rem;
+.vertical-preview-aspect {
+    position: relative;
+    width: 100%;
+    padding-top: 177.78%;
+    /* 9:16 aspect ratio */
+    background: var(--black);
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+}
+
+.watch-buy-close-btn.absolute-top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 0.8rem;
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    transition: all 0.3s ease;
 }
 
-.watch-buy-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--golden);
+.watch-buy-close-btn.absolute-top-right:hover {
+    background: var(--golden);
+    color: var(--black);
+    transform: rotate(90deg);
 }
 
-.watch-buy-video-wrapper {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%;
-    /* 16:9 aspect ratio */
-    background: var(--black);
-    cursor: pointer;
-    overflow: hidden;
-}
-
-.watch-buy-video {
+.watch-buy-youtube-preview-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    overflow: hidden;
 }
 
-.watch-buy-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
+.watch-buy-preview-iframe {
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    transition: all 0.3s ease;
-    opacity: 0.9;
-}
-
-.watch-buy-overlay i {
-    width: 60px;
-    height: 60px;
-    background: rgba(212, 175, 55, 0.95);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--black);
-    font-size: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-.watch-buy-click-text {
-    color: var(--white);
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-    font-family: 'Oswald', sans-serif;
-}
-
-.watch-buy-video-wrapper:hover .watch-buy-overlay {
-    opacity: 1;
-}
-
-.watch-buy-video-wrapper:hover .watch-buy-overlay i {
-    background: var(--golden);
+    /* Let clicks pass through to wrapper */
     transform: scale(1.1);
+    /* Zoom slightly to hide any UI if necessary */
+}
+
+.iframe-click-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    background: transparent;
+}
+
+.watch-buy-bottom-shade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 15px;
+    z-index: 6;
+}
+
+.watch-buy-label-overlay {
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 /* Full-Screen Modal Styles */

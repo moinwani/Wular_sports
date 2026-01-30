@@ -59,7 +59,8 @@ export const products: ProductFull[] = [
             "Fully knocked and oiled",
             "Extra grip provided"
         ],
-        reviewLink: "https://www.instagram.com/reel/DJQ7NfHxRze/?igsh=NWpnMnZsZDRkZTBn"
+        reviewLink: "https://www.instagram.com/reel/DJQ7NfHxRze/?igsh=NWpnMnZsZDRkZTBn",
+        videoUrl: "https://www.youtube.com/shorts/rOqK2kZQzTI"
     },
     {
         id: "bahubali-edition",

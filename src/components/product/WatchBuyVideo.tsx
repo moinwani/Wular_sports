@@ -11,20 +11,31 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const [isVisible, setIsVisible] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const floatingVideoRef = useRef<HTMLVideoElement>(null);
-    const modalVideoRef = useRef<HTMLVideoElement>(null);
 
-    const videoUrl = "https://res.cloudinary.com/ddahm5ebv/video/upload/v1767461480/for_tevxdy.mp4";
+    // Default video if product doesn't have one
+    const defaultVideoUrl = "https://res.cloudinary.com/ddahm5ebv/video/upload/v1767461480/for_tevxdy.mp4";
+    const videoUrl = product.videoUrl || defaultVideoUrl;
+
+    const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
+
+    const extractVideoId = (url: string) => {
+        if (!isYouTube(url)) return null;
+        if (url.includes('/shorts/')) {
+            return url.split('/shorts/')[1].split(/[?#]/)[0];
+        }
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : (url.split('/').pop()?.split('?')[0] || null);
+    };
+
+    const videoId = extractVideoId(videoUrl);
 
     // Close completely - hide floating video and modal
     const handleCloseComplete = useCallback(() => {
         setIsVisible(false);
         setIsModalOpen(false);
-        // Pause both videos
         if (floatingVideoRef.current) {
             floatingVideoRef.current.pause();
-        }
-        if (modalVideoRef.current) {
-            modalVideoRef.current.pause();
         }
         if (onClose) {
             onClose();
@@ -34,7 +45,6 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     // Open modal on video click
     const handleVideoClick = () => {
         setIsModalOpen(true);
-        // Pause floating video when modal opens
         if (floatingVideoRef.current) {
             floatingVideoRef.current.pause();
         }
@@ -43,7 +53,6 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     // Close modal (but keep floating video visible)
     const handleModalClose = () => {
         setIsModalOpen(false);
-        // Resume floating video
         if (floatingVideoRef.current) {
             floatingVideoRef.current.play().catch(() => { });
         }
@@ -53,7 +62,6 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const handleAddToCart = useCallback(() => {
         const hasSizes = product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
         if (hasSizes) {
-            // Scroll to size selector
             const sizeSelector = document.querySelector('.size-selector-premium');
             if (sizeSelector) {
                 sizeSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -63,21 +71,16 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         } else {
             onAddToCart(product, '35 inch');
         }
-        // Close everything
         handleCloseComplete();
     }, [product, onAddToCart, handleCloseComplete]);
 
     // More Info handler - closes video and scrolls to tabs
     const handleMoreInfo = useCallback(() => {
-        // Close everything first
         handleCloseComplete();
-
-        // Wait a bit for close animation, then scroll
         setTimeout(() => {
             const tabsContainer = document.querySelector('.product-tabs-container');
             if (tabsContainer) {
                 tabsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Open description tab if not already open
                 const descriptionTab = document.querySelector('.product-tab') as HTMLElement;
                 if (descriptionTab && !descriptionTab.classList.contains('active')) {
                     descriptionTab.click();
@@ -86,59 +89,31 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         }, 300);
     }, [handleCloseComplete]);
 
-    // Listen for Buy Now button clicks to close video (from main product page)
+    // Listen for Buy Now button clicks to close video
     useEffect(() => {
         if (!isVisible && !isModalOpen) return;
-
-        const handleBuyNowClick = () => {
-            // Close video when Buy Now is clicked anywhere on the page
-            handleCloseComplete();
-        };
-
-        // Listen for clicks on Buy Now button
+        const handleBuyNowClick = () => handleCloseComplete();
         const buyNowButtons = document.querySelectorAll('.btn-primary-premium, .add-to-cart-large');
-        buyNowButtons.forEach(btn => {
-            btn.addEventListener('click', handleBuyNowClick);
-        });
-
+        buyNowButtons.forEach(btn => btn.addEventListener('click', handleBuyNowClick));
         return () => {
-            buyNowButtons.forEach(btn => {
-                btn.removeEventListener('click', handleBuyNowClick);
-            });
+            buyNowButtons.forEach(btn => btn.removeEventListener('click', handleBuyNowClick));
         };
     }, [isVisible, isModalOpen, handleCloseComplete]);
 
     // Auto-play floating video (muted)
     useEffect(() => {
-        if (floatingVideoRef.current && isVisible && !isModalOpen) {
+        if (floatingVideoRef.current && isVisible && !isModalOpen && !videoId) {
             floatingVideoRef.current.muted = true;
-            floatingVideoRef.current.play().catch(() => {
-                // Autoplay may be blocked by browser, handle silently
-            });
+            floatingVideoRef.current.play().catch(() => { });
         }
-    }, [isVisible, isModalOpen]);
-
-    // Auto-play modal video (unmuted with sound)
-    useEffect(() => {
-        if (modalVideoRef.current && isModalOpen) {
-            modalVideoRef.current.muted = false;
-            modalVideoRef.current.volume = 0.7; // Set volume to 70%
-            modalVideoRef.current.play().catch(() => {
-                // Autoplay with sound may be blocked, user can click play
-            });
-        }
-    }, [isModalOpen]);
+    }, [isVisible, isModalOpen, videoId]);
 
     // Handle ESC key to close modal
     useEffect(() => {
         if (!isModalOpen) return;
-
         const handleEscKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
-                handleModalClose();
-            }
+            if (e.key === 'Escape') handleModalClose();
         };
-
         document.addEventListener('keydown', handleEscKey);
         return () => document.removeEventListener('keydown', handleEscKey);
     }, [isModalOpen]);
@@ -150,9 +125,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         } else {
             document.body.style.overflow = '';
         }
-        return () => {
-            document.body.style.overflow = '';
-        };
+        return () => { document.body.style.overflow = ''; };
     }, [isModalOpen]);
 
     if (!isVisible) return null;
@@ -184,15 +157,28 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         }
                     }}
                 >
-                    <video
-                        ref={floatingVideoRef}
-                        src={videoUrl}
-                        muted
-                        loop
-                        playsInline
-                        className="watch-buy-video"
-                        aria-label="Product demonstration video - Click to watch full screen"
-                    />
+                    {videoId ? (
+                        <div
+                            className="watch-buy-youtube-preview"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                backgroundImage: `url(https://img.youtube.com/vi/${videoId}/hqdefault.jpg)`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
+                        />
+                    ) : (
+                        <video
+                            ref={floatingVideoRef}
+                            src={videoUrl}
+                            muted
+                            loop
+                            playsInline
+                            className="watch-buy-video"
+                            aria-label="Product demonstration video - Click to watch full screen"
+                        />
+                    )}
                     <div className="watch-buy-overlay">
                         <i className="fas fa-play"></i>
                         <span className="watch-buy-click-text">Click to Watch</span>
@@ -218,36 +204,53 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                     </button>
 
                     <div
-                        className="watch-buy-modal-content"
+                        className="watch-buy-modal-content premium-vertical"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="watch-buy-modal-video-wrapper">
-                            <video
-                                ref={modalVideoRef}
-                                src={videoUrl}
-                                controls
-                                loop
-                                playsInline
-                                className="watch-buy-modal-video"
-                                aria-label="Product demonstration video"
-                            />
+                        <div className="watch-buy-modal-video-wrapper vertical-aspect">
+                            {videoId ? (
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&controls=1`}
+                                    title="Watch & Buy Video"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="watch-buy-iframe"
+                                ></iframe>
+                            ) : (
+                                <video
+                                    src={videoUrl}
+                                    controls
+                                    autoPlay
+                                    loop
+                                    playsInline
+                                    className="watch-buy-modal-video"
+                                    aria-label="Product demonstration video"
+                                />
+                            )}
                         </div>
 
-                        <div className="watch-buy-modal-actions">
-                            <button
-                                className="modal-action-btn primary"
-                                onClick={handleAddToCart}
-                            >
-                                <i className="fas fa-shopping-bag"></i>
-                                Add to Cart
-                            </button>
-                            <button
-                                className="modal-action-btn secondary"
-                                onClick={handleMoreInfo}
-                            >
-                                <i className="fas fa-info-circle"></i>
-                                More Info
-                            </button>
+                        <div className="watch-buy-modal-actions vertical-stack">
+                            <div className="modal-product-info">
+                                <h3>{product.name}</h3>
+                                <p>₹{product.price.toLocaleString('en-IN')}</p>
+                            </div>
+                            <div className="modal-button-group">
+                                <button
+                                    className="modal-action-btn primary large-gold"
+                                    onClick={handleAddToCart}
+                                >
+                                    <i className="fas fa-shopping-bag"></i>
+                                    ADD TO CART
+                                </button>
+                                <button
+                                    className="modal-action-btn secondary link-style"
+                                    onClick={handleMoreInfo}
+                                >
+                                    <i className="fas fa-info-circle"></i>
+                                    Product Details
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

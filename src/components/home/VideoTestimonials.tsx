@@ -8,9 +8,9 @@ const testimonials = [
         id: 1,
         url: 'https://www.youtube.com/shorts/rOqK2kZQzTI',
         name: 'Arjun P.',
-        comment: 'The balance and ping of Wular bats are exceptional. Truly handcrafted for champions.',
+        comment: 'Super fast 4-day delivery (expected 8 days)! The balance and ping with the 130-140g heavy tennis ball are absolutely incredible.',
         rating: 5,
-        productId: 'legacy-edition-2.0'
+        productId: 'legacy-edition'
     },
     {
         id: 2,

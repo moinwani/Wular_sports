@@ -47,10 +47,10 @@ const testimonials = [
     {
         id: 6,
         url: 'https://www.youtube.com/shorts/Xo_ncNgEgjc',
-        name: 'Vikram R.',
-        comment: 'Amazing ping and light weight. Perfect for professional matches.',
+        name: 'Shadh Hussain',
+        comment: "Absolutely incredible wood quality. I didn't expect this much excellence—this truly feels like A+ grade Kashmiri willow. Everything from the grain to the finish is top-notch.",
         rating: 5,
-        productId: 'standard-leather-bat'
+        productId: 'legacy-edition'
     }
 ];
 

@@ -6,7 +6,7 @@ import { products } from '../../data/products';
 const testimonials = [
     {
         id: 1,
-        url: 'https://res.cloudinary.com/ddahm5ebv/video/upload/v1768968198/IMG_8104_qcdcfi.mp4',
+        url: 'https://www.youtube.com/shorts/qC0v_v2hV_o',
         name: 'Arjun P.',
         comment: 'The balance and ping of Wular bats are exceptional. Truly handcrafted for champions.',
         rating: 5,
@@ -14,7 +14,7 @@ const testimonials = [
     },
     {
         id: 2,
-        url: 'https://res.cloudinary.com/ddahm5ebv/video/upload/v1768968188/IMG_8110_kuipvj.mp4',
+        url: 'https://www.youtube.com/shorts/8C8hG_hX9_U',
         name: 'Zaid K.',
         comment: 'Fast shipping and even better quality. Kashmiri willow at its finest!',
         rating: 5,
@@ -22,7 +22,7 @@ const testimonials = [
     },
     {
         id: 3,
-        url: 'https://res.cloudinary.com/ddahm5ebv/video/upload/v1768968188/IMG_7408_rrroyv.mp4',
+        url: 'https://www.youtube.com/shorts/3pY_N5A-7oI',
         name: 'Rahul M.',
         comment: 'Wular Sports never disappoints. The customization options are a game changer.',
         rating: 5,
@@ -63,15 +63,28 @@ export const VideoTestimonials: FC = () => {
                                 style={{ display: 'flex', flexDirection: 'column' }}
                             >
                                 <div className="video-container">
-                                    <video
-                                        src={t.url}
-                                        controls={false}
-                                        muted
-                                        playsInline
-                                        autoPlay
-                                        loop
-                                        className="testimonial-video"
-                                    />
+                                    {t.url.includes('youtube.com') || t.url.includes('youtu.be') ? (
+                                        <div
+                                            className="youtube-thumbnail"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                backgroundImage: `url(https://img.youtube.com/vi/${t.url.split('/').pop()?.split('?')[0]}/hqdefault.jpg)`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
+                                            }}
+                                        />
+                                    ) : (
+                                        <video
+                                            src={t.url}
+                                            controls={false}
+                                            muted
+                                            playsInline
+                                            autoPlay
+                                            loop
+                                            className="testimonial-video"
+                                        />
+                                    )}
                                     <div className="play-overlay">
                                         <i className="fas fa-play"></i>
                                     </div>

@@ -5,6 +5,7 @@ import { products } from '../../data/products';
 interface Testimonial {
     id: number;
     url: string;
+    thumbnail?: string;
     name: string;
     comment: string;
     rating: number;
@@ -106,6 +107,14 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
         }
     };
 
+    const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
+
+    const getEmbedUrl = (url: string) => {
+        if (!isYouTube(url)) return url;
+        const videoId = url.split('/').pop()?.split('?')[0];
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`;
+    };
+
     const navigateDesktop = (direction: 'next' | 'prev') => {
         if (direction === 'next') {
             setActiveIndex(prev => (prev + 1) % testimonials.length);
@@ -194,24 +203,41 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                 borderRadius: !isMobile ? '15px' : '0',
                                 overflow: 'hidden'
                             }}>
-                                <video
-                                    ref={(el) => { videoRefs.current[idx] = el; }}
-                                    src={t.url}
-                                    preload="metadata"
-                                    autoPlay
-                                    loop
-                                    playsInline
-                                    webkit-playsinline="true"
-                                    onClick={() => togglePlay(idx)}
-                                    className="reel-video"
-                                    style={{
-                                        width: isMobile ? '100%' : 'auto',
-                                        height: isMobile ? '100%' : '70vh',
-                                        objectFit: isMobile ? 'cover' : 'contain',
-                                        cursor: 'pointer',
-                                        maxHeight: isMobile ? 'none' : '65vh'
-                                    }}
-                                />
+                                {isYouTube(t.url) ? (
+                                    <iframe
+                                        src={idx === activeIndex ? getEmbedUrl(t.url) : ''}
+                                        title={t.name}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                        style={{
+                                            width: isMobile ? '100%' : 'auto',
+                                            height: isMobile ? '100%' : '70vh',
+                                            aspectRatio: '9/16',
+                                            maxHeight: isMobile ? 'none' : '65vh',
+                                            border: 'none'
+                                        }}
+                                    />
+                                ) : (
+                                    <video
+                                        ref={(el) => { videoRefs.current[idx] = el; }}
+                                        src={t.url}
+                                        preload="metadata"
+                                        autoPlay
+                                        loop
+                                        playsInline
+                                        webkit-playsinline="true"
+                                        onClick={() => togglePlay(idx)}
+                                        className="reel-video"
+                                        style={{
+                                            width: isMobile ? '100%' : 'auto',
+                                            height: isMobile ? '100%' : '70vh',
+                                            objectFit: isMobile ? 'cover' : 'contain',
+                                            cursor: 'pointer',
+                                            maxHeight: isMobile ? 'none' : '65vh'
+                                        }}
+                                    />
+                                )}
 
                                 <div style={{
                                     position: 'absolute',

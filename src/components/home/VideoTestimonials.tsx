@@ -134,9 +134,6 @@ export const VideoTestimonials: FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="play-overlay">
-                                        <i className="fas fa-play"></i>
-                                    </div>
                                 </div>
                             </div>
                         );
@@ -144,13 +141,15 @@ export const VideoTestimonials: FC = () => {
                 </div>
             </div>
 
-            {isReelOpen && (
-                <VideoModal
-                    testimonials={testimonials}
-                    initialIndex={startIndex}
-                    onClose={() => setIsReelOpen(false)}
-                />
-            )}
-        </section>
+            {
+                isReelOpen && (
+                    <VideoModal
+                        testimonials={testimonials}
+                        initialIndex={startIndex}
+                        onClose={() => setIsReelOpen(false)}
+                    />
+                )
+            }
+        </section >
     );
 };

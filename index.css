@@ -7315,27 +7315,20 @@ img[loading="lazy"] {
     display: flex;
     overflow-x: auto;
     gap: 2rem;
-    padding: 0 0 2rem;
-    /* Bottom padding for scrollbar area */
+    padding: 0 0 1rem;
     scroll-snap-type: x mandatory;
-    scrollbar-width: thin;
-    scrollbar-color: var(--golden) transparent;
+    scrollbar-width: none;
+    /* Hide for Firefox */
+    -ms-overflow-style: none;
+    /* Hide for IE/Edge */
     margin-top: 3rem;
 }
 
 .premium-feed::-webkit-scrollbar {
-    height: 4px;
+    display: none;
+    /* Hide for Chrome/Safari */
 }
 
-.premium-feed::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-
-.premium-feed::-webkit-scrollbar-thumb {
-    background: var(--golden);
-    border-radius: 10px;
-}
 
 .premium-vertical-card {
     flex: 0 0 320px;

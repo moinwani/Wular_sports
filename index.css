@@ -4408,6 +4408,23 @@ img[loading="lazy"] {
     animation: slideInUp 0.6s ease-out;
 }
 
+@media (max-width: 768px) {
+    .watch-buy-video-container {
+        width: 130px;
+        /* Sleek mobile width */
+        bottom: 80px;
+        right: 15px;
+    }
+
+    .watch-buy-label-overlay {
+        font-size: 0.8rem;
+    }
+
+    .watch-buy-bottom-shade {
+        padding-bottom: 8px;
+    }
+}
+
 .watch-buy-video-container:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.2);

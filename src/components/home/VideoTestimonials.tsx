@@ -31,10 +31,10 @@ const testimonials = [
     {
         id: 4,
         url: 'https://www.youtube.com/shorts/GABV4WB2NBU',
-        name: 'Irfan S.',
-        comment: 'The best Kashmiri willow I have ever played with. Highly recommended!',
+        name: 'Shalinder',
+        comment: "As a professional tournament player, I've used bats from many companies, but the quality of this Legacy Edition is unmatched. The shape, balance, and ping are exceptional. It's tournament-ready and I love playing with it!",
         rating: 5,
-        productId: 'ak-47-edition'
+        productId: 'legacy-edition'
     },
     {
         id: 5,

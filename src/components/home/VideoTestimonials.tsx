@@ -51,6 +51,14 @@ const testimonials = [
         comment: "Absolutely incredible wood quality. I didn't expect this much excellence—this truly feels like A+ grade Kashmiri willow. Everything from the grain to the finish is top-notch.",
         rating: 5,
         productId: 'legacy-edition'
+    },
+    {
+        id: 7,
+        url: 'https://www.youtube.com/shorts/tUGmUsV5azM',
+        name: 'Romman',
+        comment: 'The Bahubali Edition is a beast! The power in this bat is incredible, yet the balance makes it feel so light in the hands. Truly a game-changer for heavy tennis ball cricket.',
+        rating: 5,
+        productId: 'bahubali-edition'
     }
 ];
 

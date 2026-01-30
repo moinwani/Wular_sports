@@ -951,8 +951,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 />
             )}
 
-            {/* Watch & Buy Video - For Legacy Editions */}
-            {(product.id === 'legacy-edition' || product.id === 'legacy-edition-2.0') && (
+            {/* Watch & Buy Video - For Legacy Editions & AK-47 Honeycomb */}
+            {(product.id === 'legacy-edition' || product.id === 'legacy-edition-2.0' || product.id === 'ak-47-honeycomb') && (
                 <WatchBuyVideo
                     product={product}
                     onAddToCart={onAddToCart}

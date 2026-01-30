@@ -145,6 +145,7 @@ export const products: ProductFull[] = [
             "Fully Knocked & Oiled",
             "Extra Grip Provided"
         ],
+        videoUrl: "https://www.youtube.com/shorts/xponaLHTzzM"
     },
     {
         id: "standard-leather-bat",

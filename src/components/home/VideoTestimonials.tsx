@@ -15,7 +15,7 @@ const testimonials = [
     {
         id: 2,
         url: 'https://www.youtube.com/shorts/APmTiKN8dG8',
-        name: 'Zaid K.',
+        name: 'Prashant M.',
         comment: 'Absolutely love the bat! Exactly what was shown online was delivered. Kashmiri willow at its finest!',
         rating: 5,
         productId: 'legacy-edition-2.0'

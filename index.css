@@ -4410,18 +4410,30 @@ img[loading="lazy"] {
 
 @media (max-width: 768px) {
     .watch-buy-video-container {
-        width: 130px;
-        /* Sleek mobile width */
-        bottom: 80px;
-        right: 15px;
+        width: 100px !important;
+        /* Even sleeker mobile width */
+        bottom: 70px !important;
+        right: 15px !important;
+        border-width: 1.5px !important;
+        border-radius: 12px !important;
     }
 
     .watch-buy-label-overlay {
-        font-size: 0.8rem;
+        font-size: 0.65rem !important;
+        letter-spacing: 0.5px !important;
     }
 
     .watch-buy-bottom-shade {
-        padding-bottom: 8px;
+        padding-bottom: 6px !important;
+        height: 35% !important;
+    }
+
+    .watch-buy-close-btn.absolute-top-right {
+        width: 20px !important;
+        height: 20px !important;
+        font-size: 0.6rem !important;
+        top: 5px !important;
+        right: 5px !important;
     }
 }
 

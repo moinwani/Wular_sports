@@ -30,7 +30,8 @@ export const products: ProductFull[] = [
             "Premium toe guard",
             "Fully knocked and oiled",
             "Extra grip provided"
-        ]
+        ],
+        videoUrl: "https://www.youtube.com/shorts/yD3OLIwTt2o"
     },
     {
         id: "legacy-edition",

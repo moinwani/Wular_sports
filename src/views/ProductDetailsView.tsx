@@ -951,8 +951,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 />
             )}
 
-            {/* Watch & Buy Video - Only for Legacy Edition */}
-            {product.id === 'legacy-edition' && (
+            {/* Watch & Buy Video - For Legacy Editions */}
+            {(product.id === 'legacy-edition' || product.id === 'legacy-edition-2.0') && (
                 <WatchBuyVideo
                     product={product}
                     onAddToCart={onAddToCart}

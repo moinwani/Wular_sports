@@ -60,7 +60,7 @@ export const products: ProductFull[] = [
             "Extra grip provided"
         ],
         reviewLink: "https://www.instagram.com/reel/DJQ7NfHxRze/?igsh=NWpnMnZsZDRkZTBn",
-        videoUrl: "https://www.youtube.com/shorts/rOqK2kZQzTI"
+        videoUrl: "https://www.youtube.com/shorts/pNchjAKbNB4"
     },
     {
         id: "bahubali-edition",

@@ -39,10 +39,10 @@ const testimonials = [
     {
         id: 5,
         url: 'https://www.youtube.com/shorts/dJ3IaZCmPJQ',
-        name: 'Sameer A.',
+        name: 'Karthik R.',
         comment: 'Excellent customer service and top-notch quality bats.',
         rating: 5,
-        productId: 'ak-47-honeycomb'
+        productId: 'legacy-edition'
     },
     {
         id: 6,

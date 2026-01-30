@@ -23,10 +23,10 @@ const testimonials = [
     {
         id: 3,
         url: 'https://www.youtube.com/shorts/rf8CkJKKfsg',
-        name: 'Rahul M.',
-        comment: 'Wular Sports never disappoints. The customization options are a game changer.',
+        name: 'Omkar P.',
+        comment: 'Absolutely love the wood quality and the perfect shape and balance of the bat. It even has a beautiful curve! Everything shown was provided, including the bat cover and extra grip.',
         rating: 5,
-        productId: 'bahubali-edition'
+        productId: 'legacy-edition'
     },
     {
         id: 4,

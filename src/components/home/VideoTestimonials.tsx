@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { VideoModal } from '../common/VideoModal';
 import { products } from '../../data/products';
 
@@ -63,18 +62,12 @@ const testimonials = [
 ];
 
 export const VideoTestimonials: FC = () => {
-    const navigate = useNavigate();
     const [isReelOpen, setIsReelOpen] = useState(false);
     const [startIndex, setStartIndex] = useState(0);
 
     const openReel = (index: number) => {
         setStartIndex(index);
         setIsReelOpen(true);
-    };
-
-    const handleShopClick = (e: React.MouseEvent, productId: string) => {
-        e.stopPropagation(); // Prevent opening reel
-        navigate(`/product/${productId}`);
     };
 
     const getYouTubeId = (url: string) => {
@@ -90,7 +83,7 @@ export const VideoTestimonials: FC = () => {
                 <h2 className="section-title">Champion Reviews</h2>
                 <p className="section-subtitle">Real feedback from real players across the country</p>
 
-                <div className="testimonials-grid">
+                <div className="testimonials-grid premium-feed">
                     {testimonials.map((t, idx) => {
                         const product = products.find(p => p.id === t.productId);
                         const videoId = getYouTubeId(t.url);
@@ -98,11 +91,10 @@ export const VideoTestimonials: FC = () => {
                         return (
                             <div
                                 key={t.id}
-                                className="testimonial-card"
+                                className="testimonial-card premium-vertical-card"
                                 onClick={() => openReel(idx)}
-                                style={{ display: 'flex', flexDirection: 'column' }}
                             >
-                                <div className="video-container">
+                                <div className="video-container vertical-reel">
                                     {videoId ? (
                                         <div
                                             className="youtube-thumbnail"
@@ -125,41 +117,26 @@ export const VideoTestimonials: FC = () => {
                                             className="testimonial-video"
                                         />
                                     )}
+
+                                    {/* Premium Overlay Info */}
+                                    <div className="testimonial-premium-overlay">
+                                        <div className="overlay-content">
+                                            <h4 className="customer-name-overlay">{t.name}</h4>
+                                            {product && (
+                                                <div className="bat-shown-overlay">
+                                                    <span className="label">BAT SHOWN:</span>
+                                                    <div className="product-price-row">
+                                                        <span className="name">{product.name}</span>
+                                                        <span className="price">₹{product.price.toLocaleString()}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
                                     <div className="play-overlay">
                                         <i className="fas fa-play"></i>
                                     </div>
-                                </div>
-                                <div className="testimonial-info" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <div className="rating">
-                                        {[...Array(t.rating)].map((_, i) => (
-                                            <i key={i} className="fas fa-star"></i>
-                                        ))}
-                                    </div>
-                                    <p className="comment">"{t.comment}"</p>
-                                    <h4 className="customer-name">{t.name}</h4>
-
-                                    {/* Product Purchase Link Section */}
-                                    {product && (
-                                        <div className="testimonial-product-link">
-                                            <div style={{ textAlign: 'left' }}>
-                                                <span style={{ fontSize: '0.7rem', color: '#888', textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '4px' }}>Bat Shown:</span>
-                                                <span style={{ fontSize: '0.9rem', color: 'var(--white)', fontWeight: 'bold' }}>{product.name}</span>
-                                            </div>
-                                            <button
-                                                className="btn"
-                                                onClick={(e) => handleShopClick(e, product.id)}
-                                                style={{
-                                                    padding: '0.4rem 1rem',
-                                                    fontSize: '0.8rem',
-                                                    background: 'transparent',
-                                                    border: '1px solid var(--golden)',
-                                                    color: 'var(--golden)'
-                                                }}
-                                            >
-                                                Shop This Bat
-                                            </button>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         );

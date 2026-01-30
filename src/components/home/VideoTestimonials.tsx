@@ -16,9 +16,9 @@ const testimonials = [
         id: 2,
         url: 'https://www.youtube.com/shorts/APmTiKN8dG8',
         name: 'Zaid K.',
-        comment: 'Fast shipping and even better quality. Kashmiri willow at its finest!',
+        comment: 'Absolutely love the bat! Exactly what was shown online was delivered. Kashmiri willow at its finest!',
         rating: 5,
-        productId: 'legacy-edition'
+        productId: 'legacy-edition-2.0'
     },
     {
         id: 3,

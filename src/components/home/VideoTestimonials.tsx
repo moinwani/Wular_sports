@@ -6,7 +6,7 @@ import { products } from '../../data/products';
 const testimonials = [
     {
         id: 1,
-        url: 'https://www.youtube.com/shorts/qC0v_v2hV_o',
+        url: 'https://www.youtube.com/shorts/Osnv262R2sE',
         name: 'Arjun P.',
         comment: 'The balance and ping of Wular bats are exceptional. Truly handcrafted for champions.',
         rating: 5,
@@ -14,7 +14,7 @@ const testimonials = [
     },
     {
         id: 2,
-        url: 'https://www.youtube.com/shorts/8C8hG_hX9_U',
+        url: 'https://www.youtube.com/shorts/S-Nizx0m50s',
         name: 'Zaid K.',
         comment: 'Fast shipping and even better quality. Kashmiri willow at its finest!',
         rating: 5,
@@ -22,7 +22,7 @@ const testimonials = [
     },
     {
         id: 3,
-        url: 'https://www.youtube.com/shorts/3pY_N5A-7oI',
+        url: 'https://www.youtube.com/shorts/rOqK2kZQzTI',
         name: 'Rahul M.',
         comment: 'Wular Sports never disappoints. The customization options are a game changer.',
         rating: 5,
@@ -69,7 +69,10 @@ export const VideoTestimonials: FC = () => {
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
-                                                backgroundImage: `url(https://img.youtube.com/vi/${t.url.split('/').pop()?.split('?')[0]}/hqdefault.jpg)`,
+                                                backgroundImage: `url(https://img.youtube.com/vi/${t.url.includes('/shorts/')
+                                                        ? t.url.split('/shorts/')[1].split(/[?#]/)[0]
+                                                        : (t.url.split('v=')[1]?.split('&')[0] || t.url.split('/').pop()?.split('?')[0])
+                                                    }/hqdefault.jpg)`,
                                                 backgroundSize: 'cover',
                                                 backgroundPosition: 'center'
                                             }}

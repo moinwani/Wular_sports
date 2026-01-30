@@ -109,9 +109,28 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
 
     const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
 
+    const extractVideoId = (url: string) => {
+        if (!isYouTube(url)) return null;
+
+        // Handle shorts format specifically
+        if (url.includes('/shorts/')) {
+            return url.split('/shorts/')[1].split(/[?#]/)[0];
+        }
+
+        // Handle standard watch?v= and youtu.be/ ID extraction
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        if (match && match[7].length === 11) {
+            return match[7];
+        }
+
+        // Fallback
+        return url.split('/').pop()?.split('?')[0] || null;
+    };
+
     const getEmbedUrl = (url: string) => {
-        if (!isYouTube(url)) return url;
-        const videoId = url.split('/').pop()?.split('?')[0];
+        const videoId = extractVideoId(url);
+        if (!videoId) return url;
         return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`;
     };
 

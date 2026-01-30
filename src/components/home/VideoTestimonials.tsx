@@ -6,7 +6,7 @@ import { products } from '../../data/products';
 const testimonials = [
     {
         id: 1,
-        url: 'https://www.youtube.com/shorts/Osnv262R2sE',
+        url: 'https://www.youtube.com/shorts/rOqK2kZQzTI',
         name: 'Arjun P.',
         comment: 'The balance and ping of Wular bats are exceptional. Truly handcrafted for champions.',
         rating: 5,
@@ -14,7 +14,7 @@ const testimonials = [
     },
     {
         id: 2,
-        url: 'https://www.youtube.com/shorts/S-Nizx0m50s',
+        url: 'https://www.youtube.com/shorts/APmTiKN8dG8',
         name: 'Zaid K.',
         comment: 'Fast shipping and even better quality. Kashmiri willow at its finest!',
         rating: 5,
@@ -22,11 +22,35 @@ const testimonials = [
     },
     {
         id: 3,
-        url: 'https://www.youtube.com/shorts/rOqK2kZQzTI',
+        url: 'https://www.youtube.com/shorts/rf8CkJKKfsg',
         name: 'Rahul M.',
         comment: 'Wular Sports never disappoints. The customization options are a game changer.',
         rating: 5,
-        productId: 'legacy-edition'
+        productId: 'bahubali-edition'
+    },
+    {
+        id: 4,
+        url: 'https://www.youtube.com/shorts/GABV4WB2NBU',
+        name: 'Irfan S.',
+        comment: 'The best Kashmiri willow I have ever played with. Highly recommended!',
+        rating: 5,
+        productId: 'ak-47-edition'
+    },
+    {
+        id: 5,
+        url: 'https://www.youtube.com/shorts/dJ3IaZCmPJQ',
+        name: 'Sameer A.',
+        comment: 'Excellent customer service and top-notch quality bats.',
+        rating: 5,
+        productId: 'ak-47-honeycomb'
+    },
+    {
+        id: 6,
+        url: 'https://www.youtube.com/shorts/Xo_ncNgEgjc',
+        name: 'Vikram R.',
+        comment: 'Amazing ping and light weight. Perfect for professional matches.',
+        rating: 5,
+        productId: 'standard-leather-bat'
     }
 ];
 
@@ -45,6 +69,13 @@ export const VideoTestimonials: FC = () => {
         navigate(`/product/${productId}`);
     };
 
+    const getYouTubeId = (url: string) => {
+        if (url.includes('/shorts/')) {
+            return url.split('/shorts/')[1].split(/[?#]/)[0];
+        }
+        return url.split('v=')[1]?.split('&')[0] || url.split('/').pop()?.split('?')[0];
+    };
+
     return (
         <section className="video-testimonials" style={{ background: '#0a0a0a' }}>
             <div className="container">
@@ -54,6 +85,7 @@ export const VideoTestimonials: FC = () => {
                 <div className="testimonials-grid">
                     {testimonials.map((t, idx) => {
                         const product = products.find(p => p.id === t.productId);
+                        const videoId = getYouTubeId(t.url);
 
                         return (
                             <div
@@ -63,16 +95,13 @@ export const VideoTestimonials: FC = () => {
                                 style={{ display: 'flex', flexDirection: 'column' }}
                             >
                                 <div className="video-container">
-                                    {t.url.includes('youtube.com') || t.url.includes('youtu.be') ? (
+                                    {videoId ? (
                                         <div
                                             className="youtube-thumbnail"
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
-                                                backgroundImage: `url(https://img.youtube.com/vi/${t.url.includes('/shorts/')
-                                                        ? t.url.split('/shorts/')[1].split(/[?#]/)[0]
-                                                        : (t.url.split('v=')[1]?.split('&')[0] || t.url.split('/').pop()?.split('?')[0])
-                                                    }/hqdefault.jpg)`,
+                                                backgroundImage: `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg), url(https://img.youtube.com/vi/${videoId}/hqdefault.jpg)`,
                                                 backgroundSize: 'cover',
                                                 backgroundPosition: 'center'
                                             }}

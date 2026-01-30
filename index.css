@@ -7440,28 +7440,29 @@ img[loading="lazy"] {
     font-weight: 700;
 }
 
-.premium-feed {
-    gap: 1.25rem;
-    padding: 0 1.5rem 2rem;
-}
+@media (max-width: 768px) {
+    .premium-feed {
+        gap: 1.25rem;
+        padding: 0 1.5rem 2rem;
+    }
 
-.premium-vertical-card {
-    flex: 0 0 250px;
-    /* Slightly smaller on mobile */
-}
+    .premium-vertical-card {
+        flex: 0 0 250px;
+        /* Slightly smaller on mobile */
+    }
 
-.testimonial-premium-overlay {
-    padding: 1.25rem;
-    height: 100px;
-}
+    .testimonial-premium-overlay {
+        padding: 1.25rem;
+        height: 100px;
+    }
 
-.customer-name-overlay {
-    font-size: 1.1rem;
-}
+    .customer-name-overlay {
+        font-size: 1.1rem;
+    }
 
-.bat-shown-overlay .name {
-    font-size: 0.8rem;
-}
+    .bat-shown-overlay .name {
+        font-size: 0.8rem;
+    }
 }
 
 /* Testimonial \u0026 Modal Mobile UI Optimizations */

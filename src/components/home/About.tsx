@@ -74,7 +74,7 @@ export const About = memo(() => {
 
             {isModalOpen && (
                 <div className="video-modal-overlay" onClick={toggleModal}>
-                    <div className="video-modal-inner" onClick={e => e.stopPropagation()}>
+                    <div className="video-modal-inner factory-tour-modal" onClick={e => e.stopPropagation()}>
                         <button className="close-video-modal" onClick={toggleModal} aria-label="Close modal">
                             <i className="fas fa-times"></i>
                         </button>
@@ -97,10 +97,6 @@ export const About = memo(() => {
                                     className="modal-full-video"
                                 />
                             )}
-                        </div>
-                        <div className="video-modal-details">
-                            <h3>Inside the Wular Sports Factory</h3>
-                            <p>Witness the journey from raw willow to a masterpiece. Our craftsmen ensure every bat meets the professional standards required for elite performance.</p>
                         </div>
                     </div>
                 </div>

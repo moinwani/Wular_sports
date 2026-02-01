@@ -160,10 +160,10 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                     {videoId ? (
                         <div className="watch-buy-youtube-preview-container">
                             <iframe
-                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`}
+                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`}
                                 title="Product Preview"
                                 frameBorder="0"
-                                allow="autoplay; encrypted-media"
+                                allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 className="watch-buy-preview-iframe"
                             ></iframe>
                             <div className="iframe-click-overlay"></div>
@@ -174,7 +174,9 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                             src={videoUrl}
                             muted
                             loop
+                            autoPlay
                             playsInline
+                            webkit-playsinline="true"
                             className="watch-buy-video"
                             aria-label="Product demonstration video"
                         />

@@ -131,7 +131,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     const getEmbedUrl = (url: string) => {
         const videoId = extractVideoId(url);
         if (!videoId) return url;
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0`;
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`;
     };
 
     const navigateDesktop = (direction: 'next' | 'prev') => {

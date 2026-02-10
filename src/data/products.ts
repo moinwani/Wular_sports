@@ -70,9 +70,9 @@ export const products: ProductFull[] = [
         category: ["Hard Tennis"],
         description: "Unleash raw power with the Bahubali Edition. Themed in wine red and black, this bat is designed for aggressive players who dominate the game.",
         image: [
+            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826379_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826380_w.jpg",
-            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826382_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826383_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826385_w.jpg"
@@ -99,8 +99,8 @@ export const products: ProductFull[] = [
         category: ["Soft Tennis"],
         description: "Experience explosive hitting with the honeycomb scoop design. Lightweight yet powerful, it's engineered for dominating both hard and soft tennis ball games.",
         image: [
-            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7831.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7834.JPG",
+            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7831.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7836.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7837.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7838.JPG",
@@ -128,13 +128,13 @@ export const products: ProductFull[] = [
         category: ["Leather Ball"],
         description: "Professional-grade bat crafted for leather ball matches.",
         image: [
+            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3479.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3480.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3481.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3628.JPG",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3629.JPG",
-            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3630.JPG",
-            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG"
+            "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3630.JPG"
         ],
         price: 4799,
         originalPrice: 6500,

@@ -13,7 +13,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const floatingVideoRef = useRef<HTMLVideoElement>(null);
 
     // Default video if product doesn't have one
-    const defaultVideoUrl = "https://res.cloudinary.com/ddahm5ebv/video/upload/v1767461480/for_tevxdy.mp4";
+    const defaultVideoUrl = "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/videos/watch-buy-default.mp4";
     const videoUrl = product.videoUrl || defaultVideoUrl;
 
     const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
@@ -160,10 +160,11 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                     {videoId ? (
                         <div className="watch-buy-youtube-preview-container">
                             <iframe
-                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`}
+                                src={`https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${window.location.origin}&widgetid=1`}
                                 title="Product Preview"
                                 frameBorder="0"
                                 allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerPolicy="no-referrer-when-downgrade"
                                 className="watch-buy-preview-iframe"
                             ></iframe>
                             <div className="iframe-click-overlay"></div>

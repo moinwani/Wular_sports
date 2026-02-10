@@ -10,7 +10,11 @@ export const optimizeCloudinaryImage = (
     width?: number,
     quality: number = 80
 ): string => {
-    if (!url.includes('cloudinary.com')) {
+    // Safety check for missing URLs
+    if (!url) return '';
+
+    // If not a Cloudinary URL, return as is (support for jsDelivr/GitHub assets)
+    if (typeof url !== 'string' || !url.includes('cloudinary.com')) {
         return url;
     }
 

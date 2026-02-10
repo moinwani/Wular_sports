@@ -2,6 +2,159 @@ import { BlogPost } from '../types';
 
 export const blogs: BlogPost[] = [
     {
+        id: 'kashmiri-willow-cricket-bat-buying-guide-2025',
+        title: 'Kashmiri Willow Cricket Bat: Complete Buying Guide (2025)',
+        description: 'Discover everything about Kashmiri willow cricket bats in 2025. Learn about durability, performance, price comparison with English willow, and find the best bat for your game.',
+        category: 'Guides',
+        author: 'Wular Sports Team',
+        date: 'Jan 30, 2026',
+        readTime: '10 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        content: `
+            <p>If you're searching for a <strong>kashmiri willow cricket bat</strong> that delivers power, durability, and value for money, you've come to the right place. Whether you're a club cricketer, a leather ball player, or someone who plays serious tennis ball cricket, understanding Kashmiri willow can help you make a smart buying decision.</p>
+
+            <h2>What is Kashmiri Willow?</h2>
+            <p>Kashmiri willow is a type of cricket bat willow grown primarily in the Kashmir Valley of India. Unlike English willow (Salix Alba Caerulea), which is grown in England, Kashmiri willow comes from a different species of willow tree that thrives in the cooler climate of the Himalayas.</p>
+            
+            <p>The wood is denser and heavier than English willow, which gives it unique playing characteristics. While it may not have the same "ping" as a premium English willow bat straight out of the box, Kashmiri willow offers excellent durability and is significantly more affordable—making it the go-to choice for millions of cricketers across India.</p>
+
+            <h3>Key Characteristics:</h3>
+            <ul>
+                <li><strong>Denser grain structure</strong> – More compact wood fibers</li>
+                <li><strong>Heavier weight</strong> – Typically 50-100 grams heavier than English willow</li>
+                <li><strong>Natural durability</strong> – Requires less maintenance and lasts longer</li>
+                <li><strong>Affordable pricing</strong> – 60-80% cheaper than English willow bats</li>
+            </ul>
+
+            <h2>Kashmiri Willow vs English Willow: The Real Comparison</h2>
+            <p>Let's break down the key differences to help you decide which is right for you:</p>
+
+            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: rgba(255,255,255,0.1);">
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Feature</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Kashmiri Willow</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">English Willow</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Price Range</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹2,000 – ₹8,000</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹8,000 – ₹50,000+</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Weight</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Heavier (1,150g – 1,300g)</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Lighter (1,100g – 1,200g)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Durability</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Excellent (2-3 seasons)</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Good (1-2 seasons with care)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Best For</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Club cricket, practice, leather ball</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Professional, competitive cricket</td>
+                </tr>
+            </table>
+
+            <h3>When to Choose Kashmiri Willow:</h3>
+            <ul>
+                <li>You play <strong>club-level or recreational cricket</strong></li>
+                <li>You need a <strong>practice bat</strong> that can handle rough use</li>
+                <li>You play on <strong>hard, abrasive Indian pitches</strong></li>
+                <li>You want <strong>maximum value for money</strong></li>
+                <li>You play <strong>leather ball cricket</strong> regularly</li>
+            </ul>
+
+            <h2>Performance in Indian Playing Conditions</h2>
+            <p>India's cricket conditions are unique—dusty pitches, extreme heat, and varied playing surfaces. Here's why Kashmiri willow excels:</p>
+
+            <h3>1. Heat Resistance</h3>
+            <p>Indian summers can reach 45°C. Kashmiri willow's denser structure makes it less prone to cracking in extreme heat compared to English willow.</p>
+
+            <h3>2. Rough Pitch Durability</h3>
+            <p>Most club and street cricket happens on concrete, matting, or hard mud wickets. Kashmiri willow handles these abrasive surfaces much better, lasting 2-3 full seasons with proper care.</p>
+
+            <h3>3. Leather Ball Suitability</h3>
+            <p>Many players assume Kashmiri willow is only for tennis ball cricket—this is a myth. A well-made <strong>kashmiri willow bat for leather ball</strong> cricket performs excellently, especially for:</p>
+            <ul>
+                <li>Opening batsmen who face new ball seam movement</li>
+                <li>Players who value durability over extreme lightness</li>
+                <li>Club cricketers playing weekend matches</li>
+            </ul>
+
+            <p>Brands like <strong>Wular Sports</strong> design their <a href="/catalog?category=Leather%20Ball">Leather Ball Cricket Bats</a> with Grade A+ Kashmiri willow, offering 5-12 clear grains, proper pressing, and professional-grade finishing.</p>
+
+            <h2>Who Should Buy a Kashmiri Willow Cricket Bat?</h2>
+            <p>Kashmiri willow is perfect for:</p>
+
+            <h3>1. Beginner to Intermediate Players</h3>
+            <p>If you're learning the game or playing at the club level, Kashmiri willow offers the best balance of performance and price.</p>
+
+            <h3>2. Tennis Ball Cricket Enthusiasts</h3>
+            <p>For hard tennis and soft tennis cricket, Kashmiri willow is ideal. Check out <strong>Wular Sports'</strong> range of <a href="/catalog?category=Hard%20Tennis">Hard Tennis Cricket Bats</a> and <a href="/catalog?category=Soft%20Tennis">Soft Tennis Cricket Bats</a> designed specifically for Indian playing conditions.</p>
+
+            <h3>3. Budget-Conscious Buyers</h3>
+            <p>If you want a quality bat without spending ₹10,000+, Kashmiri willow delivers excellent value.</p>
+
+            <h2>Kashmir Willow Bat Price Guide (2025)</h2>
+            <p>Here's what you can expect to pay:</p>
+
+            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: rgba(255,255,255,0.1);">
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Grade</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Price Range</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Features</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Entry Level</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹2,000 – ₹3,500</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">4-6 grains, basic pressing, practice use</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Mid Range</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹3,500 – ₹5,500</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">6-8 grains, good pressing, club cricket</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Premium</strong></td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹5,500 – ₹8,000</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">8-12 grains, hard pressed, leather ball ready</td>
+                </tr>
+            </table>
+
+            <p><strong>Best Value:</strong> The ₹4,000-₹6,000 range offers the sweet spot of quality and affordability for most players.</p>
+
+            <h2>Frequently Asked Questions (FAQs)</h2>
+
+            <h3>1. Is Kashmiri willow good for leather ball cricket?</h3>
+            <p><strong>Yes!</strong> A Grade A or A+ Kashmiri willow bat with 8-12 grains is excellent for leather ball cricket, especially at the club level. It offers durability and power, though it may be slightly heavier than English willow.</p>
+
+            <h3>2. How long does a Kashmiri willow bat last?</h3>
+            <p>With proper care, a quality Kashmiri willow bat lasts <strong>2-3 full seasons</strong> (or 40-60 matches). This is longer than most English willow bats, which typically last 1-2 seasons.</p>
+
+            <h3>3. Do I need to knock in a Kashmiri willow bat?</h3>
+            <p><strong>Yes.</strong> Even though Kashmiri willow is denser, knocking-in compresses the fibers and prevents cracking. Spend 150-200 strikes with a mallet before using it in matches.</p>
+
+            <h3>4. Why is Kashmiri willow cheaper than English willow?</h3>
+            <p>Kashmiri willow is more abundant, grows faster, and requires less processing. English willow is rare, takes longer to mature (15+ years), and has a more complex supply chain, making it expensive.</p>
+
+            <h2>Final Thoughts</h2>
+            <p>If you're looking for a <strong>reliable, affordable, and durable cricket bat</strong> that performs well in Indian conditions, a Kashmiri willow bat is an excellent choice. It's perfect for club cricket, practice sessions, and even leather ball matches—without breaking the bank.</p>
+
+            <p>The key is to buy from a reputable brand that uses quality wood, proper seasoning, and professional craftsmanship. A well-made Kashmiri willow bat can serve you for years, helping you score runs and enjoy the game.</p>
+
+            <div class="blog-cta-final">
+                <h3>Ready to Find Your Perfect Bat?</h3>
+                <p>Explore the Wular Sports collection to find bats designed for power, balance, and durability—crafted specifically for Indian playing conditions.</p>
+                <div class="cta-btns">
+                    <a href="/catalog" class="btn">Shop Cricket Bats</a>
+                    <a href="/catalog?category=Leather%20Ball" class="btn btn-secondary">View Leather Ball Bats</a>
+                </div>
+            </div>
+        `
+    },
+    {
         id: 'choosing-the-right-bat-weight',
         title: 'Choosing the Right Bat Weight: The Science of Power',
         description: 'Does a heavier bat always mean more power? Learn how to find the perfect weight for your playing style.',
@@ -9,7 +162,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 05, 2026',
         readTime: '5 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247423/6246894018251918552_c5k6qi.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg',
         content: `
             <p>One of the most common questions we get from cricketers is: "Should I buy a heavy bat or a light one?" Most players assume that a heavier bat will automatically produce more power, but the reality is more nuanced.</p>
             
@@ -36,7 +189,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Dec 28, 2025',
         readTime: '4 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247422/6246894018251918553_s6dj7r.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/cane-handle.jpg',
         content: `
             <p>The handle is the most underrated part of a cricket bat. While everyone focuses on the grains of the willow, it's the handle that translates your intent into action and protects your hands from injury.</p>
             
@@ -61,7 +214,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Dec 20, 2025',
         readTime: '6 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
         content: `
             <p>In the world of cricket, "English Willow" is often used as a marketing buzzword to justify high prices. But for many players, especially those in the tennis ball circuit or those starting their professional careers, premium Kashmir Willow is often the superior choice.</p>
             
@@ -86,7 +239,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 07, 2026',
         readTime: '8 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
         content: `
             <p>Buying a high-quality cricket bat is an investment. Whether you play with <a href="/collection#leather-bat">leather cricket bats</a> or <a href="/collection#hard-tennis">hard tennis cricket bats</a>, proper maintenance is the difference between a bat that lasts one season and one that lasts five. In this guide, we’ll cover everything you need to know about <strong>cricket bat maintenance</strong>.</p>
 
@@ -189,7 +342,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 22, 2026',
         readTime: '7 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247422/6246894018251918553_s6dj7r.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/cane-handle.jpg',
         content: `
             <p>For many cricketers in India, the journey starts with a plastic or tennis ball on narrow streets. But there comes a time when every aspiring player wants to feel the weight of a seasoned leather ball. Transitioning from tennis to <a href="/leather-cricket-bats">leather ball cricket</a> is an exciting milestone, but it requires a significant shift in gear and mindset.</p>
 
@@ -225,7 +378,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 24, 2026',
         readTime: '6 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247423/6246894018251918552_c5k6qi.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg',
         content: `
             <p>Hard tennis ball cricket has evolved into a high-stakes, professional format with massive tournaments across the globe. If you're still using a generic bat, you're giving your opponents an unfair advantage. Here’s why <a href="/hard-tennis-bats">specialized hard tennis bats</a> are essential.</p>
 
@@ -256,7 +409,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 23, 2026',
         readTime: '8 min read',
-        image: 'https://res.cloudinary.com/ddahm5ebv/image/upload/v1752150442/photo_6305588890991445271_m_tme4bb.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
         content: `
             <p>In an era of mass production, Wular Sports remains committed to the ancient art of hand-crafting cricket bats. While machines can replicate shapes, they cannot "feel" the wood. Every piece of <a href="/hard-tennis-bats">premium Kashmir Willow</a> is unique, and our master craftsmen treat them that way.</p>
 

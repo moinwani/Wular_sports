@@ -98,10 +98,11 @@ export const VideoTestimonials: FC = () => {
                                     {videoId ? (
                                         <div className="testimonial-youtube-preview">
                                             <iframe
-                                                src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`}
+                                                src={`https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${window.location.origin}&widgetid=1`}
                                                 title={`Testimonial ${t.id}`}
                                                 frameBorder="0"
                                                 allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                referrerPolicy="no-referrer-when-downgrade"
                                                 className="testimonial-iframe-preview"
                                             ></iframe>
                                             <div className="iframe-click-overlay"></div>

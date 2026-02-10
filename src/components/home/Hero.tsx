@@ -5,8 +5,8 @@ export interface HeroProps {
 }
 
 const BACKGROUND_IMAGES = [
-    'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247423/6246894018251918552_c5k6qi.jpg',
-    'https://res.cloudinary.com/ddahm5ebv/image/upload/v1767247422/6246894018251918553_s6dj7r.jpg'
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-1.jpg',
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-2.jpg'
 ];
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {

@@ -5,6 +5,7 @@ export interface HeroProps {
 }
 
 const BACKGROUND_IMAGES = [
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/legacy-edition.png',
     'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-1.jpg',
     'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-2.jpg'
 ];

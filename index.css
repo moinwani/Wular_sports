@@ -403,6 +403,8 @@ main {
     display: flex;
     align-items: center;
     border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    margin: 0;
+    padding: 0;
 }
 
 .ticker-track {
@@ -436,6 +438,9 @@ main {
     width: 100%;
     overflow: hidden;
     background: var(--black);
+    margin: 0;
+    padding: 0;
+    line-height: 0;
 }
 
 .hero-img {
@@ -444,6 +449,8 @@ main {
     height: auto;
     object-fit: cover;
     object-position: center;
+    margin: 0;
+    padding: 0;
 }
 
 /* Remove dark overlay - client wants full clarity */

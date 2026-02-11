@@ -42,3 +42,14 @@ export interface CustomerDetails {
     address: string;
     landmark: string;
 }
+
+export interface Testimonial {
+    id: number;
+    url: string;
+    thumbnail?: string;
+    name: string;
+    comment: string;
+    rating: number;
+    productId: string;
+    isRepeatCustomer?: boolean;
+}

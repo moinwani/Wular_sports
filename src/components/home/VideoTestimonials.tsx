@@ -1,15 +1,17 @@
 import { FC, useState } from 'react';
 import { VideoModal } from '../common/VideoModal';
 import { products } from '../../data/products';
+import { Testimonial } from '../../types';
 
-const testimonials = [
+const testimonials: Testimonial[] = [
     {
         id: 1,
         url: 'https://www.youtube.com/shorts/rOqK2kZQzTI',
         name: 'Arjun P.',
         comment: 'Super fast 4-day delivery (expected 8 days)! The balance and ping with the 130-140g heavy tennis ball are absolutely incredible.',
         rating: 5,
-        productId: 'legacy-edition'
+        productId: 'legacy-edition',
+        isRepeatCustomer: true
     },
     {
         id: 2,
@@ -58,6 +60,15 @@ const testimonials = [
         comment: 'The Bahubali Edition is a beast! The power in this bat is incredible, yet the balance makes it feel so light in the hands. Truly a game-changer for heavy tennis ball cricket.',
         rating: 5,
         productId: 'bahubali-edition'
+    },
+    {
+        id: 8,
+        url: 'https://youtube.com/shorts/51_M34PKL_I',
+        name: 'Arjun P.',
+        comment: 'Repeat customer! This time I got the AK-47 Edition (Honeycomb Scoop). The lightweight design and precision engineering make it a beast on the field.',
+        rating: 5,
+        productId: 'ak-47-honeycomb',
+        isRepeatCustomer: true
     }
 ];
 
@@ -122,7 +133,14 @@ export const VideoTestimonials: FC = () => {
                                     {/* Premium Overlay Info */}
                                     <div className="testimonial-premium-overlay">
                                         <div className="overlay-content">
-                                            <h4 className="customer-name-overlay">{t.name}</h4>
+                                            <div className="name-row">
+                                                <h4 className="customer-name-overlay">{t.name}</h4>
+                                                {t.isRepeatCustomer && (
+                                                    <span className="repeat-badge">
+                                                        <i className="fas fa-redo-alt"></i> Repeat Champion
+                                                    </span>
+                                                )}
+                                            </div>
                                             {product && (
                                                 <div className="bat-shown-overlay">
                                                     <span className="label">BAT SHOWN:</span>

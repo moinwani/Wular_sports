@@ -1,16 +1,7 @@
 import { FC, useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { products } from '../../data/products';
-
-interface Testimonial {
-    id: number;
-    url: string;
-    thumbnail?: string;
-    name: string;
-    comment: string;
-    rating: number;
-    productId: string;
-}
+import { Testimonial } from '../../types';
 
 export interface VideoModalProps {
     testimonials: Testimonial[];
@@ -294,7 +285,21 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                             {[...Array(t.rating)].map((_, i) => <i key={i} className="fas fa-star" style={{ fontSize: '1.2rem' }}></i>)}
                                         </div>
                                         <p style={{ fontStyle: 'italic', fontSize: '1.4rem', color: '#fff', marginBottom: '1rem', lineHeight: '1.6', maxWidth: '700px' }}>"{t.comment}"</p>
-                                        <h4 style={{ color: 'var(--golden)', fontSize: '1.2rem', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{t.name}</h4>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                                            <h4 style={{ color: 'var(--golden)', fontSize: '1.2rem', margin: 0, letterSpacing: '1px', textTransform: 'uppercase' }}>{t.name}</h4>
+                                            {t.isRepeatCustomer && (
+                                                <span className="repeat-badge modal-badge" style={{
+                                                    fontSize: '0.9rem',
+                                                    padding: '0.3rem 0.8rem',
+                                                    background: 'rgba(212, 175, 55, 0.2)',
+                                                    border: '1px solid var(--golden)',
+                                                    borderRadius: '20px',
+                                                    color: 'var(--golden)'
+                                                }}>
+                                                    <i className="fas fa-redo-alt"></i> Repeat Champion
+                                                </span>
+                                            )}
+                                        </div>
                                         <div style={{ height: '1px', width: '100px', background: 'rgba(212,175,55,0.4)', marginBottom: '1.5rem' }} />
                                     </>
                                 )}

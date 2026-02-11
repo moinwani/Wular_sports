@@ -106,15 +106,12 @@ section {
 .header {
     background-color: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(10px);
-    padding: 0 1rem;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    border-bottom: 1px solid var(--golden);
-    height: 70px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(0);
     will-change: transform;
@@ -130,7 +127,8 @@ section {
 
 /* Add padding to body to account for fixed header */
 body {
-    padding-top: 70px;
+    padding-top: 100px;
+    /* nav-row (70px) + ticker (30px) */
 }
 
 /* Ensure main content accounts for fixed header */
@@ -138,23 +136,37 @@ main {
     position: relative;
 }
 
-/* Nav Container */
+/* Nav Container - Row 1 */
 .nav {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
+    height: 70px;
+    padding: 0 1rem;
     position: relative;
-    /* Context for Logo */
-    height: 100%;
 }
 
-/* Brand/Logo - Absolute Center (User Requirement) */
+/* Left Nav Section */
+.nav-section-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+/* Hide nav links on mobile, show on desktop */
+.nav-section-left .nav-link {
+    display: none;
+}
+
+/* Brand/Logo - Absolute Center */
 .nav-brand-centered {
     position: absolute;
-    top: 50%;
     left: 50%;
+    top: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     align-items: center;
@@ -179,8 +191,13 @@ main {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-left: auto;
-    /* Force Right Alignment */
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* Hide nav links on mobile */
+.nav-section-right .nav-link {
+    display: none;
 }
 
 /* Search Icon Button (Circle) */
@@ -234,16 +251,56 @@ main {
     background: none;
     border: none;
     color: var(--golden);
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     cursor: pointer;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.5rem;
     flex-shrink: 0;
 }
 
-/* Desktop Styles */
+/* ── Ticker Bar (Row 2) ── */
+.ticker-bar {
+    width: 100%;
+    height: 30px;
+    overflow: hidden;
+    background: transparent;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    display: flex;
+    align-items: center;
+}
+
+.ticker-track {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker-scroll 25s linear infinite;
+    gap: 1.5rem;
+}
+
+.ticker-track span {
+    color: var(--white);
+    font-family: 'Oswald', sans-serif;
+    font-weight: 400;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+@keyframes ticker-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* ── Desktop Styles ── */
 @media (min-width: 768px) {
-    .header {
+    .nav {
         padding: 0 2rem;
     }
 
@@ -252,22 +309,19 @@ main {
         display: none;
     }
 
+    /* Show nav links on desktop */
+    .nav-section-left .nav-link,
+    .nav-section-right .nav-link {
+        display: inline;
+    }
+
     /* Show Search on Desktop */
     .nav-search-wrapper {
         display: block;
     }
 
-    /* Logo Styling for Desktop */
-    .nav-brand-centered {
-        flex: 0 0 auto;
-        /* Don't stretch */
-        justify-content: flex-start;
-        margin-right: 1rem;
-    }
-
     .nav-logo-centered {
         height: 55px;
-        /* Desktop Size */
     }
 
     .nav-section-right {
@@ -3460,37 +3514,11 @@ main {
    QUICK WINS: Mobile Menu, Loading, Images
    ======================================== */
 
-/* Hamburger Menu Button */
-.hamburger-btn {
-    display: none;
-    /* Hidden on desktop */
-    background: none;
-    border: none;
-    color: var(--golden);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: color 0.2s ease;
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
+/* Hamburger Menu Button - hover state only (layout handled in header section) */
 .hamburger-btn:hover {
     color: var(--white);
 }
 
-@media (max-width: 768px) {
-    .hamburger-btn {
-        display: block;
-    }
-
-    .nav-link {
-        display: none;
-        /* Hide desktop nav links on mobile */
-    }
-}
 
 /* Mobile Menu */
 .mobile-menu-backdrop {

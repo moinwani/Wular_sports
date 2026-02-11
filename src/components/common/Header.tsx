@@ -184,17 +184,23 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
     return (
         <>
             <header className={`header ${isHeaderVisible ? 'header-visible' : 'header-hidden'}`}>
+                {/* Row 1: Main Navigation Bar */}
                 <nav className="nav">
-                    {/* Hamburger Menu Button (Mobile Only) */}
-                    <button
-                        className="hamburger-btn"
-                        onClick={() => setIsMobileMenuOpen(true)}
-                        aria-label="Open menu"
-                        aria-expanded={isMobileMenuOpen}
-                    >
-                        <i className="fas fa-bars"></i>
-                    </button>
+                    {/* Left: Hamburger (mobile) + Nav Links (desktop) */}
+                    <div className="nav-section-left">
+                        <button
+                            className="hamburger-btn"
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            aria-label="Open menu"
+                            aria-expanded={isMobileMenuOpen}
+                        >
+                            <i className="fas fa-bars"></i>
+                        </button>
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('hard-tennis'); }} className="nav-link">Hard Tennis</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('soft-tennis'); }} className="nav-link">Soft Tennis</a>
+                    </div>
 
+                    {/* Center: Logo */}
                     <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
                         <img
                             src="https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/logo.png"
@@ -203,9 +209,8 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                         />
                     </a>
 
+                    {/* Right: Nav Links (desktop) + Cart */}
                     <div className="nav-section-right">
-                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('hard-tennis'); }} className="nav-link">Hard Tennis</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('soft-tennis'); }} className="nav-link">Soft Tennis</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('leather-bats'); }} className="nav-link">Leather Bats</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('blog'); }} className="nav-link">Blog</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
@@ -215,6 +220,24 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                         </div>
                     </div>
                 </nav>
+
+                {/* Row 2: Scrolling Ticker */}
+                <div className="ticker-bar">
+                    <div className="ticker-track">
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!</span>
+                        <span>★</span>
+                    </div>
+                </div>
             </header>
 
             {/* Mobile Menu */}

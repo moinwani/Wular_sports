@@ -4,8 +4,8 @@ export interface HeroProps {
     onShopCollectionClick: () => void;
 }
 
-const DESKTOP_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-desktop.jpg';
-const MOBILE_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/legacy-edition.png';
+const DESKTOP_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/desktop/hero-1.jpg';
+const MOBILE_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-1.png';
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);

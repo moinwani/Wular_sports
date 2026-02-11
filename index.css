@@ -274,8 +274,8 @@ main {
 .ticker-track {
     display: flex;
     white-space: nowrap;
-    animation: ticker-scroll 25s linear infinite;
-    gap: 1.5rem;
+    animation: ticker-scroll 30s linear infinite;
+    will-change: transform;
 }
 
 .ticker-track span {
@@ -286,6 +286,7 @@ main {
     letter-spacing: 2px;
     text-transform: uppercase;
     opacity: 0.85;
+    flex-shrink: 0;
 }
 
 @keyframes ticker-scroll {

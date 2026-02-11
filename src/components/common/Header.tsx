@@ -198,6 +198,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                         </button>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('hard-tennis'); }} className="nav-link">Hard Tennis</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('soft-tennis'); }} className="nav-link">Soft Tennis</a>
+                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('leather-bats'); }} className="nav-link">Leather Bats</a>
                     </div>
 
                     {/* Center: Logo */}
@@ -211,7 +212,6 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
                     {/* Right: Nav Links (desktop) + Cart */}
                     <div className="nav-section-right">
-                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('leather-bats'); }} className="nav-link">Leather Bats</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('blog'); }} className="nav-link">Blog</a>
                         <div className="nav-cart" onClick={onCartClick} role="button" aria-label="Open cart">
                             <i className="fas fa-shopping-cart" aria-hidden="true"></i>
@@ -224,18 +224,18 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                 {/* Row 2: Scrolling Ticker */}
                 <div className="ticker-bar">
                     <div className="ticker-track">
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
-                        <span>FINEST WILLOW FROM KASHMIR!</span>
-                        <span>★</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                        <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
             </header>

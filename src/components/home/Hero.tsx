@@ -18,6 +18,24 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
 
     return (
         <section className="hero" id="home">
+            {/* Ticker - Homepage only, scrolls with content */}
+            <div className="hero-ticker-bar">
+                <div className="ticker-track">
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                </div>
+            </div>
+
             {/* Front Image - Single Slide */}
             <div className="hero-single-image">
                 <img
@@ -27,7 +45,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                 />
             </div>
 
-            {/* Hero Content - Positioned at bottom center for desktop */}
+            {/* Hero Content - Positioned at bottom center */}
             <div className="hero-content-overlay">
                 <button
                     onClick={onShopCollectionClick}

@@ -7,10 +7,10 @@ export interface HeroProps {
 const DESKTOP_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/desktop/hero-1.png';
 
 const MOBILE_IMAGES = [
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-1.png',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-2.png',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-3.png',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-4.png',
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-1.jpg',
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-2.jpg',
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-3.jpg',
+    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-4.PNG',
 ];
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {

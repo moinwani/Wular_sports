@@ -17,9 +17,9 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
     }, []);
 
     return (
-        <section className="hero" id="home">
-            {/* Ticker - Homepage only, scrolls with content */}
-            <div className="hero-ticker-bar">
+        <>
+            {/* Announcement Bar - Separate from header, homepage only */}
+            <div className="announcement-bar">
                 <div className="ticker-track">
                     <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
                     <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
@@ -36,24 +36,22 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                 </div>
             </div>
 
-            {/* Front Image - Single Slide */}
-            <div className="hero-single-image">
+            {/* Hero Section - Fully visible below announcement bar */}
+            <section className="hero" id="home">
                 <img
                     src={isMobile ? MOBILE_IMAGE : DESKTOP_IMAGE}
                     alt="Legacy Edition Hero"
                     className="hero-img"
                 />
-            </div>
-
-            {/* Hero Content - Positioned at bottom center */}
-            <div className="hero-content-overlay">
-                <button
-                    onClick={onShopCollectionClick}
-                    className="btn-transparent"
-                >
-                    Shop Collection
-                </button>
-            </div>
-        </section>
+                <div className="hero-content-overlay">
+                    <button
+                        onClick={onShopCollectionClick}
+                        className="btn-transparent"
+                    >
+                        Shop Collection
+                    </button>
+                </div>
+            </section>
+        </>
     );
 });

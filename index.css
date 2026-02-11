@@ -408,8 +408,8 @@ main {
     overflow: hidden;
 }
 
-/* Background Slider Container */
-.hero-background-slider {
+/* Front Image Slider */
+.hero-slider {
     position: absolute;
     top: 0;
     left: 0;
@@ -418,110 +418,51 @@ main {
     z-index: 0;
 }
 
-/* Individual Background Slides */
-.hero-background-slide {
+.hero-slide {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     opacity: 0;
     transition: opacity 1.5s ease-in-out;
+    object-fit: cover;
+    object-position: center;
 }
 
-.hero-background-slide.active {
+.hero-slide.active {
     opacity: 1;
 }
 
-/* Dark overlay for better text readability */
-.hero-background-slide::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
-}
+/* Remove dark overlay - client wants full clarity */
 
-/* Hero Content Wrapper */
-.hero-content-wrapper {
-    position: relative;
-    z-index: 2;
-}
-
-/* Slider Indicators */
-.hero-slider-indicators {
+.hero-content-overlay {
     position: absolute;
-    bottom: 2rem;
+    bottom: 25%;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 3;
-    display: flex;
-    gap: 0.75rem;
+    z-index: 10;
+    text-align: center;
 }
 
-.slider-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.8);
+.btn-transparent {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 0.8rem 2.8rem;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
     cursor: pointer;
+    backdrop-filter: blur(8px);
     transition: all 0.3s ease;
-    padding: 0;
+    border-radius: 4px;
 }
 
-.slider-indicator:hover {
-    background-color: rgba(255, 255, 255, 0.8);
-    transform: scale(1.2);
-}
-
-.slider-indicator.active {
-    background-color: var(--golden);
-    border-color: var(--golden);
-    transform: scale(1.3);
-}
-
-.hero-title {
-    font-size: 4rem;
-    margin-bottom: 0.5rem;
-    line-height: 1.1;
-    cursor: pointer;
-    transition: transform 0.3s ease, color 0.3s ease;
-    will-change: transform, text-shadow;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-}
-
-.hero-title:hover,
-.hero-title.is-animating {
-    animation: unleash-power 1.5s ease-in-out;
-}
-
-@keyframes unleash-power {
-    0% {
-        transform: scale(1);
-        color: var(--golden);
-        text-shadow: none;
-    }
-
-    50% {
-        transform: scale(1.05);
-        color: var(--white);
-        text-shadow: 0 0 10px var(--golden),
-            0 0 20px var(--golden),
-            0 0 30px #ffdd77,
-            0 0 40px #ffdd77;
-    }
-
-    100% {
-        transform: scale(1);
-        color: var(--golden);
-        text-shadow: none;
-    }
+.btn-transparent:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    border-color: var(--white);
 }
 
 @keyframes subtle-glow {

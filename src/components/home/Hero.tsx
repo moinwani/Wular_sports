@@ -11,7 +11,6 @@ const BACKGROUND_IMAGES = [
 ];
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
-    const [isAnimating, setIsAnimating] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
 
     // Auto-slide effect
@@ -23,37 +22,28 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
         return () => clearInterval(interval);
     }, []);
 
-    const handleTitleClick = () => {
-        if (isAnimating) return;
-        setIsAnimating(true);
-        setTimeout(() => {
-            setIsAnimating(false);
-        }, 1500);
-    };
-
     return (
         <section className="hero" id="home">
-            {/* Background Slider */}
-            <div className="hero-background-slider">
+            {/* Front Image Slider */}
+            <div className="hero-slider">
                 {BACKGROUND_IMAGES.map((image, index) => (
-                    <div
+                    <img
                         key={index}
-                        className={`hero-background-slide ${index === currentSlide ? 'active' : ''}`}
-                        style={{ backgroundImage: `url(${image})` }}
+                        src={image}
+                        alt={`Hero Slide ${index + 1}`}
+                        className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
                     />
                 ))}
             </div>
 
             {/* Hero Content */}
-            <div className="container hero-content-wrapper">
-                <h1
-                    className={`hero-title ${isAnimating ? 'is-animating' : ''}`}
-                    onClick={handleTitleClick}
+            <div className="hero-content-overlay">
+                <button
+                    onClick={onShopCollectionClick}
+                    className="btn-transparent"
                 >
-                    Unleash Your Power
-                </h1>
-
-                <button onClick={onShopCollectionClick} className="btn">Shop Collection</button>
+                    Shop Collection
+                </button>
             </div>
         </section>
     );

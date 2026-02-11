@@ -408,8 +408,8 @@ main {
     overflow: hidden;
 }
 
-/* Front Image Slider */
-.hero-slider {
+/* Front Image Style */
+.hero-single-image {
     position: absolute;
     top: 0;
     left: 0;
@@ -418,31 +418,23 @@ main {
     z-index: 0;
 }
 
-.hero-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
+.hero-img {
     width: 100%;
     height: 100%;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
     object-fit: cover;
     object-position: center;
-}
-
-.hero-slide.active {
-    opacity: 1;
 }
 
 /* Remove dark overlay - client wants full clarity */
 
 .hero-content-overlay {
     position: absolute;
-    bottom: 25%;
+    bottom: 5%;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
     text-align: center;
+    width: 100%;
 }
 
 .btn-transparent {

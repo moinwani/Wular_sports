@@ -1,42 +1,33 @@
-import { FC, useState, memo, useEffect } from 'react';
+import { FC, memo, useState, useEffect } from 'react';
 
 export interface HeroProps {
     onShopCollectionClick: () => void;
 }
 
-const BACKGROUND_IMAGES = [
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/legacy-edition.png',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-1.jpg',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-2.jpg'
-];
+const DESKTOP_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/hero-desktop.jpg';
+const MOBILE_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/legacy-edition.png';
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-    // Auto-slide effect
     useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % BACKGROUND_IMAGES.length);
-        }, 5000); // Change slide every 5 seconds
-
-        return () => clearInterval(interval);
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     return (
         <section className="hero" id="home">
-            {/* Front Image Slider */}
-            <div className="hero-slider">
-                {BACKGROUND_IMAGES.map((image, index) => (
-                    <img
-                        key={index}
-                        src={image}
-                        alt={`Hero Slide ${index + 1}`}
-                        className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-                    />
-                ))}
+            {/* Front Image - Single Slide */}
+            <div className="hero-single-image">
+                <img
+                    src={isMobile ? MOBILE_IMAGE : DESKTOP_IMAGE}
+                    alt="Legacy Edition Hero"
+                    className="hero-img"
+                />
             </div>
 
-            {/* Hero Content */}
+            {/* Hero Content - Positioned at bottom center for desktop */}
             <div className="hero-content-overlay">
                 <button
                     onClick={onShopCollectionClick}

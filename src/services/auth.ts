@@ -14,8 +14,7 @@ import { auth } from './firebase';
 // Store current user
 let currentUser: User | null = null;
 
-// Debug: Log Project ID to verify correct environment
-console.log('🔥 Firebase Initialized for Project:', auth.app.options.projectId);
+
 
 // Listen for auth state changes
 onAuthStateChanged(auth, (user) => {
@@ -29,7 +28,8 @@ export const signInWithGoogle = async (idToken: string): Promise<User> => {
     try {
         const credential = GoogleAuthProvider.credential(idToken);
         const result = await signInWithCredential(auth, credential);
-        console.log('✅ Firebase Google Sign-In Successful:', result.user.email);
+        // Log generic success without exposing email
+        console.log('✅ Firebase Google Sign-In Successful');
         return result.user;
     } catch (error: any) {
         console.error('❌ Firebase Google Sign-In Failed!');

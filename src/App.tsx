@@ -168,8 +168,7 @@ const AppContent: React.FC = () => {
                     <Route path="/checkout" element={<CheckoutView
                         cart={cart}
                         total={cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}
-                        onPlaceOrder={(order) => {
-                            console.log('Order Placed:', order); // In a real app, send to backend
+                        onPlaceOrder={() => {
                             setCart([]);
                             cartStorage.clear(); // Clear cart from localStorage
                             navigate('/order-success');

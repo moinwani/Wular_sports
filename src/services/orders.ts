@@ -71,7 +71,7 @@ export const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 
             updatedAt: Timestamp.fromDate(order.updatedAt)
         });
 
-        console.log('Order created with ID:', docRef.id);
+
         return docRef.id;
     } catch (error) {
         console.error('Error creating order:', error);
@@ -167,7 +167,7 @@ export const updateOrderStatus = async (
             status,
             updatedAt: Timestamp.fromDate(new Date())
         });
-        console.log('Order status updated:', orderId, status);
+
     } catch (error) {
         console.error('Error updating order status:', error);
         throw new Error('Failed to update order status');
@@ -194,7 +194,7 @@ export const updatePaymentStatus = async (
         }
 
         await updateDoc(docRef, updateData);
-        console.log('Payment status updated:', orderId, paymentStatus);
+
     } catch (error) {
         console.error('Error updating payment status:', error);
         throw new Error('Failed to update payment status');
@@ -208,7 +208,7 @@ export const deleteOrder = async (orderId: string): Promise<void> => {
     try {
         const docRef = doc(db, ORDERS_COLLECTION, orderId);
         await deleteDoc(docRef);
-        console.log('Order deleted:', orderId);
+
     } catch (error) {
         console.error('Error deleting order:', error);
         throw new Error('Failed to delete order');

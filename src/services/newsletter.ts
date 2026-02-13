@@ -1,9 +1,6 @@
 import {
-    collection,
-    addDoc,
-    query,
-    where,
-    getDocs,
+    doc,
+    setDoc,
     Timestamp
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -18,16 +15,15 @@ export const subscribeToNewsletter = async (email: string): Promise<{ success: b
         // Sanitize: lowercase and trim (required by Firestore rules)
         const sanitizedEmail = email.toLowerCase().trim();
 
-        // 1. Check if already subscribed
-        const q = query(collection(db, SUBSCRIBERS_COLLECTION), where('email', '==', sanitizedEmail));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-            return { success: false, message: 'You are already subscribed!' };
+        if (!sanitizedEmail || !sanitizedEmail.includes('@')) {
+            return { success: false, message: 'Please enter a valid email address.' };
         }
 
-        // 2. Add new subscriber
-        await addDoc(collection(db, SUBSCRIBERS_COLLECTION), {
+        // 1. Add/Update subscriber
+        // Note: Using email as ID ensures uniqueness. 
+        // Firestore Rules 'allow create' only allows this if it doesn't exist.
+        // If it exists, it's an 'update' which is blocked for public.
+        await setDoc(doc(db, SUBSCRIBERS_COLLECTION, sanitizedEmail), {
             email: sanitizedEmail,
             subscribedAt: Timestamp.fromDate(new Date()),
             status: 'active'
@@ -39,8 +35,9 @@ export const subscribeToNewsletter = async (email: string): Promise<{ success: b
 
         // Better error handling for permission errors
         if (error && typeof error === 'object' && 'code' in error) {
+            // Already exists (handled by rules blocking update)
             if ((error as any).code === 'permission-denied') {
-                return { success: false, message: 'Unable to subscribe. Please try again later.' };
+                return { success: false, message: 'This email is already subscribed or invalid.' };
             }
         }
 

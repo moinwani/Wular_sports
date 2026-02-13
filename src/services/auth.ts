@@ -26,9 +26,17 @@ export const signInWithGoogle = async (idToken: string): Promise<User> => {
     try {
         const credential = GoogleAuthProvider.credential(idToken);
         const result = await signInWithCredential(auth, credential);
+        console.log('✅ Firebase Google Sign-In Successful:', result.user.email);
         return result.user;
-    } catch (error) {
-        console.error('❌ Google Sign-In failed:', error);
+    } catch (error: any) {
+        console.error('❌ Firebase Google Sign-In Failed!');
+        console.error('Error Code:', error?.code);
+        console.error('Error Message:', error?.message);
+
+        if (error?.code === 'auth/operation-not-allowed') {
+            console.error('👉 ACTION REQUIRED: You must enable the "Google" sign-in provider in your Firebase Console.');
+        }
+
         throw error;
     }
 };

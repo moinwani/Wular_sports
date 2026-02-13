@@ -1,16 +1,14 @@
 import {
-    getAuth,
     signInAnonymously,
     User,
-    onAuthStateChanged
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithCredential
 } from 'firebase/auth';
 import { auth } from './firebase';
 
 /**
  * Authentication Service for Wular Sports
- * 
- * Provides secure authentication for checkout and order management
- * Uses Firebase Anonymous Authentication for guest checkout
  */
 
 // Store current user
@@ -22,26 +20,54 @@ onAuthStateChanged(auth, (user) => {
 });
 
 /**
- * Ensure user is authenticated (create anonymous user if needed)
- * Call this before creating orders
+ * Sign in with Google using an ID Token (from One Tap)
+ */
+export const signInWithGoogle = async (idToken: string): Promise<User> => {
+    try {
+        const credential = GoogleAuthProvider.credential(idToken);
+        const result = await signInWithCredential(auth, credential);
+        return result.user;
+    } catch (error) {
+        console.error('❌ Google Sign-In failed:', error);
+        throw error;
+    }
+};
+
+/**
+ * Initialize Google One Tap
+ * Requires VITE_GOOGLE_CLIENT_ID
+ */
+export const initializeGoogleOneTap = (callback: (response: any) => void) => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+        console.warn('⚠️ Google Client ID not found. One Tap disabled.');
+        return;
+    }
+
+    if (typeof window !== 'undefined' && (window as any).google) {
+        (window as any).google.accounts.id.initialize({
+            client_id: clientId,
+            callback: callback,
+            auto_select: true, // Attempt to sign in automatically
+            cancel_on_tap_outside: false
+        });
+
+        (window as any).google.accounts.id.prompt(); // Display the One Tap prompt
+    }
+};
+
+/**
+ * Ensure user is authenticated
  */
 export const ensureAuthenticated = async (): Promise<string> => {
     try {
-        // Check if already authenticated
-        if (currentUser) {
-            return currentUser.uid;
-        }
-
-        // Create anonymous user for guest checkout
+        if (currentUser) return currentUser.uid;
         const userCredential = await signInAnonymously(auth);
         currentUser = userCredential.user;
-
-        console.log('✅ Anonymous user created:', currentUser.uid);
         return currentUser.uid;
-
     } catch (error: any) {
         console.error('❌ Authentication failed:', error);
-        throw new Error('Unable to authenticate. Please try again.');
+        throw new Error('Unable to authenticate.');
     }
 };
 
@@ -62,17 +88,13 @@ export const getCurrentUserId = (): string | null => {
 
 /**
  * Check if current user is admin
- * Admin status is set via custom claims (see scripts/admin-setup.js)
  */
 export const isAdmin = async (): Promise<boolean> => {
     try {
         const user = getCurrentUser();
         if (!user) return false;
-
-        // Get ID token result with custom claims
         const idTokenResult = await user.getIdTokenResult();
         return idTokenResult.claims.admin === true;
-
     } catch (error) {
         console.error('Error checking admin status:', error);
         return false;
@@ -87,13 +109,12 @@ export const isAuthenticated = (): boolean => {
 };
 
 /**
- * Sign out current user (optional, mostly for testing)
+ * Sign out current user
  */
 export const signOut = async (): Promise<void> => {
     try {
         await auth.signOut();
         currentUser = null;
-        console.log('✅ Signed out');
     } catch (error) {
         console.error('Error signing out:', error);
         throw error;
@@ -102,7 +123,6 @@ export const signOut = async (): Promise<void> => {
 
 /**
  * Wait for auth to be ready
- * Useful in components that need to check auth on mount
  */
 export const waitForAuth = (): Promise<User | null> => {
     return new Promise((resolve) => {
@@ -110,7 +130,6 @@ export const waitForAuth = (): Promise<User | null> => {
             resolve(currentUser);
             return;
         }
-
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             unsubscribe();
             resolve(user);
@@ -119,8 +138,7 @@ export const waitForAuth = (): Promise<User | null> => {
 };
 
 /**
- * Get user's email (if available)
- * Anonymous users don't have email
+ * Get user's email
  */
 export const getUserEmail = (): string | null => {
     const user = getCurrentUser();

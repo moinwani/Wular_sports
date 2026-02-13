@@ -19,7 +19,8 @@ import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
 import { AdminView } from './views/AdminView';
-
+import { initializeAssetCache } from './services/githubService';
+import { initializeGoogleOneTap, signInWithGoogle } from './services/auth';
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {
@@ -47,8 +48,21 @@ const AppContent: React.FC = () => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
-    // Load cart from localStorage on mount
+    // Google One Tap Handling
+    const handleGoogleResponse = async (response: any) => {
+        try {
+            const user = await signInWithGoogle(response.credential);
+            showToast(`Welcome back, ${user.displayName || 'Friend'}!`, 'success');
+        } catch (error) {
+            console.error('One Tap Login Failed:', error);
+        }
+    };
+
+    // Initialize services and load cart on mount
     useEffect(() => {
+        initializeAssetCache();
+        initializeGoogleOneTap(handleGoogleResponse);
+
         const savedCart = cartStorage.load();
         if (savedCart.length > 0) {
             setCart(savedCart);

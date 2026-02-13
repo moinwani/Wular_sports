@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
+import { sendAdminOrderNotification } from '../services/email';
 // import { sendOrderConfirmation } from '../services/email';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
@@ -196,8 +197,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 paymentMethod: sanitizedData.paymentMethod as any
             };
 
-            // Non-blocking background save
-            createOrder(orderData).catch(err => console.error("Firebase save failed:", err));
+            // Non-blocking background save & notification
+            createOrder(orderData)
+                .then(() => sendAdminOrderNotification({ ...orderData, id: orderId }))
+                .catch(err => console.error("Background order processing failed:", err));
 
             // Complete the flow immediately for the user
             onPlaceOrder({

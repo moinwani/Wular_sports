@@ -21,6 +21,7 @@ import { cartStorage } from './utils/localStorage';
 import { AdminView } from './views/AdminView';
 import { initializeAssetCache } from './services/githubService';
 import { initializeGoogleOneTap, signInWithGoogle } from './services/auth';
+import { subscribeToNewsletter } from './services/newsletter';
 
 // Wrapper to handle scroll to top on route change
 const ScrollToTop = () => {
@@ -52,6 +53,12 @@ const AppContent: React.FC = () => {
     const handleGoogleResponse = async (response: any) => {
         try {
             const user = await signInWithGoogle(response.credential);
+
+            // Auto-capture email into Firestore subscribers collection
+            if (user.email) {
+                await subscribeToNewsletter(user.email);
+            }
+
             showToast(`Welcome back, ${user.displayName || 'Friend'}!`, 'success');
         } catch (error) {
             console.error('One Tap Login Failed:', error);

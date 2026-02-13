@@ -14,6 +14,9 @@ import { auth } from './firebase';
 // Store current user
 let currentUser: User | null = null;
 
+// Debug: Log Project ID to verify correct environment
+console.log('🔥 Firebase Initialized for Project:', auth.app.options.projectId);
+
 // Listen for auth state changes
 onAuthStateChanged(auth, (user) => {
     currentUser = user;

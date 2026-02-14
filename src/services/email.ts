@@ -19,7 +19,7 @@ export const sendAdminOrderNotification = async (order: Order | any) => {
 
         const payload = {
             to_name: "Admin",
-            to_email: "wularsports@gmail.com",
+            to_email: "moinwani91@gmail.com",
             from_name: order.customerName,
             customer_email: order.customerEmail,
             customer_phone: order.customerPhone,

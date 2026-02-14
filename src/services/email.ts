@@ -1,16 +1,14 @@
-import emailjs from '@emailjs/browser';
+import { Order } from './orders';
 
 /**
- * Send order notification email to ADMIN
+ * Send order notification email to ADMIN via Google Apps Script secure bridge
  */
-export const sendAdminOrderNotification = async (order: any) => {
+export const sendAdminOrderNotification = async (order: Order | any) => {
     try {
-        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        const bridgeUrl = import.meta.env.VITE_EMAIL_BRIDGE_URL;
 
-        if (!serviceId || !templateId || !publicKey) {
-            console.warn("EmailJS credentials missing. Skipping admin notification.");
+        if (!bridgeUrl) {
+            console.warn("Email Bridge URL (VITE_EMAIL_BRIDGE_URL) missing. Skipping notification.");
             return;
         }
 
@@ -19,9 +17,9 @@ export const sendAdminOrderNotification = async (order: any) => {
             `${item.productName || item.name} (x${item.quantity}) - ₹${item.price}`
         ).join('\n');
 
-        const templateParams = {
+        const payload = {
             to_name: "Admin",
-            to_email: "wularsports@gmail.com", // Your admin email
+            to_email: "wularsports@gmail.com",
             from_name: order.customerName,
             customer_email: order.customerEmail,
             customer_phone: order.customerPhone,
@@ -33,11 +31,20 @@ export const sendAdminOrderNotification = async (order: any) => {
             order_date: new Date().toLocaleString('en-IN')
         };
 
-        const response = await emailjs.send(serviceId, templateId, templateParams, publicKey);
-        console.log('Admin order notification sent!', response.status, response.text);
+        // Send to Google Apps Script bridge
+        await fetch(bridgeUrl, {
+            method: 'POST',
+            mode: 'no-cors', // Apps Script requires no-cors for simple triggers
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+
+        console.log('Admin order notification triggered via Bridge.');
         return true;
     } catch (error) {
-        console.error('Failed to send admin order notification:', error);
+        console.error('Failed to trigger admin order notification:', error);
         return false;
     }
 };

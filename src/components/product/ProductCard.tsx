@@ -1,6 +1,7 @@
 import { FC, memo, RefObject } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductFull } from '../../types';
+import { getCDNUrl } from '../../services/githubService';
 
 export interface ProductCardProps {
     product: ProductFull;
@@ -23,13 +24,13 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
         // Use the first image for listing card
         imageElement = (
             <img
-                src={product.image[0]}
+                src={getCDNUrl(product.image[0])}
                 alt={product.name}
                 className="product-image"
             />
         );
     } else if (typeof product.image === 'string') {
-        const imageUrl = product.image;
+        const imageUrl = getCDNUrl(product.image);
         imageElement = <img src={imageUrl} alt={product.name} className="product-image" />;
     }
 

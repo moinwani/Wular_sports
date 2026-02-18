@@ -1,7 +1,7 @@
 import { FC, useState, memo, MouseEvent, useEffect, useRef } from 'react';
 import { View } from '../../types';
 import { MobileMenu } from './MobileMenu';
-// import { SearchBar } from './SearchBar';
+import { getFileSHA, getCDNUrl } from '../../services/githubService';
 
 export interface HeaderProps {
     onCartClick: () => void;
@@ -12,11 +12,22 @@ export interface HeaderProps {
 export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNavigate }) => {
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    // const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
     const [isHeaderPinned, setIsHeaderPinned] = useState(false);
+    const [logoUrl, setLogoUrl] = useState('https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/logo.png');
     const lastScrollY = useRef(0);
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Dynamic Logo Cache Busting
+    useEffect(() => {
+        async function fetchLogo() {
+            const sha = await getFileSHA('assets/images/brand/logo.png');
+            if (sha) {
+                setLogoUrl(getCDNUrl('assets/images/brand/logo.png', sha));
+            }
+        }
+        fetchLogo();
+    }, []);
 
     // Handle scroll direction detection for auto-hide header
     useEffect(() => {
@@ -204,7 +215,7 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
                     {/* Center: Logo */}
                     <a href="#" onClick={handleLogoClick} className="nav-brand-centered" aria-label="Go to homepage">
                         <img
-                            src="https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/logo.png"
+                            src={logoUrl}
                             alt="Wular Sports Logo"
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
                         />

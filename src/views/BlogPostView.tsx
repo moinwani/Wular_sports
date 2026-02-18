@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { View } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
+import { getCDNUrl } from '../services/githubService';
 
 interface BlogPostViewProps {
     onNavigate: (view: View) => void;
@@ -61,7 +62,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
 
                 <div className="blog-post-main-image">
                     <div className="container">
-                        <img src={post.image} alt={post.title} />
+                        <img src={getCDNUrl(post.image)} alt={post.title} />
                     </div>
                 </div>
 
@@ -102,7 +103,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
                             {otherPosts.map(p => (
                                 <article key={p.id} className="blog-card" onClick={() => onSelectPost(p.id)}>
                                     <div className="blog-card-image">
-                                        <img src={p.image} alt={p.title} />
+                                        <img src={getCDNUrl(p.image)} alt={p.title} />
                                     </div>
                                     <div className="blog-card-content">
                                         <h4 className="blog-card-title">{p.title}</h4>

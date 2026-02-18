@@ -9,6 +9,7 @@ import { HorizontalImageGallery } from '../components/product/HorizontalImageGal
 import { SEOHead } from '../components/common/SEOHead';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 import { ProductCard } from '../components/product/ProductCard';
+import { getCDNUrl } from '../services/githubService';
 
 export interface ProductDetailsViewProps {
     onAddToCart: (product: ProductFull, size: string, quantity?: number) => void;
@@ -446,7 +447,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                         {Array.isArray(product.image) ? (
                             isMobile ? (
                                 <HorizontalImageGallery
-                                    images={product.image}
+                                    images={product.image.map(img => getCDNUrl(img))}
                                     altText={product.name}
                                     onImageClick={(index) => {
                                         setLightboxIndex(index);
@@ -455,7 +456,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                 />
                             ) : (
                                 <VerticalImageGallery
-                                    images={product.image}
+                                    images={product.image.map(img => getCDNUrl(img))}
                                     altText={product.name}
                                     onImageClick={(index) => {
                                         setLightboxIndex(index);

@@ -3,6 +3,7 @@ import { View } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
 import { subscribeToNewsletter } from '../services/newsletter';
+import { getCDNUrl } from '../services/githubService';
 
 interface BlogViewProps {
     onNavigate: (view: View, hash?: string) => void;
@@ -50,7 +51,7 @@ export const BlogView: FC<BlogViewProps> = ({ onSelectPost, showToast }) => {
                         {blogs.map(post => (
                             <article key={post.id} className="blog-card" onClick={() => onSelectPost(post.id)}>
                                 <div className="blog-card-image">
-                                    <img src={post.image} alt={post.title} />
+                                    <img src={getCDNUrl(post.image)} alt={post.title} />
                                     <span className="blog-category-tag">{post.category}</span>
                                 </div>
                                 <div className="blog-card-content">

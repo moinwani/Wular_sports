@@ -3478,13 +3478,162 @@ main {
     color: black;
 }
 
+.checkout-header-mobile,
+.checkout-summary-mobile {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
 @media (max-width: 768px) {
-    .checkout-grid {
-        grid-template-columns: 1fr;
+    .checkout-page {
+        padding-top: 1rem;
     }
 
-    .form-row {
+    .checkout-grid {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .checkout-form-section,
+    .checkout-summary-section {
+        padding: 1.25rem;
+    }
+
+    .checkout-header-mobile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .back-btn-simple {
+        background: transparent;
+        border: none;
+        color: var(--golden);
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .page-title {
+        margin: 0;
+        font-size: 1.75rem;
+    }
+
+    /* Compact Form Rows */
+    .form-row.compact {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .form-row.compact-triple {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .form-group input {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .section-title-compact {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.4rem;
+    }
+
+    /* Collapsible Summary (Mobile Only) */
+    .checkout-summary-mobile {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+    }
+
+    .summary-toggle {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+    }
+
+    .toggle-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--golden);
+        font-weight: 500;
+    }
+
+    .toggle-total {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .summary-collapsible-content {
+        max-height: 0;
+        transition: max-height 0.3s ease-out;
+        padding: 0 1rem;
+        background-color: #111;
+    }
+
+    .checkout-summary-mobile.expanded .summary-collapsible-content {
+        max-height: 500px;
+        padding-bottom: 1rem;
+    }
+
+    .summary-items-mini {
+        padding: 1rem 0;
+        border-bottom: 1px solid #222;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .summary-item-mini {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+    }
+
+    .item-name-mini {
+        color: #ccc;
+    }
+
+    .summary-row-mini {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    .payment-security-note p {
+        font-size: 0.85rem;
+    }
+
+    .btn-place-order {
+        padding: 1rem;
+        font-size: 1rem;
     }
 }
 

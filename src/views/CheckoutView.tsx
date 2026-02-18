@@ -16,6 +16,7 @@ interface CheckoutViewProps {
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -239,7 +240,43 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     return (
         <div className="checkout-page">
             <div className="container">
-                <h1 className="page-title">Checkout</h1>
+                <div className="checkout-header-mobile">
+                    <button className="back-btn-simple" onClick={() => navigate(-1)}>
+                        <i className="fas fa-arrow-left"></i>
+                    </button>
+                    <h1 className="page-title">Checkout</h1>
+                </div>
+
+                {/* Mobile Order Summary (Collapsible) */}
+                <div className={`checkout-summary-mobile ${isSummaryExpanded ? 'expanded' : ''}`}>
+                    <button
+                        className="summary-toggle"
+                        onClick={() => setIsSummaryExpanded(!isSummaryExpanded)}
+                        aria-expanded={isSummaryExpanded}
+                    >
+                        <div className="toggle-left">
+                            <i className="fas fa-shopping-cart"></i>
+                            <span>{isSummaryExpanded ? 'Hide' : 'Show'} Order Summary</span>
+                            <i className={`fas fa-chevron-${isSummaryExpanded ? 'up' : 'down'}`}></i>
+                        </div>
+                        <span className="toggle-total">₹{total.toLocaleString('en-IN')}</span>
+                    </button>
+
+                    <div className="summary-collapsible-content">
+                        <div className="summary-items-mini">
+                            {cart.map((item, idx) => (
+                                <div key={idx} className="summary-item-mini">
+                                    <span className="item-name-mini">{item.name} {item.size ? `(${item.size})` : ''} x{item.quantity}</span>
+                                    <span className="item-price-mini">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="summary-row-mini">
+                            <span>Shipping</span>
+                            <span>Free</span>
+                        </div>
+                    </div>
+                </div>
                 {formError && (
                     <div className="alert-error" role="alert" aria-live="assertive" style={{
                         backgroundColor: '#d32f2f',
@@ -273,9 +310,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 <div className="checkout-grid">
                     {/* Left Column: Shipping Details */}
                     <div className="checkout-form-section">
-                        <h2>Shipping Information</h2>
+                        <h2 className="section-title-compact">Shipping Information</h2>
                         <form id="checkout-form" onSubmit={handleSubmit}>
-                            <div className="form-row">
+                            <div className="form-row compact">
                                 <div className="form-group">
                                     <label>First Name *</label>
                                     <input
@@ -286,6 +323,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         required
                                         disabled={isProcessing}
                                         className={fieldErrors.firstName ? 'error' : ''}
+                                        placeholder="First Name"
                                     />
                                     {fieldErrors.firstName && (
                                         <span className="error-message">{fieldErrors.firstName}</span>
@@ -301,6 +339,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         required
                                         disabled={isProcessing}
                                         className={fieldErrors.lastName ? 'error' : ''}
+                                        placeholder="Last Name"
                                     />
                                     {fieldErrors.lastName && (
                                         <span className="error-message">{fieldErrors.lastName}</span>
@@ -356,7 +395,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 )}
                             </div>
 
-                            <div className="form-row">
+                            <div className="form-row compact-triple">
                                 <div className="form-group">
                                     <label>City *</label>
                                     <input
@@ -367,6 +406,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         required
                                         disabled={isProcessing}
                                         className={fieldErrors.city ? 'error' : ''}
+                                        placeholder="City"
                                     />
                                     {fieldErrors.city && (
                                         <span className="error-message">{fieldErrors.city}</span>
@@ -382,13 +422,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         required
                                         disabled={isProcessing}
                                         className={fieldErrors.state ? 'error' : ''}
+                                        placeholder="State"
                                     />
                                     {fieldErrors.state && (
                                         <span className="error-message">{fieldErrors.state}</span>
                                     )}
                                 </div>
                                 <div className="form-group">
-                                    <label>ZIP Code *</label>
+                                    <label>ZIP *</label>
                                     <input
                                         type="text"
                                         name="zip"
@@ -398,6 +439,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         maxLength={6}
                                         className={fieldErrors.zip ? 'error' : ''}
+                                        placeholder="ZIP"
                                     />
                                     {fieldErrors.zip && (
                                         <span className="error-message">{fieldErrors.zip}</span>
@@ -407,49 +449,51 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         </form>
                     </div>
 
-                    {/* Right Column: Order Summary */}
+                    {/* Right Column: Order Summary & Payment */}
                     <div className="checkout-summary-section">
-                        <h2>Order Summary</h2>
-                        <div className="summary-items">
-                            {cart.map((item, idx) => (
-                                <div key={idx} className="summary-item">
-                                    <div className="item-info">
-                                        <span className="item-name">{item.name} {item.size ? `(${item.size})` : ''}</span>
-                                        <span className="item-qty">x {item.quantity}</span>
+                        <div className="desktop-only">
+                            <h2 className="section-title-compact">Order Summary</h2>
+                            <div className="summary-items">
+                                {cart.map((item, idx) => (
+                                    <div key={idx} className="summary-item">
+                                        <div className="item-info">
+                                            <span className="item-name">{item.name} {item.size ? `(${item.size})` : ''}</span>
+                                            <span className="item-qty">x {item.quantity}</span>
+                                        </div>
+                                        <span className="item-price">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                                     </div>
-                                    <span className="item-price">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                                ))}
+                            </div>
+
+                            <div className="summary-totals">
+                                <div className="total-row">
+                                    <span>Subtotal</span>
+                                    <span>₹{total.toLocaleString('en-IN')}</span>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="total-row">
+                                    <span>Shipping</span>
+                                    <span>Free</span>
+                                </div>
+                                <div className="total-row grand-total">
+                                    <span>Total</span>
+                                    <span>₹{total.toLocaleString('en-IN')}</span>
+                                </div>
+                            </div>
 
-                        <div className="summary-totals">
-                            <div className="total-row">
-                                <span>Subtotal</span>
-                                <span>₹{total.toLocaleString('en-IN')}</span>
-                            </div>
-                            <div className="total-row">
-                                <span>Shipping</span>
-                                <span>Free</span>
-                            </div>
-                            <div className="total-row grand-total">
-                                <span>Total</span>
-                                <span>₹{total.toLocaleString('en-IN')}</span>
-                            </div>
-                        </div>
-
-                        {/* Secure Payment Badges */}
-                        <div className="secure-payment-badges">
-                            <div className="secure-badge">
-                                <i className="fas fa-lock"></i>
-                                <span>SSL Secured</span>
-                            </div>
-                            <div className="secure-badge">
-                                <i className="fas fa-shield-alt"></i>
-                                <span>256-bit Encryption</span>
-                            </div>
-                            <div className="secure-badge">
-                                <i className="fas fa-check-circle"></i>
-                                <span>PCI Compliant</span>
+                            {/* Secure Payment Badges */}
+                            <div className="secure-payment-badges">
+                                <div className="secure-badge">
+                                    <i className="fas fa-lock"></i>
+                                    <span>SSL Secured</span>
+                                </div>
+                                <div className="secure-badge">
+                                    <i className="fas fa-shield-alt"></i>
+                                    <span>256-bit Encryption</span>
+                                </div>
+                                <div className="secure-badge">
+                                    <i className="fas fa-check-circle"></i>
+                                    <span>PCI Compliant</span>
+                                </div>
                             </div>
                         </div>
 

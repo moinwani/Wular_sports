@@ -1,37 +1,68 @@
 import { FC, memo, useState, useEffect } from 'react';
+import { getFolderFiles, getCDNUrl } from '../../services/githubService';
 
 export interface HeroProps {
     onShopCollectionClick: () => void;
 }
 
-const DESKTOP_IMAGE = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/desktop/hero-1.png';
-
-const MOBILE_IMAGES = [
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-1.png?v=2',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-2.png?v=2',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-3.PNG?v=2',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-4.png?v=2',
-    'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/mobile/hero-5.png?v=2',
-];
-
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [mobileImages, setMobileImages] = useState<string[]>([]);
+    const [desktopImage, setDesktopImage] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Initial Desktop Fallback (for speed)
+    const fallbackDesktop = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/desktop/hero-1.png';
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
+
+        // Fetch Dynamic Hero Images
+        async function loadHeroAssets() {
+            try {
+                // Fetch Mobile Slider Images
+                const mobileFiles = await getFolderFiles('assets/images/hero/mobile');
+                const mImages = mobileFiles
+                    .filter(f => /\.(png|jpe?g|webp|PNG|JPG)$/.test(f.name))
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+                    .map(f => getCDNUrl(f.path, f.sha));
+
+                if (mImages.length > 0) setMobileImages(mImages);
+
+                // Fetch Desktop Image (takes the first image found in desktop folder)
+                const desktopFiles = await getFolderFiles('assets/images/hero/desktop');
+                const dImage = desktopFiles.find(f => /\.(png|jpe?g|webp|PNG|JPG)$/.test(f.name));
+                if (dImage) {
+                    setDesktopImage(getCDNUrl(dImage.path, dImage.sha));
+                } else {
+                    setDesktopImage(fallbackDesktop);
+                }
+            } catch (error) {
+                console.error('Hero asset discovery failed:', error);
+                setDesktopImage(fallbackDesktop);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        loadHeroAssets();
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     // Auto-slide for mobile only
     useEffect(() => {
-        if (!isMobile) return;
+        if (!isMobile || mobileImages.length <= 1) return;
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % MOBILE_IMAGES.length);
+            setCurrentSlide((prev) => (prev + 1) % mobileImages.length);
         }, 5000);
         return () => clearInterval(interval);
-    }, [isMobile]);
+    }, [isMobile, mobileImages.length]);
+
+    if (isLoading && !desktopImage && mobileImages.length === 0) {
+        return <div className="hero-loading" style={{ height: '60vh', background: '#0a0a0a' }} />;
+    }
 
     return (
         <>
@@ -56,21 +87,25 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
             {/* Hero Section */}
             <section className="hero" id="home">
                 {isMobile ? (
-                    /* Mobile: 4-image slider with crossfade */
+                    /* Mobile: Dynamic slider with crossfade */
                     <div className="hero-slider">
-                        {MOBILE_IMAGES.map((src, index) => (
-                            <img
-                                key={index}
-                                src={src}
-                                alt={`Hero Slide ${index + 1}`}
-                                className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-                            />
-                        ))}
+                        {mobileImages.length > 0 ? (
+                            mobileImages.map((src, index) => (
+                                <img
+                                    key={src}
+                                    src={src}
+                                    alt={`Hero Slide ${index + 1}`}
+                                    className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                                />
+                            ))
+                        ) : (
+                            <div className="hero-placeholder" />
+                        )}
                     </div>
                 ) : (
-                    /* Desktop: Single static image */
+                    /* Desktop: Dynamic image with cache busting */
                     <img
-                        src={DESKTOP_IMAGE}
+                        src={desktopImage || fallbackDesktop}
                         alt="Legacy Edition Hero"
                         className="hero-img"
                     />

@@ -24,7 +24,7 @@ export const Catalog = memo(forwardRef<HTMLElement, CatalogProps>(({ onAddToCart
                 <div className="catalog-categories">
                     {Object.entries(categories).map(([title, productsInCategory]) => (
                         productsInCategory.length > 0 && (
-                            <div key={title} className="catalog-category-group" style={{ marginBottom: '4rem' }}>
+                            <div key={title} className="catalog-category-group">
                                 <h3 className="category-subtitle" style={{
                                     fontSize: '1.5rem',
                                     color: 'var(--golden)',

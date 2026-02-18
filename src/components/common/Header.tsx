@@ -31,67 +31,27 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
 
     // Handle scroll direction detection for auto-hide header
     useEffect(() => {
-        let ticking = false;
-        let headerElementRef: HTMLElement | null = null;
-        let lastKnownScroll = 0;
-
         const handleScroll = () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    // Try multiple methods to detect scroll position
-                    let currentScrollY = 0;
+            const currentScrollY = window.scrollY;
+            const scrollDifference = currentScrollY - lastScrollY.current;
 
-                    // Check window scroll first
-                    currentScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-
-                    // If window scroll is 0 (might be locked), check scrollable containers
-                    if (currentScrollY === 0) {
-                        // Check for scrollable containers (product page image gallery, content section)
-                        const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
-                        const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
-
-                        if (imageGallery && imageGallery.scrollTop > 0) {
-                            currentScrollY = imageGallery.scrollTop + 100; // Add offset to simulate scroll
-                        } else if (contentSection && contentSection.scrollTop > 0) {
-                            currentScrollY = contentSection.scrollTop + 200; // Add offset
-                        }
-                    }
-
-                    const scrollDifference = currentScrollY - lastScrollY.current;
-
-                    // Clear any existing timeout
-                    if (scrollTimeoutRef.current) {
-                        clearTimeout(scrollTimeoutRef.current);
-                    }
-
-                    // Only auto-hide if header is not pinned (user hasn't interacted)
-                    if (!isHeaderPinned) {
-                        if (scrollDifference > 5 && currentScrollY > 80) {
-                            // Scrolling down - hide header
-                            setIsHeaderVisible(false);
-                        } else if (scrollDifference < -5) {
-                            // Scrolling up - show header
-                            setIsHeaderVisible(true);
-                        }
-                    }
-
-                    // If at top of page, always show header
-                    if (currentScrollY < 50) {
-                        setIsHeaderVisible(true);
-                    }
-
-                    lastScrollY.current = currentScrollY;
-                    lastKnownScroll = currentScrollY;
-                    ticking = false;
-                });
-
-                ticking = true;
+            // Only auto-hide if header is not pinned (user hasn't interacted)
+            if (!isHeaderPinned) {
+                // If at top of page (within 50px), always show header
+                if (currentScrollY < 50) {
+                    setIsHeaderVisible(true);
+                }
+                // Scrolling down - hide header (threshold of 100px from top and 5px scroll)
+                else if (scrollDifference > 5 && currentScrollY > 100) {
+                    setIsHeaderVisible(false);
+                }
+                // Scrolling up - show header
+                else if (scrollDifference < -5) {
+                    setIsHeaderVisible(true);
+                }
             }
-        };
 
-        // Also listen to scroll on scrollable containers
-        const handleContainerScroll = () => {
-            handleScroll();
+            lastScrollY.current = currentScrollY;
         };
 
         // Pin header when user interacts with it
@@ -99,7 +59,6 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             setIsHeaderPinned(true);
             setIsHeaderVisible(true);
 
-            // Unpin after 3 seconds of no scroll
             if (scrollTimeoutRef.current) {
                 clearTimeout(scrollTimeoutRef.current);
             }
@@ -109,73 +68,25 @@ export const Header: FC<HeaderProps> = memo(({ onCartClick, cartItemCount, onNav
             }, 3000);
         };
 
-        // Listen to scroll events with multiple methods for better compatibility
-        window.addEventListener('scroll', handleScroll, { passive: true, capture: false });
-        document.addEventListener('scroll', handleScroll, { passive: true, capture: false });
-        document.documentElement.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('scroll', handleScroll, { passive: true });
 
-        // Also listen to scroll on scrollable containers (for product pages)
-        const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
-        const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
-
-        if (imageGallery) {
-            imageGallery.addEventListener('scroll', handleContainerScroll, { passive: true });
-        }
-        if (contentSection) {
-            contentSection.addEventListener('scroll', handleContainerScroll, { passive: true });
-        }
-
-        // Listen to wheel events to detect scroll intent (works even when scroll is prevented)
-        const handleWheel = (e: WheelEvent) => {
-            if (!isHeaderPinned) {
-                if (e.deltaY > 0 && lastKnownScroll > 80) {
-                    // Scrolling down - hide header
-                    setIsHeaderVisible(false);
-                } else if (e.deltaY < 0) {
-                    // Scrolling up - show header
-                    setIsHeaderVisible(true);
-                }
-            }
-        };
-        window.addEventListener('wheel', handleWheel, { passive: true });
-
-        // Initial scroll position check
-        handleScroll();
-
-        // Get header element reference
-        headerElementRef = document.querySelector('.header') as HTMLElement;
-        if (headerElementRef) {
-            headerElementRef.addEventListener('mouseenter', handleHeaderInteraction);
-            headerElementRef.addEventListener('click', handleHeaderInteraction);
-            headerElementRef.addEventListener('touchstart', handleHeaderInteraction);
+        const headerElement = document.querySelector('.header') as HTMLElement;
+        if (headerElement) {
+            headerElement.addEventListener('mouseenter', handleHeaderInteraction);
+            headerElement.addEventListener('touchstart', handleHeaderInteraction);
         }
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
-            document.removeEventListener('scroll', handleScroll);
-            document.documentElement.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('wheel', handleWheel);
-
-            // Remove container scroll listeners
-            const imageGallery = document.querySelector('.vertical-gallery-scroll-container') as HTMLElement;
-            const contentSection = document.querySelector('.product-info-section-sticky') as HTMLElement;
-            if (imageGallery) {
-                imageGallery.removeEventListener('scroll', handleContainerScroll);
-            }
-            if (contentSection) {
-                contentSection.removeEventListener('scroll', handleContainerScroll);
-            }
-
-            if (headerElementRef) {
-                headerElementRef.removeEventListener('mouseenter', handleHeaderInteraction);
-                headerElementRef.removeEventListener('click', handleHeaderInteraction);
-                headerElementRef.removeEventListener('touchstart', handleHeaderInteraction);
+            if (headerElement) {
+                headerElement.removeEventListener('mouseenter', handleHeaderInteraction);
+                headerElement.removeEventListener('touchstart', handleHeaderInteraction);
             }
             if (scrollTimeoutRef.current) {
                 clearTimeout(scrollTimeoutRef.current);
             }
         };
-    }, [isHeaderPinned, isHeaderVisible]);
+    }, [isHeaderPinned]);
 
     const handleLogoClick = (e: MouseEvent) => {
         e.preventDefault();

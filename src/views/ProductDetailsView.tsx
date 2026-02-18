@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef, useCallback } from 'react';
+﻿import { FC, useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
@@ -430,7 +430,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         <div className="product-details-page" ref={productPageRef}>
             <SEOHead
                 title={`${product.name} - Buy Online | Wular Sports`}
-                description={`${product.description} Price: ₹${product.price}. Free shipping. 1-year warranty. Ready to play.`}
+                description={`${product.description} Price: â‚¹${product.price}. Free shipping. 1-year warranty. Ready to play.`}
                 keywords={`${product.name}, buy ${product.name}, ${product.category.join(', ')}, cricket bat price, Kashmir willow bat`}
                 ogImage={productImage}
                 ogType="product"
@@ -502,10 +502,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
                             {/* Price Section */}
                             <div className="product-price-section-premium">
-                                <div className="price-main-premium">₹{product.price.toLocaleString('en-IN')}</div>
+                                <div className="price-main-premium">â‚¹{product.price.toLocaleString('en-IN')}</div>
                                 {product.originalPrice && (
                                     <div className="price-secondary-premium">
-                                        <span className="price-original-strike">₹{product.originalPrice.toLocaleString('en-IN')}</span>
+                                        <span className="price-original-strike">â‚¹{product.originalPrice.toLocaleString('en-IN')}</span>
                                         <span className="discount-badge-premium">Save {discountPercentage}%</span>
                                     </div>
                                 )}
@@ -562,7 +562,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                         }}
                                         aria-label="Decrease quantity"
                                     >
-                                        −
+                                        âˆ’
                                     </button>
                                     <span style={{
                                         color: 'white',
@@ -590,7 +590,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
 
                                 <button className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
                                     <i className="fas fa-shopping-bag"></i>
-                                    BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
+                                    BUY NOW - â‚¹{(product.price * quantity).toLocaleString('en-IN')}
                                 </button>
                             </div>
 
@@ -624,44 +624,26 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                             </a>
                         </div>
 
-                        {/* Tabs Section */}
+                        {/* Tabs / Accordion Section */}
                         <div className="product-tabs-container">
-                            <div className="product-tabs">
-                                <button
-                                    className={`product-tab ${openSection === 'description' ? 'active' : ''}`}
-                                    onClick={() => toggleSection('description')}
-                                >
-                                    DESCRIPTION
-                                </button>
-                                <button
-                                    className={`product-tab ${openSection === 'included' ? 'active' : ''}`}
-                                    onClick={() => toggleSection('included')}
-                                >
-                                    WHAT'S INCLUDED
-                                </button>
-                                <button
-                                    className={`product-tab ${openSection === 'shipping' ? 'active' : ''}`}
-                                    onClick={() => toggleSection('shipping')}
-                                >
-                                    SHIPPING
-                                </button>
-                                <button
-                                    className={`product-tab ${openSection === 'returns' ? 'active' : ''}`}
-                                    onClick={() => toggleSection('returns')}
-                                >
-                                    RETURNS
-                                </button>
-                                <button
-                                    className={`product-tab ${openSection === 'contact' ? 'active' : ''}`}
-                                    onClick={() => toggleSection('contact')}
-                                >
-                                    CONTACT
-                                </button>
+                            {/* Desktop: horizontal tab bar (hidden on mobile via CSS) */}
+                            <div className="product-tabs desktop-tab-bar">
+                                {['description', 'included', 'shipping', 'returns', 'contact'].map(section => (
+                                    <button
+                                        key={section}
+                                        className={`product-tab ${openSection === section ? 'active' : ''}`}
+                                        onClick={() => toggleSection(section)}
+                                    >
+                                        {section === 'description' ? 'DESCRIPTION' :
+                                            section === 'included' ? "WHAT'S INCLUDED" :
+                                                section === 'shipping' ? 'SHIPPING' :
+                                                    section === 'returns' ? 'RETURNS' : 'CONTACT'}
+                                    </button>
+                                ))}
                             </div>
 
-                            {/* Tab Content */}
-                            <div className="product-tab-content">
-                                {/* DESCRIPTION Tab */}
+                            {/* Desktop: single content area below tabs */}
+                            <div className="product-tab-content desktop-tab-content">
                                 {openSection === 'description' && (
                                     <div className="tab-panel active">
                                         <div className="product-specs-clean">
@@ -687,218 +669,138 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                         </div>
                                     </div>
                                 )}
-
-                                {/* WHAT'S INCLUDED Tab */}
                                 {openSection === 'included' && (
                                     <div className="tab-panel active">
                                         <div className="included-section-clean">
                                             <h3 className="included-title">What Comes With Your Bat</h3>
                                             <ul className="included-list-clean">
-                                                <li>
-                                                    <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
-                                                        <span>Free Bat Cover</span>
-                                                    </div>
-                                                    <span className="included-item-value">₹300</span>
-                                                </li>
-                                                <li>
-                                                    <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
-                                                        <span>Premium Toe Guard</span>
-                                                    </div>
-                                                    <span className="included-item-value">₹100</span>
-                                                </li>
-                                                <li>
-                                                    <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
-                                                        <span>Extra Grip</span>
-                                                    </div>
-                                                    <span className="included-item-value">₹100</span>
-                                                </li>
-                                                <li>
-                                                    <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
-                                                        <span>Fully Knocked & Oiled (Ready to Play)</span>
-                                                    </div>
-                                                    <span className="included-item-value">₹100</span>
-                                                </li>
-                                                <li>
-                                                    <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
-                                                        <span>Free Shipping</span>
-                                                    </div>
-                                                    <span className="included-item-value">₹200</span>
-                                                </li>
+                                                <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Free Bat Cover</span></div><span className="included-item-value">â‚¹300</span></li>
+                                                <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Premium Toe Guard</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Extra Grip</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Fully Knocked &amp; Oiled (Ready to Play)</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Free Shipping</span></div><span className="included-item-value">â‚¹200</span></li>
                                             </ul>
                                             <div className="value-highlight">
-                                                <strong>Total Value: ₹{product.price.toLocaleString('en-IN')}</strong>
-                                                <span className="you-save">You Save: ₹800 (All Free)</span>
+                                                <strong>Total Value: â‚¹{product.price.toLocaleString('en-IN')}</strong>
+                                                <span className="you-save">You Save: â‚¹800 (All Free)</span>
                                             </div>
                                         </div>
                                     </div>
                                 )}
-
-                                {/* SHIPPING Tab */}
                                 {openSection === 'shipping' && (
                                     <div className="tab-panel active">
                                         <div className="shipping-section-clean">
                                             <h3 className="shipping-title">When Will I Get My Order?</h3>
-
                                             <div className="shipping-steps">
-                                                <div className="shipping-step">
-                                                    <div className="step-icon">
-                                                        <i className="fas fa-box-open"></i>
-                                                    </div>
-                                                    <div className="step-content">
-                                                        <h4>1. Fast Dispatch</h4>
-                                                        <p>We dispatch your bat within <strong>24 hours</strong> of placing the order.</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="shipping-step">
-                                                    <div className="step-icon">
-                                                        <i className="fas fa-shipping-fast"></i>
-                                                    </div>
-                                                    <div className="step-content">
-                                                        <h4>2. Reliable Delivery</h4>
-                                                        <p>Shipped via <strong>India Post</strong> for secure and reliable handling. Expected delivery in <strong>6-7 business days</strong>.</p>
-                                                    </div>
-                                                </div>
-
-                                                <div className="shipping-step">
-                                                    <div className="step-icon">
-                                                        <i className="fas fa-map-marker-alt"></i>
-                                                    </div>
-                                                    <div className="step-content">
-                                                        <h4>3. Live Tracking</h4>
-                                                        <p>You will receive a <strong>Tracking ID</strong> within 24 hours. You can track your package daily on the India Post website.</p>
-                                                        <a
-                                                            href="https://www.indiapost.gov.in/home"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="track-btn-india-post"
-                                                            style={{
-                                                                display: 'inline-flex',
-                                                                alignItems: 'center',
-                                                                gap: '0.5rem',
-                                                                marginTop: '0.8rem',
-                                                                padding: '0.6rem 1rem',
-                                                                backgroundColor: '#fff',
-                                                                color: '#d00202', /* India Post Red */
-                                                                border: '1px solid #d00202',
-                                                                borderRadius: '5px',
-                                                                textDecoration: 'none',
-                                                                fontWeight: 'bold',
-                                                                fontSize: '0.9rem',
-                                                                transition: 'all 0.2s'
-                                                            }}
-                                                        >
-                                                            Track on India Post <i className="fas fa-external-link-alt"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
+                                                <div className="shipping-step"><div className="step-icon"><i className="fas fa-box-open"></i></div><div className="step-content"><h4>1. Fast Dispatch</h4><p>We dispatch your bat within <strong>24 hours</strong> of placing the order.</p></div></div>
+                                                <div className="shipping-step"><div className="step-icon"><i className="fas fa-shipping-fast"></i></div><div className="step-content"><h4>2. Reliable Delivery</h4><p>Shipped via <strong>India Post</strong>. Expected delivery in <strong>6-7 business days</strong>.</p></div></div>
+                                                <div className="shipping-step"><div className="step-icon"><i className="fas fa-map-marker-alt"></i></div><div className="step-content"><h4>3. Live Tracking</h4><p>You will receive a <strong>Tracking ID</strong> within 24 hours.</p></div></div>
                                             </div>
-
-                                            <div className="shipping-note-box">
-                                                <p><i className="fas fa-shield-alt"></i> <strong>Safe & Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p>
-                                            </div>
+                                            <div className="shipping-note-box"><p><i className="fas fa-shield-alt"></i> <strong>Safe &amp; Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p></div>
                                         </div>
                                     </div>
                                 )}
-
-                                {/* RETURNS Tab */}
                                 {openSection === 'returns' && (
                                     <div className="tab-panel active">
                                         <div className="returns-section-clean">
                                             <h3 className="returns-title">Hassle-Free Returns</h3>
-
                                             <div className="returns-info">
-                                                <div className="policy-note">
-                                                    <i className="fas fa-undo-alt"></i>
-                                                    <p>We offer a <strong>7-day return policy</strong> for all our products.</p>
-                                                </div>
-
-                                                <div className="return-conditions">
-                                                    <h4>Return Conditions</h4>
-                                                    <ul>
-                                                        <li>Product must be <strong>unused</strong> and in its <strong>original condition</strong>.</li>
-                                                        <li>Original packaging must be intact.</li>
-                                                        <li>Used or damaged products will not be eligible for return.</li>
-                                                    </ul>
-                                                </div>
-
-                                                <div className="return-process">
-                                                    <h4>How to Initiate a Return</h4>
-                                                    <p>Contact us on <strong>WhatsApp</strong> within 7 days of delivery. Please provide:</p>
-                                                    <ol>
-                                                        <li>Your Order ID.</li>
-                                                        <li>Photo/Video proof showing the product is unused and in original condition.</li>
-                                                    </ol>
-                                                </div>
+                                                <div className="policy-note"><i className="fas fa-undo-alt"></i><p>We offer a <strong>7-day return policy</strong> for all our products.</p></div>
+                                                <div className="return-conditions"><h4>Return Conditions</h4><ul><li>Product must be <strong>unused</strong> and in its <strong>original condition</strong>.</li><li>Original packaging must be intact.</li><li>Used or damaged products will not be eligible for return.</li></ul></div>
+                                                <div className="return-process"><h4>How to Initiate a Return</h4><p>Contact us on <strong>WhatsApp</strong> within 7 days of delivery with your Order ID and photo/video proof.</p></div>
                                             </div>
-
-                                            <div className="returns-note-box">
-                                                <p><i className="fas fa-info-circle"></i> Our team will review your request and guide you through the next steps within 24-48 hours.</p>
-                                            </div>
+                                            <div className="returns-note-box"><p><i className="fas fa-info-circle"></i> Our team will review your request within 24-48 hours.</p></div>
                                         </div>
                                     </div>
                                 )}
-
-                                {/* CONTACT Tab */}
                                 {openSection === 'contact' && (
                                     <div className="tab-panel active">
                                         <div className="contact-section-clean">
                                             <h3 className="contact-title">Need Help Choosing?</h3>
                                             <p className="contact-subtitle">Contact us for personalized assistance</p>
-
                                             <div className="contact-options-clean">
-                                                <a
-                                                    href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="contact-option-btn whatsapp"
-                                                >
-                                                    <i className="fab fa-whatsapp"></i>
-                                                    <div>
-                                                        <strong>Chat on WhatsApp</strong>
-                                                        <span>Typically replies within 5 minutes</span>
-                                                    </div>
-                                                </a>
-
-                                                <a
-                                                    href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="contact-option-btn video"
-                                                >
-                                                    <i className="fas fa-video"></i>
-                                                    <div>
-                                                        <strong>Video Call</strong>
-                                                        <span>See the bat live before buying</span>
-                                                    </div>
-                                                </a>
-
-                                                <a
-                                                    href="tel:+919320622451"
-                                                    className="contact-option-btn call"
-                                                >
-                                                    <i className="fas fa-phone"></i>
-                                                    <div>
-                                                        <strong>Call Us</strong>
-                                                        <span>+91 9320622451</span>
-                                                    </div>
-                                                </a>
+                                                <a href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)} target="_blank" rel="noopener noreferrer" className="contact-option-btn whatsapp"><i className="fab fa-whatsapp"></i><div><strong>Chat on WhatsApp</strong><span>Typically replies within 5 minutes</span></div></a>
+                                                <a href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)} target="_blank" rel="noopener noreferrer" className="contact-option-btn video"><i className="fas fa-video"></i><div><strong>Video Call</strong><span>See the bat live before buying</span></div></a>
+                                                <a href="tel:+919320622451" className="contact-option-btn call"><i className="fas fa-phone"></i><div><strong>Call Us</strong><span>+91 9320622451</span></div></a>
                                             </div>
-
-                                            <div className="shipping-info-clean">
-                                                <p className="shipping-note-clean">
-                                                    <i className="fas fa-info-circle"></i>
-                                                    <strong>Note:</strong> Orders take 2-3 working days to dispatch. All orders shipped by air for express delivery.
-                                                </p>
-                                            </div>
+                                            <div className="shipping-info-clean"><p className="shipping-note-clean"><i className="fas fa-info-circle"></i><strong>Note:</strong> Orders take 2-3 working days to dispatch. All orders shipped by air for express delivery.</p></div>
                                         </div>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Mobile: accordion (each tab + its content interleaved) */}
+                            <div className="mobile-accordion">
+                                {[
+                                    { key: 'description', label: 'DESCRIPTION' },
+                                    { key: 'included', label: "WHAT'S INCLUDED" },
+                                    { key: 'shipping', label: 'SHIPPING' },
+                                    { key: 'returns', label: 'RETURNS' },
+                                    { key: 'contact', label: 'CONTACT' },
+                                ].map(({ key, label }) => (
+                                    <div key={key} className="accordion-item">
+                                        <button
+                                            className={`product-tab ${openSection === key ? 'active' : ''}`}
+                                            onClick={() => toggleSection(key)}
+                                            aria-expanded={openSection === key}
+                                        >
+                                            {label}
+                                        </button>
+                                        {openSection === key && (
+                                            <div className="tab-panel active accordion-panel">
+                                                {key === 'description' && (
+                                                    <div className="product-specs-clean">
+                                                        <ul className="specs-list-clean">
+                                                            {product.specs.filter(s => !s.toLowerCase().includes('free') && !s.toLowerCase().includes('delivery') && !s.toLowerCase().includes('included')).map((spec, i) => (
+                                                                <li key={i}><i className="fas fa-check"></i><span>{spec}</span></li>
+                                                            ))}
+                                                        </ul>
+                                                        <div className="description-text-clean"><p>{product.description}</p></div>
+                                                    </div>
+                                                )}
+                                                {key === 'included' && (
+                                                    <div className="included-section-clean">
+                                                        <ul className="included-list-clean">
+                                                            <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Free Bat Cover</span></div><span className="included-item-value">â‚¹300</span></li>
+                                                            <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Premium Toe Guard</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                            <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Extra Grip</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                            <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Fully Knocked &amp; Oiled</span></div><span className="included-item-value">â‚¹100</span></li>
+                                                            <li><div className="included-item-left"><i className="fas fa-check-circle"></i><span>Free Shipping</span></div><span className="included-item-value">â‚¹200</span></li>
+                                                        </ul>
+                                                        <div className="value-highlight"><strong>Total Value: â‚¹{product.price.toLocaleString('en-IN')}</strong><span className="you-save">You Save: â‚¹800 (All Free)</span></div>
+                                                    </div>
+                                                )}
+                                                {key === 'shipping' && (
+                                                    <div className="shipping-section-clean">
+                                                        <div className="shipping-steps">
+                                                            <div className="shipping-step"><div className="step-icon"><i className="fas fa-box-open"></i></div><div className="step-content"><h4>1. Fast Dispatch</h4><p>Dispatched within <strong>24 hours</strong>.</p></div></div>
+                                                            <div className="shipping-step"><div className="step-icon"><i className="fas fa-shipping-fast"></i></div><div className="step-content"><h4>2. Reliable Delivery</h4><p>Via <strong>India Post</strong> in <strong>6-7 business days</strong>.</p></div></div>
+                                                            <div className="shipping-step"><div className="step-icon"><i className="fas fa-map-marker-alt"></i></div><div className="step-content"><h4>3. Live Tracking</h4><p>Tracking ID within 24 hours.</p></div></div>
+                                                        </div>
+                                                        <div className="shipping-note-box"><p><i className="fas fa-shield-alt"></i> <strong>Safe &amp; Secure</strong> premium packaging.</p></div>
+                                                    </div>
+                                                )}
+                                                {key === 'returns' && (
+                                                    <div className="returns-section-clean">
+                                                        <div className="returns-info">
+                                                            <div className="policy-note"><i className="fas fa-undo-alt"></i><p><strong>7-day return policy</strong> for all products.</p></div>
+                                                            <div className="return-conditions"><h4>Return Conditions</h4><ul><li>Product must be <strong>unused</strong> in <strong>original condition</strong>.</li><li>Original packaging must be intact.</li></ul></div>
+                                                            <div className="return-process"><h4>How to Return</h4><p>Contact us on <strong>WhatsApp</strong> within 7 days with Order ID and photo proof.</p></div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {key === 'contact' && (
+                                                    <div className="contact-section-clean">
+                                                        <div className="contact-options-clean">
+                                                            <a href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)} target="_blank" rel="noopener noreferrer" className="contact-option-btn whatsapp"><i className="fab fa-whatsapp"></i><div><strong>Chat on WhatsApp</strong><span>Replies within 5 minutes</span></div></a>
+                                                            <a href="tel:+919320622451" className="contact-option-btn call"><i className="fas fa-phone"></i><div><strong>Call Us</strong><span>+91 9320622451</span></div></a>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -909,7 +811,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
             <div className="related-products-section">
                 <div className="container">
                     <h2 className="related-title">More to Explore</h2>
-
                     <div className="related-categories">
                         {[
                             { title: "Hard Tennis Bats", type: "Hard Tennis" },
@@ -920,9 +821,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                                 p.id !== product.id &&
                                 p.category.includes(category.type as any)
                             );
-
                             if (otherProducts.length === 0) return null;
-
                             return (
                                 <div key={category.type} className="related-category-group">
                                     <h3 className="related-category-title">{category.title}</h3>
@@ -952,7 +851,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 />
             )}
 
-            {/* Watch & Buy Video - For Legacy Editions & AK-47 Honeycomb */}
+            {/* Watch & Buy Video */}
             {(product.id === 'legacy-edition' || product.id === 'legacy-edition-2.0' || product.id === 'ak-47-honeycomb') && (
                 <WatchBuyVideo
                     product={product}

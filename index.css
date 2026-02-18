@@ -2985,43 +2985,166 @@ main {
     color: var(--white);
 }
 
-/* Mobile Responsive */
+/* =============================================
+   PRODUCT DETAILS - MOBILE OPTIMIZATIONS
+   ============================================= */
 @media (max-width: 768px) {
+
+    /* --- Header: Condense title, price, subtitle --- */
+    .product-header-clean {
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
     .product-title-premium {
-        font-size: 1.75rem;
+        font-size: 1.45rem;
+        margin: 0 0 0.35rem 0;
+        letter-spacing: 0;
+    }
+
+    .product-subtitle-premium {
+        font-size: 0.8rem;
+        margin: 0 0 0.75rem 0;
+        letter-spacing: 0.5px;
+    }
+
+    .product-price-section-premium {
+        margin: 0.75rem 0;
     }
 
     .price-main-premium {
-        font-size: 1.75rem;
+        font-size: 1.6rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .price-original-strike {
+        font-size: 1rem;
+    }
+
+    /* --- Size Selector: Compact horizontal row --- */
+    .size-selector-premium {
+        margin: 0.75rem 0;
+    }
+
+    .size-label-premium {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .size-options-premium {
+        flex-direction: row;
+        /* Keep horizontal, not vertical */
+        gap: 0.5rem;
+    }
+
+    .size-option-premium {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.85rem;
+        border-width: 1.5px;
+    }
+
+    /* --- CTA Buttons: More compact --- */
+    .btn-primary-premium {
+        padding: 0.9rem 1.25rem;
+        font-size: 0.95rem;
+        margin-top: 0.75rem;
+        gap: 0.5rem;
+    }
+
+    /* --- Tabs: Convert to vertical accordion on mobile --- */
+    .product-tabs-container {
+        margin-top: 1.25rem;
     }
 
     .product-tabs {
         flex-direction: column;
         gap: 0;
+        border-bottom: none;
+        margin-bottom: 0;
     }
 
     .product-tab {
         text-align: left;
-        padding: 0.875rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.85rem 1rem;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: none;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .product-tab::after {
+        content: '+';
+        font-size: 1.1rem;
+        color: #888;
+        font-weight: 300;
     }
 
     .product-tab.active {
         border-left: 3px solid var(--golden);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-left: 1rem;
+        padding-left: calc(1rem - 3px);
+        color: var(--golden);
+        background: rgba(212, 175, 55, 0.05);
+        border-bottom: none;
     }
 
-    .size-options-premium {
-        flex-direction: column;
+    .product-tab.active::after {
+        content: '−';
+        color: var(--golden);
     }
 
+    /* Tab content immediately follows its tab in accordion style */
+    .product-tab-content {
+        min-height: unset;
+    }
+
+    .tab-panel.active {
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-left: 3px solid var(--golden);
+        margin-bottom: 0;
+    }
+
+    /* Tighten up specs list on mobile */
+    .specs-list-clean li {
+        padding: 0.5rem 0;
+        font-size: 0.88rem;
+    }
+
+    .specs-title,
+    .included-title,
+    .shipping-title,
+    .returns-title {
+        font-size: 1.05rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .description-text-clean {
+        margin-top: 1rem;
+        padding-top: 1rem;
+    }
+
+    .included-list-clean li {
+        padding: 0.65rem 0;
+        font-size: 0.9rem;
+    }
+
+    /* --- Contact options: tighter --- */
     .contact-options-clean {
-        gap: 0.75rem;
+        gap: 0.5rem;
     }
 
     .contact-option-btn {
-        padding: 1rem;
+        padding: 0.85rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .contact-option-btn i {
+        font-size: 1.2rem;
     }
 }
 

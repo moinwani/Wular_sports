@@ -5,6 +5,7 @@ import { createOrder } from '../services/orders';
 import { sendAdminOrderNotification } from '../services/email';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
+import { SEOHead } from '../components/common/SEOHead';
 
 interface CheckoutViewProps {
     cart: CartItem[];
@@ -238,6 +239,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     return (
         <div className="checkout-page">
+            <SEOHead
+                title="Checkout | Wular Sports — Kashmiri Willow Cricket Bats"
+                description="Complete your order for premium Kashmiri willow cricket bats from Wular Sports. Free delivery across India. Secure checkout via WhatsApp."
+                canonicalUrl="https://wularsports.com/checkout"
+            />
             <div className="container">
                 <div className="checkout-header-mobile">
                     <button className="back-btn-simple" onClick={() => navigate(-1)}>

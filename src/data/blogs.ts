@@ -83,7 +83,7 @@ export const blogs: BlogPost[] = [
                 <li>Club cricketers playing weekend matches</li>
             </ul>
 
-            <p>Brands like <strong>Wular Sports</strong> design their <a href="/catalog?category=Leather%20Ball">Leather Ball Cricket Bats</a> with Grade A+ Kashmiri willow, offering 5-12 clear grains, proper pressing, and professional-grade finishing.</p>
+            <p>Brands like <strong>Wular Sports</strong> design their <a href="/leather-cricket-bats">Leather Ball Cricket Bats</a> with Grade A+ Kashmiri willow, offering 5-12 clear grains, proper pressing, and professional-grade finishing.</p>
 
             <h2>Who Should Buy a Kashmiri Willow Cricket Bat?</h2>
             <p>Kashmiri willow is perfect for:</p>
@@ -92,7 +92,7 @@ export const blogs: BlogPost[] = [
             <p>If you're learning the game or playing at the club level, Kashmiri willow offers the best balance of performance and price.</p>
 
             <h3>2. Tennis Ball Cricket Enthusiasts</h3>
-            <p>For hard tennis and soft tennis cricket, Kashmiri willow is ideal. Check out <strong>Wular Sports'</strong> range of <a href="/catalog?category=Hard%20Tennis">Hard Tennis Cricket Bats</a> and <a href="/catalog?category=Soft%20Tennis">Soft Tennis Cricket Bats</a> designed specifically for Indian playing conditions.</p>
+            <p>For hard tennis and soft tennis cricket, Kashmiri willow is ideal. Check out <strong>Wular Sports'</strong> range of <a href="/hard-tennis-bats">Hard Tennis Cricket Bats</a> and <a href="/soft-tennis-bats">Soft Tennis Cricket Bats</a> designed specifically for Indian playing conditions.</p>
 
             <h3>3. Budget-Conscious Buyers</h3>
             <p>If you want a quality bat without spending ₹10,000+, Kashmiri willow delivers excellent value.</p>
@@ -148,8 +148,8 @@ export const blogs: BlogPost[] = [
                 <h3>Ready to Find Your Perfect Bat?</h3>
                 <p>Explore the Wular Sports collection to find bats designed for power, balance, and durability—crafted specifically for Indian playing conditions.</p>
                 <div class="cta-btns">
-                    <a href="/catalog" class="btn">Shop Cricket Bats</a>
-                    <a href="/catalog?category=Leather%20Ball" class="btn btn-secondary">View Leather Ball Bats</a>
+                    <a href="/collection" class="btn">Shop Cricket Bats</a>
+                    <a href="/leather-cricket-bats" class="btn btn-secondary">View Leather Ball Bats</a>
                 </div>
             </div>
         `,
@@ -267,7 +267,7 @@ export const blogs: BlogPost[] = [
         readTime: '8 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
         content: `
-            <p>Buying a high-quality cricket bat is an investment. Whether you play with <a href="/collection#leather-bat">leather cricket bats</a> or <a href="/collection#hard-tennis">hard tennis cricket bats</a>, proper maintenance is the difference between a bat that lasts one season and one that lasts five. In this guide, we’ll cover everything you need to know about <strong>cricket bat maintenance</strong>.</p>
+            <p>Buying a high-quality cricket bat is an investment. Whether you play with <a href="/leather-cricket-bats">leather cricket bats</a> or <a href="/hard-tennis-bats">hard tennis cricket bats</a>, proper maintenance is the difference between a bat that lasts one season and one that lasts five. In this guide, we’ll cover everything you need to know about <strong>cricket bat maintenance</strong>.</p>
 
             <h2>1. How to Knock-In a Cricket Bat (Step-by-Step)</h2>
             <p><strong>How to knock in a cricket bat</strong> is the most critical question every new bat owner asks. Knocking-in is the process of compressing the wood fibers of the bat to make them resilient enough to withstand the impact of a cricket ball without cracking.</p>
@@ -290,7 +290,7 @@ export const blogs: BlogPost[] = [
                 <li><strong>Testing:</strong> Once you've spent 4-6 hours over several days, test it with a used leather ball in the nets. If it leaves deep dents, keep knocking!</li>
             </ol>
 
-            <p><strong>Note:</strong> While <a href="/collection#soft-tennis">soft tennis cricket bats</a> require very little knocking, <a href="/collection#leather-bat">Kashmir willow bats</a> for leather balls require at least 6 hours of dedicated work.</p>
+            <p><strong>Note:</strong> While <a href="/soft-tennis-bats">soft tennis cricket bats</a> require very little knocking, <a href="/leather-cricket-bats">Kashmir willow bats</a> for leather balls require at least 6 hours of dedicated work.</p>
 
             <div class="blog-cta-inline">
                 <h4>Ready to Play?</h4>
@@ -323,7 +323,7 @@ export const blogs: BlogPost[] = [
             <p>Using the right <strong>cricket bat accessories</strong> can significantly increase the durability of your willow.</p>
 
             <h3>Anti-Scuff Sheets</h3>
-            <p>An <strong>anti scuff sheet for cricket bat</strong> is a clear, self-adhesive PVC cover. It protects the face from moisture, surface cracks, and "grain swelling" caused by damp balls. Highly recommended for all <a href="/collection#hard-tennis">English willow bats</a> and <a href="/collection#leather-bat">premium Kashmir willow</a>.</p>
+            <p>An <strong>anti scuff sheet for cricket bat</strong> is a clear, self-adhesive PVC cover. It protects the face from moisture, surface cracks, and "grain swelling" caused by damp balls. Highly recommended for all <a href="/hard-tennis-bats">English willow bats</a> and <a href="/leather-cricket-bats">premium Kashmir willow</a>.</p>
 
             <h3>Toe Guards</h3>
             <p>The toe is the most "at-risk" part of the bat. A <strong>toe guard for cricket bat</strong> prevents moisture from seeping into the bottom of the blade (which leads to "toe-swell" and cracking) and protects it from damage when you "dig out" a yorker.</p>
@@ -455,7 +455,296 @@ export const blogs: BlogPost[] = [
             </div>
 
             <h3>Conclusion</h3>
-            <p>When you walk out to the crease with a Wular bat, you aren't just carrying a piece of equipment—you're carrying hours of human dedication and expertise. That’s the Artisan Edge.</p>
+            <p>When you walk out to the crease with a Wular bat, you aren’t just carrying a piece of equipment—you’re carrying hours of human dedication and expertise. That’s the Artisan Edge.</p>
         `
+    },
+    {
+        id: ‘best-kashmiri-willow-cricket-bat-under-3000’,
+        title: ‘Best Kashmiri Willow Cricket Bat Under ₹3000 in 2026’,
+        description: ‘Looking for the best cricket bat under ₹3000? We compare the top Kashmiri willow bats for hard tennis, soft tennis, and leather ball cricket. Find the best value bat in India.’,
+        category: ‘Buying Guides’,
+        author: ‘Wular Sports Team’,
+        date: ‘Apr 21, 2026’,
+        readTime: ‘6 min read’,
+        image: ‘https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg’,
+        content: `
+            <p>If you’re looking for the <strong>best cricket bat under ₹3000</strong> in India, you’ve come to the right place. The ₹2,000–₹3,000 price range is where Kashmiri willow cricket bats shine — offering genuine professional craftsmanship without the English willow price tag. In this guide, we break down the top options for every format.</p>
+
+            <h2>Why Kashmiri Willow is the Best Choice Under ₹3000</h2>
+            <p>In this price range, English willow options are either very low grade or suspiciously priced. Kashmiri willow at ₹2,000–₹3,000 delivers:</p>
+            <ul>
+                <li><strong>Naturally seasoned wood</strong> – not kiln-dried cheap stock</li>
+                <li><strong>Hard-pressed blade</strong> – for a harder, more responsive hitting surface</li>
+                <li><strong>Premium handles</strong> – Singapore cane for vibration absorption</li>
+                <li><strong>Ready to play</strong> – knocked and oiled, no extra prep needed</li>
+                <li><strong>Durable</strong> – 2–3 seasons of regular play with basic care</li>
+            </ul>
+
+            <h2>Best Hard Tennis Cricket Bat Under ₹3000</h2>
+            <h3>Wular Sports Legacy Edition 1.0 — ₹2,799</h3>
+            <p>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is our flagship hard tennis bat under ₹3,000. It’s built from Grade A Kashmiri willow with a Singapore cane handle, hard-pressed blade, and a flat non-scoop face for maximum power transfer. Weight: 950–1050g. Ideal for club, gully, and tournament hard tennis cricket.</p>
+
+            <div class="blog-cta-inline">
+                <h4>Legacy Edition 1.0 — ₹2,799</h4>
+                <p>Grade A Kashmiri willow | Hard pressed | Singapore cane | Full kit included</p>
+                <a href="/product/legacy-edition" class="btn">View Product</a>
+            </div>
+
+            <h2>Best Soft Tennis Cricket Bat Under ₹2000</h2>
+            <h3>Wular Sports AK-47 Honeycomb — ₹1,999</h3>
+            <p>For soft tennis ball cricket (tape ball, rubber ball), the <a href="/product/ak-47-honeycomb">AK-47 Honeycomb</a> is unbeatable under ₹2,000. The honeycomb scoop design removes weight from the back of the blade, creating a featherlight bat (820–950g) that swings faster and generates explosive power through the shot. Perfect for gully cricket, tape ball tournaments, and street games.</p>
+
+            <div class="blog-cta-inline">
+                <h4>AK-47 Honeycomb — ₹1,999</h4>
+                <p>Kashmiri willow | Honeycomb scoop | 820–950g | Soft tennis / tape ball</p>
+                <a href="/product/ak-47-honeycomb" class="btn">View Product</a>
+            </div>
+
+            <h2>What to Look for in a Cricket Bat Under ₹3000</h2>
+            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: rgba(255,255,255,0.1);">
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Feature</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">What to Check</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Wood Quality</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Grade A or A+ Kashmiri willow, naturally seasoned (not kiln dried)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Handle</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Singapore cane for shock absorption — avoid wood or cheap composite handles</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Weight</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Hard tennis: 950–1100g | Soft tennis: 820–950g | Leather: 1100–1250g</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Ready to Play</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Must be knocked and oiled. Avoid bats that arrive raw — you’ll spend days prepping</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Included Kit</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Bat bag, toe guard, and extra grip should be included — these add ₹500+ in value</td>
+                </tr>
+            </table>
+
+            <h2>Conclusion</h2>
+            <p>The ₹2,000–₹3,000 range is the sweet spot for Kashmiri willow cricket bats in India. You get professional-grade wood, proper craftsmanship, and a bat that will last multiple seasons — all without breaking the bank. Whether you play hard tennis, soft tennis, or are stepping up to leather ball, Wular Sports has a bat built for you.</p>
+        `,
+        faq: [
+            {
+                question: "What is the best cricket bat under ₹3000 in India?",
+                answer: "The Wular Sports Legacy Edition 1.0 (₹2,799) is the best hard tennis cricket bat under ₹3,000 in India — Grade A Kashmiri willow, Singapore cane handle, hard-pressed blade. For soft tennis under ₹2,000, the AK-47 Honeycomb (₹1,999) is the top choice."
+            },
+            {
+                question: "Is Kashmiri willow worth buying under ₹3000?",
+                answer: "Yes. Kashmiri willow in the ₹2,000–₹3,000 range from quality manufacturers like Wular Sports is far superior to cheap English willow at the same price. You get genuine Grade A wood, natural seasoning, proper craftsmanship, and a full kit."
+            },
+            {
+                question: "Which is better for tennis ball cricket: scoop or non-scoop bat?",
+                answer: "For soft tennis ball cricket, a honeycomb scoop bat is better — it’s lighter and swings faster. For hard tennis ball cricket, a non-scoop or ramp scoop bat is better as it has more mass for power hitting."
+            }
+        ]
+    },
+    {
+        id: ‘scoop-vs-non-scoop-cricket-bat-guide’,
+        title: ‘Scoop vs Non-Scoop Cricket Bat: Which Should You Choose?’,
+        description: ‘Not sure whether to buy a scoop or non-scoop cricket bat? This complete guide explains ramp scoop, honeycomb scoop, and flat-back bats — and which is best for your game.’,
+        category: ‘Guides’,
+        author: ‘Wular Sports Team’,
+        date: ‘Apr 21, 2026’,
+        readTime: ‘5 min read’,
+        image: ‘https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg’,
+        content: `
+            <p>One of the most common questions from cricket bat buyers is: <strong>"Should I get a scoop bat or a non-scoop bat?"</strong> It’s a decision that affects your bat’s weight, swing speed, balance, and which format it’s best suited for. This guide breaks it down clearly.</p>
+
+            <h2>What is a Scoop Bat?</h2>
+            <p>A scoop bat has wood removed from the back of the blade — creating a hollowed-out profile. This reduces the bat’s overall weight while maintaining the same edge thickness and face width. The result is a lighter bat that swings faster without sacrificing the sweet spot size.</p>
+
+            <h3>Types of Scoop Profiles</h3>
+            <ul>
+                <li><strong>Ramp Scoop:</strong> A curved channel scooped out of the middle of the back. Reduces weight moderately while keeping some mass behind the ball. Good for hard tennis bats that need power without being too heavy.</li>
+                <li><strong>Honeycomb Scoop:</strong> A deeper, wider scoop pattern (sometimes hexagonal) that removes significantly more wood. Creates a very light bat with maximum swing speed. Best for soft tennis ball and tape ball cricket.</li>
+                <li><strong>Full Scoop (Concave):</strong> Deep full-back scoop for ultra-lightweight bats. Primarily used for rubber ball / soft tennis.</li>
+            </ul>
+
+            <h2>What is a Non-Scoop Bat?</h2>
+            <p>A non-scoop bat has a solid flat back with no wood removed. All the wood mass sits behind the hitting surface. This gives the bat more power on direct hits and a more "traditional" feel. Non-scoop bats are heavier for the same dimensions but drive the ball harder when you middle it.</p>
+
+            <h2>Scoop vs Non-Scoop: Direct Comparison</h2>
+            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background: rgba(255,255,255,0.1);">
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Feature</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Scoop Bat</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Non-Scoop Bat</th>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Weight</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Lighter (wood removed)</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Heavier (full wood)</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Swing Speed</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Faster</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Slower</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Power on Middle</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Good</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Maximum</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Best For</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Soft tennis, tape ball</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Hard tennis, leather ball</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Feel</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Light, fast, responsive</td>
+                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Solid, powerful, traditional</td>
+                </tr>
+            </table>
+
+            <h2>Which Scoop Profile Should You Choose?</h2>
+
+            <h3>Choose a Ramp Scoop if:</h3>
+            <ul>
+                <li>You play <strong>hard tennis ball cricket</strong> in tournaments</li>
+                <li>You want some weight reduction without going too light</li>
+                <li>You play both hard and soft tennis formats</li>
+                <li>You prefer a lighter feel but still want power on drives</li>
+            </ul>
+            <p>→ <strong>Best option:</strong> <a href="/product/legacy-edition-2.0">Legacy Edition 2.0 (Ramp Scoop)</a></p>
+
+            <h3>Choose a Honeycomb Scoop if:</h3>
+            <ul>
+                <li>You play <strong>soft tennis ball, tape ball, or rubber ball</strong> cricket</li>
+                <li>You want maximum bat speed for aggressive hitting</li>
+                <li>You play gully cricket or short-format street games</li>
+                <li>You’re a smaller or younger player who needs a lighter bat</li>
+            </ul>
+            <p>→ <strong>Best option:</strong> <a href="/product/ak-47-honeycomb">AK-47 Honeycomb Scoop</a></p>
+
+            <h3>Choose a Non-Scoop if:</h3>
+            <ul>
+                <li>You play <strong>leather ball cricket</strong></li>
+                <li>You play <strong>hard tennis</strong> and want maximum power</li>
+                <li>You prefer the traditional solid feel of a bat</li>
+                <li>You’re a strong player who can generate swing speed naturally</li>
+            </ul>
+            <p>→ <strong>Best options:</strong> <a href="/product/legacy-edition">Legacy Edition 1.0</a>, <a href="/product/bahubali-edition">Bahubali Edition</a>, <a href="/product/standard-leather-bat">Leather Bat</a></p>
+
+            <h2>Conclusion</h2>
+            <p>The right scoop profile depends entirely on your format and playing style. For soft ball formats, go scoop. For leather ball and power hitting in hard tennis, go non-scoop or ramp scoop. When in doubt, check the spec sheet of your bat — all Wular Sports bats clearly state their scoop profile.</p>
+
+            <div class="blog-cta-final">
+                <h3>Find Your Perfect Bat</h3>
+                <p>Browse our full range of scoop and non-scoop Kashmiri willow bats — handcrafted in Srinagar, Kashmir.</p>
+                <div class="cta-btns">
+                    <a href="/collection" class="btn">Shop All Bats</a>
+                    <a href="/hard-tennis-bats" class="btn btn-secondary">Hard Tennis Bats</a>
+                </div>
+            </div>
+        `,
+        faq: [
+            {
+                question: "What is a scoop cricket bat?",
+                answer: "A scoop cricket bat has wood removed from the back of the blade (ramp scoop or honeycomb scoop) to reduce weight and improve bat speed. Scoop bats are lighter and swing faster than non-scoop bats of the same size."
+            },
+            {
+                question: "Is scoop bat better for tennis ball cricket?",
+                answer: "Yes. For soft tennis ball and tape ball cricket, a honeycomb scoop bat is better because it is significantly lighter (820–950g), swings faster, and helps you clear boundaries more easily. For hard tennis ball cricket, a ramp scoop or non-scoop bat is more suitable."
+            },
+            {
+                question: "Which is better for leather ball cricket — scoop or non-scoop?",
+                answer: "For leather ball cricket, a non-scoop bat is generally better. The solid back provides more mass behind the hitting surface, generating more power on defensive and driving shots. However, a ramp scoop bat can also work well for aggressive stroke players."
+            },
+            {
+                question: "Does a scoop bat have less power than a non-scoop bat?",
+                answer: "Not necessarily. Scoop bats compensate for lower mass with higher swing speed (velocity squared in the kinetic energy formula). For soft ball cricket, they often produce more boundary-hitting power than heavier non-scoop bats."
+            }
+        ]
+    },
+    {
+        id: ‘buy-kashmiri-willow-cricket-bat-online-india’,
+        title: ‘How to Buy a Kashmiri Willow Cricket Bat Online in India (2026 Guide)’,
+        description: ‘Want to buy a Kashmiri willow cricket bat online in India? Learn what to check, how to avoid fake bats, and where to get genuine Grade A Kashmir willow bats delivered free.’,
+        category: ‘Buying Guides’,
+        author: ‘Wular Sports Team’,
+        date: ‘Apr 21, 2026’,
+        readTime: ‘7 min read’,
+        image: ‘https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg’,
+        content: `
+            <p>Buying a <strong>Kashmiri willow cricket bat online in India</strong> has never been easier — but it’s also never been more confusing. The market is flooded with bats labelled "Grade A Kashmir willow" that are anything but. This guide teaches you exactly what to look for, what to avoid, and how to get a genuine bat delivered to your door.</p>
+
+            <h2>Why Buy Kashmiri Willow Bat Online?</h2>
+            <p>Online bat manufacturers who make their own bats — rather than reselling — offer the best value. You cut out the distributor markup, get direct access to the factory, and can often customise your bat to your specifications. You also get access to video testimonials and real customer reviews that local shops can’t offer.</p>
+
+            <h2>What to Check Before Buying Online</h2>
+
+            <h3>1. Wood Grade</h3>
+            <p>Kashmiri willow comes in several grades. Always look for <strong>Grade A or Grade A+</strong>. Grade B and C willow is cheaper but produces significantly less "ping" and durability. Legitimate sellers will clearly state the grade in the product description.</p>
+
+            <h3>2. Seasoning Duration</h3>
+            <p>Properly seasoned willow takes 1–3 years. Many budget manufacturers rush bats to market with 3–6 months of drying. Ask the seller or look for this in the specs. At Wular Sports, our <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> uses willow seasoned for <strong>3 full years</strong>.</p>
+
+            <h3>3. Handle Material</h3>
+            <p>The handle matters as much as the blade. <strong>Singapore cane</strong> is the gold standard for cricket bat handles — it absorbs vibration and provides a responsive feel. Cheap bats use wood or low-quality composite handles that transfer all the sting of a mishit straight to your hands.</p>
+
+            <h3>4. Scoop Profile</h3>
+            <p>The scoop profile is listed in the specs. Make sure you buy the right one for your format (see our <a href="/blog/scoop-vs-non-scoop-cricket-bat-guide">Scoop vs Non-Scoop guide</a>). Honeycomb scoop = soft tennis. Ramp scoop or non-scoop = hard tennis and leather.</p>
+
+            <h3>5. Is it Knocked and Oiled?</h3>
+            <p>A bat that ships "ready to play" — knocked and oiled — saves you 4–6 hours of preparation work. This is a quality signal: if the manufacturer hasn’t knocked the bat, they haven’t invested in the finishing process. All Wular Sports bats ship fully knocked and oiled.</p>
+
+            <h3>6. What’s Included</h3>
+            <p>A genuine value bat at ₹2,000–₹5,000 should include:</p>
+            <ul>
+                <li>Bat bag (₹200–₹400 value)</li>
+                <li>Toe guard (₹150–₹300 value)</li>
+                <li>Extra grip (₹100–₹150 value)</li>
+                <li>Free delivery across India</li>
+            </ul>
+            <p>If these aren’t included at the stated price, the real cost is higher than advertised.</p>
+
+            <h2>Red Flags: How to Spot a Fake or Low-Quality Bat</h2>
+            <ul>
+                <li><strong>"Grade A English willow" under ₹2,000</strong> — impossible. Genuine English willow starts at ₹8,000. It’s either mislabelled or low-grade Kashmiri willow.</li>
+                <li><strong>No specs listed</strong> — legitimate manufacturers list weight range, edge thickness, seasoning duration, and handle material.</li>
+                <li><strong>No video reviews or customer testimonials</strong> — photos can be faked, videos cannot.</li>
+                <li><strong>No social media presence</strong> — a bat maker with no Instagram or YouTube showing their craft is a reseller, not a manufacturer.</li>
+                <li><strong>Too good to be true prices</strong> — a genuine Grade A+ Kashmir willow bat with a full kit cannot be made and shipped profitably for under ₹1,500.</li>
+            </ul>
+
+            <h2>Our Range: Buy Direct from Kashmir</h2>
+            <p>At Wular Sports, we manufacture every bat in our Srinagar workshop and ship directly to you — no distributors, no markups. Every bat comes with free delivery across India, a full kit, and a bat that’s ready to play out of the box.</p>
+
+            <div class="blog-cta-final">
+                <h3>Shop Genuine Kashmiri Willow Bats</h3>
+                <p>Handcrafted in Srinagar, Kashmir. Free delivery across India. Full kit included.</p>
+                <div class="cta-btns">
+                    <a href="/collection" class="btn">Browse All Bats</a>
+                    <a href="/hard-tennis-bats" class="btn btn-secondary">Hard Tennis Bats</a>
+                </div>
+            </div>
+        `,
+        faq: [
+            {
+                question: "Where can I buy a genuine Kashmiri willow cricket bat online in India?",
+                answer: "You can buy genuine Kashmiri willow cricket bats directly from Wular Sports at wularsports.com. We manufacture bats in our Srinagar, Kashmir workshop and ship free across India. All bats are Grade A or A+ Kashmiri willow, knocked, oiled, and ready to play."
+            },
+            {
+                question: "How do I know if a Kashmiri willow bat is genuine?",
+                answer: "Check for: clearly stated wood grade (Grade A or A+), seasoning duration in specs, Singapore cane handle mentioned, video testimonials from customers, and the seller’s manufacturing location. Avoid bats with no specs, no reviews, and prices under ₹1,500 for a complete kit."
+            },
+            {
+                question: "What is the price of a good Kashmiri willow cricket bat?",
+                answer: "A genuine Grade A Kashmiri willow cricket bat with full kit (bat bag, toe guard, extra grip, free delivery) costs between ₹2,000 and ₹5,000. Bats under ₹1,500 are typically low-grade wood. Premium hard-pressed Grade A+ bats with 3-year seasoning range from ₹3,000 to ₹5,000."
+            },
+            {
+                question: "Does Wular Sports deliver cricket bats across India?",
+                answer: "Yes. Wular Sports delivers free across India. We ship from our Srinagar, Kashmir workshop to every state — Delhi, Mumbai, Hyderabad, Chennai, Bangalore, Kolkata, Pune, and everywhere in between."
+            }
+        ]
     }
 ];

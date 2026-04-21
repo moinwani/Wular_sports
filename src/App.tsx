@@ -19,6 +19,7 @@ import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { ProductFull, CartItem, View } from './types';
 import { cartStorage } from './utils/localStorage';
 import { AdminView } from './views/AdminView';
+import { AboutView } from './views/AboutView';
 import { initializeAssetCache } from './services/githubService';
 import { initializeGoogleOneTap, signInWithGoogle } from './services/auth';
 import { subscribeToNewsletter } from './services/newsletter';
@@ -220,6 +221,7 @@ const AppContent: React.FC = () => {
                         />
                     } />
 
+                    <Route path="/about" element={<AboutView />} />
                     <Route path="/admin" element={<AdminView />} />
                 </Routes>
             </main>

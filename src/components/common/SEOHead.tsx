@@ -71,12 +71,14 @@ export const SEOHead: FC<SEOHeadProps> = ({
             linkElement.setAttribute('href', canonicalUrl);
         }
 
-        // Structured Data (JSON-LD)
+        // Structured Data (JSON-LD) — uses a dedicated data attribute to avoid
+        // overwriting the static JSON-LD blocks already in index.html
         if (structuredData) {
-            let scriptElement = document.querySelector('script[type="application/ld+json"]');
+            let scriptElement = document.querySelector('script[data-seohead="dynamic"]');
             if (!scriptElement) {
                 scriptElement = document.createElement('script');
                 scriptElement.setAttribute('type', 'application/ld+json');
+                scriptElement.setAttribute('data-seohead', 'dynamic');
                 document.head.appendChild(scriptElement);
             }
             scriptElement.textContent = JSON.stringify(structuredData);

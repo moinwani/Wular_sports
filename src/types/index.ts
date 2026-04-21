@@ -1,17 +1,18 @@
 
 export type View = 'home' | 'collection' | 'hard-tennis' | 'soft-tennis' | 'leather-bats' | 'privacy' | 'return' | 'terms' | 'blog' | 'blog-post';
-export type PaymentMethod = 'full' | 'partial' | 'cod';
+export type PaymentMethod = 'full' | 'cod';
 
 export interface BlogPost {
     id: string;
     title: string;
     description: string;
-    content: string; // Markdown or HTML string
+    content: string;
     author: string;
     date: string;
     image: string;
     category: string;
     readTime: string;
+    faq?: { question: string; answer: string }[];
 }
 
 export interface ProductFull {

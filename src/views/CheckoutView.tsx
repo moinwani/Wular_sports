@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
 import { sendAdminOrderNotification } from '../services/email';
-// import { sendOrderConfirmation } from '../services/email';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 
@@ -330,13 +329,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     )}
                                 </div>
                                 <div className="form-group">
-                                    <label>Last Name *</label>
+                                    <label>Last Name</label>
                                     <input
                                         type="text"
                                         name="lastName"
                                         value={formData.lastName}
                                         onChange={handleInputChange}
-                                        required
                                         disabled={isProcessing}
                                         className={fieldErrors.lastName ? 'error' : ''}
                                         placeholder="Last Name"
@@ -480,19 +478,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 </div>
                             </div>
 
-                            {/* Secure Payment Badges */}
+                            {/* Order trust indicators */}
                             <div className="secure-payment-badges">
                                 <div className="secure-badge">
-                                    <i className="fas fa-lock"></i>
-                                    <span>SSL Secured</span>
+                                    <i className="fas fa-shipping-fast"></i>
+                                    <span>Free Delivery</span>
                                 </div>
                                 <div className="secure-badge">
-                                    <i className="fas fa-shield-alt"></i>
-                                    <span>256-bit Encryption</span>
+                                    <i className="fab fa-whatsapp"></i>
+                                    <span>WhatsApp Confirmed</span>
                                 </div>
                                 <div className="secure-badge">
-                                    <i className="fas fa-check-circle"></i>
-                                    <span>PCI Compliant</span>
+                                    <i className="fas fa-undo-alt"></i>
+                                    <span>Easy Returns</span>
                                 </div>
                             </div>
                         </div>

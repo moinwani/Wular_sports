@@ -1,7 +1,13 @@
 import { FC } from 'react';
+import { SEOHead } from '../components/common/SEOHead';
 
 export const PrivacyPolicyView: FC = () => (
     <div className="view policy-view">
+        <SEOHead
+            title="Privacy Policy | Wular Sports"
+            description="Read the Wular Sports privacy policy. Learn how we collect, use, and protect your personal information when you shop for Kashmiri willow cricket bats on wularsports.com."
+            canonicalUrl="https://wularsports.com/privacy-policy"
+        />
         <div className="container">
             <h2 className="section-title">Privacy Policy</h2>
             <div className="policy-content">
@@ -33,6 +39,11 @@ export const PrivacyPolicyView: FC = () => (
 
 export const ReturnPolicyView: FC = () => (
     <div className="view policy-view">
+        <SEOHead
+            title="Return Policy | Wular Sports"
+            description="Wular Sports return and refund policy for cricket bats. Understand our 7-day return window, conditions, and how to initiate a return for Kashmiri willow bats."
+            canonicalUrl="https://wularsports.com/return-policy"
+        />
         <div className="container">
             <h2 className="section-title">Return Policy</h2>
             <div className="policy-content">
@@ -61,6 +72,11 @@ export const ReturnPolicyView: FC = () => (
 
 export const TermsAndConditionsView: FC = () => (
     <div className="view policy-view">
+        <SEOHead
+            title="Terms & Conditions | Wular Sports"
+            description="Read the Wular Sports terms and conditions. Our policies cover ordering, payment, delivery, and use of wularsports.com for Kashmiri willow cricket bats."
+            canonicalUrl="https://wularsports.com/terms-conditions"
+        />
         <div className="container">
             <h2 className="section-title">Terms and Conditions</h2>
             <div className="policy-content">

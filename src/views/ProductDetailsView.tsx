@@ -333,13 +333,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
         setOpenSection(openSection === section ? null : section);
     };
 
-    /* handleOpenLightbox is unused
-    const handleOpenLightbox = (index: number) => {
-        setLightboxIndex(index);
-        setIsLightboxOpen(true);
-    };
-    */
-
     if (!product) return null;
 
     // EXCEPTION: AK-47 Honeycomb is only 35 inch, so no size selector for it
@@ -417,11 +410,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
                 "@type": "Organization",
                 "name": "Wular Sports"
             }
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "reviewCount": "127"
         }
     };
 

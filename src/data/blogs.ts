@@ -429,7 +429,7 @@ export const blogs: BlogPost[] = [
     },
     {
         id: 'the-artisan-edge-handcrafted-vs-machine-made',
-        title: 'The Artisan’s Touch: Why Handcrafted Bats Outperform Machine-Made Ones',
+        title: "The Artisan’s Touch: Why Handcrafted Bats Outperform Machine-Made Ones",
         description: 'Discover the meticulous process of hand-crafting a Wular Sports bat and why it gives you a superior edge on the field.',
         category: 'Craftsmanship',
         author: 'Wular Sports Team',

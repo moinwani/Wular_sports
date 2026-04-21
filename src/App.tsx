@@ -98,6 +98,7 @@ const AppContent: React.FC = () => {
         else if (view === 'hard-tennis') navigate('/hard-tennis-bats');
         else if (view === 'soft-tennis') navigate('/soft-tennis-bats');
         else if (view === 'leather-bats') navigate('/leather-cricket-bats');
+        else if (view === 'about') navigate('/about');
         else {
             navigate('/');
             showToast(`Navigating to ${view}... (Coming Soon)`, 'info');

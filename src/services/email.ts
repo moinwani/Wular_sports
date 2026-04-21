@@ -1,5 +1,44 @@
 import { Order } from './orders';
 
+export const sendOrderConfirmation = async (order: Order | any) => {
+    if (!order.customerEmail) return;
+
+    try {
+        const bridgeUrl = import.meta.env.VITE_EMAIL_BRIDGE_URL;
+        if (!bridgeUrl) return;
+
+        const itemsList = order.items.map((item: any) =>
+            `${item.productName || item.name} (x${item.quantity}) - ₹${item.price}`
+        ).join('\n');
+
+        const payload = {
+            type: 'customer_confirmation',
+            to_name: order.customerName,
+            to_email: order.customerEmail,
+            from_name: "Wular Sports",
+            order_id: order.id || order.orderNumber,
+            order_total: `₹${order.total}`,
+            order_items: itemsList,
+            shipping_address: `${order.customerAddress.street}, ${order.customerAddress.city}, ${order.customerAddress.state} - ${order.customerAddress.pincode}`,
+            payment_method: (order.paymentMethod || 'N/A').toUpperCase(),
+            order_date: new Date().toLocaleString('en-IN')
+        };
+
+        await fetch(bridgeUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        console.log('Customer order confirmation triggered.');
+        return true;
+    } catch (error) {
+        console.error('Failed to send customer order confirmation:', error);
+        return false;
+    }
+};
+
 /**
  * Send order notification email to ADMIN via Google Apps Script secure bridge
  */

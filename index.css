@@ -8160,6 +8160,53 @@ img[loading="lazy"] {
     }
 }
 
+/* ===================================
+   CATEGORY TOOLBAR (Sort)
+   =================================== */
+
+.category-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 1px solid #222;
+    margin-bottom: 2rem;
+}
+
+.category-count {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.category-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.category-sort label {
+    color: #aaa;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.category-sort select {
+    background: #1a1a1a;
+    color: var(--white);
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.category-sort select:hover,
+.category-sort select:focus {
+    border-color: var(--golden);
+}
+
 @media (max-width: 480px) {
     .about-contact-grid {
         grid-template-columns: 1fr;

@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
-import { sendAdminOrderNotification } from '../services/email';
+import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/email';
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
@@ -200,7 +200,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
             // Non-blocking background save & notification
             createOrder(orderData)
-                .then(() => sendAdminOrderNotification({ ...orderData, id: orderId }))
+                .then(() => Promise.all([
+                    sendAdminOrderNotification({ ...orderData, id: orderId }),
+                    sendOrderConfirmation({ ...orderData, id: orderId })
+                ]))
                 .catch(err => console.error("Background order processing failed:", err));
 
             // Complete the flow immediately for the user

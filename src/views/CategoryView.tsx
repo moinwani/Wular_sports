@@ -1,7 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import { ProductFull } from '../types';
 import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
+
+type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 
 interface CategoryViewProps {
     title: string;
@@ -26,6 +28,15 @@ export const CategoryView: FC<CategoryViewProps> = ({
     onAddToCart,
     onWatchVideo
 }) => {
+    const [sortBy, setSortBy] = useState<SortOption>('default');
+
+    const sortedProducts = useMemo(() => {
+        const list = [...products];
+        if (sortBy === 'price-asc') return list.sort((a, b) => a.price - b.price);
+        if (sortBy === 'price-desc') return list.sort((a, b) => b.price - a.price);
+        if (sortBy === 'name-asc') return list.sort((a, b) => a.name.localeCompare(b.name));
+        return list;
+    }, [products, sortBy]);
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -91,9 +102,27 @@ export const CategoryView: FC<CategoryViewProps> = ({
 
             <section className="category-products" style={{ paddingTop: '0', background: 'var(--black)' }}>
                 <div className="container">
+                    {products.length > 1 && (
+                        <div className="category-toolbar">
+                            <span className="category-count">{products.length} product{products.length !== 1 ? 's' : ''}</span>
+                            <div className="category-sort">
+                                <label htmlFor="sort-select">Sort by:</label>
+                                <select
+                                    id="sort-select"
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                                >
+                                    <option value="default">Featured</option>
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="name-asc">Name: A–Z</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
                     <div className="collection-grid">
-                        {products.length > 0 ? (
-                            products.map(product => (
+                        {sortedProducts.length > 0 ? (
+                            sortedProducts.map(product => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
@@ -109,6 +138,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
                                 <a href="/collection" className="btn" style={{ marginTop: '2rem' }}>Back to Collection</a>
                             </div>
                         )}
+
                     </div>
                 </div>
             </section>

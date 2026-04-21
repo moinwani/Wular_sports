@@ -8168,14 +8168,51 @@ img[loading="lazy"] {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
     padding: 1rem 0 1.5rem;
     border-bottom: 1px solid #222;
     margin-bottom: 2rem;
 }
 
+.category-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .category-count {
     color: #888;
     font-size: 0.9rem;
+}
+
+.scoop-filter-chips {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.scoop-chip {
+    background: transparent;
+    border: 1px solid #444;
+    color: #aaa;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.scoop-chip:hover {
+    border-color: var(--golden);
+    color: var(--golden);
+}
+
+.scoop-chip.active {
+    background: var(--golden);
+    border-color: var(--golden);
+    color: var(--black);
+    font-weight: 600;
 }
 
 .category-sort {

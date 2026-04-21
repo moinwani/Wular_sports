@@ -4,6 +4,7 @@ import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
+type ScoopFilter = 'all' | 'scoop' | 'non-scoop';
 
 interface CategoryViewProps {
     title: string;
@@ -15,6 +16,13 @@ interface CategoryViewProps {
     onImageClick: (images: string[], startIndex: number) => void;
     onAddToCart: (product: ProductFull, size: string | null) => void;
     onWatchVideo: (url: string, ref: React.RefObject<HTMLButtonElement>) => void;
+}
+
+function getScoopType(product: ProductFull): 'scoop' | 'non-scoop' {
+    const scoopSpec = product.specs.find(s => s.toLowerCase().startsWith('scoop profile'));
+    if (!scoopSpec) return 'non-scoop';
+    const value = scoopSpec.toLowerCase();
+    return value.includes('non-scoop') ? 'non-scoop' : 'scoop';
 }
 
 export const CategoryView: FC<CategoryViewProps> = ({
@@ -29,14 +37,23 @@ export const CategoryView: FC<CategoryViewProps> = ({
     onWatchVideo
 }) => {
     const [sortBy, setSortBy] = useState<SortOption>('default');
+    const [scoopFilter, setScoopFilter] = useState<ScoopFilter>('all');
 
-    const sortedProducts = useMemo(() => {
-        const list = [...products];
+    const hasBothScoopTypes = useMemo(() => {
+        const types = new Set(products.map(getScoopType));
+        return types.has('scoop') && types.has('non-scoop');
+    }, [products]);
+
+    const displayedProducts = useMemo(() => {
+        let list = [...products];
+        if (scoopFilter !== 'all') {
+            list = list.filter(p => getScoopType(p) === scoopFilter);
+        }
         if (sortBy === 'price-asc') return list.sort((a, b) => a.price - b.price);
         if (sortBy === 'price-desc') return list.sort((a, b) => b.price - a.price);
         if (sortBy === 'name-asc') return list.sort((a, b) => a.name.localeCompare(b.name));
         return list;
-    }, [products, sortBy]);
+    }, [products, sortBy, scoopFilter]);
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -104,7 +121,22 @@ export const CategoryView: FC<CategoryViewProps> = ({
                 <div className="container">
                     {products.length > 1 && (
                         <div className="category-toolbar">
-                            <span className="category-count">{products.length} product{products.length !== 1 ? 's' : ''}</span>
+                            <div className="category-toolbar-left">
+                                <span className="category-count">{displayedProducts.length} product{displayedProducts.length !== 1 ? 's' : ''}</span>
+                                {hasBothScoopTypes && (
+                                    <div className="scoop-filter-chips">
+                                        {(['all', 'scoop', 'non-scoop'] as ScoopFilter[]).map(opt => (
+                                            <button
+                                                key={opt}
+                                                className={`scoop-chip ${scoopFilter === opt ? 'active' : ''}`}
+                                                onClick={() => setScoopFilter(opt)}
+                                            >
+                                                {opt === 'all' ? 'All' : opt === 'scoop' ? 'Scoop' : 'Non-Scoop'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                             <div className="category-sort">
                                 <label htmlFor="sort-select">Sort by:</label>
                                 <select
@@ -121,8 +153,8 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         </div>
                     )}
                     <div className="collection-grid">
-                        {sortedProducts.length > 0 ? (
-                            sortedProducts.map(product => (
+                        {displayedProducts.length > 0 ? (
+                            displayedProducts.map(product => (
                                 <ProductCard
                                     key={product.id}
                                     product={product}
@@ -134,11 +166,12 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         ) : (
                             <div className="no-products-found" style={{ textAlign: 'center', padding: '4rem' }}>
                                 <i className="fas fa-search" style={{ fontSize: '3rem', color: '#333', marginBottom: '1rem' }}></i>
-                                <p style={{ color: '#888' }}>No products found in this category.</p>
-                                <a href="/collection" className="btn" style={{ marginTop: '2rem' }}>Back to Collection</a>
+                                <p style={{ color: '#888' }}>No products found for this filter.</p>
+                                <button className="btn" style={{ marginTop: '2rem' }} onClick={() => setScoopFilter('all')}>
+                                    Clear Filter
+                                </button>
                             </div>
                         )}
-
                     </div>
                 </div>
             </section>

@@ -75,8 +75,9 @@ export const CollectionView: FC<CollectionViewProps> = ({ products, onNavigate }
     return (
         <div className="view collection-view">
             <SEOHead
-                title="Our Collection | Wular Sports"
-                description="Browse our range of handcrafted Hard Tennis, Soft Tennis, and Leather ball cricket bats."
+                title="Cricket Bats Collection | Wular Sports — Kashmiri Willow Bats"
+                description="Shop handcrafted Kashmiri willow cricket bats by Wular Sports. Choose from Hard Tennis, Soft Tennis, and Leather Ball categories. Free delivery across India."
+                keywords="kashmiri willow cricket bats, hard tennis bat, soft tennis bat, leather cricket bat, buy cricket bat online India"
                 ogType="website"
                 canonicalUrl="https://wularsports.com/collection"
                 structuredData={structuredData}

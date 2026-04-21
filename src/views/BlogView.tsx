@@ -34,8 +34,10 @@ export const BlogView: FC<BlogViewProps> = ({ onSelectPost, showToast }) => {
     return (
         <div className="blog-page">
             <SEOHead
-                title="Cricket Insights & Guides | Wular Sports Blog"
-                description="Expert tips on choosing the right cricket bat, maintenance guides, and inside stories from Wular Sports."
+                title="Cricket Bat Guides & Buying Tips | Wular Insights"
+                description="Expert guides on Kashmiri willow cricket bats — how to choose the right bat, scoop vs non-scoop, bat maintenance, and insider tips from Wular Sports craftsmen."
+                keywords="kashmiri willow cricket bat guide, cricket bat buying guide, scoop bat guide, hard tennis bat tips, soft tennis bat, cricket bat maintenance"
+                canonicalUrl="https://wularsports.com/blog"
             />
 
             <section className="blog-hero">

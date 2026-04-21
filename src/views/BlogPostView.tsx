@@ -29,11 +29,25 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
 
     const otherPosts = blogs.filter(b => b.id !== postId).slice(0, 2);
 
+    const faqSchema = post.faq && post.faq.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": post.faq.map(item => ({
+            "@type": "Question",
+            "name": item.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.answer
+            }
+        }))
+    } : null;
+
     return (
         <div className="blog-post-page">
             <SEOHead
                 title={`${post.title} | Wular Sports Blog`}
                 description={post.description}
+                structuredData={faqSchema ?? undefined}
             />
 
             <article className="blog-post-container">

@@ -152,7 +152,33 @@ export const blogs: BlogPost[] = [
                     <a href="/catalog?category=Leather%20Ball" class="btn btn-secondary">View Leather Ball Bats</a>
                 </div>
             </div>
-        `
+        `,
+        faq: [
+            {
+                question: "Is Kashmiri willow good for leather ball cricket?",
+                answer: "Yes! A Grade A or A+ Kashmiri willow bat with 8–12 grains is excellent for leather ball cricket, especially at the club level. It offers outstanding durability and power, and is significantly more affordable than English willow."
+            },
+            {
+                question: "How long does a Kashmiri willow cricket bat last?",
+                answer: "With proper care, a quality Kashmiri willow bat lasts 2–3 full seasons (around 40–60 matches). This is often longer than mid-range English willow bats, which typically last 1–2 seasons."
+            },
+            {
+                question: "Do I need to knock in a Kashmiri willow bat?",
+                answer: "Yes. Even though Kashmiri willow is denser, knocking-in compresses the wood fibers and prevents cracking during play. Spend 150–200 strikes with a mallet before using the bat in matches."
+            },
+            {
+                question: "Why is Kashmiri willow cheaper than English willow?",
+                answer: "Kashmiri willow is more abundant, grows faster, and requires less complex processing. English willow takes 15+ years to mature and has a complex supply chain, which drives up its price. Kashmiri willow offers excellent value for money."
+            },
+            {
+                question: "What is the best Kashmiri willow cricket bat for hard tennis ball?",
+                answer: "For hard tennis ball cricket, look for a bat with a weight range of 980–1100 grams, edge thickness of 48–52mm, and a hard-pressed Kashmiri willow blade. The Wular Sports Legacy Edition 2.0 is engineered specifically for hard tennis ball tournament play."
+            },
+            {
+                question: "What is the difference between scoop and non-scoop cricket bats?",
+                answer: "A scoop bat has wood removed from the back of the blade (either a ramp scoop or honeycomb scoop) to reduce weight and improve swing speed. A non-scoop bat has a solid flat back, offering more mass behind the ball for maximum power. Scoop bats suit soft tennis and lightweight play; non-scoop bats suit hard tennis and leather ball cricket."
+            }
+        ]
     },
     {
         id: 'choosing-the-right-bat-weight',

@@ -16,10 +16,12 @@ let currentUser: User | null = null;
 
 
 
-// Listen for auth state changes
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-});
+// Listen for auth state changes (browser only)
+if (typeof window !== 'undefined') {
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+    });
+}
 
 /**
  * Sign in with Google using an ID Token (from One Tap)
@@ -49,7 +51,7 @@ export const signInWithGoogle = async (idToken: string): Promise<User> => {
  * Requires VITE_GOOGLE_CLIENT_ID
  */
 export const initializeGoogleOneTap = (callback: (response: any) => void) => {
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     if (!clientId) {
         console.warn('⚠️ Google Client ID not found. One Tap disabled.');
         return;

@@ -6,7 +6,7 @@ export interface HeroProps {
 }
 
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMobile, setIsMobile] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [mobileImages, setMobileImages] = useState<string[]>([]);
     const [desktopImage, setDesktopImage] = useState<string>('');

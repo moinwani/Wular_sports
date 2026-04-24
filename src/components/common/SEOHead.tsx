@@ -1,4 +1,5 @@
-import { FC, useEffect } from 'react';
+import Head from 'next/head';
+import { FC } from 'react';
 
 interface SEOHeadProps {
     title?: string;
@@ -11,79 +12,40 @@ interface SEOHeadProps {
 }
 
 export const SEOHead: FC<SEOHeadProps> = ({
-    title = 'Wular Sports - Premium Handcrafted Cricket Bats & Sports Equipment',
-    description = 'Discover premium handcrafted cricket bats and sports equipment from Wular Sports. Each piece is meticulously crafted by skilled artisans in Kashmir for champions who demand excellence.',
-    keywords = 'cricket bats, handcrafted cricket bats, Kashmir willow bats, English willow bats, premium cricket equipment, sports equipment, Wular Sports',
+    title = 'Wular Sports — Handcrafted Kashmiri Willow Cricket Bats',
+    description = 'Buy premium handcrafted Kashmiri willow cricket bats online. Hard tennis, soft tennis & leather ball bats made in Srinagar, Kashmir. Free delivery across India.',
+    keywords = 'kashmiri willow cricket bat, hard tennis bat Kashmir, soft tennis bat buy online, leather cricket bat Kashmir, scoop bat, Wular Sports',
     ogImage = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/og-image.jpg',
     ogType = 'website',
     canonicalUrl,
-    structuredData
-}) => {
-    useEffect(() => {
-        // Update title
-        document.title = title;
+    structuredData,
+}) => (
+    <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
+        <meta name="author" content="Wular Sports" />
+        <meta name="robots" content="index, follow" />
 
-        // Update or create meta tags
-        const updateMetaTag = (name: string, content: string, isProperty = false) => {
-            const attribute = isProperty ? 'property' : 'name';
-            let element = document.querySelector(`meta[${attribute}="${name}"]`);
+        <meta property="og:type" content={ogType} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:site_name" content="Wular Sports" />
+        {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
-            if (!element) {
-                element = document.createElement('meta');
-                element.setAttribute(attribute, name);
-                document.head.appendChild(element);
-            }
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
 
-            element.setAttribute('content', content);
-        };
+        {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
-        // Standard meta tags
-        updateMetaTag('description', description);
-        updateMetaTag('keywords', keywords);
-        updateMetaTag('author', 'Wular Sports');
-        updateMetaTag('robots', 'index, follow');
-
-        // Open Graph tags
-        updateMetaTag('og:title', title, true);
-        updateMetaTag('og:description', description, true);
-        updateMetaTag('og:image', ogImage, true);
-        updateMetaTag('og:type', ogType, true);
-        updateMetaTag('og:site_name', 'Wular Sports', true);
-
-        if (canonicalUrl) {
-            updateMetaTag('og:url', canonicalUrl, true);
-        }
-
-        // Twitter Card tags
-        updateMetaTag('twitter:card', 'summary_large_image');
-        updateMetaTag('twitter:title', title);
-        updateMetaTag('twitter:description', description);
-        updateMetaTag('twitter:image', ogImage);
-
-        // Canonical URL
-        if (canonicalUrl) {
-            let linkElement = document.querySelector('link[rel="canonical"]');
-            if (!linkElement) {
-                linkElement = document.createElement('link');
-                linkElement.setAttribute('rel', 'canonical');
-                document.head.appendChild(linkElement);
-            }
-            linkElement.setAttribute('href', canonicalUrl);
-        }
-
-        // Structured Data (JSON-LD) — uses a dedicated data attribute to avoid
-        // overwriting the static JSON-LD blocks already in index.html
-        if (structuredData) {
-            let scriptElement = document.querySelector('script[data-seohead="dynamic"]');
-            if (!scriptElement) {
-                scriptElement = document.createElement('script');
-                scriptElement.setAttribute('type', 'application/ld+json');
-                scriptElement.setAttribute('data-seohead', 'dynamic');
-                document.head.appendChild(scriptElement);
-            }
-            scriptElement.textContent = JSON.stringify(structuredData);
-        }
-    }, [title, description, keywords, ogImage, ogType, canonicalUrl, structuredData]);
-
-    return null;
-};
+        {structuredData && (
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
+        )}
+    </Head>
+);

@@ -9,7 +9,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 30, 2026',
         readTime: '10 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826302_w.jpg',
         content: `
             <p>If you're searching for a <strong>kashmiri willow cricket bat</strong> that delivers power, durability, and value for money, you've come to the right place. Whether you're a club cricketer, a leather ball player, or someone who plays serious tennis ball cricket, understanding Kashmiri willow can help you make a smart buying decision.</p>
 
@@ -188,7 +188,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 05, 2026',
         readTime: '5 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg',
         content: `
             <p>One of the most common questions we get from cricketers is: "Should I buy a heavy bat or a light one?" Most players assume that a heavier bat will automatically produce more power, but the reality is more nuanced.</p>
             
@@ -215,7 +215,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Dec 28, 2025',
         readTime: '4 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/cane-handle.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826391_w.jpg',
         content: `
             <p>The handle is the most underrated part of a cricket bat. While everyone focuses on the grains of the willow, it's the handle that translates your intent into action and protects your hands from injury.</p>
             
@@ -240,7 +240,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Dec 20, 2025',
         readTime: '6 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826392_w.jpg',
         content: `
             <p>In the world of cricket, "English Willow" is often used as a marketing buzzword to justify high prices. But for many players, especially those in the tennis ball circuit or those starting their professional careers, premium Kashmir Willow is often the superior choice.</p>
             
@@ -265,7 +265,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 07, 2026',
         readTime: '8 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7834.JPG',
         content: `
             <p>Buying a high-quality cricket bat is an investment. Whether you play with <a href="/leather-cricket-bats">leather cricket bats</a> or <a href="/hard-tennis-bats">hard tennis cricket bats</a>, proper maintenance is the difference between a bat that lasts one season and one that lasts five. In this guide, we'll cover everything you need to know about <strong>cricket bat maintenance</strong>.</p>
 
@@ -368,7 +368,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 22, 2026',
         readTime: '7 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/cane-handle.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3479.JPG',
         content: `
             <p>For many cricketers in India, the journey starts with a plastic or tennis ball on narrow streets. But there comes a time when every aspiring player wants to feel the weight of a seasoned leather ball. Transitioning from tennis to <a href="/leather-cricket-bats">leather ball cricket</a> is an exciting milestone, but it requires a significant shift in gear and mindset.</p>
 
@@ -404,7 +404,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 24, 2026',
         readTime: '6 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7836.JPG',
         content: `
             <p>Hard tennis ball cricket has evolved into a high-stakes, professional format with massive tournaments across the globe. If you're still using a generic bat, you're giving your opponents an unfair advantage. Here's why <a href="/hard-tennis-bats">specialized hard tennis bats</a> are essential.</p>
 
@@ -435,7 +435,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Jan 23, 2026',
         readTime: '8 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826383_w.jpg',
         content: `
             <p>In an era of mass production, Wular Sports remains committed to the ancient art of hand-crafting cricket bats. While machines can replicate shapes, they cannot "feel" the wood. Every piece of <a href="/hard-tennis-bats">premium Kashmir Willow</a> is unique, and our master craftsmen treat them that way.</p>
 
@@ -466,7 +466,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
         readTime: '6 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826395_w.jpg',
         content: `
             <p>If you're looking for the <strong>best cricket bat under ₹3000</strong> in India, you've come to the right place. The ₹2,000–₹3,000 price range is where Kashmiri willow cricket bats shine — offering genuine professional craftsmanship without the English willow price tag. In this guide, we break down the top options for every format.</p>
 
@@ -554,7 +554,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
         readTime: '5 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/bat-weight.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826305_w.jpg',
         content: `
             <p>One of the most common questions from cricket bat buyers is: <strong>"Should I get a scoop bat or a non-scoop bat?"</strong> It's a decision that affects your bat's weight, swing speed, balance, and which format it's best suited for. This guide breaks it down clearly.</p>
 
@@ -673,7 +673,7 @@ export const blogs: BlogPost[] = [
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
         readTime: '7 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/blog/buying-guide.jpg',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826306_w.jpg',
         content: `
             <p>Buying a <strong>Kashmiri willow cricket bat online in India</strong> has never been easier — but it's also never been more confusing. The market is flooded with bats labelled "Grade A Kashmir willow" that are anything but. This guide teaches you exactly what to look for, what to avoid, and how to get a genuine bat delivered to your door.</p>
 

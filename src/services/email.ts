@@ -66,7 +66,7 @@ export const sendAdminOrderNotification = async (order: Order | any) => {
         const payload = {
             type: 'admin_notification',
             to_name: 'Admin',
-            to_email: 'moinwani91@gmail.com',
+            to_email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'moinwani91@gmail.com',
             from_name: order.customerName,
             customer_email: order.customerEmail || 'Not provided',
             customer_phone: order.customerPhone,

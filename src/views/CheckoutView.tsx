@@ -241,17 +241,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
             const isCOD = sanitizedData.paymentMethod === 'cod';
 
-            // Amount to charge via Razorpay
-            const chargeAmount = isCOD
-                ? totalBats * COD_BOOKING_PER_BAT   // ₹500 per bat booking
-                : total;                              // full amount
-
-            // Create Razorpay order on server
+            // Create Razorpay order on server — amount is computed server-side
             const res = await fetch('/api/create-razorpay-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    amount: chargeAmount * 100, // paise
+                    items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
+                    paymentMethod: sanitizedData.paymentMethod,
                     receipt: orderId,
                     notes: { orderId, customerPhone: sanitizedData.phone }
                 }),
@@ -262,12 +258,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 throw new Error(err.error || 'Failed to initiate payment');
             }
 
-            const { orderId: razorpayOrderId } = await res.json();
+            const { orderId: razorpayOrderId, chargeAmount } = await res.json();
             const description = isCOD
                 ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
                 : `Full Payment — Wular Sports Order`;
 
-            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId, rzpOrderId, signature) => {
+            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId: string, rzpOrderId: string, signature: string) => {
                 // Verify payment signature server-side before processing
                 try {
                     const verifyRes = await fetch('/api/verify-razorpay-payment', {

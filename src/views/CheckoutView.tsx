@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
@@ -31,6 +31,21 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     });
     const [formError, setFormError] = useState('');
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    const [pendingWhatsApp, setPendingWhatsApp] = useState<{ whatsappUrl: string } | null>(null);
+    const [whatsAppReminderVisible, setWhatsAppReminderVisible] = useState(false);
+    const whatsAppUrlRef = useRef<string>('');
+
+    // When WhatsApp is open and the user returns to this tab, remind them to send the message
+    useEffect(() => {
+        if (!pendingWhatsApp) return;
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                setWhatsAppReminderVisible(true);
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [pendingWhatsApp]);
 
     // Validation schema for checkout form (OWASP best practices)
     const checkoutSchema: ValidationSchema = {
@@ -106,7 +121,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         });
     };
 
-    const openWhatsAppOrder = (orderId: string, sanitizedData: typeof formData) => {
+    const buildWhatsAppUrl = (orderId: string, sanitizedData: typeof formData): string => {
         const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
         const bookingAmount = totalQty * 300;
         const balance = total - bookingAmount;
@@ -136,9 +151,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             `${paymentDetail}%0A%0A` +
             `Please share payment details to confirm my order!`;
 
-        // Open WhatsApp
-        const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
     };
 
     // Helper to create order with timeout so it doesn't hang forever
@@ -170,8 +183,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             // Generate order ID
             const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
 
-            // Open WhatsApp immediately - both flows now use WhatsApp
-            openWhatsAppOrder(orderId, sanitizedData);
+            // Build WhatsApp URL and open it
+            const whatsappUrl = buildWhatsAppUrl(orderId, sanitizedData);
+            whatsAppUrlRef.current = whatsappUrl;
+            window.open(whatsappUrl, '_blank');
 
             // Execute background save to DB with userId
             const orderData = {
@@ -206,16 +221,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 ]))
                 .catch(err => console.error("Background order processing failed:", err));
 
-            // Complete the flow immediately for the user
-            onPlaceOrder({
-                id: orderId,
-                items: cart,
-                total: total,
-                shipping: sanitizedData,
-                paymentMethod: sanitizedData.paymentMethod,
-                orderDate: new Date().toISOString()
-            });
-
+            // Show WhatsApp confirmation step instead of immediately navigating away
+            setPendingWhatsApp({ whatsappUrl: whatsAppUrlRef.current });
             setIsProcessing(false);
 
         } catch (error: any) {
@@ -236,6 +243,48 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             <div className="container checkout-empty">
                 <h2>Your cart is empty</h2>
                 <button className="btn" onClick={() => router.push('/')}>Continue Shopping</button>
+            </div>
+        );
+    }
+
+    // WhatsApp confirmation step — shown after order is submitted and WhatsApp is opened
+    if (pendingWhatsApp) {
+        return (
+            <div className="checkout-page">
+                <div className="container">
+                    <div className="whatsapp-confirm-step">
+                        <div className="whatsapp-confirm-icon">
+                            <i className="fab fa-whatsapp"></i>
+                        </div>
+                        <h2>Almost done — send the WhatsApp message!</h2>
+                        <p>We've opened WhatsApp with your order details pre-filled. <strong>Please tap Send</strong> to confirm your order with us.</p>
+
+                        {whatsAppReminderVisible && (
+                            <div className="whatsapp-reminder-banner">
+                                <i className="fas fa-exclamation-circle"></i> Looks like you came back without sending — your order isn't confirmed yet!
+                            </div>
+                        )}
+
+                        <div className="whatsapp-confirm-actions">
+                            <a
+                                href={pendingWhatsApp.whatsappUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="btn whatsapp-retry-btn"
+                                onClick={() => setWhatsAppReminderVisible(false)}
+                            >
+                                <i className="fab fa-whatsapp"></i> Open WhatsApp Again
+                            </a>
+                            <button
+                                className="btn btn-confirm-sent"
+                                onClick={() => onPlaceOrder({} as any)}
+                            >
+                                <i className="fas fa-check-circle"></i> I've Sent the Message
+                            </button>
+                        </div>
+                        <p className="whatsapp-confirm-note">Once we receive your message, we'll process and ship your order within 24 hours.</p>
+                    </div>
+                </div>
             </div>
         );
     }

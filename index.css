@@ -3321,6 +3321,74 @@ main {
     min-height: 80vh;
 }
 
+/* WhatsApp confirmation step */
+.whatsapp-confirm-step {
+    max-width: 560px;
+    margin: 4rem auto;
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(37,211,102,0.3);
+    border-radius: 16px;
+}
+.whatsapp-confirm-icon {
+    font-size: 4rem;
+    color: #25D366;
+    margin-bottom: 1.5rem;
+}
+.whatsapp-confirm-step h2 {
+    font-size: 1.6rem;
+    color: var(--golden);
+    margin-bottom: 1rem;
+}
+.whatsapp-confirm-step > p {
+    color: #ccc;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+.whatsapp-reminder-banner {
+    background: rgba(255,180,0,0.12);
+    border: 1px solid rgba(255,180,0,0.4);
+    color: #ffb400;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+.whatsapp-confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+.whatsapp-retry-btn {
+    background: #25D366;
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.whatsapp-retry-btn:hover { background: #1da851; }
+.btn-confirm-sent {
+    background: transparent;
+    border: 2px solid var(--golden);
+    color: var(--golden);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.btn-confirm-sent:hover {
+    background: var(--golden);
+    color: var(--black);
+}
+.whatsapp-confirm-note {
+    font-size: 0.82rem;
+    color: #888;
+    margin: 0;
+}
+
 .checkout-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;

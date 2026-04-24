@@ -1,9 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
+import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const ip = getClientIp(req);
+    const { allowed, retryAfterMs } = checkRateLimit(ip, 20);
+    if (!allowed) {
+        res.setHeader('Retry-After', Math.ceil((retryAfterMs || 0) / 1000).toString());
+        return res.status(429).json({ error: 'Too many requests. Please try again later.' });
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;

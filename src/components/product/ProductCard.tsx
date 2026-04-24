@@ -1,5 +1,5 @@
 import { FC, memo, RefObject } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
 
@@ -11,10 +11,10 @@ export interface ProductCardProps {
 }
 
 export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleCardClick = () => {
-        navigate(`/product/${product.id}`);
+        router.push(`/product/${product.id}`);
     };
 
     const discountAmount = product.originalPrice ? product.originalPrice - product.price : 0;

@@ -1,9 +1,9 @@
 import { FC, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { SEOHead } from '../components/common/SEOHead';
 
 export const OrderSuccessView: FC = () => {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -47,14 +47,14 @@ export const OrderSuccessView: FC = () => {
                 <div className="actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
                     <button
                         className="btn"
-                        onClick={() => navigate('/collection')}
+                        onClick={() => router.push('/collection')}
                         style={{ padding: '1rem 2rem' }}
                     >
                         Continue Shopping
                     </button>
                     <button
                         className="btn btn-outline"
-                        onClick={() => navigate('/')}
+                        onClick={() => router.push('/')}
                         style={{ padding: '1rem 2rem' }}
                     >
                         Back to Home

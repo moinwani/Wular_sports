@@ -160,7 +160,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                     {videoId ? (
                         <div className="watch-buy-youtube-preview-container">
                             <iframe
-                                src={`https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${window.location.origin}&widgetid=1`}
+                                src={`https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'https://wularsports.com'}&widgetid=1`}
                                 title="Product Preview"
                                 frameBorder="0"
                                 allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"

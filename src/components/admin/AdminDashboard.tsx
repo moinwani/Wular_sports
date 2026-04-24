@@ -29,7 +29,7 @@ export const AdminDashboard: FC = () => {
         totalRevenue: 0,
         pendingOrders: 0,
         totalSubscribers: 0,
-        recentOrders: []
+        recentOrders: [] as any[]
     });
 
     useEffect(() => {

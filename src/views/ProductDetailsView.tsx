@@ -1,5 +1,4 @@
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
@@ -12,22 +11,19 @@ import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
 
 export interface ProductDetailsViewProps {
+    product: ProductFull;
     onAddToCart: (product: ProductFull, size: string, quantity?: number) => void;
 }
 
 type ScrollPhase = 'images' | 'content' | 'normal';
 
-export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart }) => {
-    const { id } = useParams<{ id: string }>();
-    // const navigate = useNavigate();
+export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAddToCart }) => {
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [quantity, setQuantity] = useState(1);
     const [sizeError, setSizeError] = useState(false);
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
-
-    // Scroll control state
     const [scrollPhase, setScrollPhase] = useState<ScrollPhase>('images');
     const [isMobile, setIsMobile] = useState(false);
     const imageGalleryRef = useRef<HTMLDivElement | null>(null);
@@ -38,7 +34,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ onAddToCart })
     const imageScrollProgressRef = useRef(0);
     const contentScrollProgressRef = useRef(0);
 
-    const product = products.find(p => p.id === id);
+    const id = product?.id;
 
     // Check if mobile on mount and resize
     useEffect(() => {

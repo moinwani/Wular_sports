@@ -4,7 +4,7 @@ export const sendOrderConfirmation = async (order: Order | any) => {
     if (!order.customerEmail) return;
 
     try {
-        const bridgeUrl = import.meta.env.VITE_EMAIL_BRIDGE_URL;
+        const bridgeUrl = process.env.NEXT_PUBLIC_EMAIL_BRIDGE_URL;
         if (!bridgeUrl) return;
 
         const itemsList = order.items.map((item: any) =>
@@ -44,7 +44,7 @@ export const sendOrderConfirmation = async (order: Order | any) => {
  */
 export const sendAdminOrderNotification = async (order: Order | any) => {
     try {
-        const bridgeUrl = import.meta.env.VITE_EMAIL_BRIDGE_URL;
+        const bridgeUrl = process.env.NEXT_PUBLIC_EMAIL_BRIDGE_URL;
 
         if (!bridgeUrl) {
             console.warn("Email Bridge URL (VITE_EMAIL_BRIDGE_URL) missing. Skipping notification.");

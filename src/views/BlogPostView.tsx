@@ -1,33 +1,23 @@
 import { FC, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { View } from '../types';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { BlogPost } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
 import { getCDNUrl } from '../services/githubService';
 
 interface BlogPostViewProps {
-    onNavigate: (view: View) => void;
-    onSelectPost: (postId: string) => void;
+    post: BlogPost;
 }
 
-export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }) => {
-    const { postId } = useParams<{ postId: string }>();
-    const post = blogs.find(b => b.id === postId);
+export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
+    const router = useRouter();
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, [postId]);
+    }, [post.id]);
 
-    if (!post) {
-        return (
-            <div className="container" style={{ padding: '10rem 0', textAlign: 'center' }}>
-                <h2>Article not found</h2>
-                <button className="btn" onClick={() => onNavigate('blog')}>Back to Blog</button>
-            </div>
-        );
-    }
-
-    const otherPosts = blogs.filter(b => b.id !== postId).slice(0, 2);
+    const otherPosts = blogs.filter(b => b.id !== post.id).slice(0, 2);
 
     const faqSchema = post.faq && post.faq.length > 0 ? {
         "@context": "https://schema.org",
@@ -35,10 +25,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
         "mainEntity": post.faq.map(item => ({
             "@type": "Question",
             "name": item.question,
-            "acceptedAnswer": {
-                "@type": "Answer",
-                "text": item.answer
-            }
+            "acceptedAnswer": { "@type": "Answer", "text": item.answer }
         }))
     } : null;
 
@@ -47,13 +34,14 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
             <SEOHead
                 title={`${post.title} | Wular Sports Blog`}
                 description={post.description}
+                canonicalUrl={`https://wularsports.com/blog/${post.id}`}
                 structuredData={faqSchema ?? undefined}
             />
 
             <article className="blog-post-container">
                 <header className="blog-post-header">
                     <div className="container">
-                        <button className="blog-back-btn" onClick={() => onNavigate('blog')}>
+                        <button className="blog-back-btn" onClick={() => router.push('/blog')}>
                             <i className="fas fa-chevron-left"></i> Back to Blog
                         </button>
                         <div className="blog-post-meta-top">
@@ -63,9 +51,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
                         </div>
                         <h1 className="blog-post-title">{post.title}</h1>
                         <div className="blog-post-author-row">
-                            <div className="author-avatar">
-                                <i className="fas fa-user-circle"></i>
-                            </div>
+                            <div className="author-avatar"><i className="fas fa-user-circle"></i></div>
                             <div className="author-info">
                                 <span className="author-name">{post.author}</span>
                                 <span className="post-date">{post.date}</span>
@@ -82,23 +68,15 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
 
                 <div className="blog-post-content-wrapper">
                     <div className="container narrow">
-                        <div
-                            className="blog-content-body"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
-                        />
-
+                        <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: post.content }} />
                         <div className="blog-post-footer">
                             <div className="share-post">
                                 <span>Share this article:</span>
                                 <div className="share-links">
-                                    <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' ' + window.location.href)}`} target="_blank" rel="noreferrer">
+                                    <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noreferrer">
                                         <i className="fab fa-whatsapp"></i>
                                     </a>
-                                    <a href="#" onClick={(e) => {
-                                        e.preventDefault();
-                                        navigator.clipboard.writeText(window.location.href);
-                                        alert('Link copied to clipboard!');
-                                    }}>
+                                    <a href="#" onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(`https://wularsports.com/blog/${post.id}`); alert('Link copied!'); }}>
                                         <i className="fas fa-link"></i>
                                     </a>
                                 </div>
@@ -108,14 +86,13 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ onNavigate, onSelectPost }
                 </div>
             </article>
 
-            {/* Related Posts */}
             {otherPosts.length > 0 && (
                 <section className="more-articles">
                     <div className="container">
                         <h3 className="more-articles-title">Continue Reading</h3>
                         <div className="blog-grid">
                             {otherPosts.map(p => (
-                                <article key={p.id} className="blog-card" onClick={() => onSelectPost(p.id)}>
+                                <article key={p.id} className="blog-card" onClick={() => router.push(`/blog/${p.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="blog-card-image">
                                         <img src={getCDNUrl(p.image)} alt={p.title} />
                                     </div>

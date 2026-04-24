@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { CartItem } from '../types';
 import { createOrder } from '../services/orders';
 import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/email';
@@ -14,7 +14,7 @@ interface CheckoutViewProps {
 }
 
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
     const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
 
@@ -235,7 +235,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         return (
             <div className="container checkout-empty">
                 <h2>Your cart is empty</h2>
-                <button className="btn" onClick={() => navigate('/')}>Continue Shopping</button>
+                <button className="btn" onClick={() => router.push('/')}>Continue Shopping</button>
             </div>
         );
     }
@@ -249,7 +249,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             />
             <div className="container">
                 <div className="checkout-header-mobile">
-                    <button className="back-btn-simple" onClick={() => navigate(-1)}>
+                    <button className="back-btn-simple" onClick={() => router.back()}>
                         <i className="fas fa-arrow-left"></i>
                     </button>
                     <h1 className="page-title">Checkout</h1>

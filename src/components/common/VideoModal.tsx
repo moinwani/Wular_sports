@@ -1,5 +1,5 @@
 import { FC, useRef, useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { products } from '../../data/products';
 import { Testimonial } from '../../types';
 
@@ -10,10 +10,10 @@ export interface VideoModalProps {
 }
 
 export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, onClose }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [isMobile, setIsMobile] = useState(false);
 
     // Looping state (Mobile only)
     const loopedItems = isMobile ? [testimonials[testimonials.length - 1], ...testimonials, testimonials[0]] : testimonials;
@@ -328,7 +328,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                             className="btn"
                                             onClick={() => {
                                                 handleClose();
-                                                navigate(`/product/${product.id}`);
+                                                router.push(`/product/${product.id}`);
                                             }}
                                             style={isMobile ? {
                                                 fontSize: '0.8rem',

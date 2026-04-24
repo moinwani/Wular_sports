@@ -177,7 +177,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         amountPaise: number,
         description: string,
         sanitizedData: typeof formData,
-        onSuccess: (paymentId: string) => void
+        onSuccess: (paymentId: string, rzpOrderId: string, signature: string) => void
     ) => {
         const options = {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -186,13 +186,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             name: 'Wular Sports',
             description,
             order_id: razorpayOrderId,
-            handler: (response: { razorpay_payment_id: string }) => {
-                onSuccess(response.razorpay_payment_id);
+            handler: (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
+                onSuccess(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
             },
             prefill: {
                 name: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
                 contact: sanitizedData.phone,
                 email: sanitizedData.email || '',
+            },
+            config: {
+                display: {
+                    hide: [{ method: 'emi' }, { method: 'paylater' }],
+                    preferences: { show_default_blocks: true }
+                }
             },
             theme: { color: '#C9A84C' },
             modal: {
@@ -261,10 +267,34 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
                 : `Full Payment — Wular Sports Order`;
 
-            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId) => {
-                // Payment successful — save order
+            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId, rzpOrderId, signature) => {
+                // Verify payment signature server-side before processing
+                try {
+                    const verifyRes = await fetch('/api/verify-razorpay-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpay_order_id: rzpOrderId,
+                            razorpay_payment_id: paymentId,
+                            razorpay_signature: signature,
+                        }),
+                    });
+                    if (!verifyRes.ok) {
+                        setFormError('Payment verification failed. Please contact us on WhatsApp with your payment ID: ' + paymentId);
+                        setIsProcessing(false);
+                        return;
+                    }
+                } catch {
+                    setFormError('Unable to verify payment. Please contact us on WhatsApp with your payment ID: ' + paymentId);
+                    setIsProcessing(false);
+                    return;
+                }
+
+                // Build order data
                 const remaining = total - totalBats * COD_BOOKING_PER_BAT;
                 const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
+                const totalAtDoor = isCOD ? remaining + codFee : 0;
+                const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
 
                 const orderData = {
                     userId,
@@ -286,18 +316,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     })),
                     total,
                     codFee,
+                    bookingAmount,
+                    remaining,
+                    totalAtDoor,
                     razorpayPaymentId: paymentId,
                     status: 'confirmed' as const,
                     paymentStatus: isCOD ? 'pending' as const : 'completed' as const,
                     paymentMethod: sanitizedData.paymentMethod as any
                 };
 
-                createOrder(orderData)
-                    .then(() => Promise.all([
-                        sendAdminOrderNotification({ ...orderData, id: orderId }),
-                        sendOrderConfirmation({ ...orderData, id: orderId })
-                    ]))
-                    .catch(err => console.error('Background order processing failed:', err));
+                // Send emails immediately — independent of Firestore
+                sendAdminOrderNotification({ ...orderData, id: orderId })
+                    .catch(err => console.error('Admin notification failed:', err));
+                if (sanitizedData.email) {
+                    sendOrderConfirmation({ ...orderData, id: orderId })
+                        .catch(err => console.error('Customer email failed:', err));
+                }
+
+                // Save to Firestore in background (don't block on this)
+                createOrder(orderData).catch(err => console.error('Firestore order save failed:', err));
 
                 if (isCOD) {
                     // For COD: open WhatsApp to confirm delivery details

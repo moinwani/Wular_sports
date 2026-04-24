@@ -7,6 +7,20 @@ import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 
+const COD_BOOKING_PER_BAT = 500;
+const COD_FEE_PERCENT = 0.05;
+
+function loadRazorpayScript(): Promise<boolean> {
+    return new Promise((resolve) => {
+        if ((window as any).Razorpay) return resolve(true);
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+    });
+}
+
 interface CheckoutViewProps {
     cart: CartItem[];
     total: number;
@@ -154,86 +168,152 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
     };
 
-    // Helper to create order with timeout so it doesn't hang forever
-
+    const openRazorpay = (
+        razorpayOrderId: string,
+        amountPaise: number,
+        description: string,
+        sanitizedData: typeof formData,
+        onSuccess: (paymentId: string) => void
+    ) => {
+        const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            amount: amountPaise,
+            currency: 'INR',
+            name: 'Wular Sports',
+            description,
+            order_id: razorpayOrderId,
+            handler: (response: { razorpay_payment_id: string }) => {
+                onSuccess(response.razorpay_payment_id);
+            },
+            prefill: {
+                name: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
+                contact: sanitizedData.phone,
+                email: sanitizedData.email || '',
+            },
+            theme: { color: '#C9A84C' },
+            modal: {
+                ondismiss: () => {
+                    setIsProcessing(false);
+                    setFormError('Payment cancelled. Please try again to complete your order.');
+                }
+            }
+        };
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Strict input validation & sanitization (OWASP best practices)
         const validation = validateFormData(formData, checkoutSchema);
-
         if (!validation.valid) {
             setFieldErrors(validation.errors);
             setFormError("Please correct the errors in the form.");
             return;
         }
 
-        // Use sanitized data
         const sanitizedData = validation.sanitized! as typeof formData;
         setFormError('');
         setFieldErrors({});
         setIsProcessing(true);
 
         try {
-            // SECURITY: Authenticate user before creating order
+            const scriptLoaded = await loadRazorpayScript();
+            if (!scriptLoaded) {
+                setFormError('Payment gateway failed to load. Please check your connection and try again.');
+                setIsProcessing(false);
+                return;
+            }
+
             const { ensureAuthenticated } = await import('../services/auth');
             const userId = await ensureAuthenticated();
-
-            // Generate order ID
             const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
+            const isCOD = sanitizedData.paymentMethod === 'cod';
 
-            // Build WhatsApp URL and open it
-            const whatsappUrl = buildWhatsAppUrl(orderId, sanitizedData);
-            whatsAppUrlRef.current = whatsappUrl;
-            window.open(whatsappUrl, '_blank');
+            // Amount to charge via Razorpay
+            const chargeAmount = isCOD
+                ? totalBats * COD_BOOKING_PER_BAT   // ₹500 per bat booking
+                : total;                              // full amount
 
-            // Execute background save to DB with userId
-            const orderData = {
-                userId: userId, // REQUIRED: Links order to authenticated user
-                customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
-                customerEmail: sanitizedData.email || '',
-                customerPhone: sanitizedData.phone,
-                customerAddress: {
-                    street: sanitizedData.address,
-                    city: sanitizedData.city,
-                    state: sanitizedData.state,
-                    pincode: sanitizedData.zip
-                },
-                items: cart.map(item => ({
-                    productId: item.id,
-                    productName: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    size: item.size
-                })),
-                total: total,
-                status: 'pending' as const,
-                paymentStatus: 'pending' as const,
-                paymentMethod: sanitizedData.paymentMethod as any
-            };
+            // Create Razorpay order on server
+            const res = await fetch('/api/create-razorpay-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    amount: chargeAmount * 100, // paise
+                    receipt: orderId,
+                    notes: { orderId, customerPhone: sanitizedData.phone }
+                }),
+            });
 
-            // Non-blocking background save & notification
-            createOrder(orderData)
-                .then(() => Promise.all([
-                    sendAdminOrderNotification({ ...orderData, id: orderId }),
-                    sendOrderConfirmation({ ...orderData, id: orderId })
-                ]))
-                .catch(err => console.error("Background order processing failed:", err));
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || 'Failed to initiate payment');
+            }
 
-            // Show WhatsApp confirmation step instead of immediately navigating away
-            setPendingWhatsApp({ whatsappUrl: whatsAppUrlRef.current });
-            setIsProcessing(false);
+            const { orderId: razorpayOrderId } = await res.json();
+            const description = isCOD
+                ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
+                : `Full Payment — Wular Sports Order`;
+
+            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId) => {
+                // Payment successful — save order
+                const remaining = total - totalBats * COD_BOOKING_PER_BAT;
+                const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
+
+                const orderData = {
+                    userId,
+                    customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
+                    customerEmail: sanitizedData.email || '',
+                    customerPhone: sanitizedData.phone,
+                    customerAddress: {
+                        street: sanitizedData.address,
+                        city: sanitizedData.city,
+                        state: sanitizedData.state,
+                        pincode: sanitizedData.zip
+                    },
+                    items: cart.map(item => ({
+                        productId: item.id,
+                        productName: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                        size: item.size
+                    })),
+                    total,
+                    codFee,
+                    razorpayPaymentId: paymentId,
+                    status: 'confirmed' as const,
+                    paymentStatus: isCOD ? 'pending' as const : 'completed' as const,
+                    paymentMethod: sanitizedData.paymentMethod as any
+                };
+
+                createOrder(orderData)
+                    .then(() => Promise.all([
+                        sendAdminOrderNotification({ ...orderData, id: orderId }),
+                        sendOrderConfirmation({ ...orderData, id: orderId })
+                    ]))
+                    .catch(err => console.error('Background order processing failed:', err));
+
+                if (isCOD) {
+                    // For COD: open WhatsApp to confirm delivery details
+                    const whatsappUrl = buildWhatsAppUrl(orderId, sanitizedData);
+                    whatsAppUrlRef.current = whatsappUrl;
+                    window.open(whatsappUrl, '_blank');
+                    setPendingWhatsApp({ whatsappUrl });
+                    setIsProcessing(false);
+                } else {
+                    // Full payment: go straight to success
+                    onPlaceOrder({ id: orderId, items: cart, total, paymentId });
+                }
+            });
 
         } catch (error: any) {
-            console.error("Order process failed:", error);
-
-            // Better error handling for auth failures
-            if (error.message?.includes('authenticate')) {
-                setFormError('Unable to process order. Please refresh the page and try again.');
-            } else {
-                setFormError(`Something went wrong. Please contact us on WhatsApp.`);
-            }
+            console.error('Order process failed:', error);
+            setFormError(error.message?.includes('authenticate')
+                ? 'Unable to process order. Please refresh the page and try again.'
+                : 'Something went wrong. Please try again or contact us on WhatsApp.'
+            );
             setIsProcessing(false);
         }
     };
@@ -555,50 +635,86 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
                         <div className="payment-section">
                             <h3>Payment Method</h3>
-                            <div className="payment-options">
-                                <label className={`payment-option ${formData.paymentMethod === 'full' ? 'selected' : ''}`}>
-                                    <input
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="full"
-                                        checked={formData.paymentMethod === 'full'}
-                                        onChange={handleInputChange}
-                                        disabled={isProcessing}
-                                    />
-                                    <div className="payment-option-content">
-                                        <span><i className="fas fa-check-circle"></i> Full Payment (via WhatsApp)</span>
-                                        <small>Fastest processing & priority delivery</small>
-                                    </div>
-                                </label>
-                                <label className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
-                                    <input
-                                        type="radio"
-                                        name="paymentMethod"
-                                        value="cod"
-                                        checked={formData.paymentMethod === 'cod'}
-                                        onChange={handleInputChange}
-                                        disabled={isProcessing}
-                                    />
-                                    <div className="payment-option-content">
-                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery (via WhatsApp)</span>
-                                        <small>Pay ₹300 per bat now to confirm</small>
-                                    </div>
-                                </label>
-                            </div>
 
-                            <div className="payment-security-note">
-                                <i className="fas fa-info-circle"></i>
-                                {formData.paymentMethod === 'cod' ? (
-                                    <p>
-                                        To confirm your COD order, a booking amount of
-                                        <strong> ₹{(cart.reduce((acc, item) => acc + item.quantity, 0) * 300).toLocaleString('en-IN')}</strong>
-                                        ({cart.reduce((acc, item) => acc + item.quantity, 0)} bat(s) × ₹300) is required.
-                                        The balance <strong> ₹{(total - cart.reduce((acc, item) => acc + item.quantity, 0) * 300).toLocaleString('en-IN')}</strong> will be paid at delivery.
-                                    </p>
-                                ) : (
-                                    <p>You will be redirected to WhatsApp to confirm your order and pay the full amount of <strong>₹{total.toLocaleString('en-IN')}</strong> securely. No extra fees!</p>
-                                )}
-                            </div>
+                            {(() => {
+                                const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
+                                const booking = totalBats * COD_BOOKING_PER_BAT;
+                                const remaining = total - booking;
+                                const codFee = Math.round(remaining * COD_FEE_PERCENT);
+                                const totalAtDoor = remaining + codFee;
+
+                                return (
+                                    <>
+                                        <div className="payment-options">
+                                            <label className={`payment-option ${formData.paymentMethod === 'full' ? 'selected' : ''}`}>
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="full"
+                                                    checked={formData.paymentMethod === 'full'}
+                                                    onChange={handleInputChange}
+                                                    disabled={isProcessing}
+                                                />
+                                                <div className="payment-option-content">
+                                                    <span><i className="fas fa-lock"></i> Full Payment</span>
+                                                    <small>Pay securely now — no extra charges</small>
+                                                    <span className="payment-save-badge">Save ₹{codFee.toLocaleString('en-IN')} vs COD</span>
+                                                </div>
+                                            </label>
+                                            <label className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
+                                                <input
+                                                    type="radio"
+                                                    name="paymentMethod"
+                                                    value="cod"
+                                                    checked={formData.paymentMethod === 'cod'}
+                                                    onChange={handleInputChange}
+                                                    disabled={isProcessing}
+                                                />
+                                                <div className="payment-option-content">
+                                                    <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery</span>
+                                                    <small>Pay ₹{COD_BOOKING_PER_BAT}/bat now + balance at door</small>
+                                                </div>
+                                            </label>
+                                        </div>
+
+                                        {formData.paymentMethod === 'cod' ? (
+                                            <div className="cod-breakdown">
+                                                <div className="cod-row">
+                                                    <span>Order total</span>
+                                                    <span>₹{total.toLocaleString('en-IN')}</span>
+                                                </div>
+                                                <div className="cod-row">
+                                                    <span>Booking amount <em>(paid now via Razorpay)</em></span>
+                                                    <span className="cod-booking">− ₹{booking.toLocaleString('en-IN')}</span>
+                                                </div>
+                                                <div className="cod-row">
+                                                    <span>Remaining at delivery</span>
+                                                    <span>₹{remaining.toLocaleString('en-IN')}</span>
+                                                </div>
+                                                <div className="cod-row cod-fee-row">
+                                                    <span>
+                                                        COD convenience fee (5%)
+                                                        <span className="cod-fee-note"> — charged by India Post / D2DC, not by Wular Sports</span>
+                                                    </span>
+                                                    <span className="cod-fee">+ ₹{codFee.toLocaleString('en-IN')}</span>
+                                                </div>
+                                                <div className="cod-row cod-total-door">
+                                                    <span><strong>Amount due at delivery</strong></span>
+                                                    <span><strong>₹{totalAtDoor.toLocaleString('en-IN')}</strong></span>
+                                                </div>
+                                                <p className="cod-save-hint">
+                                                    <i className="fas fa-lightbulb"></i> Choose <strong>Full Payment</strong> and save ₹{codFee.toLocaleString('en-IN')} in COD charges.
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <div className="full-payment-note">
+                                                <i className="fas fa-check-circle"></i>
+                                                <p>Pay ₹{total.toLocaleString('en-IN')} securely via Razorpay now. <strong>No COD charges apply.</strong> You save ₹{codFee.toLocaleString('en-IN')} compared to Cash on Delivery.</p>
+                                            </div>
+                                        )}
+                                    </>
+                                );
+                            })()}
                         </div>
 
                         <button

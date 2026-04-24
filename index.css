@@ -5534,6 +5534,76 @@ img[loading="lazy"] {
     line-height: 1.5;
 }
 
+/* Payment option save badge */
+.payment-save-badge {
+    display: inline-block;
+    background: rgba(74,222,128,0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74,222,128,0.35);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    margin-top: 4px;
+}
+
+/* Full payment note */
+.full-payment-note {
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    background: rgba(74,222,128,0.08);
+    border-left: 3px solid #4ade80;
+    border-radius: 5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+.full-payment-note i { color: #4ade80; margin-top: 3px; flex-shrink: 0; }
+.full-payment-note p { color: #ccc; font-size: 0.9rem; margin: 0; line-height: 1.5; }
+
+/* COD breakdown table */
+.cod-breakdown {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    font-size: 0.88rem;
+}
+.cod-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: #ccc;
+}
+.cod-row:last-of-type { border-bottom: none; }
+.cod-row em { font-style: italic; color: #888; font-size: 0.8rem; }
+.cod-booking { color: #4ade80; }
+.cod-fee-row { color: #ffb400; }
+.cod-fee { color: #ffb400; white-space: nowrap; }
+.cod-fee-note { display: block; font-size: 0.78rem; color: #888; margin-top: 2px; }
+.cod-total-door {
+    margin-top: 0.25rem;
+    padding-top: 0.5rem !important;
+    border-top: 1px solid rgba(255,255,255,0.15) !important;
+    color: #fff;
+    font-size: 0.95rem;
+}
+.cod-save-hint {
+    margin: 0.75rem 0 0;
+    padding: 0.6rem 0.75rem;
+    background: rgba(201,168,76,0.1);
+    border-left: 3px solid var(--golden);
+    border-radius: 4px;
+    font-size: 0.82rem;
+    color: #ccc;
+    line-height: 1.5;
+}
+.cod-save-hint i { color: var(--golden); margin-right: 4px; }
+
 /* Mobile Size Selector Fix */
 @media (max-width: 768px) {
     .size-options-premium {

@@ -27,15 +27,23 @@ function getApp(): FirebaseApp | null {
 export function getDb(): Firestore | null {
     const app = getApp();
     if (!app) return null;
-    if (!_db) _db = getFirestore(app);
-    return _db;
+    try {
+        if (!_db) _db = getFirestore(app);
+        return _db;
+    } catch {
+        return null;
+    }
 }
 
 export function getFirebaseAuth(): Auth | null {
     const app = getApp();
     if (!app) return null;
-    if (!_auth) _auth = getAuth(app);
-    return _auth;
+    try {
+        if (!_auth) _auth = getAuth(app);
+        return _auth;
+    } catch {
+        return null;
+    }
 }
 
 export const analytics = null;

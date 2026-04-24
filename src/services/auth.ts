@@ -18,9 +18,13 @@ let currentUser: User | null = null;
 
 // Listen for auth state changes (browser only)
 if (typeof window !== 'undefined') {
-    onAuthStateChanged(auth, (user) => {
-        currentUser = user;
-    });
+    try {
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+        });
+    } catch {
+        // Firebase not configured — app works without auth (order saving disabled)
+    }
 }
 
 /**

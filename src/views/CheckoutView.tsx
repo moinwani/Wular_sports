@@ -137,8 +137,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     const buildWhatsAppUrl = (orderId: string, sanitizedData: typeof formData): string => {
         const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
-        const bookingAmount = totalQty * 300;
-        const balance = total - bookingAmount;
+        const bookingAmount = totalQty * COD_BOOKING_PER_BAT;
+        const remaining = total - bookingAmount;
+        const codFee = Math.round(remaining * COD_FEE_PERCENT);
+        const balanceAtDoor = remaining + codFee;
         const isCOD = sanitizedData.paymentMethod === 'cod';
 
         // Construct WhatsApp message
@@ -149,8 +151,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         let paymentDetail = '';
         if (isCOD) {
             paymentDetail = `*Payment Method:* Cash on Delivery (COD)%0A` +
-                `*Booking Amount (Pre-paid):* ₹${bookingAmount.toLocaleString('en-IN')} (₹300/bat)%0A` +
-                `*Balance at Delivery:* ₹${balance.toLocaleString('en-IN')}`;
+                `*Booking Amount (Pre-paid):* ₹${bookingAmount.toLocaleString('en-IN')} (₹${COD_BOOKING_PER_BAT}/bat)%0A` +
+                `*Remaining:* ₹${remaining.toLocaleString('en-IN')}%0A` +
+                `*COD Convenience Fee (5%):* ₹${codFee.toLocaleString('en-IN')} (charged by courier)%0A` +
+                `*Amount Due at Delivery:* ₹${balanceAtDoor.toLocaleString('en-IN')}`;
         } else {
             paymentDetail = `*Payment Method:* Full Payment (Pre-paid)%0A` +
                 `*Total Amount:* ₹${total.toLocaleString('en-IN')}`;
@@ -694,7 +698,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                                 <div className="cod-row cod-fee-row">
                                                     <span>
                                                         COD convenience fee (5%)
-                                                        <span className="cod-fee-note"> — charged by India Post / D2DC, not by Wular Sports</span>
+                                                        <span className="cod-fee-note"> — charged by India Post / DTDC, not by Wular Sports</span>
                                                     </span>
                                                     <span className="cod-fee">+ ₹{codFee.toLocaleString('en-IN')}</span>
                                                 </div>

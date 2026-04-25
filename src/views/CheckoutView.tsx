@@ -743,7 +743,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     >
                                         {COUNTRY_CODES.map(({ code, country }) => (
                                             <option key={`${code}-${country}`} value={code}>
-                                                {code} — {country}
+                                                {code} {country}
                                             </option>
                                         ))}
                                     </select>

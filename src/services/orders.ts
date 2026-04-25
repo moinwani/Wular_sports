@@ -25,6 +25,7 @@ export interface Order {
         city: string;
         state: string;
         pincode: string;
+        country?: string;
     };
     items: Array<{
         productId: string;

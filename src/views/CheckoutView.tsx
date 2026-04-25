@@ -215,6 +215,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         city: '',
         state: '',
         zip: '',
+        country: 'India',
         paymentMethod: 'full'
     });
     const [formError, setFormError] = useState('');
@@ -307,6 +308,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             type: 'zip',
             maxLength: 6,
         },
+        country: {
+            required: true,
+            type: 'string',
+            minLength: 2,
+            maxLength: 100,
+        },
         paymentMethod: {
             required: true,
             type: 'string',
@@ -374,7 +381,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             `*Order ID:* ${orderId}%0A` +
             `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
             `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}%0A` +
-            `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}%0A%0A` +
+            `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country || 'India'}%0A%0A` +
             `*Items:*%0A${itemsList}%0A%0A` +
             `${paymentDetail}%0A%0A` +
             `Please share payment details to confirm my order!`;
@@ -511,7 +518,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         street: sanitizedData.address,
                         city: sanitizedData.city,
                         state: sanitizedData.state,
-                        pincode: sanitizedData.zip
+                        pincode: sanitizedData.zip,
+                        country: sanitizedData.country || 'India'
                     },
                     items: cart.map(item => ({
                         productId: item.id,
@@ -801,6 +809,27 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 />
                                 {fieldErrors.address && (
                                     <span className="error-message">{fieldErrors.address}</span>
+                                )}
+                            </div>
+
+                            <div className="form-group">
+                                <label>Country *</label>
+                                <select
+                                    name="country"
+                                    value={formData.country}
+                                    onChange={handleInputChange}
+                                    required
+                                    disabled={isProcessing}
+                                    className={fieldErrors.country ? 'error' : ''}
+                                >
+                                    {COUNTRY_CODES.map(({ country }) => (
+                                        <option key={country} value={country}>
+                                            {country}
+                                        </option>
+                                    ))}
+                                </select>
+                                {fieldErrors.country && (
+                                    <span className="error-message">{fieldErrors.country}</span>
                                 )}
                             </div>
 

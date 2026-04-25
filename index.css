@@ -3442,6 +3442,52 @@ main {
     outline: none;
 }
 
+.phone-input-group {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.phone-input-group input {
+    flex: 1;
+    min-width: 0;
+}
+
+.country-code-select {
+    flex-shrink: 0;
+    width: 160px;
+    background-color: #222;
+    border: 1px solid #444;
+    border-radius: 5px;
+    color: white;
+    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.country-code-select:focus {
+    border-color: var(--golden);
+    outline: none;
+}
+
+.field-note {
+    display: block;
+    font-size: 0.78rem;
+    color: #888;
+    margin-top: 0.35rem;
+    line-height: 1.4;
+}
+
+.field-note--success {
+    color: #4caf50;
+}
+
+.input-readonly {
+    opacity: 0.8;
+    cursor: not-allowed;
+    background-color: #1a1a1a !important;
+}
+
 .summary-items {
     max-height: 300px;
     overflow-y: auto;

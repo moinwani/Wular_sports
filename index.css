@@ -3455,12 +3455,12 @@ main {
 
 .country-code-select {
     flex-shrink: 0;
-    width: 160px;
+    width: 90px;
     background-color: #222;
     border: 1px solid #444;
     border-radius: 5px;
     color: white;
-    padding: 0.8rem 0.5rem;
+    padding: 0.8rem 0.4rem;
     font-size: 0.9rem;
     cursor: pointer;
 }

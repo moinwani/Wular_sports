@@ -37,38 +37,25 @@ export function isValidEmail(email: string): boolean {
 }
 
 /**
- * Validate phone number (Indian format)
+ * Validate phone number — exactly 10 digits (country code is entered separately)
  */
 export function isValidPhone(phone: string): boolean {
   if (typeof phone !== 'string') {
     return false;
   }
-  
-  // Remove spaces, dashes, parentheses
+
   const cleaned = phone.replace(/[\s\-\(\)]/g, '');
-  
-  // Indian phone: 10 digits, optionally prefixed with +91 or 0
-  const phoneRegex = /^(\+91|0)?[6-9]\d{9}$/;
-  return phoneRegex.test(cleaned) && cleaned.length >= 10 && cleaned.length <= 13;
+  return /^\d{10}$/.test(cleaned);
 }
 
 /**
- * Validate and sanitize phone number
+ * Sanitize phone number — digits only, max 10
  */
 export function sanitizePhone(phone: string): string {
   if (typeof phone !== 'string') {
     return '';
   }
-  
-  // Remove all non-digit characters except +
-  const cleaned = phone.replace(/[^\d+]/g, '');
-  
-  // Limit length
-  if (cleaned.length > 15) {
-    return cleaned.substring(0, 15);
-  }
-  
-  return cleaned;
+  return phone.replace(/[^\d]/g, '').substring(0, 10);
 }
 
 /**

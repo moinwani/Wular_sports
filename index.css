@@ -3471,6 +3471,40 @@ main {
     outline: none;
 }
 
+.signin-required-panel {
+    background-color: #1a1a1a;
+    border: 1px solid var(--golden);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.signin-required-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.signin-required-text strong {
+    color: var(--golden);
+    font-size: 1.05rem;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.signin-required-text span {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.signin-google-btn {
+    min-height: 44px;
+}
+
 .field-note {
     display: block;
     font-size: 0.78rem;

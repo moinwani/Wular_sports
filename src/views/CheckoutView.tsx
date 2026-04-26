@@ -237,22 +237,53 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [pendingWhatsApp]);
 
-    // Auto-populate email from signed-in Google account
+    // Live auth state — required for placing an order
     useEffect(() => {
-        const populateEmailFromAuth = async () => {
+        let unsubscribe: (() => void) | undefined;
+        (async () => {
             try {
-                const { waitForAuth } = await import('../services/auth');
-                const user = await waitForAuth();
-                if (user && user.email && !user.isAnonymous) {
-                    setFormData(prev => ({ ...prev, email: user.email! }));
-                    setIsEmailFromAuth(true);
-                }
+                const { subscribeToAuthChanges } = await import('../services/auth');
+                unsubscribe = subscribeToAuthChanges((user) => {
+                    if (user && user.email && !user.isAnonymous) {
+                        setFormData(prev => ({ ...prev, email: user.email! }));
+                        setIsEmailFromAuth(true);
+                    } else {
+                        setFormData(prev => ({ ...prev, email: '' }));
+                        setIsEmailFromAuth(false);
+                    }
+                });
             } catch {
-                // Auth unavailable — user types email manually
+                // Auth unavailable
             }
-        };
-        populateEmailFromAuth();
+        })();
+        return () => { if (unsubscribe) unsubscribe(); };
     }, []);
+
+    // Render Google Sign-In button when user is not signed in
+    const googleBtnRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (isEmailFromAuth || !googleBtnRef.current) return;
+        let cancelled = false;
+        (async () => {
+            const { renderGoogleSignInButton, signInWithGoogle } = await import('../services/auth');
+            if (cancelled || !googleBtnRef.current) return;
+            renderGoogleSignInButton(googleBtnRef.current, async (response) => {
+                try {
+                    const user = await signInWithGoogle(response.credential);
+                    if (user.email) {
+                        try {
+                            const { subscribeToNewsletter } = await import('../services/newsletter');
+                            subscribeToNewsletter(user.email);
+                        } catch { /* newsletter optional */ }
+                    }
+                } catch (err) {
+                    console.error('Google sign-in failed:', err);
+                    setFormError('Google sign-in failed. Please try again.');
+                }
+            });
+        })();
+        return () => { cancelled = true; };
+    }, [isEmailFromAuth]);
 
     // Validation schema for checkout form (OWASP best practices)
     const checkoutSchema: ValidationSchema = {
@@ -269,7 +300,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             maxLength: 50,
         },
         email: {
-            required: false,
+            required: true,
             type: 'email',
             maxLength: 254,
         },
@@ -431,6 +462,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!isEmailFromAuth) {
+            setFormError('Please sign in with Google to place your order.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
 
         const validation = validateFormData(formData, checkoutSchema);
         if (!validation.valid) {
@@ -703,6 +740,17 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     {/* Left Column: Shipping Details */}
                     <div className="checkout-form-section">
                         <h2 className="section-title-compact">Shipping Information</h2>
+
+                        {!isEmailFromAuth && (
+                            <div className="signin-required-panel">
+                                <div className="signin-required-text">
+                                    <strong>Sign in with Google to continue</strong>
+                                    <span>We need your email to send the order confirmation.</span>
+                                </div>
+                                <div ref={googleBtnRef} className="signin-google-btn"></div>
+                            </div>
+                        )}
+
                         <form id="checkout-form" onSubmit={handleSubmit}>
                             <div className="form-row compact">
                                 <div className="form-group">
@@ -774,21 +822,20 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             </div>
 
                             <div className="form-group">
-                                <label>Email Address {isEmailFromAuth ? '' : '(for order confirmation)'}</label>
+                                <label>Email Address *</label>
                                 <input
                                     type="email"
                                     name="email"
                                     value={formData.email}
-                                    onChange={isEmailFromAuth ? undefined : handleInputChange}
-                                    readOnly={isEmailFromAuth}
+                                    readOnly
                                     disabled={isProcessing}
-                                    className={`${fieldErrors.email ? 'error' : ''} ${isEmailFromAuth ? 'input-readonly' : ''}`}
-                                    placeholder="your@email.com"
+                                    className={`${fieldErrors.email ? 'error' : ''} input-readonly`}
+                                    placeholder="Sign in with Google to use your email"
                                 />
                                 {isEmailFromAuth ? (
                                     <span className="field-note field-note--success">Signed-in email — order confirmation will be sent here</span>
                                 ) : (
-                                    <span className="field-note">Enter your email to receive an order confirmation. <strong>Sign in with Google</strong> to auto-fill.</span>
+                                    <span className="field-note">Sign in with Google above to auto-fill your email.</span>
                                 )}
                                 {fieldErrors.email && (
                                     <span className="error-message">{fieldErrors.email}</span>
@@ -1023,10 +1070,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             type="submit"
                             form="checkout-form"
                             className="btn-place-order"
-                            disabled={isProcessing}
+                            disabled={isProcessing || !isEmailFromAuth}
+                            title={!isEmailFromAuth ? 'Sign in with Google to place your order' : ''}
                         >
                             {isProcessing ? (
                                 <span className="btn-spinner"><i className="fas fa-spinner fa-spin"></i> Processing...</span>
+                            ) : !isEmailFromAuth ? (
+                                "SIGN IN TO PLACE ORDER"
                             ) : (
                                 "PLACE ORDER"
                             )}

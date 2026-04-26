@@ -429,6 +429,42 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
     };
 
+    const buildDeliveryInquiryUrl = (sanitizedData: typeof formData): string => {
+        const itemsList = cart.map((item, idx) =>
+            `${idx + 1}. ${item.name} (${item.size || 'N/A'}) x${item.quantity}`
+        ).join('%0A');
+
+        const message = `*International Delivery Inquiry 🌍*%0A%0A` +
+            `Hi Wular Sports, I'd like to know the delivery charges for shipping to my address before placing my order.%0A%0A` +
+            `*Name:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
+            `*Email:* ${sanitizedData.email}%0A` +
+            `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}%0A` +
+            `*Shipping Address:*%0A${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country}%0A%0A` +
+            `*Items I want to order:*%0A${itemsList}%0A%0A` +
+            `*Order Subtotal:* ₹${total.toLocaleString('en-IN')}%0A%0A` +
+            `Please confirm the delivery charges for this address. Thank you!`;
+
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+    };
+
+    const handleDeliveryInquiry = () => {
+        if (!isEmailFromAuth) {
+            setFormError('Please sign in with Google to inquire about delivery charges.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        const validation = validateFormData(formData, checkoutSchema);
+        if (!validation.valid) {
+            setFieldErrors(validation.errors);
+            setFormError('Please fill in all your details before checking delivery charges.');
+            return;
+        }
+        setFormError('');
+        setFieldErrors({});
+        const url = buildDeliveryInquiryUrl(validation.sanitized! as typeof formData);
+        window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
     const openRazorpay = (
         razorpayOrderId: string,
         amountPaise: number,
@@ -1109,6 +1145,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 "PLACE ORDER"
                             )}
                         </button>
+
+                        {formData.country !== 'India' && (
+                            <button
+                                type="button"
+                                className="btn-delivery-inquiry"
+                                onClick={handleDeliveryInquiry}
+                                disabled={isProcessing || !isEmailFromAuth}
+                                title={!isEmailFromAuth ? 'Sign in with Google first' : 'Ask us about delivery charges before placing your order'}
+                            >
+                                <i className="fab fa-whatsapp"></i> Ask Delivery Charges on WhatsApp
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

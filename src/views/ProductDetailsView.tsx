@@ -6,6 +6,7 @@ import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
+import { TrustStrip } from '../components/common/TrustStrip';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
@@ -26,6 +27,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const [scrollPhase, setScrollPhase] = useState<ScrollPhase>('images');
     const [isMobile, setIsMobile] = useState(false);
+    const [showStickyBar, setShowStickyBar] = useState(false);
+    const buyNowBtnRef = useRef<HTMLButtonElement>(null);
     const imageGalleryRef = useRef<HTMLDivElement | null>(null);
     const imageScrollContainerRef = useRef<HTMLDivElement | null>(null);
     const contentSectionRef = useRef<HTMLDivElement>(null);
@@ -44,6 +47,17 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Show sticky bar when the main Buy Now button scrolls out of view (mobile only)
+    useEffect(() => {
+        if (!buyNowBtnRef.current) return;
+        const observer = new IntersectionObserver(
+            ([entry]) => setShowStickyBar(!entry.isIntersecting),
+            { threshold: 0 }
+        );
+        observer.observe(buyNowBtnRef.current);
+        return () => observer.disconnect();
     }, []);
 
     // Store scroll container ref from VerticalImageGallery
@@ -572,7 +586,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     </button>
                                 </div>
 
-                                <button className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
+                                <button ref={buyNowBtnRef} className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
                                     <i className="fas fa-shopping-bag"></i>
                                     BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
                                 </button>
@@ -607,6 +621,9 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 ORDER ON WHATSAPP
                             </a>
                         </div>
+
+                        {/* Trust badges */}
+                        <TrustStrip />
 
                         {/* Tabs Section */}
                         <div className="product-tabs-container">
@@ -942,6 +959,19 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     product={product}
                     onAddToCart={onAddToCart}
                 />
+            )}
+
+            {/* Sticky mobile Add-to-Cart bar */}
+            {isMobile && showStickyBar && (
+                <div className="sticky-buy-bar">
+                    <div className="sticky-buy-bar__info">
+                        <span className="sticky-buy-bar__name">{product.name}</span>
+                        <span className="sticky-buy-bar__price">₹{(product.price * quantity).toLocaleString('en-IN')}</span>
+                    </div>
+                    <button className="sticky-buy-bar__btn" onClick={handleAddToCartClick}>
+                        <i className="fas fa-shopping-bag"></i> Add to Cart
+                    </button>
+                </div>
             )}
         </div>
     );

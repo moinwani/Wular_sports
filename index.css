@@ -3652,6 +3652,121 @@ main {
     font-size: 1.2rem;
 }
 
+/* ─── Trust Strip ─────────────────────────────────────── */
+.trust-strip {
+    background-color: #111;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+.trust-strip::-webkit-scrollbar { display: none; }
+
+.trust-strip__track {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    min-width: max-content;
+    padding: 0 0.5rem;
+}
+
+.trust-strip__badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.trust-strip__badge i {
+    font-size: 1.3rem;
+    color: var(--golden);
+}
+
+.trust-strip__badge span {
+    font-size: 0.72rem;
+    color: #ccc;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* On desktop, center and don't scroll */
+@media (min-width: 768px) {
+    .trust-strip { overflow-x: visible; }
+    .trust-strip__track {
+        min-width: unset;
+        justify-content: center;
+        gap: 3rem;
+    }
+    .trust-strip__badge { flex-direction: row; min-width: unset; }
+    .trust-strip__badge span { font-size: 0.82rem; }
+}
+
+/* ─── Sticky Mobile Buy Bar ────────────────────────────── */
+.sticky-buy-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: #111;
+    border-top: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    gap: 0.75rem;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.5);
+}
+
+.sticky-buy-bar__info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sticky-buy-bar__name {
+    font-size: 0.78rem;
+    color: #aaa;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.sticky-buy-bar__price {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--golden);
+    font-family: 'Oswald', sans-serif;
+}
+
+.sticky-buy-bar__btn {
+    flex-shrink: 0;
+    background: #E31E24;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    text-transform: uppercase;
+}
+
+.sticky-buy-bar__btn:active {
+    background: #c41217;
+}
+
 /* Order Success Page */
 .order-success-page {
     min-height: 70vh;

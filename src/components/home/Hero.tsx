@@ -17,6 +17,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
+        handleResize(); // set correct value immediately on mount
         window.addEventListener('resize', handleResize);
 
         // Fetch Dynamic Hero Images

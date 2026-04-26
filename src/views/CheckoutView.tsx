@@ -377,9 +377,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             filteredValue = value.replace(/\D/g, '').substring(0, 6);
         }
 
-        setFormData({
-            ...formData,
-            [name]: filteredValue
+        setFormData(prev => {
+            const next = { ...prev, [name]: filteredValue };
+            // International orders cannot use COD
+            if (name === 'country' && filteredValue !== 'India' && prev.paymentMethod === 'cod') {
+                next.paymentMethod = 'full';
+            }
+            return next;
         });
     };
 
@@ -408,13 +412,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 `*Total Amount:* ₹${total.toLocaleString('en-IN')}`;
         }
 
+        const isIndia = (sanitizedData.country || 'India') === 'India';
+        const deliveryNote = isIndia
+            ? ''
+            : `%0A⚠️ *International Order* — Delivery charges will be communicated via WhatsApp / email.`;
+
         const message = `*New Order Request (${isCOD ? 'COD' : 'Full Payment'})! 🏏*%0A%0A` +
             `*Order ID:* ${orderId}%0A` +
             `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
             `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}%0A` +
             `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country || 'India'}%0A%0A` +
             `*Items:*%0A${itemsList}%0A%0A` +
-            `${paymentDetail}%0A%0A` +
+            `${paymentDetail}${deliveryNote}%0A%0A` +
             `Please share payment details to confirm my order!`;
 
         return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
@@ -957,7 +966,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 </div>
                                 <div className="total-row">
                                     <span>Shipping</span>
-                                    <span>Free</span>
+                                    <span>{formData.country === 'India' ? 'Free' : 'Quoted via WhatsApp'}</span>
                                 </div>
                                 <div className="total-row grand-total">
                                     <span>Total</span>
@@ -969,7 +978,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             <div className="secure-payment-badges">
                                 <div className="secure-badge">
                                     <i className="fas fa-shipping-fast"></i>
-                                    <span>Free Delivery</span>
+                                    <span>{formData.country === 'India' ? 'Free Delivery' : 'Intl. Shipping'}</span>
                                 </div>
                                 <div className="secure-badge">
                                     <i className="fab fa-whatsapp"></i>
@@ -986,6 +995,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             <h3>Payment Method</h3>
 
                             {(() => {
+                                const isIndia = formData.country === 'India';
                                 const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
                                 const booking = totalBats * COD_BOOKING_PER_BAT;
                                 const remaining = total - booking;
@@ -994,6 +1004,16 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
                                 return (
                                     <>
+                                        {!isIndia && (
+                                            <div className="intl-notice">
+                                                <i className="fas fa-globe"></i>
+                                                <div>
+                                                    <strong>International Order</strong>
+                                                    <p>Cash on Delivery is only available within India. For international orders, full payment is required. Delivery charges will be communicated to you via WhatsApp or email after your order is placed.</p>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className="payment-options">
                                             <label className={`payment-option ${formData.paymentMethod === 'full' ? 'selected' : ''}`}>
                                                 <input
@@ -1007,26 +1027,28 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                                 <div className="payment-option-content">
                                                     <span><i className="fas fa-lock"></i> Full Payment</span>
                                                     <small>Pay securely now — no extra charges</small>
-                                                    <span className="payment-save-badge">Save ₹{codFee.toLocaleString('en-IN')} vs COD</span>
+                                                    {isIndia && <span className="payment-save-badge">Save ₹{codFee.toLocaleString('en-IN')} vs COD</span>}
                                                 </div>
                                             </label>
-                                            <label className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
-                                                <input
-                                                    type="radio"
-                                                    name="paymentMethod"
-                                                    value="cod"
-                                                    checked={formData.paymentMethod === 'cod'}
-                                                    onChange={handleInputChange}
-                                                    disabled={isProcessing}
-                                                />
-                                                <div className="payment-option-content">
-                                                    <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery</span>
-                                                    <small>Pay ₹{COD_BOOKING_PER_BAT}/bat now + balance at door</small>
-                                                </div>
-                                            </label>
+                                            {isIndia && (
+                                                <label className={`payment-option ${formData.paymentMethod === 'cod' ? 'selected' : ''}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="paymentMethod"
+                                                        value="cod"
+                                                        checked={formData.paymentMethod === 'cod'}
+                                                        onChange={handleInputChange}
+                                                        disabled={isProcessing}
+                                                    />
+                                                    <div className="payment-option-content">
+                                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery</span>
+                                                        <small>Pay ₹{COD_BOOKING_PER_BAT}/bat now + balance at door</small>
+                                                    </div>
+                                                </label>
+                                            )}
                                         </div>
 
-                                        {formData.paymentMethod === 'cod' ? (
+                                        {formData.paymentMethod === 'cod' && isIndia ? (
                                             <div className="cod-breakdown">
                                                 <div className="cod-row">
                                                     <span>Order total</span>
@@ -1058,7 +1080,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         ) : (
                                             <div className="full-payment-note">
                                                 <i className="fas fa-check-circle"></i>
-                                                <p>Pay ₹{total.toLocaleString('en-IN')} securely via Razorpay now. <strong>No COD charges apply.</strong> You save ₹{codFee.toLocaleString('en-IN')} compared to Cash on Delivery.</p>
+                                                <p>
+                                                    Pay ₹{total.toLocaleString('en-IN')} securely via Razorpay now.{' '}
+                                                    {isIndia
+                                                        ? <><strong>No COD charges apply.</strong> You save ₹{codFee.toLocaleString('en-IN')} compared to Cash on Delivery.</>
+                                                        : <>Delivery charges for your country will be confirmed via WhatsApp or email after order placement.</>
+                                                    }
+                                                </p>
                                             </div>
                                         )}
                                     </>

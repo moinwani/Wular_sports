@@ -5629,6 +5629,20 @@ img[loading="lazy"] {
 }
 
 /* Full payment note */
+.intl-notice {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: rgba(251, 191, 36, 0.08);
+    border-left: 3px solid var(--golden);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 1rem;
+}
+.intl-notice i { color: var(--golden); margin-top: 3px; flex-shrink: 0; }
+.intl-notice strong { color: var(--golden); display: block; margin-bottom: 0.25rem; font-size: 0.95rem; }
+.intl-notice p { color: #ccc; font-size: 0.88rem; margin: 0; line-height: 1.5; }
+
 .full-payment-note {
     margin-top: 1rem;
     padding: 0.9rem 1rem;

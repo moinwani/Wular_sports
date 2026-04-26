@@ -1,5 +1,4 @@
 import {
-    signInAnonymously,
     User,
     onAuthStateChanged,
     GoogleAuthProvider,
@@ -74,18 +73,56 @@ export const initializeGoogleOneTap = (callback: (response: any) => void) => {
 };
 
 /**
- * Ensure user is authenticated
+ * Ensure user is signed in with a real Google account.
+ * Anonymous users are rejected — placing an order requires Google sign-in.
  */
 export const ensureAuthenticated = async (): Promise<string> => {
-    try {
-        if (currentUser) return currentUser.uid;
-        const userCredential = await signInAnonymously(auth);
-        currentUser = userCredential.user;
-        return currentUser.uid;
-    } catch (error: any) {
-        console.error('❌ Authentication failed:', error);
-        throw new Error('Unable to authenticate.');
+    const user = getCurrentUser();
+    if (!user || user.isAnonymous || !user.email) {
+        throw new Error('Please sign in with Google to place your order.');
     }
+    return user.uid;
+};
+
+/**
+ * Render the official Google Sign-In button into the given element.
+ * Used on checkout to require sign-in before placing an order.
+ */
+export const renderGoogleSignInButton = (
+    element: HTMLElement,
+    onCredential: (response: { credential: string }) => void
+) => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+        console.warn('⚠️ Google Client ID not configured.');
+        return;
+    }
+    if (typeof window === 'undefined' || !(window as any).google?.accounts?.id) {
+        console.warn('⚠️ Google Identity Services not loaded yet.');
+        return;
+    }
+
+    (window as any).google.accounts.id.initialize({
+        client_id: clientId,
+        callback: onCredential,
+        auto_select: false,
+        cancel_on_tap_outside: true
+    });
+
+    (window as any).google.accounts.id.renderButton(element, {
+        theme: 'filled_blue',
+        size: 'large',
+        text: 'signin_with',
+        shape: 'rectangular',
+        width: 280
+    });
+};
+
+/**
+ * Subscribe to auth state changes. Returns an unsubscribe function.
+ */
+export const subscribeToAuthChanges = (callback: (user: User | null) => void) => {
+    return onAuthStateChanged(auth, callback);
 };
 
 /**

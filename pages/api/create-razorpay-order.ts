@@ -6,10 +6,14 @@ import { auth } from '../../src/lib/firebaseAdmin';
 
 const COD_BOOKING_PER_BAT = 500;
 
-const razorpay = new Razorpay({
-    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+function getRazorpay(): Razorpay {
+    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!key_id || !key_secret) {
+        throw new Error('Razorpay credentials not configured');
+    }
+    return new Razorpay({ key_id, key_secret });
+}
 
 async function verifyAuth(req: NextApiRequest): Promise<{ uid: string }> {
     const authHeader = req.headers.authorization;
@@ -71,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         : orderTotal;
 
     try {
-        const order = await razorpay.orders.create({
+        const order = await getRazorpay().orders.create({
             amount: chargeAmount * 100, // paise
             currency: 'INR',
             receipt: (receipt || `rcpt_${Date.now()}`).toString().substring(0, 40),

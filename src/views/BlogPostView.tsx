@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { BlogPost } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';

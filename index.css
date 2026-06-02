@@ -860,6 +860,28 @@ main {
     color: var(--black);
 }
 
+.btn-add-to-cart {
+    background-color: var(--golden);
+    border: 1px solid var(--golden);
+    color: var(--black);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    display: block;
+    width: 100%;
+}
+
+.btn-add-to-cart:hover {
+    background-color: transparent;
+    color: var(--golden);
+    transform: translateY(-2px);
+}
+
 /* Product Detail Modal */
 .product-detail-modal {
     position: fixed;
@@ -1946,12 +1968,33 @@ main {
     visibility: hidden;
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
     transform: translate(-50%, -20px);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 90vw;
 }
 
 .toast.show {
     opacity: 1;
     visibility: visible;
     transform: translate(-50%, 0);
+}
+
+.toast-close-btn {
+    background: none;
+    border: none;
+    color: var(--black);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.toast-close-btn:hover {
+    opacity: 1;
 }
 
 /* Lightbox */

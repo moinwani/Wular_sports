@@ -10,10 +10,26 @@ export interface ProductCardProps {
     onWatchVideo: (url: string, ref: RefObject<HTMLButtonElement>) => void;
 }
 
-export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
+export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart }) => {
     const router = useRouter();
 
+    const isHoneycomb = product.id === 'ak-47-honeycomb';
+    const needsSizeSelection = !isHoneycomb && product.category.some(
+        cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat)
+    );
+
     const handleCardClick = () => {
+        router.push(`/product/${product.id}`);
+    };
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const size = isHoneycomb ? '35 inch' : '';
+        onAddToCart(product, size);
+    };
+
+    const handleViewDetails = (e: React.MouseEvent) => {
+        e.stopPropagation();
         router.push(`/product/${product.id}`);
     };
 
@@ -49,9 +65,14 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product }) => {
                         </>
                     )}
                 </div>
-                <button className="btn-view-details">
+                <button className="btn-view-details" onClick={handleViewDetails}>
                     View Details
                 </button>
+                {!needsSizeSelection && (
+                    <button className="btn-add-to-cart" onClick={handleAddToCart} style={{ marginTop: '0.5rem' }}>
+                        Add to Cart
+                    </button>
+                )}
             </div>
         </div>
     );

@@ -534,8 +534,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 return;
             }
 
-            const { ensureAuthenticated } = await import('../services/auth');
+            const { ensureAuthenticated, getCurrentUser } = await import('../services/auth');
             const userId = await ensureAuthenticated();
+            const user = getCurrentUser();
+            const token = user ? await user.getIdToken() : '';
+
             const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
             const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
             const isCOD = sanitizedData.paymentMethod === 'cod';
@@ -543,7 +546,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             // Create Razorpay order on server — amount is computed server-side
             const res = await fetch('/api/create-razorpay-order', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
                 body: JSON.stringify({
                     items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
                     paymentMethod: sanitizedData.paymentMethod,

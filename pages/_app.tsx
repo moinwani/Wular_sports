@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { CartProvider, useCart } from '../src/context/CartContext';
 import { ToastProvider, useToast } from '../src/context/ToastContext';
 import { Header } from '../src/components/common/Header';
@@ -13,6 +14,7 @@ import { subscribeToNewsletter } from '../src/services/newsletter';
 import '../index.css';
 
 function AppShell({ Component, pageProps }: AppProps) {
+    const router = useRouter();
     const { cart, cartTotal, isCartOpen, openCart, closeCart, addToCart, removeFromCart, updateQuantity } = useCart();
     const { toast, showToast, clearToast } = useToast();
 
@@ -46,7 +48,7 @@ function AppShell({ Component, pageProps }: AppProps) {
                 onRemoveItem={removeFromCart}
                 onCheckout={() => {
                     closeCart();
-                    window.location.href = '/checkout';
+                    router.push('/checkout');
                 }}
                 total={cartTotal}
             />

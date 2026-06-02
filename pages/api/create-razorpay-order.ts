@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import Razorpay from 'razorpay';
 import { products } from '../../src/data/products';
 import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
+import { auth } from '../../src/lib/firebaseAdmin';
 
 const COD_BOOKING_PER_BAT = 500;
 
@@ -9,6 +10,16 @@ const razorpay = new Razorpay({
     key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
     key_secret: process.env.RAZORPAY_KEY_SECRET!,
 });
+
+async function verifyAuth(req: NextApiRequest): Promise<{ uid: string }> {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new Error('Missing authorization header');
+    }
+    const token = authHeader.split('Bearer ')[1];
+    const decoded = await auth.verifyIdToken(token);
+    return { uid: decoded.uid };
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -20,6 +31,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!allowed) {
         res.setHeader('Retry-After', Math.ceil((retryAfterMs || 0) / 1000).toString());
         return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+    }
+
+    try {
+        await verifyAuth(req);
+    } catch {
+        return res.status(401).json({ error: 'Authentication required. Please sign in to continue.' });
     }
 
     const { items, paymentMethod, receipt, notes } = req.body;

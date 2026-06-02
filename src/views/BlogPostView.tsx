@@ -1,6 +1,7 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import DOMPurify from 'dompurify';
 import { BlogPost } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
@@ -18,6 +19,8 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
     }, [post.id]);
 
     const otherPosts = blogs.filter(b => b.id !== post.id).slice(0, 2);
+
+    const sanitizedContent = useMemo(() => DOMPurify.sanitize(post.content), [post.content]);
 
     const faqSchema = post.faq && post.faq.length > 0 ? {
         "@context": "https://schema.org",
@@ -68,7 +71,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
 
                 <div className="blog-post-content-wrapper">
                     <div className="container narrow">
-                        <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: post.content }} />
+                        <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
                         <div className="blog-post-footer">
                             <div className="share-post">
                                 <span>Share this article:</span>

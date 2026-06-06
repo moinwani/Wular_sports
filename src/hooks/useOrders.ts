@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { db } from '../services/firebase';
+import { db } from '../services/firebase-firestore';
 import { Order } from '../services/orders';
 
 /**

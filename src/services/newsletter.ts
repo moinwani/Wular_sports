@@ -3,7 +3,7 @@ import {
     setDoc,
     Timestamp
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { db } from './firebase-firestore';
 
 const SUBSCRIBERS_COLLECTION = 'subscribers';
 

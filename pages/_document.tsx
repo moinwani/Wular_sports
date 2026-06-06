@@ -51,7 +51,24 @@ export default function Document() {
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
                 <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-                <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet" />
+                <link
+                    rel="preload"
+                    as="style"
+                    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
+                    crossOrigin="anonymous"
+                />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
+                    rel="stylesheet"
+                    media="print"
+                />
+                <noscript>
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
+                        rel="stylesheet"
+                    />
+                </noscript>
+                <script dangerouslySetInnerHTML={{ __html: `document.querySelector('link[media="print"]').media='all'` }} />
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
                 <script src="https://accounts.google.com/gsi/client" async defer></script>
                 {/* Microsoft Clarity */}

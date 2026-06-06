@@ -1,5 +1,5 @@
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from './firebase';
+import { db } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 
 /**

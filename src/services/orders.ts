@@ -12,7 +12,7 @@ import {
     Timestamp,
     DocumentData
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { db } from './firebase-firestore';
 
 export interface Order {
     id?: string;

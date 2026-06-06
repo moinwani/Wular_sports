@@ -4,7 +4,7 @@ import {
     GoogleAuthProvider,
     signInWithCredential
 } from 'firebase/auth';
-import { auth } from './firebase';
+import { auth } from './firebase-auth';
 
 /**
  * Authentication Service for Wular Sports

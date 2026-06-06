@@ -1,7 +1,7 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 
-import { faArrowLeft, faArrowRight, faBars, faBoxOpen, faChartLine, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faDownload, faEnvelope, faExclamationCircle, faExternalLinkAlt, faEye, faGlobe, faInbox, faInfoCircle, faLightbulb, faLink, faLock, faMapMarkerAlt, faMoneyBillWave, faNewspaper, faPhone, faPlay, faRedoAlt, faSearch, faShieldAlt, faShippingFast, faShoppingBag, faShoppingCart, faSignOutAlt, faSpinner, faStar, faTimes, faTruckFast, faUndoAlt, faUserCircle, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faBars, faBoxOpen, faChartLine, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faDownload, faEnvelope, faExclamationCircle, faExternalLinkAlt, faEye, faGlobe, faInbox, faInfoCircle, faLightbulb, faLink, faLock, faMapMarkerAlt, faMoneyBillWave, faNewspaper, faPhone, faPlay, faRedoAlt, faRupeeSign, faSearch, faShieldAlt, faShippingFast, faShoppingBag, faShoppingCart, faSignOutAlt, faSpinner, faStar, faTimes, faTruckFast, faUndoAlt, faUserCircle, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faWhatsapp, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 
@@ -34,6 +34,7 @@ const iconMap: Record<string, IconDefinition> = {
     'fa-phone': faPhone,
     'fa-play': faPlay,
     'fa-redo-alt': faRedoAlt,
+    'fa-rupee-sign': faRupeeSign,
     'fa-search': faSearch,
     'fa-shield-alt': faShieldAlt,
     'fa-shipping-fast': faShippingFast,
@@ -46,6 +47,7 @@ const iconMap: Record<string, IconDefinition> = {
     'fa-truck-fast': faTruckFast,
     'fa-undo-alt': faUndoAlt,
     'fa-user-circle': faUserCircle,
+    'fa-users': faUsers,
     'fa-video': faVideo,
     'fa-instagram': faInstagram,
     'fa-whatsapp': faWhatsapp,

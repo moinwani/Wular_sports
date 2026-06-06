@@ -3,6 +3,7 @@ import { VideoModal } from '../common/VideoModal';
 import { products } from '../../data/products';
 import { Testimonial } from '../../types';
 import { Icon } from '../common/Icon';
+import { VideoPreview } from '../common/VideoPreview';
 
 const testimonials: Testimonial[] = [
     {
@@ -107,23 +108,8 @@ export const VideoTestimonials: FC = () => {
                                 onClick={() => openReel(idx)}
                             >
                                 <div className="video-container vertical-reel">
-                                    {videoId ? (
-                                        <div className="testimonial-youtube-preview">
-                                            <img
-                                                src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                                                alt={`${t.name} testimonial preview`}
-                                                className="testimonial-thumbnail"
-                                                loading="lazy"
-                                            />
-                                            <div className="testimonial-play-overlay">
-                                                <div className="play-icon-circle">
-                                                    <svg viewBox="0 0 24 24" width="36" height="36" fill="white">
-                                                        <path d="M8 5v14l11-7z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ) : (
+                                    <VideoPreview compact label="Tap to watch review" />
+                                    {!videoId && (
                                         <video
                                             src={t.url}
                                             controls={false}

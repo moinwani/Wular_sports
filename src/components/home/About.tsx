@@ -1,5 +1,6 @@
 import { memo, useState, useEffect } from 'react';
 import { Icon } from '../common/Icon';
+import { VideoPreview } from '../common/VideoPreview';
 
 export const About = memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,27 +49,7 @@ export const About = memo(() => {
                             </div>
                             <span>Take a Factory Tour</span>
                         </div>
-                        {videoId ? (
-                            <div
-                                className="teaser-thumbnail"
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    backgroundImage: `url(https://img.youtube.com/vi/${videoId}/maxresdefault.jpg), url(https://img.youtube.com/vi/${videoId}/hqdefault.jpg)`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center'
-                                }}
-                            />
-                        ) : (
-                            <video
-                                src={factoryVideoUrl}
-                                muted
-                                loop
-                                playsInline
-                                autoPlay
-                                className="teaser-video"
-                            />
-                        )}
+                        <VideoPreview className="teaser-thumbnail" />
                     </div>
                 </div>
             </div>

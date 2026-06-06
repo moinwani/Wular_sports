@@ -10,7 +10,6 @@ export interface VideoModalProps {
     onClose: () => void;
 }
 
-const INFO_BAR_HEIGHT = 72;
 const MAX_MOBILE_WIDTH = 450;
 
 export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, onClose }) => {
@@ -18,76 +17,63 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const [isMobile, setIsMobile] = useState(false);
-    const [stableHeight, setStableHeight] = useState(0);
+    const [vh, setVh] = useState(() => typeof window !== 'undefined' ? window.innerHeight : 0);
+
+    useEffect(() => {
+        const check = () => setIsMobile(window.innerWidth <= 768);
+        check();
+        window.addEventListener('resize', check);
+        return () => window.removeEventListener('resize', check);
+    }, []);
+
+    useEffect(() => {
+        const update = () => setVh(window.innerHeight);
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
 
     const loopedItems = isMobile ? [testimonials[testimonials.length - 1], ...testimonials, testimonials[0]] : testimonials;
     const [activeIndex, setActiveIndex] = useState(isMobile ? initialIndex + 1 : initialIndex);
     const isInteracting = useRef(false);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth <= 768);
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    useEffect(() => {
-        if (isMobile && typeof window !== 'undefined') {
-            setStableHeight(window.innerHeight);
-        }
-    }, [isMobile]);
-
-    useEffect(() => {
         videoRefs.current = new Array(loopedItems.length).fill(null);
     }, [loopedItems.length]);
 
     useEffect(() => {
-        if (isMobile && containerRef.current && stableHeight > 0) {
-            const container = containerRef.current;
-            const scrollH = stableHeight - INFO_BAR_HEIGHT;
-            const targetPos = (initialIndex + 1) * scrollH;
-            container.scrollTo({ top: targetPos, behavior: 'auto' });
+        if (isMobile && containerRef.current && vh > 0) {
+            const targetPos = (initialIndex + 1) * vh;
+            containerRef.current.scrollTo({ top: targetPos, behavior: 'auto' });
         }
-    }, [initialIndex, isMobile, stableHeight]);
+    }, [initialIndex, isMobile, vh]);
 
     const handleScroll = useCallback(() => {
-        if (!isMobile || !containerRef.current || isInteracting.current) return;
+        if (!isMobile || !containerRef.current || isInteracting.current || vh <= 0) return;
 
-        const container = containerRef.current;
-        const scrollPos = container.scrollTop;
-        const h = stableHeight - INFO_BAR_HEIGHT;
-
-        if (h <= 0) return;
-
-        const floatIndex = scrollPos / h;
+        const c = containerRef.current;
+        const floatIndex = c.scrollTop / vh;
         const intIndex = Math.round(floatIndex);
 
         if (floatIndex <= 0.1) {
             isInteracting.current = true;
-            container.scrollTo({ top: testimonials.length * h, behavior: 'auto' });
+            c.scrollTo({ top: testimonials.length * vh, behavior: 'auto' });
             setActiveIndex(testimonials.length);
-            setTimeout(() => { isInteracting.current = false; }, 50);
+            setTimeout(() => { isInteracting.current = false; }, 80);
         } else if (floatIndex >= (loopedItems.length - 1.1)) {
             isInteracting.current = true;
-            container.scrollTo({ top: h, behavior: 'auto' });
+            c.scrollTo({ top: vh, behavior: 'auto' });
             setActiveIndex(1);
-            setTimeout(() => { isInteracting.current = false; }, 50);
-        } else {
-            if (intIndex !== activeIndex) {
-                setActiveIndex(intIndex);
-            }
+            setTimeout(() => { isInteracting.current = false; }, 80);
+        } else if (intIndex !== activeIndex) {
+            setActiveIndex(intIndex);
         }
-    }, [activeIndex, isMobile, testimonials.length, loopedItems.length, stableHeight]);
+    }, [activeIndex, isMobile, testimonials.length, loopedItems.length, vh]);
 
     useEffect(() => {
         videoRefs.current.forEach((video, idx) => {
             if (video) {
-                if (idx === activeIndex) {
-                    video.play().catch(() => { });
-                } else {
-                    video.pause();
-                    video.currentTime = 0;
-                }
+                if (idx === activeIndex) video.play().catch(() => { });
+                else { video.pause(); video.currentTime = 0; }
             }
         });
     }, [activeIndex]);
@@ -99,43 +85,31 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
 
     const togglePlay = (idx: number) => {
         const video = videoRefs.current[idx];
-        if (video) {
-            if (video.paused) video.play();
-            else video.pause();
-        }
+        if (video) video.paused ? video.play() : video.pause();
     };
 
     const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
 
     const extractVideoId = (url: string) => {
         if (!isYouTube(url)) return null;
-        if (url.includes('/shorts/')) {
-            return url.split('/shorts/')[1].split(/[?#]/)[0];
-        }
-        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-        const match = url.match(regExp);
-        if (match && match[7].length === 11) return match[7];
-        return url.split('/').pop()?.split('?')[0] || null;
+        if (url.includes('/shorts/')) return url.split('/shorts/')[1].split(/[?#]/)[0];
+        const m = url.match(/^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/);
+        return (m && m[7].length === 11) ? m[7] : url.split('/').pop()?.split('?')[0] || null;
     };
 
     const getEmbedUrl = (url: string) => {
-        const videoId = extractVideoId(url);
-        if (!videoId) return url;
-        return `https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${window.location.origin}&widgetid=1`;
+        const id = extractVideoId(url);
+        if (!id) return url;
+        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://wularsports.com';
+        return `https://www.youtube.com/embed/${id}?mute=1&autoplay=1&loop=1&playlist=${id}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${origin}&widgetid=1`;
     };
 
-    const navigateDesktop = (direction: 'next' | 'prev') => {
-        if (direction === 'next') {
-            setActiveIndex(prev => (prev + 1) % testimonials.length);
-        } else {
-            setActiveIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
-        }
+    const navigateDesktop = (d: 'next' | 'prev') => {
+        setActiveIndex(prev => d === 'next'
+            ? (prev + 1) % testimonials.length
+            : (prev - 1 + testimonials.length) % testimonials.length
+        );
     };
-
-    const activeTestimonial = loopedItems[activeIndex];
-    const activeProduct = products.find(p => p.id === activeTestimonial?.productId);
-
-    const scrollContainerHeight = isMobile && stableHeight > 0 ? stableHeight - INFO_BAR_HEIGHT : 0;
 
     return (
         <div className="video-modal-overlay" onClick={handleClose}>
@@ -155,144 +129,144 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             )}
 
             {isMobile ? (
-                <>
-                    <div
-                        className="video-reel-container"
-                        ref={containerRef}
-                        onScroll={handleScroll}
-                        onClick={(e) => e.stopPropagation()}
-                        style={{
-                            width: '100%',
-                            maxWidth: `${MAX_MOBILE_WIDTH}px`,
-                            height: `${scrollContainerHeight}px`,
-                            overflowY: 'auto',
-                            scrollSnapType: 'y mandatory',
-                            scrollbarWidth: 'none',
-                            background: '#000',
-                            position: 'relative',
-                        }}
-                    >
-                        {loopedItems.map((t, idx) => {
-                            const itemHeight = scrollContainerHeight;
-                            return (
-                                <div
-                                    key={`${t.id}-${idx}`}
-                                    className="reel-item"
-                                    style={{
-                                        height: `${itemHeight}px`,
-                                        width: '100%',
-                                        scrollSnapAlign: 'start',
-                                        background: '#000',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        position: 'relative',
-                                    }}
-                                >
-                                    {isYouTube(t.url) ? (
-                                        <iframe
-                                            src={idx === activeIndex ? getEmbedUrl(t.url) : ''}
-                                            title={t.name}
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            referrerPolicy="no-referrer-when-downgrade"
-                                            allowFullScreen
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                border: 'none',
-                                            }}
-                                        />
-                                    ) : (
-                                        <video
-                                            ref={(el) => { videoRefs.current[idx] = el; }}
-                                            src={t.url}
-                                            preload="metadata"
-                                            autoPlay
-                                            loop
-                                            playsInline
-                                            webkit-playsinline="true"
-                                            onClick={() => togglePlay(idx)}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                                objectFit: 'cover',
-                                                cursor: 'pointer',
-                                            }}
-                                        />
-                                    )}
+                <div
+                    ref={containerRef}
+                    onScroll={handleScroll}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                        width: '100%',
+                        maxWidth: `${MAX_MOBILE_WIDTH}px`,
+                        height: vh > 0 ? `${vh}px` : '100vh',
+                        overflowY: 'auto',
+                        scrollSnapType: 'y mandatory',
+                        scrollbarWidth: 'none',
+                        background: '#000',
+                    }}
+                >
+                    {loopedItems.map((t, idx) => {
+                        const product = products.find(p => p.id === t.productId);
+                        return (
+                            <div
+                                key={`${t.id}-${idx}`}
+                                style={{
+                                    height: vh > 0 ? `${vh}px` : '100vh',
+                                    width: '100%',
+                                    scrollSnapAlign: 'start',
+                                    position: 'relative',
+                                    background: '#000',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                {isYouTube(t.url) ? (
+                                    <iframe
+                                        src={idx === activeIndex ? getEmbedUrl(t.url) : ''}
+                                        title={t.name}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        allowFullScreen
+                                        style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            border: 'none',
+                                        }}
+                                    />
+                                ) : (
+                                    <video
+                                        ref={(el) => { videoRefs.current[idx] = el; }}
+                                        src={t.url}
+                                        preload="metadata"
+                                        autoPlay
+                                        loop
+                                        playsInline
+                                        webkit-playsinline="true"
+                                        onClick={() => togglePlay(idx)}
+                                        style={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'cover',
+                                            cursor: 'pointer',
+                                        }}
+                                    />
+                                )}
+
+                                {product && (
                                     <div style={{
                                         position: 'absolute',
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        height: '30%',
-                                        background: 'linear-gradient(transparent, rgba(0,0,0,0.4))',
-                                        pointerEvents: 'none',
-                                    }} />
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    <div
-                        className="video-reel-info-bar"
-                        style={{
-                            background: '#0a0a0a',
-                            height: `${INFO_BAR_HEIGHT}px`,
-                            width: '100%',
-                            maxWidth: `${MAX_MOBILE_WIDTH}px`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            padding: '0 1rem',
-                            gap: '0.75rem',
-                            flexShrink: 0,
-                        }}
-                    >
-                        {activeProduct && (
-                            <>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', minWidth: 0, flex: 1 }}>
-                                    <img
-                                        src={Array.isArray(activeProduct.image) ? activeProduct.image[0] : activeProduct.image}
-                                        alt={activeProduct.name}
-                                        style={{
-                                            width: '40px',
-                                            height: '40px',
-                                            borderRadius: '8px',
-                                            objectFit: 'contain',
-                                            background: '#111',
-                                            flexShrink: 0,
-                                        }}
-                                    />
-                                    <div style={{ minWidth: 0 }}>
-                                        <div style={{ fontSize: '0.8rem', color: 'var(--golden)', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {activeProduct.name}
+                                        padding: '2rem 1rem 1rem',
+                                        paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
+                                        background: 'linear-gradient(transparent, rgba(0,0,0,0.75) 50%)',
+                                        zIndex: 2,
+                                        display: 'flex',
+                                        alignItems: 'flex-end',
+                                        gap: '0.6rem',
+                                    }}>
+                                        <img
+                                            src={Array.isArray(product.image) ? product.image[0] : product.image}
+                                            alt={product.name}
+                                            style={{
+                                                width: '42px',
+                                                height: '42px',
+                                                borderRadius: '8px',
+                                                objectFit: 'contain',
+                                                background: '#111',
+                                                flexShrink: 0,
+                                            }}
+                                        />
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{
+                                                color: 'var(--golden)',
+                                                fontSize: '0.85rem',
+                                                fontWeight: 700,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '0.5px',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                                            }}>
+                                                {product.name}
+                                            </div>
+                                            <div style={{
+                                                color: '#fff',
+                                                fontSize: '0.9rem',
+                                                fontWeight: 600,
+                                                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                                            }}>
+                                                ₹{product.price.toLocaleString('en-IN')}
+                                            </div>
                                         </div>
-                                        <div style={{ fontSize: '0.85rem', color: '#fff', fontWeight: 700 }}>
-                                            ₹{activeProduct.price.toLocaleString('en-IN')}
-                                        </div>
+                                        <button
+                                            className="btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleClose();
+                                                router.push(`/product/${product.id}`);
+                                            }}
+                                            style={{
+                                                fontSize: '0.8rem',
+                                                padding: '0.5rem 1rem',
+                                                flexShrink: 0,
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            Shop Now
+                                        </button>
                                     </div>
-                                </div>
-                                <button
-                                    className="btn"
-                                    onClick={() => {
-                                        handleClose();
-                                        router.push(`/product/${activeProduct.id}`);
-                                    }}
-                                    style={{
-                                        fontSize: '0.8rem',
-                                        padding: '0.45rem 1rem',
-                                        flexShrink: 0,
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
-                                    Shop Now
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </>
+                                )}
+                            </div>
+                        );
+                    })}
+                </div>
             ) : (
                 <div
                     className="video-desktop-container-new"
@@ -315,9 +289,8 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                     {testimonials.map((t, idx) => {
                         if (idx !== activeIndex) return null;
                         const product = products.find(p => p.id === t.productId);
-
                         return (
-                            <div key={t.id} className="reel-item" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div key={t.id} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <div style={{
                                     width: 'max-content',
                                     position: 'relative',
@@ -347,7 +320,6 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                             playsInline
                                             webkit-playsinline="true"
                                             onClick={() => togglePlay(idx)}
-                                            className="reel-video"
                                             style={{ width: 'auto', height: '70vh', objectFit: 'contain', cursor: 'pointer', maxHeight: '65vh' }}
                                         />
                                     )}
@@ -381,22 +353,15 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     <div style={{ height: '1px', width: '100px', background: 'rgba(212,175,55,0.4)', marginBottom: '1.5rem' }} />
 
                                     {product && (
-                                        <div className="modal-product-section" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', width: '100%' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', width: '100%' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', textAlign: 'left' }}>
-                                                <img src={Array.isArray(product.image) ? product.image[0] : product.image} alt={product.name} className="modal-product-img" style={{ width: '70px', height: '70px' }} />
+                                                <img src={Array.isArray(product.image) ? product.image[0] : product.image} alt={product.name} style={{ width: '70px', height: '70px' }} />
                                                 <div>
                                                     <h4 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--golden)' }}>{product.name}</h4>
-                                                    <span className="modal-product-price" style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price.toLocaleString('en-IN')}</span>
+                                                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price.toLocaleString('en-IN')}</span>
                                                 </div>
                                             </div>
-                                            <button
-                                                className="btn"
-                                                onClick={() => {
-                                                    handleClose();
-                                                    router.push(`/product/${product.id}`);
-                                                }}
-                                                style={{ padding: '1rem 2.5rem', fontSize: '1rem', boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)' }}
-                                            >
+                                            <button className="btn" onClick={() => { handleClose(); router.push(`/product/${product.id}`); }} style={{ padding: '1rem 2.5rem', fontSize: '1rem', boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)' }}>
                                                 Shop This Bat
                                             </button>
                                         </div>
@@ -409,7 +374,6 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
             )}
 
             <style>{`
-                .video-reel-container::-webkit-scrollbar { display: none; }
                 .video-desktop-container-new::-webkit-scrollbar { display: none; }
             `}</style>
         </div>

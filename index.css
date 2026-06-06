@@ -1246,14 +1246,13 @@ main {
 
 .factory-video-teaser {
     position: relative;
-    border-radius: 20px;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    aspect-ratio: 16 / 9;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    aspect-ratio: 2 / 1;
     transform: translateZ(0);
-    /* Fix for overflow: hidden on some browsers */
+    min-height: 180px;
 }
 
 .teaser-video {
@@ -1277,14 +1276,14 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.2rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    gap: 0.75rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent);
     transition: background 0.3s ease;
 }
 
 .play-btn-circle {
-    width: 80px;
-    height: 80px;
+    width: 48px;
+    height: 48px;
     background: rgba(212, 175, 55, 0.1);
     backdrop-filter: blur(8px);
     border: 2px solid var(--golden);
@@ -1293,32 +1292,29 @@ main {
     align-items: center;
     justify-content: center;
     color: var(--golden);
-    font-size: 1.8rem;
-    padding-left: 6px;
-    /* Centering fix */
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    font-size: 1.2rem;
+    padding-left: 4px;
+    transition: all 0.3s ease;
 }
 
 .factory-video-teaser:hover .play-btn-circle {
-    transform: scale(1.15);
+    transform: scale(1.1);
     background: var(--golden);
     color: var(--black);
-    box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
 }
 
 .teaser-overlay span {
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     font-weight: 600;
     color: var(--white);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     transition: all 0.3s ease;
 }
 
 .factory-video-teaser:hover .teaser-overlay span {
-    letter-spacing: 4px;
+    letter-spacing: 3px;
     color: var(--golden);
 }
 
@@ -1463,14 +1459,14 @@ main {
     }
 
     .play-btn-circle {
-        width: 60px;
-        height: 60px;
-        font-size: 1.4rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 
     .teaser-overlay span {
         font-size: 0.75rem;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
     }
 }
 
@@ -7889,41 +7885,35 @@ img[loading="lazy"] {
 
 
 .premium-vertical-card {
-    flex: 0 0 320px;
-    /* Consistent width on desktop */
+    flex: 0 0 280px;
     background: #000;
     border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 20px;
+    border-radius: 12px;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
     scroll-snap-align: start;
 }
 
 .premium-vertical-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    transform: translateY(-4px);
     border-color: var(--golden);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
 }
 
 .vertical-reel {
-    aspect-ratio: 9 / 16 !important;
+    min-height: 60px;
     position: relative;
     width: 100%;
 }
 
 .testimonial-premium-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 40%, transparent 100%);
+    padding: 0.75rem 1rem;
     z-index: 3;
     display: flex;
     align-items: flex-end;
-    padding: 1.5rem;
+    background: #0a0a0a;
 }
 
 .overlay-content {
@@ -8019,97 +8009,78 @@ img[loading="lazy"] {
 .video-preview-card {
     position: relative;
     width: 100%;
-    height: 100%;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .video-preview-compact {
-    min-height: 200px;
+    height: 56px;
+    min-height: 56px;
 }
 
 .video-preview-bg {
     position: absolute;
     inset: 0;
-    background: linear-gradient(145deg, #1a1a1a 0%, #0f0f0f 40%, #0a0a0a 100%);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    border-radius: 8px;
-    transition: border-color 0.3s ease;
+    background: linear-gradient(145deg, #1a1a1a 0%, #111 40%, #0a0a0a 100%);
+    border: 1px solid rgba(212, 175, 55, 0.12);
+    transition: border-color 0.25s ease;
 }
 
 .video-preview-card:hover .video-preview-bg {
-    border-color: rgba(212, 175, 55, 0.5);
+    border-color: rgba(212, 175, 55, 0.4);
 }
 
 .video-preview-grain {
-    position: absolute;
-    inset: 0;
-    opacity: 0.03;
-    background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(255, 255, 255, 0.3) 2px,
-        rgba(255, 255, 255, 0.3) 3px
-    );
+    display: none;
 }
 
 .video-preview-watermark {
-    position: absolute;
-    right: 8px;
-    bottom: 8px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: rgba(212, 175, 55, 0.08);
-    letter-spacing: 4px;
-    text-transform: uppercase;
+    display: none;
 }
 
 .video-preview-overlay {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    z-index: 2;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 0.75rem;
 }
 
 .video-preview-play-btn {
-    width: 56px;
-    height: 56px;
-    background: rgba(212, 175, 55, 0.85);
+    width: 36px;
+    height: 36px;
+    background: rgba(212, 175, 55, 0.9);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--black);
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    transition: transform 0.2s ease, background 0.2s ease;
+    flex-shrink: 0;
 }
 
 .video-preview-card:hover .video-preview-play-btn {
-    transform: scale(1.1);
+    transform: scale(1.08);
     background: var(--golden);
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
 }
 
 .video-preview-play-btn svg {
-    width: 22px;
-    height: 22px;
-    margin-left: 2px;
+    width: 14px;
+    height: 14px;
+    margin-left: 1px;
 }
 
 .video-preview-label {
     font-family: 'Oswald', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.65);
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    white-space: nowrap;
 }
 
 .product-price-row {
@@ -8127,35 +8098,30 @@ img[loading="lazy"] {
 
 @media (max-width: 768px) {
     .premium-feed {
-        gap: 1.25rem;
-        padding: 0 1.5rem 1rem;
-        /* Reduced bottom padding */
+        gap: 1rem;
+        padding: 0 1rem 0.5rem;
     }
 
     .premium-vertical-card {
-        flex: 0 0 250px;
+        flex: 0 0 220px;
     }
 
     .testimonial-premium-overlay {
-        padding: 1.25rem;
-        height: 100px;
+        padding: 0.5rem 0.75rem;
     }
 
     .customer-name-overlay {
-        font-size: 1.1rem;
+        font-size: 1rem;
         white-space: nowrap;
-        /* Prevent wrapping in overlay */
     }
 
     .bat-shown-overlay .name {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .video-testimonials .section-title {
         white-space: nowrap;
-        /* Prevent "Champion Reviews" wrapping */
         font-size: 1.6rem;
-        /* Slightly smaller to fit */
     }
 }
 

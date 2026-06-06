@@ -1,4 +1,5 @@
 import { FC, useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 export interface VerticalImageGalleryProps {
     images: string[];
@@ -84,10 +85,13 @@ export const VerticalImageGallery: FC<VerticalImageGalleryProps> = ({
                             }
                         }}
                     >
-                        <img 
+                        <Image 
                             src={src} 
                             alt={`${altText} - View ${index + 1}`} 
                             className="vertical-gallery-image"
+                            width={800}
+                            height={800}
+                            unoptimized
                             loading={index === 0 ? "eager" : "lazy"}
                         />
                     </div>

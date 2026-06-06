@@ -1,4 +1,5 @@
 import { FC, useState, useRef, TouchEvent } from 'react';
+import Image from 'next/image';
 
 export interface HorizontalImageGalleryProps {
     images: string[];
@@ -52,10 +53,13 @@ export const HorizontalImageGallery: FC<HorizontalImageGalleryProps> = ({ images
                             className="horizontal-gallery-slide"
                             onClick={() => onImageClick(index)}
                         >
-                            <img 
+                            <Image 
                                 src={src} 
                                 alt={`${altText} - View ${index + 1}`} 
                                 className="horizontal-gallery-image"
+                                width={800}
+                                height={800}
+                                unoptimized
                                 loading={index === 0 ? "eager" : "lazy"}
                             />
                         </div>

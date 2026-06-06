@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
 import { subscribeToNewsletter } from '../services/newsletter';
@@ -43,7 +44,7 @@ export const BlogView: FC = () => {
                         {blogs.map(post => (
                             <article key={post.id} className="blog-card" onClick={() => router.push(`/blog/${post.id}`)} style={{ cursor: 'pointer' }}>
                                 <div className="blog-card-image">
-                                    <img src={getCDNUrl(post.image)} alt={post.title} />
+                                    <Image src={getCDNUrl(post.image)} alt={post.title} width={400} height={250} unoptimized />
                                     <span className="blog-category-tag">{post.category}</span>
                                 </div>
                                 <div className="blog-card-content">

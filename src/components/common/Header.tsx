@@ -1,5 +1,6 @@
 import { FC, useState, memo, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { MobileMenu } from './MobileMenu';
 import { useCart } from '../../context/CartContext';
@@ -88,10 +89,14 @@ export const Header: FC = memo(() => {
                         aria-label="Go to homepage"
                         onClick={() => { setIsLogoDimmed(true); setTimeout(() => setIsLogoDimmed(false), 300); }}
                     >
-                        <img
+                        <Image
                             src={logoUrl}
                             alt="Wular Sports Logo"
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
+                            width={135}
+                            height={75}
+                            unoptimized
+                            priority
                         />
                     </Link>
 

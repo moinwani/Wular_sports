@@ -1,5 +1,6 @@
 import { FC, memo, RefObject } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
 
@@ -37,17 +38,28 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
 
     let imageElement;
     if (Array.isArray(product.image) && product.image.length > 0) {
-        // Use the first image for listing card
         imageElement = (
-            <img
+            <Image
                 src={getCDNUrl(product.image[0])}
                 alt={product.name}
+                width={300}
+                height={300}
                 className="product-image"
+                unoptimized
             />
         );
     } else if (typeof product.image === 'string') {
         const imageUrl = getCDNUrl(product.image);
-        imageElement = <img src={imageUrl} alt={product.name} className="product-image" />;
+        imageElement = (
+            <Image
+                src={imageUrl}
+                alt={product.name}
+                width={300}
+                height={300}
+                className="product-image"
+                unoptimized
+            />
+        );
     }
 
     return (

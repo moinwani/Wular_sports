@@ -1,6 +1,7 @@
 import { FC, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Image from 'next/image';
 import DOMPurify from 'isomorphic-dompurify';
 import { BlogPost } from '../types';
 import { blogs } from '../data/blogs';
@@ -66,7 +67,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
 
                 <div className="blog-post-main-image">
                     <div className="container">
-                        <img src={getCDNUrl(post.image)} alt={post.title} />
+                        <Image src={getCDNUrl(post.image)} alt={post.title} width={800} height={450} unoptimized />
                     </div>
                 </div>
 
@@ -98,7 +99,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
                             {otherPosts.map(p => (
                                 <article key={p.id} className="blog-card" onClick={() => router.push(`/blog/${p.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="blog-card-image">
-                                        <img src={getCDNUrl(p.image)} alt={p.title} />
+                                        <Image src={getCDNUrl(p.image)} alt={p.title} width={400} height={250} unoptimized />
                                     </div>
                                     <div className="blog-card-content">
                                         <h4 className="blog-card-title">{p.title}</h4>

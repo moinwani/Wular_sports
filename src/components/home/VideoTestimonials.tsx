@@ -109,15 +109,19 @@ export const VideoTestimonials: FC = () => {
                                 <div className="video-container vertical-reel">
                                     {videoId ? (
                                         <div className="testimonial-youtube-preview">
-                                            <iframe
-                                                src={`https://www.youtube.com/embed/${videoId}?mute=1&autoplay=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&playsinline=1&enablejsapi=1&origin=${typeof window !== 'undefined' ? window.location.origin : 'https://wularsports.com'}&widgetid=1`}
-                                                title={`Testimonial ${t.id}`}
-                                                frameBorder="0"
-                                                allow="autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                                className="testimonial-iframe-preview"
-                                            ></iframe>
-                                            <div className="iframe-click-overlay"></div>
+                                            <img
+                                                src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
+                                                alt={`${t.name} testimonial preview`}
+                                                className="testimonial-thumbnail"
+                                                loading="lazy"
+                                            />
+                                            <div className="testimonial-play-overlay">
+                                                <div className="play-icon-circle">
+                                                    <svg viewBox="0 0 24 24" width="36" height="36" fill="white">
+                                                        <path d="M8 5v14l11-7z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
                                         </div>
                                     ) : (
                                         <video

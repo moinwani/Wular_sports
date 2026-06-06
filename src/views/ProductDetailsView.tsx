@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
@@ -461,10 +462,13 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         setIsLightboxOpen(true);
                                     }}
                                 >
-                                    <img
+                                    <Image
                                         src={product.image}
                                         alt={product.name}
                                         className={isMobile ? "horizontal-gallery-image" : "vertical-gallery-image"}
+                                        width={600}
+                                        height={600}
+                                        unoptimized
                                     />
                                 </div>
                             </div>

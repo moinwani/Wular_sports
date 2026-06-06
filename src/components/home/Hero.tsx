@@ -1,4 +1,5 @@
 import { FC, memo, useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getFolderFiles, getCDNUrl } from '../../services/githubService';
 
 export interface HeroProps {
@@ -70,18 +71,9 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
             {/* Announcement Bar - Separate from header, homepage only */}
             <div className="announcement-bar">
                 <div className="ticker-track">
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
-                    <span>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    {Array.from({ length: 12 }, (_, i) => (
+                        <span key={i}>FINEST WILLOW FROM KASHMIR!&nbsp;&nbsp;&nbsp;★&nbsp;&nbsp;&nbsp;</span>
+                    ))}
                 </div>
             </div>
 
@@ -92,12 +84,17 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                     <div className="hero-slider">
                         {mobileImages.length > 0 ? (
                             mobileImages.map((src, index) => (
-                                <img
-                                    key={src}
-                                    src={src}
-                                    alt={`Hero Slide ${index + 1}`}
-                                    className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-                                />
+                                <div key={src} className={`hero-slide ${index === currentSlide ? 'active' : ''}`} style={{ position: 'relative' }}>
+                                    <Image
+                                        src={src}
+                                        alt={`Hero Slide ${index + 1}`}
+                                        fill
+                                        style={{ objectFit: 'cover' }}
+                                        sizes="100vw"
+                                        unoptimized
+                                        priority={index === currentSlide}
+                                    />
+                                </div>
                             ))
                         ) : (
                             <div className="hero-placeholder" />
@@ -105,11 +102,17 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                     </div>
                 ) : (
                     /* Desktop: Dynamic image with cache busting */
-                    <img
-                        src={desktopImage || fallbackDesktop}
-                        alt="Legacy Edition Hero"
-                        className="hero-img"
-                    />
+                    <div className="hero-img" style={{ position: 'relative', width: '100%', height: '100%' }}>
+                        <Image
+                            src={desktopImage || fallbackDesktop}
+                            alt="Legacy Edition Hero"
+                            fill
+                            style={{ objectFit: 'cover' }}
+                            sizes="100vw"
+                            unoptimized
+                            priority
+                        />
+                    </div>
                 )}
 
                 <div className="hero-content-overlay">

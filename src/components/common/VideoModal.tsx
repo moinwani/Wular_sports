@@ -17,19 +17,12 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
     const [isMobile, setIsMobile] = useState(false);
-    const [vh, setVh] = useState(() => typeof window !== 'undefined' ? window.innerHeight : 0);
 
     useEffect(() => {
         const check = () => setIsMobile(window.innerWidth <= 768);
         check();
         window.addEventListener('resize', check);
         return () => window.removeEventListener('resize', check);
-    }, []);
-
-    useEffect(() => {
-        const update = () => setVh(window.innerHeight);
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
     }, []);
 
     const loopedItems = isMobile ? [testimonials[testimonials.length - 1], ...testimonials, testimonials[0]] : testimonials;
@@ -41,33 +34,38 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     }, [loopedItems.length]);
 
     useEffect(() => {
-        if (isMobile && containerRef.current && vh > 0) {
-            const targetPos = (initialIndex + 1) * vh;
-            containerRef.current.scrollTo({ top: targetPos, behavior: 'auto' });
+        if (isMobile && containerRef.current) {
+            const container = containerRef.current;
+            const h = container.clientHeight;
+            const targetPos = (initialIndex + 1) * h;
+            container.scrollTo({ top: targetPos, behavior: 'auto' });
         }
-    }, [initialIndex, isMobile, vh]);
+    }, [initialIndex, isMobile]);
 
     const handleScroll = useCallback(() => {
-        if (!isMobile || !containerRef.current || isInteracting.current || vh <= 0) return;
+        if (!isMobile || !containerRef.current || isInteracting.current) return;
 
         const c = containerRef.current;
-        const floatIndex = c.scrollTop / vh;
+        const h = c.clientHeight;
+        if (h <= 0) return;
+
+        const floatIndex = c.scrollTop / h;
         const intIndex = Math.round(floatIndex);
 
         if (floatIndex <= 0.1) {
             isInteracting.current = true;
-            c.scrollTo({ top: testimonials.length * vh, behavior: 'auto' });
+            c.scrollTo({ top: testimonials.length * h, behavior: 'auto' });
             setActiveIndex(testimonials.length);
             setTimeout(() => { isInteracting.current = false; }, 80);
         } else if (floatIndex >= (loopedItems.length - 1.1)) {
             isInteracting.current = true;
-            c.scrollTo({ top: vh, behavior: 'auto' });
+            c.scrollTo({ top: h, behavior: 'auto' });
             setActiveIndex(1);
             setTimeout(() => { isInteracting.current = false; }, 80);
         } else if (intIndex !== activeIndex) {
             setActiveIndex(intIndex);
         }
-    }, [activeIndex, isMobile, testimonials.length, loopedItems.length, vh]);
+    }, [activeIndex, isMobile, testimonials.length, loopedItems.length]);
 
     useEffect(() => {
         videoRefs.current.forEach((video, idx) => {
@@ -136,11 +134,12 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                     style={{
                         width: '100%',
                         maxWidth: `${MAX_MOBILE_WIDTH}px`,
-                        height: vh > 0 ? `${vh}px` : '100vh',
+                        height: '100dvh',
                         overflowY: 'auto',
                         scrollSnapType: 'y mandatory',
                         scrollbarWidth: 'none',
                         background: '#000',
+                        overscrollBehavior: 'contain',
                     }}
                 >
                     {loopedItems.map((t, idx) => {
@@ -149,7 +148,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                             <div
                                 key={`${t.id}-${idx}`}
                                 style={{
-                                    height: vh > 0 ? `${vh}px` : '100vh',
+                                    height: '100dvh',
                                     width: '100%',
                                     scrollSnapAlign: 'start',
                                     position: 'relative',
@@ -202,9 +201,9 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                         bottom: 0,
                                         left: 0,
                                         right: 0,
-                                        padding: '2rem 1rem 1rem',
-                                        paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
-                                        background: 'linear-gradient(transparent, rgba(0,0,0,0.75) 50%)',
+                                        padding: '2.5rem 1rem 1.25rem',
+                                        paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))',
+                                        background: 'linear-gradient(transparent, rgba(0,0,0,0.8) 60%)',
                                         zIndex: 2,
                                         display: 'flex',
                                         alignItems: 'flex-end',
@@ -232,7 +231,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                 whiteSpace: 'nowrap',
                                                 overflow: 'hidden',
                                                 textOverflow: 'ellipsis',
-                                                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                                                textShadow: '0 1px 3px rgba(0,0,0,0.9)',
                                             }}>
                                                 {product.name}
                                             </div>
@@ -240,7 +239,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                 color: '#fff',
                                                 fontSize: '0.9rem',
                                                 fontWeight: 600,
-                                                textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                                                textShadow: '0 1px 3px rgba(0,0,0,0.9)',
                                             }}>
                                                 ₹{product.price.toLocaleString('en-IN')}
                                             </div>
@@ -375,6 +374,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
 
             <style>{`
                 .video-desktop-container-new::-webkit-scrollbar { display: none; }
+                .video-modal-overlay > div:first-of-type::-webkit-scrollbar { display: none; }
             `}</style>
         </div>
     );

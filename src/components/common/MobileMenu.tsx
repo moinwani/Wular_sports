@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react';
 import Link from 'next/link';
 import { WHATSAPP_NUMBER, INSTAGRAM_LINK } from '../../data/constants';
+import { Icon } from './Icon';
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -20,12 +21,12 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 <div className="mobile-menu-header">
                     <h2>Menu</h2>
                     <button className="mobile-menu-close" onClick={onClose} aria-label="Close menu">
-                        <i className="fas fa-times"></i>
+                        <Icon name="fa-times" />
                     </button>
                 </div>
                 <nav className="mobile-menu-nav">
                     <Link href="/collection" className="mobile-menu-link" onClick={onClose}>
-                        <i className="fas fa-shopping-bag"></i>
+                        <Icon name="fa-shopping-bag" />
                         <span>Shop Collection</span>
                     </Link>
                     <div className="mobile-menu-sublinks" style={{ paddingLeft: '3rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1rem' }}>
@@ -34,11 +35,11 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                         <Link href="/leather-cricket-bats" onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>Leather Bat</Link>
                     </div>
                     <Link href="/blog" className="mobile-menu-link" onClick={onClose}>
-                        <i className="fas fa-newspaper"></i>
+                        <Icon name="fa-newspaper" />
                         <span>Wular Insights (Blog)</span>
                     </Link>
                     <Link href="/about" className="mobile-menu-link" onClick={onClose}>
-                        <i className="fas fa-info-circle"></i>
+                        <Icon name="fa-info-circle" />
                         <span>About Us</span>
                     </Link>
                     <div className="mobile-menu-divider"></div>
@@ -48,8 +49,8 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                 </nav>
                 <div className="mobile-menu-footer">
                     <div className="mobile-menu-social">
-                        <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
-                        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i className="fab fa-whatsapp"></i></a>
+                        <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="fa-instagram" /></a>
+                        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="fa-whatsapp" /></a>
                     </div>
                     <p className="mobile-menu-copyright">© 2026 Wular Sports</p>
                 </div>

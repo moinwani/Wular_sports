@@ -6,6 +6,7 @@ import { BlogPost } from '../types';
 import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
 import { getCDNUrl } from '../services/githubService';
+import { Icon } from '../components/common/Icon';
 
 interface BlogPostViewProps {
     post: BlogPost;
@@ -45,7 +46,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
                 <header className="blog-post-header">
                     <div className="container">
                         <button className="blog-back-btn" onClick={() => router.push('/blog')}>
-                            <i className="fas fa-chevron-left"></i> Back to Blog
+                            <Icon name="fa-chevron-left" /> Back to Blog
                         </button>
                         <div className="blog-post-meta-top">
                             <span className="post-category">{post.category}</span>
@@ -54,7 +55,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
                         </div>
                         <h1 className="blog-post-title">{post.title}</h1>
                         <div className="blog-post-author-row">
-                            <div className="author-avatar"><i className="fas fa-user-circle"></i></div>
+                            <div className="author-avatar"><Icon name="fa-user-circle" /></div>
                             <div className="author-info">
                                 <span className="author-name">{post.author}</span>
                                 <span className="post-date">{post.date}</span>
@@ -77,10 +78,10 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
                                 <span>Share this article:</span>
                                 <div className="share-links">
                                     <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noreferrer">
-                                        <i className="fab fa-whatsapp"></i>
+                                        <Icon name="fa-whatsapp" />
                                     </a>
                                     <a href="#" onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(`https://wularsports.com/blog/${post.id}`); alert('Link copied!'); }}>
-                                        <i className="fas fa-link"></i>
+                                        <Icon name="fa-link" />
                                     </a>
                                 </div>
                             </div>

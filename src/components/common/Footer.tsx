@@ -4,6 +4,7 @@ import { createWhatsAppLink } from '../../utils/helpers';
 import { INSTAGRAM_LINK, YOUTUBE_LINK } from '../../data/constants';
 import { subscribeToNewsletter } from '../../services/newsletter';
 import { useToast } from '../../context/ToastContext';
+import { Icon } from './Icon';
 
 export const Footer: FC = memo(() => {
     const { showToast } = useToast();
@@ -45,7 +46,7 @@ export const Footer: FC = memo(() => {
                         <div className="pill-input-wrapper">
                             <input type="email" placeholder="Email address" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={submitting} />
                             <button type="submit" className="pill-submit-btn" disabled={submitting} aria-label="Subscribe">
-                                <i className={`fas ${submitting ? 'fa-spinner fa-spin' : 'fa-arrow-right'}`}></i>
+                                <Icon name={submitting ? 'fa-spinner' : 'fa-arrow-right'} spin={submitting} />
                             </button>
                         </div>
                     </form>
@@ -68,8 +69,8 @@ export const Footer: FC = memo(() => {
                         <span className="copyright">© 2026 WULAR SPORTS</span>
                     </div>
                     <div className="footer-social-group">
-                        <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
-                        <a href={YOUTUBE_LINK} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i className="fab fa-youtube"></i></a>
+                        <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="fa-instagram" /></a>
+                        <a href={YOUTUBE_LINK} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Icon name="fa-youtube" /></a>
                     </div>
                 </div>
             </div>

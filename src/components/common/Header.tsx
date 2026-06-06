@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { MobileMenu } from './MobileMenu';
 import { useCart } from '../../context/CartContext';
 import { getFileSHA, getCDNUrl } from '../../services/githubService';
+import { Icon } from './Icon';
 
 export const Header: FC = memo(() => {
     const router = useRouter();
@@ -74,7 +75,7 @@ export const Header: FC = memo(() => {
                             aria-label="Open menu"
                             aria-expanded={isMobileMenuOpen}
                         >
-                            <i className="fas fa-bars"></i>
+                            <Icon name="fa-bars" />
                         </button>
                         <Link href="/hard-tennis-bats" className="nav-link">Hard Tennis</Link>
                         <Link href="/soft-tennis-bats" className="nav-link">Soft Tennis</Link>
@@ -98,7 +99,7 @@ export const Header: FC = memo(() => {
                         <Link href="/blog" className="nav-link">Blog</Link>
                         <Link href="/about" className="nav-link">About</Link>
                         <div className="nav-cart" onClick={openCart} role="button" aria-label="Open cart">
-                            <i className="fas fa-shopping-cart" aria-hidden="true"></i>
+                            <Icon name="fa-shopping-cart" aria-hidden="true" />
                             {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
                             <span className="cart-text">Cart</span>
                         </div>

@@ -1,4 +1,5 @@
 import { FC, useState, useRef, useMemo, useEffect, useCallback, TouchEvent, MouseEvent } from 'react';
+import { Icon } from './Icon';
 
 export interface LightboxProps {
     gallery: {
@@ -85,14 +86,14 @@ export const Lightbox: FC<LightboxProps> = ({ gallery, onClose }) => {
     return (
         <div className="lightbox-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="lightbox-counter">
             <button className="lightbox-close-btn" aria-label="Close image gallery" onClick={handleCloseClick}>
-                <i className="fas fa-times"></i>
+                <Icon name="fa-times" />
             </button>
 
             <div className="lightbox-content-container">
                 {images.length > 1 && (
                     <>
-                        <button onClick={(e) => { e.stopPropagation(); goToPrev(); }} className="lightbox-nav-btn prev" aria-label="Previous image" disabled={isZoomed}><i className="fas fa-chevron-left"></i></button>
-                        <button onClick={(e) => { e.stopPropagation(); goToNext(); }} className="lightbox-nav-btn next" aria-label="Next image" disabled={isZoomed}><i className="fas fa-chevron-right"></i></button>
+                        <button onClick={(e) => { e.stopPropagation(); goToPrev(); }} className="lightbox-nav-btn prev" aria-label="Previous image" disabled={isZoomed}><Icon name="fa-chevron-left" /></button>
+                        <button onClick={(e) => { e.stopPropagation(); goToNext(); }} className="lightbox-nav-btn next" aria-label="Next image" disabled={isZoomed}><Icon name="fa-chevron-right" /></button>
                     </>
                 )}
 

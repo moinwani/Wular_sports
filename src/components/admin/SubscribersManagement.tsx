@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 import { getAllSubscribers, exportSubscribersCSV, Subscriber } from '../../services/admin';
+import { Icon } from '../common/Icon';
 
 export const SubscribersManagement: FC = () => {
     const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
@@ -72,13 +73,13 @@ export const SubscribersManagement: FC = () => {
                     onClick={handleExport}
                     disabled={filteredSubscribers.length === 0}
                 >
-                    <i className="fas fa-download"></i> Export to CSV
+                    <Icon name="fa-download" /> Export to CSV
                 </button>
             </div>
 
             {filteredSubscribers.length === 0 ? (
                 <div className="empty-state">
-                    <i className="fas fa-envelope" style={{ fontSize: '48px', color: '#666' }}></i>
+                    <Icon name="fa-envelope" style={{ fontSize: '48px', color: '#666' }} />
                     <p>{searchTerm ? 'No subscribers found matching your search' : 'No subscribers yet'}</p>
                 </div>
             ) : (

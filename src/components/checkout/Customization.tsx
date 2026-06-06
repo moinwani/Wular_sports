@@ -1,5 +1,6 @@
 import { FC, ChangeEvent, FormEvent, useState, memo } from 'react';
 import { createWhatsAppLink } from '../../utils/helpers';
+import { Icon } from '../common/Icon';
 
 interface CustomizationRadioGroupProps {
     name: string;
@@ -203,7 +204,7 @@ export const Customization = memo(() => {
                                     <div className="form-group">
                                         <label className="form-label">Handle Type</label>
                                         <p style={{ color: 'var(--golden)', fontSize: '0.9rem', fontStyle: 'italic', background: 'rgba(212, 175, 55, 0.1)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                                            <i className="fas fa-info-circle" style={{ marginRight: '8px' }}></i>
+                                            <Icon name="fa-info-circle" style={{ marginRight: '8px' }} />
                                             Double Blade bats always come with a premium Singapore Cane handle of top quality.
                                         </p>
                                     </div>

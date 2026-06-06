@@ -1,6 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SEOHead } from '../components/common/SEOHead';
+import { Icon } from '../components/common/Icon';
 
 export const OrderSuccessView: FC = () => {
     const router = useRouter();
@@ -22,7 +23,7 @@ export const OrderSuccessView: FC = () => {
                     marginBottom: '1.5rem',
                     animation: 'fadeInUp 0.6s ease'
                 }}>
-                    <i className="fas fa-check-circle"></i>
+                    <Icon name="fa-check-circle" />
                 </div>
 
                 <h1 style={{

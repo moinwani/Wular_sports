@@ -1,4 +1,5 @@
 import { memo, useState, useEffect } from 'react';
+import { Icon } from '../common/Icon';
 
 export const About = memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,14 +37,14 @@ export const About = memo(() => {
                         <h2 className="section-title">About Wular Sports</h2>
                         <p>Wular Sports is committed to crafting high-performance cricket bats for every game – whether you're playing with a leather ball or smashing shots with a tennis ball. Proudly made in Kashmir, our bats are a symbol of quality and power, designed for champions.</p>
                         <div className="location-box">
-                            <i className="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <Icon name="fa-map-marker-alt" aria-hidden="true" />
                             <span>Srinagar, Jammu and Kashmir, India</span>
                         </div>
                     </div>
                     <div className="factory-video-teaser" onClick={toggleModal}>
                         <div className="teaser-overlay">
                             <div className="play-btn-circle">
-                                <i className="fas fa-play"></i>
+                                <Icon name="fa-play" />
                             </div>
                             <span>Take a Factory Tour</span>
                         </div>
@@ -76,7 +77,7 @@ export const About = memo(() => {
                 <div className="video-modal-overlay" onClick={toggleModal}>
                     <div className="video-modal-inner factory-tour-modal" onClick={e => e.stopPropagation()}>
                         <button className="close-video-modal" onClick={toggleModal} aria-label="Close modal">
-                            <i className="fas fa-times"></i>
+                            <Icon name="fa-times" />
                         </button>
                         <div className="video-modal-player-container">
                             {videoId ? (

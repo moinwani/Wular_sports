@@ -3,6 +3,7 @@ import { AdminRoute } from '../components/admin/AdminRoute';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { OrdersManagement } from '../components/admin/OrdersManagement';
 import { SubscribersManagement } from '../components/admin/SubscribersManagement';
+import { Icon } from '../components/common/Icon';
 
 type AdminTab = 'dashboard' | 'orders' | 'subscribers';
 
@@ -20,9 +21,9 @@ export const AdminView: FC = () => {
             <div className="admin-panel">
                 <div className="admin-header">
                     <div className="admin-header-content">
-                        <h1><i className="fas fa-shield-alt"></i> Wular Sports Admin</h1>
+                        <h1><Icon name="fa-shield-alt" /> Wular Sports Admin</h1>
                         <button className="btn-logout" onClick={handleLogout}>
-                            <i className="fas fa-sign-out-alt"></i> Logout
+                            <Icon name="fa-sign-out-alt" /> Logout
                         </button>
                     </div>
                 </div>
@@ -34,21 +35,21 @@ export const AdminView: FC = () => {
                                 className={`admin-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('dashboard')}
                             >
-                                <i className="fas fa-chart-line"></i>
+                                <Icon name="fa-chart-line" />
                                 <span>Dashboard</span>
                             </button>
                             <button
                                 className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('orders')}
                             >
-                                <i className="fas fa-shopping-cart"></i>
+                                <Icon name="fa-shopping-cart" />
                                 <span>Orders</span>
                             </button>
                             <button
                                 className={`admin-nav-item ${activeTab === 'subscribers' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('subscribers')}
                             >
-                                <i className="fas fa-envelope"></i>
+                                <Icon name="fa-envelope" />
                                 <span>Subscribers</span>
                             </button>
                         </nav>

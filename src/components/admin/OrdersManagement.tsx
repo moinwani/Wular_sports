@@ -1,6 +1,7 @@
 import { FC, useState, useMemo } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
 import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus } from '../../services/admin';
+import { Icon } from '../common/Icon';
 
 export const OrdersManagement: FC = () => {
     const { orders, loading, error } = useAllOrders();
@@ -92,7 +93,7 @@ export const OrdersManagement: FC = () => {
 
             {filteredOrders.length === 0 ? (
                 <div className="empty-state">
-                    <i className="fas fa-inbox" style={{ fontSize: '48px', color: '#666' }}></i>
+                    <Icon name="fa-inbox" style={{ fontSize: '48px', color: '#666' }} />
                     <p>No orders found</p>
                 </div>
             ) : (
@@ -168,7 +169,7 @@ export const OrdersManagement: FC = () => {
                                                 setSelectedOrder(order);
                                             }}
                                         >
-                                            <i className="fas fa-eye"></i>
+                                            <Icon name="fa-eye" />
                                         </button>
                                     </td>
                                 </tr>
@@ -185,7 +186,7 @@ export const OrdersManagement: FC = () => {
                         <div className="modal-header">
                             <h2>Order Details</h2>
                             <button className="modal-close" onClick={() => setSelectedOrder(null)}>
-                                <i className="fas fa-times"></i>
+                                <Icon name="fa-times" />
                             </button>
                         </div>
 

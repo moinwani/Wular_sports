@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { VideoModal } from '../common/VideoModal';
 import { products } from '../../data/products';
 import { Testimonial } from '../../types';
+import { Icon } from '../common/Icon';
 
 const testimonials: Testimonial[] = [
     {
@@ -137,7 +138,7 @@ export const VideoTestimonials: FC = () => {
                                                 <h4 className="customer-name-overlay">{t.name}</h4>
                                                 {t.isRepeatCustomer && (
                                                     <span className="repeat-badge">
-                                                        <i className="fas fa-redo-alt"></i> Repeat Champion
+                                                        <Icon name="fa-redo-alt" /> Repeat Champion
                                                     </span>
                                                 )}
                                             </div>

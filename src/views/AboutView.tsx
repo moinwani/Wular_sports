@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { SEOHead } from '../components/common/SEOHead';
+import { Icon } from '../components/common/Icon';
 
 const structuredData = {
     "@context": "https://schema.org",
@@ -129,28 +130,28 @@ export const AboutView: FC = () => (
                 <p>We are based in <strong>Srinagar, Jammu and Kashmir, India</strong> and deliver free across India.</p>
                 <div className="about-contact-grid">
                     <div className="about-contact-item">
-                        <i className="fab fa-whatsapp"></i>
+                        <Icon name="fa-whatsapp" />
                         <div>
                             <strong>WhatsApp</strong>
                             <a href="https://wa.me/919320622451" target="_blank" rel="noopener noreferrer">+91 93206 22451</a>
                         </div>
                     </div>
                     <div className="about-contact-item">
-                        <i className="fas fa-envelope"></i>
+                        <Icon name="fa-envelope" />
                         <div>
                             <strong>Email</strong>
                             <a href="mailto:wularsports@gmail.com">wularsports@gmail.com</a>
                         </div>
                     </div>
                     <div className="about-contact-item">
-                        <i className="fab fa-instagram"></i>
+                        <Icon name="fa-instagram" />
                         <div>
                             <strong>Instagram</strong>
                             <a href="https://www.instagram.com/wular.sports" target="_blank" rel="noopener noreferrer">@wular.sports</a>
                         </div>
                     </div>
                     <div className="about-contact-item">
-                        <i className="fab fa-youtube"></i>
+                        <Icon name="fa-youtube" />
                         <div>
                             <strong>YouTube</strong>
                             <a href="https://youtube.com/@wularsports" target="_blank" rel="noopener noreferrer">@wularsports</a>

@@ -6,6 +6,7 @@ import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/e
 import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
+import { Icon } from '../components/common/Icon';
 
 const COUNTRY_CODES = [
     { code: '+91', country: 'India' },
@@ -677,14 +678,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 <div className="container">
                     <div className="whatsapp-confirm-step">
                         <div className="whatsapp-confirm-icon">
-                            <i className="fab fa-whatsapp"></i>
+                            <Icon name="fa-whatsapp" />
                         </div>
                         <h2>Almost done — send the WhatsApp message!</h2>
                         <p>We've opened WhatsApp with your order details pre-filled. <strong>Please tap Send</strong> to confirm your order with us.</p>
 
                         {whatsAppReminderVisible && (
                             <div className="whatsapp-reminder-banner">
-                                <i className="fas fa-exclamation-circle"></i> Looks like you came back without sending — your order isn't confirmed yet!
+                                <Icon name="fa-exclamation-circle" /> Looks like you came back without sending — your order isn't confirmed yet!
                             </div>
                         )}
 
@@ -696,13 +697,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 className="btn whatsapp-retry-btn"
                                 onClick={() => setWhatsAppReminderVisible(false)}
                             >
-                                <i className="fab fa-whatsapp"></i> Open WhatsApp Again
+                                <Icon name="fa-whatsapp" /> Open WhatsApp Again
                             </a>
                             <button
                                 className="btn btn-confirm-sent"
                                 onClick={() => onPlaceOrder({} as any)}
                             >
-                                <i className="fas fa-check-circle"></i> I've Sent the Message
+                                <Icon name="fa-check-circle" /> I've Sent the Message
                             </button>
                         </div>
                         <p className="whatsapp-confirm-note">Once we receive your message, we'll process and ship your order within 24 hours.</p>
@@ -722,7 +723,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             <div className="container">
                 <div className="checkout-header-mobile">
                     <button className="back-btn-simple" onClick={() => router.back()}>
-                        <i className="fas fa-arrow-left"></i>
+                        <Icon name="fa-arrow-left" />
                     </button>
                     <h1 className="page-title">Checkout</h1>
                 </div>
@@ -735,9 +736,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         aria-expanded={isSummaryExpanded}
                     >
                         <div className="toggle-left">
-                            <i className="fas fa-shopping-cart"></i>
+                            <Icon name="fa-shopping-cart" />
                             <span>{isSummaryExpanded ? 'Hide' : 'Show'} Order Summary</span>
-                            <i className={`fas fa-chevron-${isSummaryExpanded ? 'up' : 'down'}`}></i>
+                            <Icon name={isSummaryExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} />
                         </div>
                         <span className="toggle-total">₹{total.toLocaleString('en-IN')}</span>
                     </button>
@@ -768,7 +769,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         alignItems: 'center',
                         gap: '0.5rem'
                     }}>
-                        <i className="fas fa-exclamation-circle"></i>
+                        <Icon name="fa-exclamation-circle" />
                         <strong>{formError}</strong>
                         <button
                             onClick={() => setFormError('')}
@@ -1019,15 +1020,15 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             {/* Order trust indicators */}
                             <div className="secure-payment-badges">
                                 <div className="secure-badge">
-                                    <i className="fas fa-shipping-fast"></i>
+                                    <Icon name="fa-shipping-fast" />
                                     <span>{formData.country === 'India' ? 'Free Delivery' : 'Intl. Shipping'}</span>
                                 </div>
                                 <div className="secure-badge">
-                                    <i className="fab fa-whatsapp"></i>
+                                    <Icon name="fa-whatsapp" />
                                     <span>WhatsApp Confirmed</span>
                                 </div>
                                 <div className="secure-badge">
-                                    <i className="fas fa-undo-alt"></i>
+                                    <Icon name="fa-undo-alt" />
                                     <span>Easy Returns</span>
                                 </div>
                             </div>
@@ -1048,7 +1049,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     <>
                                         {!isIndia && (
                                             <div className="intl-notice">
-                                                <i className="fas fa-globe"></i>
+                                                <Icon name="fa-globe" />
                                                 <div>
                                                     <strong>International Order</strong>
                                                     <p>Cash on Delivery is only available within India. For international orders, full payment is required. Delivery charges will be communicated to you via WhatsApp or email after your order is placed.</p>
@@ -1067,7 +1068,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                                     disabled={isProcessing}
                                                 />
                                                 <div className="payment-option-content">
-                                                    <span><i className="fas fa-lock"></i> Full Payment</span>
+                                                    <span><Icon name="fa-lock" /> Full Payment</span>
                                                     <small>Pay securely now — no extra charges</small>
                                                     {isIndia && <span className="payment-save-badge">Save ₹{codFee.toLocaleString('en-IN')} vs COD</span>}
                                                 </div>
@@ -1083,7 +1084,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                                         disabled={isProcessing}
                                                     />
                                                     <div className="payment-option-content">
-                                                        <span><i className="fas fa-money-bill-wave"></i> Cash on Delivery</span>
+                                                        <span><Icon name="fa-money-bill-wave" /> Cash on Delivery</span>
                                                         <small>Pay ₹{COD_BOOKING_PER_BAT}/bat now + balance at door</small>
                                                     </div>
                                                 </label>
@@ -1116,12 +1117,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                                     <span><strong>₹{totalAtDoor.toLocaleString('en-IN')}</strong></span>
                                                 </div>
                                                 <p className="cod-save-hint">
-                                                    <i className="fas fa-lightbulb"></i> Choose <strong>Full Payment</strong> and save ₹{codFee.toLocaleString('en-IN')} in COD charges.
+                                                    <Icon name="fa-lightbulb" /> Choose <strong>Full Payment</strong> and save ₹{codFee.toLocaleString('en-IN')} in COD charges.
                                                 </p>
                                             </div>
                                         ) : (
                                             <div className="full-payment-note">
-                                                <i className="fas fa-check-circle"></i>
+                                                <Icon name="fa-check-circle" />
                                                 <p>
                                                     Pay ₹{total.toLocaleString('en-IN')} securely via Razorpay now.{' '}
                                                     {isIndia
@@ -1144,7 +1145,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             title={!isEmailFromAuth ? 'Sign in with Google to place your order' : ''}
                         >
                             {isProcessing ? (
-                                <span className="btn-spinner"><i className="fas fa-spinner fa-spin"></i> Processing...</span>
+                                <span className="btn-spinner"><Icon name="fa-spinner" spin /> Processing...</span>
                             ) : !isEmailFromAuth ? (
                                 "SIGN IN TO PLACE ORDER"
                             ) : (
@@ -1160,7 +1161,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 disabled={isProcessing || !isEmailFromAuth}
                                 title={!isEmailFromAuth ? 'Sign in with Google first' : 'Ask us about delivery charges before placing your order'}
                             >
-                                <i className="fab fa-whatsapp"></i> Ask Delivery Charges on WhatsApp
+                                <Icon name="fa-whatsapp" /> Ask Delivery Charges on WhatsApp
                             </button>
                         )}
                     </div>

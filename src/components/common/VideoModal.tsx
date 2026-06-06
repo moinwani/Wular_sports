@@ -2,6 +2,7 @@ import { FC, useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { products } from '../../data/products';
 import { Testimonial } from '../../types';
+import { Icon } from './Icon';
 
 export interface VideoModalProps {
     testimonials: Testimonial[];
@@ -136,17 +137,17 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
     return (
         <div className="video-modal-overlay" onClick={handleClose}>
             <button className="video-modal-close-btn" aria-label="Close" onClick={handleClose}>
-                <i className="fas fa-times"></i>
+                <Icon name="fa-times" />
             </button>
 
             {/* Desktop Navigation Arrows */}
             {!isMobile && (
                 <>
                     <button className="reel-nav-btn prev" onClick={(e) => { e.stopPropagation(); navigateDesktop('prev'); }}>
-                        <i className="fas fa-chevron-left"></i>
+                        <Icon name="fa-chevron-left" />
                     </button>
                     <button className="reel-nav-btn next" onClick={(e) => { e.stopPropagation(); navigateDesktop('next'); }}>
-                        <i className="fas fa-chevron-right"></i>
+                        <Icon name="fa-chevron-right" />
                     </button>
                 </>
             )}
@@ -282,7 +283,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                 {!isMobile && (
                                     <>
                                         <div className="rating" style={{ color: 'var(--golden)', marginBottom: '0.75rem' }}>
-                                            {[...Array(t.rating)].map((_, i) => <i key={i} className="fas fa-star" style={{ fontSize: '1.2rem' }}></i>)}
+                                            {[...Array(t.rating)].map((_, i) => <Icon key={i} name="fa-star" style={{ fontSize: '1.2rem' }} />)}
                                         </div>
                                         <p style={{ fontStyle: 'italic', fontSize: '1.4rem', color: '#fff', marginBottom: '1rem', lineHeight: '1.6', maxWidth: '700px' }}>"{t.comment}"</p>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -296,7 +297,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                     borderRadius: '20px',
                                                     color: 'var(--golden)'
                                                 }}>
-                                                    <i className="fas fa-redo-alt"></i> Repeat Champion
+                                                    <Icon name="fa-redo-alt" /> Repeat Champion
                                                 </span>
                                             )}
                                         </div>

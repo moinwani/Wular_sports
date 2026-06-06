@@ -6,6 +6,7 @@ import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
+import { Icon } from '../components/common/Icon';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
@@ -517,7 +518,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     </div>
                                     {sizeError && (
                                         <p className="size-error-premium">
-                                            <i className="fas fa-exclamation-circle"></i> Please select a size
+                                            <Icon name="fa-exclamation-circle" /> Please select a size
                                         </p>
                                     )}
                                 </div>
@@ -573,7 +574,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 </div>
 
                                 <button className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
-                                    <i className="fas fa-shopping-bag"></i>
+                                    <Icon name="fa-shopping-bag" />
                                     BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
                                 </button>
                             </div>
@@ -603,7 +604,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     transition: 'transform 0.2s ease'
                                 }}
                             >
-                                <i className="fab fa-whatsapp" style={{ fontSize: '1.4rem' }}></i>
+                                <Icon name="fa-whatsapp" style={{ fontSize: '1.4rem' }} />
                                 ORDER ON WHATSAPP
                             </a>
                         </div>
@@ -659,7 +660,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                     )
                                                     .map((spec, index) => (
                                                         <li key={index}>
-                                                            <i className="fas fa-check"></i>
+                                                            <Icon name="fa-check" />
                                                             <span>{spec}</span>
                                                         </li>
                                                     ))
@@ -680,35 +681,35 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             <ul className="included-list-clean">
                                                 <li>
                                                     <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
+                                                        <Icon name="fa-check-circle" />
                                                         <span>Free Bat Cover</span>
                                                     </div>
                                                     <span className="included-item-value">₹300</span>
                                                 </li>
                                                 <li>
                                                     <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
+                                                        <Icon name="fa-check-circle" />
                                                         <span>Premium Toe Guard</span>
                                                     </div>
                                                     <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
                                                     <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
+                                                        <Icon name="fa-check-circle" />
                                                         <span>Extra Grip</span>
                                                     </div>
                                                     <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
                                                     <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
+                                                        <Icon name="fa-check-circle" />
                                                         <span>Fully Knocked & Oiled (Ready to Play)</span>
                                                     </div>
                                                     <span className="included-item-value">₹100</span>
                                                 </li>
                                                 <li>
                                                     <div className="included-item-left">
-                                                        <i className="fas fa-check-circle"></i>
+                                                        <Icon name="fa-check-circle" />
                                                         <span>Free Shipping</span>
                                                     </div>
                                                     <span className="included-item-value">₹200</span>
@@ -731,7 +732,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             <div className="shipping-steps">
                                                 <div className="shipping-step">
                                                     <div className="step-icon">
-                                                        <i className="fas fa-box-open"></i>
+                                                        <Icon name="fa-box-open" />
                                                     </div>
                                                     <div className="step-content">
                                                         <h4>1. Fast Dispatch</h4>
@@ -741,7 +742,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                                                 <div className="shipping-step">
                                                     <div className="step-icon">
-                                                        <i className="fas fa-shipping-fast"></i>
+                                                        <Icon name="fa-shipping-fast" />
                                                     </div>
                                                     <div className="step-content">
                                                         <h4>2. Reliable Delivery</h4>
@@ -751,7 +752,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                                                 <div className="shipping-step">
                                                     <div className="step-icon">
-                                                        <i className="fas fa-map-marker-alt"></i>
+                                                        <Icon name="fa-map-marker-alt" />
                                                     </div>
                                                     <div className="step-content">
                                                         <h4>3. Live Tracking</h4>
@@ -777,14 +778,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                                 transition: 'all 0.2s'
                                                             }}
                                                         >
-                                                            Track on India Post <i className="fas fa-external-link-alt"></i>
+                                                            Track on India Post <Icon name="fa-external-link-alt" />
                                                         </a>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="shipping-note-box">
-                                                <p><i className="fas fa-shield-alt"></i> <strong>Safe & Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p>
+                                                <p><Icon name="fa-shield-alt" /> <strong>Safe & Secure:</strong> We ensure premium packaging so your bat reaches you in perfect condition.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -798,7 +799,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                                             <div className="returns-info">
                                                 <div className="policy-note">
-                                                    <i className="fas fa-undo-alt"></i>
+                                                    <Icon name="fa-undo-alt" />
                                                     <p>We offer a <strong>7-day return policy</strong> for all our products.</p>
                                                 </div>
 
@@ -822,7 +823,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             </div>
 
                                             <div className="returns-note-box">
-                                                <p><i className="fas fa-info-circle"></i> Our team will review your request and guide you through the next steps within 24-48 hours.</p>
+                                                <p><Icon name="fa-info-circle" /> Our team will review your request and guide you through the next steps within 24-48 hours.</p>
                                             </div>
                                         </div>
                                     </div>
@@ -842,7 +843,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                     rel="noopener noreferrer"
                                                     className="contact-option-btn whatsapp"
                                                 >
-                                                    <i className="fab fa-whatsapp"></i>
+                                                    <Icon name="fa-whatsapp" />
                                                     <div>
                                                         <strong>Chat on WhatsApp</strong>
                                                         <span>Typically replies within 5 minutes</span>
@@ -855,7 +856,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                     rel="noopener noreferrer"
                                                     className="contact-option-btn video"
                                                 >
-                                                    <i className="fas fa-video"></i>
+                                                    <Icon name="fa-video" />
                                                     <div>
                                                         <strong>Video Call</strong>
                                                         <span>See the bat live before buying</span>
@@ -866,7 +867,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                     href="tel:+919320622451"
                                                     className="contact-option-btn call"
                                                 >
-                                                    <i className="fas fa-phone"></i>
+                                                    <Icon name="fa-phone" />
                                                     <div>
                                                         <strong>Call Us</strong>
                                                         <span>+91 9320622451</span>
@@ -876,7 +877,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                                             <div className="shipping-info-clean">
                                                 <p className="shipping-note-clean">
-                                                    <i className="fas fa-info-circle"></i>
+                                                    <Icon name="fa-info-circle" />
                                                     <strong>Note:</strong> Orders take 2-3 working days to dispatch. All orders shipped by air for express delivery.
                                                 </p>
                                             </div>

@@ -2,6 +2,7 @@ import React, { FC, useState, useMemo } from 'react';
 import { ProductFull } from '../types';
 import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
+import { Icon } from '../components/common/Icon';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
 type ScoopFilter = 'all' | 'scoop' | 'non-scoop';
@@ -165,7 +166,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
                             ))
                         ) : (
                             <div className="no-products-found" style={{ textAlign: 'center', padding: '4rem' }}>
-                                <i className="fas fa-search" style={{ fontSize: '3rem', color: '#333', marginBottom: '1rem' }}></i>
+                                <Icon name="fa-search" style={{ fontSize: '3rem', color: '#333', marginBottom: '1rem' }} />
                                 <p style={{ color: '#888' }}>No products found for this filter.</p>
                                 <button className="btn" style={{ marginTop: '2rem' }} onClick={() => setScoopFilter('all')}>
                                     Clear Filter

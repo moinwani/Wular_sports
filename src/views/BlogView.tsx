@@ -5,6 +5,7 @@ import { SEOHead } from '../components/common/SEOHead';
 import { subscribeToNewsletter } from '../services/newsletter';
 import { useToast } from '../context/ToastContext';
 import { getCDNUrl } from '../services/githubService';
+import { Icon } from '../components/common/Icon';
 
 export const BlogView: FC = () => {
     const router = useRouter();
@@ -47,12 +48,12 @@ export const BlogView: FC = () => {
                                 </div>
                                 <div className="blog-card-content">
                                     <div className="blog-meta">
-                                        <span><i className="far fa-calendar"></i> {post.date}</span>
-                                        <span><i className="far fa-clock"></i> {post.readTime}</span>
+                                        <span><Icon name="fa-calendar" /> {post.date}</span>
+                                        <span><Icon name="fa-clock" /> {post.readTime}</span>
                                     </div>
                                     <h2 className="blog-card-title">{post.title}</h2>
                                     <p className="blog-card-desc">{post.description}</p>
-                                    <button className="blog-read-more">Read Article <i className="fas fa-arrow-right"></i></button>
+                                    <button className="blog-read-more">Read Article <Icon name="fa-arrow-right" /></button>
                                 </div>
                             </article>
                         ))}

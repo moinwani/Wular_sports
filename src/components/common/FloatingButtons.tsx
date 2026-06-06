@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { createWhatsAppLink } from '../../utils/helpers';
+import { Icon } from './Icon';
 
 export const FloatingButtons = memo(() => {
     return (
@@ -10,13 +11,13 @@ export const FloatingButtons = memo(() => {
             className="fab-whatsapp"
             aria-label="Contact us on WhatsApp"
         >
-            <i className="fab fa-whatsapp"></i>
+            <Icon name="fa-whatsapp" />
         </a>
     );
 });
 
 export const FloatingCallButton = memo(() => (
     <a href="tel:+919320622451" className="fab-call" aria-label="Call us">
-        <i className="fas fa-phone"></i>
+        <Icon name="fa-phone" />
     </a>
 ));

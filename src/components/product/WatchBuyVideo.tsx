@@ -1,5 +1,6 @@
 import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import { ProductFull } from '../../types';
+import { Icon } from '../common/Icon';
 
 interface WatchBuyVideoProps {
     product: ProductFull;
@@ -154,7 +155,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         }}
                         aria-label="Close video"
                     >
-                        <i className="fas fa-times"></i>
+                        <Icon name="fa-times" />
                     </button>
 
                     {videoId ? (
@@ -203,7 +204,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                         onClick={handleModalClose}
                         aria-label="Close video"
                     >
-                        <i className="fas fa-times"></i>
+                        <Icon name="fa-times" />
                     </button>
 
                     <div
@@ -243,14 +244,14 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                                     className="modal-action-btn primary large-gold"
                                     onClick={handleAddToCart}
                                 >
-                                    <i className="fas fa-shopping-bag"></i>
+                                    <Icon name="fa-shopping-bag" />
                                     ADD TO CART
                                 </button>
                                 <button
                                     className="modal-action-btn secondary link-style"
                                     onClick={handleMoreInfo}
                                 >
-                                    <i className="fas fa-info-circle"></i>
+                                    <Icon name="fa-info-circle" />
                                     Product Details
                                 </button>
                             </div>

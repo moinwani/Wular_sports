@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
 import { getAllSubscribers, getOrderAnalytics } from '../../services/admin';
+import { Icon } from '../common/Icon';
 
 interface StatCardProps {
     title: string;
@@ -12,7 +13,7 @@ interface StatCardProps {
 const StatCard: FC<StatCardProps> = ({ title, value, icon, color }) => (
     <div className="admin-stat-card">
         <div className="stat-icon" style={{ backgroundColor: color }}>
-            <i className={`fas ${icon}`}></i>
+            <Icon name={icon} />
         </div>
         <div className="stat-content">
             <h3>{title}</h3>

@@ -1,6 +1,7 @@
 import { FC, memo } from 'react';
 import { Sidebar } from '../common/Sidebar';
 import { CartItem } from '../../types';
+import { Icon } from '../common/Icon';
 
 export interface CartSidebarProps {
     isOpen: boolean;
@@ -18,7 +19,7 @@ export const CartSidebar: FC<CartSidebarProps> = memo(({ isOpen, onClose, cart, 
             <>
                 {cart.length > 0 && (
                     <div className="cart-cod-notice">
-                        <i className="fas fa-truck-fast"></i>
+                        <Icon name="fa-truck-fast" />
                         <div className="cod-notice-text">
                             <strong>Cash on Delivery Available!</strong>
                         </div>

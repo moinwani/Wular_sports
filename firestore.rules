@@ -209,7 +209,7 @@ service cloud.firestore {
     match /orders/{orderId} {
       allow list: if 
         isAdmin() 
-        || (isAuthenticated() && request.query.limit <= 100);
+        || (isOwner(resource.data.userId) && request.query.limit <= 100);
     }
     
     match /subscribers/{subscriberId} {

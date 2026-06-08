@@ -520,7 +520,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 try {
                     const verifyRes = await fetch('/api/verify-razorpay-payment', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
                         body: JSON.stringify({
                             razorpay_order_id: rzpOrderId,
                             razorpay_payment_id: paymentId,

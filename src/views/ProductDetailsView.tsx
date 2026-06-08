@@ -420,6 +420,36 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com/${product.category[0].toLowerCase().replace(/\s/g, '-')}-cricket-bats` },
                     { "@type": "ListItem", "position": 4, "name": product.name },
                 ]
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "What is this cricket bat made of?",
+                        "acceptedAnswer": { "@type": "Answer", "text": product.description }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What comes with the bat?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Each bat comes with a free bat cover, premium toe guard, extra grip, and is fully knocked-in and oiled — ready to play out of the box." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "How long does delivery take?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "We dispatch within 24 hours. Delivery takes 6-7 business days via India Post. You will receive a tracking ID within 24 hours of dispatch." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Can I return or exchange the bat?",
+                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer a 7-day return policy. The bat must be unused and in original packaging. Contact us on WhatsApp within 7 days of delivery to initiate a return." }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "What sizes are available?",
+                        "acceptedAnswer": { "@type": "Answer", "text": `This bat is available in ${product.specs.find(s => s.toLowerCase().includes('height'))?.split(':')[1]?.trim() || 'standard'} size.` }
+                    }
+                ]
             }
         ]
     };

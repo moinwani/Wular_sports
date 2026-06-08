@@ -86,7 +86,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                                 <div key={src} className={`hero-slide ${index === currentSlide ? 'active' : ''}`} style={{ position: 'relative' }}>
                                     <Image
                                         src={src}
-                                        alt={`Hero Slide ${index + 1}`}
+                                        alt={`Handcrafted Kashmiri Willow Cricket Bat — Wular Sports Slide ${index + 1}`}
                                         fill
                                         style={{ objectFit: 'cover' }}
                                         sizes="100vw"
@@ -104,7 +104,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                     <div className="hero-img" style={{ position: 'relative', width: '100%', height: '100%' }}>
                         <Image
                             src={desktopImage || fallbackDesktop}
-                            alt="Legacy Edition Hero"
+                            alt="Handcrafted Kashmiri Willow Cricket Bats — Wular Sports Legacy Edition"
                             fill
                             style={{ objectFit: 'cover' }}
                             sizes="100vw"

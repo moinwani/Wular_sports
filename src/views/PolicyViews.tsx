@@ -9,7 +9,7 @@ export const PrivacyPolicyView: FC = () => (
             canonicalUrl="https://wularsports.com/privacy-policy"
         />
         <div className="container">
-            <h2 className="section-title">Privacy Policy</h2>
+            <h1 className="section-title">Privacy Policy</h1>
             <div className="policy-content">
                 <p><strong>Effective Date:</strong> 17/07/2025</p>
                 <p>At Wular Sports, your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our website.</p>
@@ -45,7 +45,7 @@ export const ReturnPolicyView: FC = () => (
             canonicalUrl="https://wularsports.com/return-policy"
         />
         <div className="container">
-            <h2 className="section-title">Return Policy</h2>
+            <h1 className="section-title">Return Policy</h1>
             <div className="policy-content">
                 <p><strong>Effective Date:</strong> 17/07/2025</p>
                 <p>We at Wular Sports aim to provide high-quality cricket bats and gear. However, if you're not satisfied, here's our return policy:</p>
@@ -78,7 +78,7 @@ export const TermsAndConditionsView: FC = () => (
             canonicalUrl="https://wularsports.com/terms-conditions"
         />
         <div className="container">
-            <h2 className="section-title">Terms and Conditions</h2>
+            <h1 className="section-title">Terms and Conditions</h1>
             <div className="policy-content">
                 <p><strong>Effective Date:</strong> 17/07/2025</p>
                 <p>By accessing and using Wular Sports, you agree to the following terms:</p>

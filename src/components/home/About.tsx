@@ -1,34 +1,26 @@
 import { memo, useState, useEffect } from 'react';
 import { Icon } from '../common/Icon';
-import { VideoPreview } from '../common/VideoPreview';
+
+const factoryVideoUrl = "https://youtube.com/shorts/IZ9Vv-cAVGY?feature=share";
+
+function getYouTubeId(url: string) {
+    if (url.includes('/shorts/')) return url.split('/shorts/')[1].split(/[?#]/)[0];
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : (url.split('/').pop()?.split('?')[0] || null);
+}
+
+const videoId = getYouTubeId(factoryVideoUrl);
 
 export const About = memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const factoryVideoUrl = "https://youtube.com/shorts/IZ9Vv-cAVGY?feature=share";
 
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
     useEffect(() => {
-        if (isModalOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
+        document.body.style.overflow = isModalOpen ? 'hidden' : '';
         return () => { document.body.style.overflow = ''; };
     }, [isModalOpen]);
-
-    const getYouTubeId = (url: string) => {
-        if (url.includes('/shorts/')) {
-            return url.split('/shorts/')[1].split(/[?#]/)[0];
-        }
-        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[7].length === 11) ? match[7] : (url.split('/').pop()?.split('?')[0] || null);
-    };
-
-    const videoId = getYouTubeId(factoryVideoUrl);
 
     return (
         <section id="about">
@@ -42,14 +34,27 @@ export const About = memo(() => {
                             <span>Srinagar, Jammu and Kashmir, India</span>
                         </div>
                     </div>
-                    <div className="factory-video-teaser" onClick={toggleModal}>
-                        <div className="teaser-overlay">
-                            <div className="play-btn-circle">
-                                <Icon name="fa-play" />
-                            </div>
-                            <span>Take a Factory Tour</span>
+
+                    <div className="factory-tour-card" onClick={toggleModal}>
+                        {videoId ? (
+                            <img
+                                src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+                                alt="Factory tour preview"
+                                className="factory-tour-thumb"
+                                loading="lazy"
+                            />
+                        ) : (
+                            <div className="factory-tour-bg" />
+                        )}
+                        <div className="factory-tour-gradient" />
+                        <div className="factory-tour-content">
+                            <span className="factory-tour-kicker">CRAFTED IN KASHMIR</span>
+                            <p className="factory-tour-desc">Take a behind-the-scenes look at how every Wular Sports bat is made.</p>
+                            <span className="factory-tour-cta">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
+                                Watch Factory Tour
+                            </span>
                         </div>
-                        <VideoPreview className="teaser-thumbnail" />
                     </div>
                 </div>
             </div>
@@ -70,7 +75,7 @@ export const About = memo(() => {
                                     allowFullScreen
                                     className="modal-full-video"
                                     style={{ border: 'none' }}
-                                ></iframe>
+                                />
                             ) : (
                                 <video
                                     src={factoryVideoUrl}

@@ -22,9 +22,8 @@ export const OrdersManagement: FC = () => {
         try {
             await updateOrderStatus(orderId, newStatus);
             alert('Order status updated successfully!');
-        } catch (error) {
+        } catch {
             alert('Failed to update order status');
-            console.error(error);
         } finally {
             setUpdating(false);
         }
@@ -35,9 +34,8 @@ export const OrdersManagement: FC = () => {
         try {
             await updatePaymentStatus(orderId, newPaymentStatus);
             alert('Payment status updated successfully!');
-        } catch (error) {
+        } catch {
             alert('Failed to update payment status');
-            console.error(error);
         } finally {
             setUpdating(false);
         }

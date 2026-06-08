@@ -41,8 +41,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                 } else {
                     setDesktopImage(fallbackDesktop);
                 }
-            } catch (error) {
-                console.error('Hero asset discovery failed:', error);
+            } catch {
                 setDesktopImage(fallbackDesktop);
             } finally {
                 setIsLoading(false);

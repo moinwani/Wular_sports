@@ -22,8 +22,7 @@ export const AdminRoute: FC<AdminRouteProps> = ({ children }) => {
         try {
             const adminStatus = await isAdmin();
             setAuthorized(adminStatus);
-        } catch (error) {
-            console.error('Error checking admin status:', error);
+        } catch {
             setAuthorized(false);
         } finally {
             setLoading(false);

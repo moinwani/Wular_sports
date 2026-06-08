@@ -47,7 +47,7 @@ export const AdminDashboard: FC = () => {
                 setSubscriberCount(subs.length);
                 setAnalytics(prev => ({ ...prev, totalSubscribers: subs.length }));
             })
-            .catch(err => console.error('Error fetching subscribers:', err));
+            .catch(() => {});
     }, []);
 
     if (loading) {

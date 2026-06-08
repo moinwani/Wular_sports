@@ -18,9 +18,8 @@ export const SubscribersManagement: FC = () => {
             const data = await getAllSubscribers();
             setSubscribers(data);
             setError(null);
-        } catch (err) {
+        } catch {
             setError('Failed to fetch subscribers');
-            console.error(err);
         } finally {
             setLoading(false);
         }

@@ -389,26 +389,39 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const productImage = Array.isArray(product.image) ? product.image[0] : product.image;
     const structuredData = {
         "@context": "https://schema.org",
-        "@type": "Product",
-        "name": product.name,
-        "image": Array.isArray(product.image) ? product.image : [product.image],
-        "description": product.description,
-        "brand": {
-            "@type": "Brand",
-            "name": "Wular Sports"
-        },
-        "offers": {
-            "@type": "Offer",
-            "url": `https://wularsports.com/product/${product.id}`,
-            "priceCurrency": "INR",
-            "price": product.price,
-            "priceValidUntil": "2026-12-31",
-            "availability": "https://schema.org/InStock",
-            "seller": {
-                "@type": "Organization",
-                "name": "Wular Sports"
+        "@graph": [
+            {
+                "@type": "Product",
+                "name": product.name,
+                "image": Array.isArray(product.image) ? product.image : [product.image],
+                "description": product.description,
+                "brand": {
+                    "@type": "Brand",
+                    "name": "Wular Sports"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "url": `https://wularsports.com/product/${product.id}`,
+                    "priceCurrency": "INR",
+                    "price": product.price,
+                    "priceValidUntil": "2026-12-31",
+                    "availability": "https://schema.org/InStock",
+                    "seller": {
+                        "@type": "Organization",
+                        "name": "Wular Sports"
+                    }
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wularsports.com" },
+                    { "@type": "ListItem", "position": 2, "name": "Collection", "item": "https://wularsports.com/collection" },
+                    { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com/${product.category[0].toLowerCase().replace(/\s/g, '-')}-cricket-bats` },
+                    { "@type": "ListItem", "position": 4, "name": product.name },
+                ]
             }
-        }
+        ]
     };
 
 

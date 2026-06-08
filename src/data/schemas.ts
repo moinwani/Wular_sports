@@ -8,6 +8,26 @@ export const organizationSchema = {
     "logo": "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/logo.png",
     "contactPoint": { "@type": "ContactPoint", "telephone": "+91-9320622451", "contactType": "customer service", "availableLanguage": ["English", "Hindi", "Urdu"] },
     "sameAs": ["https://www.instagram.com/wular.sports", "https://youtube.com/@wularsports"],
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5.0",
+        "reviewCount": "8",
+        "bestRating": "5",
+        "worstRating": "1",
+    },
+};
+
+export const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Wular Sports",
+    "url": "https://wularsports.com/",
+    "description": "Premium handcrafted Kashmiri willow cricket bats — hard tennis, soft tennis, and leather ball bats. Proudly made in Srinagar, Kashmir.",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://wularsports.com/collection?q={search_term_string}",
+        "query-input": "required name=search_term_string",
+    },
 };
 
 export const localBusinessSchema = {
@@ -36,5 +56,7 @@ export const navigationSchema = {
         { "@type": "SiteNavigationElement", "position": 1, "name": "Hard Tennis Bats", "url": "https://wularsports.com/hard-tennis-bats" },
         { "@type": "SiteNavigationElement", "position": 2, "name": "Soft Tennis Bats", "url": "https://wularsports.com/soft-tennis-bats" },
         { "@type": "SiteNavigationElement", "position": 3, "name": "Leather Cricket Bats", "url": "https://wularsports.com/leather-cricket-bats" },
+        { "@type": "SiteNavigationElement", "position": 4, "name": "Wular Insights Blog", "url": "https://wularsports.com/blog" },
+        { "@type": "SiteNavigationElement", "position": 5, "name": "About Wular Sports", "url": "https://wularsports.com/about" },
     ],
 };

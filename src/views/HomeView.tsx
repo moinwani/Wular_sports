@@ -5,7 +5,7 @@ import { VideoTestimonials } from '../components/home/VideoTestimonials';
 import { Customization } from '../components/checkout/Customization';
 import { About } from '../components/home/About';
 import { SEOHead } from '../components/common/SEOHead';
-import { organizationSchema, localBusinessSchema, navigationSchema } from '../data/schemas';
+import { organizationSchema, localBusinessSchema, navigationSchema, webSiteSchema } from '../data/schemas';
 import { ProductFull } from '../types';
 
 interface HomeViewProps {
@@ -23,6 +23,7 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
         "@graph": [
             organizationSchema,
             localBusinessSchema,
+            webSiteSchema,
             navigationSchema,
         ]
     };

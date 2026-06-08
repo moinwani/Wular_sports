@@ -1,6 +1,7 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
+import { getAnalytics, Analytics } from 'firebase/analytics';
 
 const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,6 +16,7 @@ const firebaseConfig = {
 let _app: FirebaseApp | null = null;
 let _db: Firestore | null = null;
 let _auth: Auth | null = null;
+let _analytics: Analytics | null = null;
 
 function getApp(): FirebaseApp | null {
     if (typeof window === 'undefined') return null;
@@ -46,7 +48,16 @@ export function getFirebaseAuth(): Auth | null {
     }
 }
 
-export const analytics = null;
+export function getFirebaseAnalytics(): Analytics | null {
+    const app = getApp();
+    if (!app) return null;
+    try {
+        if (!_analytics) _analytics = getAnalytics(app);
+        return _analytics;
+    } catch {
+        return null;
+    }
+}
 
 // Lazy proxy exports for backward compatibility
 export const db = new Proxy({} as Firestore, {

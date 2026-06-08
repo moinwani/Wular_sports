@@ -10,12 +10,12 @@ const nextConfig = {
     async headers() {
         const csp = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' https://*.clarity.ms https://apis.google.com https://accounts.google.com https://checkout.razorpay.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
+            "script-src 'self' 'unsafe-inline' https://*.clarity.ms https://apis.google.com https://accounts.google.com https://checkout.razorpay.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-            "img-src 'self' data: https://cdn.jsdelivr.net https://*.clarity.ms https://i.ytimg.com",
-            "frame-src 'self' https://www.youtube.com https://api.razorpay.com",
-            "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com",
+            "img-src 'self' data: https://cdn.jsdelivr.net https://*.clarity.ms https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
+            "frame-src 'self' https://www.youtube.com https://api.razorpay.com https://*.googletagmanager.com",
+            "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
             "media-src 'self' https://cdn.jsdelivr.net",
         ].join('; ');
 

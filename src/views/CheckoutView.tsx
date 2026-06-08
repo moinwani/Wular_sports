@@ -252,6 +252,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
     }, [pendingWhatsApp]);
 
+    // GA4 / GTM: track begin_checkout when page loads with items in cart
+    useEffect(() => {
+        if (cart.length > 0 && typeof window !== 'undefined' && window.dataLayer) {
+            window.dataLayer.push({
+                event: 'begin_checkout',
+                ecommerce: {
+                    currency: 'INR',
+                    value: total,
+                    items: cart.map(item => ({
+                        item_id: item.id,
+                        item_name: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                    }))
+                }
+            });
+        }
+    }, []);
+
     // Live auth state — required for placing an order
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;
@@ -594,6 +613,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 if (sanitizedData.email) {
                     sendOrderConfirmation({ ...orderData, id: firestoreOrderId })
                         .catch(err => console.error('Customer email failed:', err));
+                }
+
+                // GA4 / GTM: track purchase
+                if (typeof window !== 'undefined' && window.dataLayer) {
+                    window.dataLayer.push({
+                        event: 'purchase',
+                        ecommerce: {
+                            transaction_id: firestoreOrderId,
+                            value: total,
+                            currency: 'INR',
+                            payment_type: isCOD ? 'cod' : 'full',
+                            items: cart.map(item => ({
+                                item_id: item.id,
+                                item_name: item.name,
+                                price: item.price,
+                                quantity: item.quantity,
+                            }))
+                        }
+                    });
                 }
 
                 if (isCOD) {

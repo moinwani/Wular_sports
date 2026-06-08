@@ -48,6 +48,23 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
+    // GA4 / GTM: track product view
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.dataLayer && product) {
+            window.dataLayer.push({
+                event: 'view_item',
+                ecommerce: {
+                    items: [{
+                        item_id: product.id,
+                        item_name: product.name,
+                        price: product.price,
+                        item_category: product.category || 'bat',
+                    }]
+                }
+            });
+        }
+    }, []);
+
     // Store scroll container ref from VerticalImageGallery
     const handleImageScrollContainerRef = useCallback((ref: HTMLDivElement | null) => {
         imageScrollContainerRef.current = ref;

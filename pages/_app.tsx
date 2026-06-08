@@ -9,6 +9,31 @@ import { Footer } from '../src/components/common/Footer';
 import { Toast } from '../src/components/common/Toast';
 import '../index.css';
 
+declare global {
+    interface Window {
+        dataLayer: any[];
+    }
+}
+
+const captureUtmParams = () => {
+    if (typeof window === 'undefined') return;
+    try {
+        const url = new URL(window.location.href);
+        const params = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+        const captured: Record<string, string> = {};
+        params.forEach(p => {
+            const val = url.searchParams.get(p);
+            if (val) captured[p] = val;
+        });
+        if (Object.keys(captured).length > 0) {
+            sessionStorage.setItem('__utm', JSON.stringify(captured));
+            if (window.dataLayer) {
+                window.dataLayer.push({ event: 'utm_captured', ...captured });
+            }
+        }
+    } catch { /* silent */ }
+};
+
 const CartSidebar = dynamic(() => import('../src/components/checkout/CartSidebar').then(m => ({ default: m.CartSidebar })), { ssr: false });
 const FloatingButtons = dynamic(() => import('../src/components/common/FloatingButtons').then(m => ({ default: m.FloatingButtons })), { ssr: false });
 const FloatingCallButton = dynamic(() => import('../src/components/common/FloatingButtons').then(m => ({ default: m.FloatingCallButton })), { ssr: false });
@@ -49,6 +74,22 @@ function AppShell({ Component, pageProps }: AppProps) {
                 clearTimeout(initId as ReturnType<typeof setTimeout>);
                 clearTimeout(googleId as ReturnType<typeof setTimeout>);
             }
+        };
+    }, []);
+
+    useEffect(() => {
+        captureUtmParams();
+
+        const handleRouteChange = (url: string) => {
+            if (window.dataLayer) {
+                window.dataLayer.push({ event: 'page_view', page: url });
+            }
+        };
+
+        handleRouteChange(window.location.pathname);
+        router.events.on('routeChangeComplete', handleRouteChange);
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
         };
     }, []);
 

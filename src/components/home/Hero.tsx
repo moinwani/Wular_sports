@@ -115,6 +115,8 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                 )}
 
                 <div className="hero-content-overlay">
+                    <h1 className="hero-heading">Handcrafted Kashmiri Willow Cricket Bats</h1>
+                    <p className="hero-tagline">Premium craftsmanship from Srinagar, Kashmir — free delivery across India</p>
                     <button
                         onClick={onShopCollectionClick}
                         className="btn-transparent"

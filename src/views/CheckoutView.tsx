@@ -8,6 +8,15 @@ import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
 
+const hashData = async (value: string): Promise<string> => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(value.trim().toLowerCase());
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+};
+
 const COUNTRY_CODES = [
     { code: '+91', country: 'India' },
     { code: '+93', country: 'Afghanistan' },
@@ -254,8 +263,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     // GA4 / GTM: track begin_checkout when page loads with items in cart
     useEffect(() => {
-        if (cart.length > 0 && typeof window !== 'undefined' && window.dataLayer) {
-            window.dataLayer.push({
+        if (!(cart.length > 0 && typeof window !== 'undefined' && window.dataLayer)) return;
+        (async () => {
+            const userData: Record<string, string> = {};
+            try {
+                const { getCurrentUser } = await import('../services/auth');
+                const user = getCurrentUser();
+                if (user?.email) {
+                    userData.em = await hashData(user.email);
+                }
+            } catch { /* silent */ }
+
+            const payload: Record<string, any> = {
                 event: 'begin_checkout',
                 ecommerce: {
                     currency: 'INR',
@@ -267,8 +286,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         quantity: item.quantity,
                     }))
                 }
-            });
-        }
+            };
+            if (Object.keys(userData).length > 0) {
+                payload.user_data = userData;
+            }
+            window.dataLayer.push(payload);
+        })();
     }, []);
 
     // Live auth state — required for placing an order
@@ -615,10 +638,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         .catch(err => console.error('Customer email failed:', err));
                 }
 
-                // GA4 / GTM: track purchase
+                // GA4 / GTM / Meta CAPI: generate event_id for deduplication
+                const eventId = crypto.randomUUID();
+
+                // GA4 / GTM: track purchase with Advanced Matching
                 if (typeof window !== 'undefined' && window.dataLayer) {
-                    window.dataLayer.push({
+                    const userData: Record<string, string> = {};
+                    if (sanitizedData.email) {
+                        try { userData.em = await hashData(sanitizedData.email); } catch { /* silent */ }
+                    }
+                    if (sanitizedData.phone) {
+                        try {
+                            const phone = `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`.replace(/\D/g, '');
+                            userData.ph = await hashData(phone);
+                        } catch { /* silent */ }
+                    }
+
+                    const payload: Record<string, any> = {
                         event: 'purchase',
+                        event_id: eventId,
                         ecommerce: {
                             transaction_id: firestoreOrderId,
                             value: total,
@@ -631,8 +669,31 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 quantity: item.quantity,
                             }))
                         }
-                    });
+                    };
+                    if (Object.keys(userData).length > 0) {
+                        payload.user_data = userData;
+                    }
+                    window.dataLayer.push(payload);
                 }
+
+                // Meta CAPI: server-side purchase event (non-blocking, best-effort)
+                fetch('/api/capi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event_id: eventId,
+                        email: sanitizedData.email || '',
+                        phone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
+                        orderId: firestoreOrderId,
+                        total,
+                        items: cart.map(item => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity,
+                        })),
+                    }),
+                }).catch(err => console.error('Meta CAPI send failed:', err));
 
                 if (isCOD) {
                     // For COD: open WhatsApp to confirm delivery details

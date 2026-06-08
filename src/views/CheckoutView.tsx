@@ -572,8 +572,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     remaining,
                     totalAtDoor,
                     razorpayPaymentId: paymentId,
-                    status: 'confirmed' as const,
-                    paymentStatus: isCOD ? 'pending' as const : 'completed' as const,
+                    status: 'pending' as const,
+                    paymentStatus: 'pending' as const,
                     paymentMethod: sanitizedData.paymentMethod as any
                 };
 

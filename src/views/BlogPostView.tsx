@@ -11,9 +11,10 @@ import { Icon } from '../components/common/Icon';
 interface BlogPostViewProps {
     post: BlogPost;
     relatedPosts: BlogPost[];
+    articleSchema: object;
 }
 
-export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts }) => {
+export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articleSchema }) => {
     const router = useRouter();
 
     useEffect(() => {
@@ -38,7 +39,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts }) => {
                 title={`${post.title} | Wular Sports Blog`}
                 description={post.description}
                 canonicalUrl={`https://wularsports.com/blog/${post.id}`}
-                structuredData={faqSchema ?? undefined}
+                structuredData={faqSchema ? { ...articleSchema, "@graph": [...(articleSchema as any)["@graph"], faqSchema] } : articleSchema}
             />
 
             <article className="blog-post-container">

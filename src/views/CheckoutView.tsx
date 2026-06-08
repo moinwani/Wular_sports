@@ -577,27 +577,34 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     paymentMethod: sanitizedData.paymentMethod as any
                 };
 
-                // Send emails immediately — independent of Firestore
-                sendAdminOrderNotification({ ...orderData, id: orderId })
+                // Save order to Firestore — must succeed before continuing
+                let firestoreOrderId: string;
+                try {
+                    firestoreOrderId = await createOrder(orderData);
+                } catch {
+                    setFormError('Your payment was successful but we could not save your order. Please contact us on WhatsApp with your payment ID: ' + paymentId);
+                    setIsProcessing(false);
+                    return;
+                }
+
+                // Send emails in background (non-blocking, best-effort)
+                sendAdminOrderNotification({ ...orderData, id: firestoreOrderId })
                     .catch(err => console.error('Admin notification failed:', err));
                 if (sanitizedData.email) {
-                    sendOrderConfirmation({ ...orderData, id: orderId })
+                    sendOrderConfirmation({ ...orderData, id: firestoreOrderId })
                         .catch(err => console.error('Customer email failed:', err));
                 }
 
-                // Save to Firestore in background (don't block on this)
-                createOrder(orderData).catch(err => console.error('Firestore order save failed:', err));
-
                 if (isCOD) {
                     // For COD: open WhatsApp to confirm delivery details
-                    const whatsappUrl = buildWhatsAppUrl(orderId, sanitizedData);
+                    const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
                     whatsAppUrlRef.current = whatsappUrl;
                     window.open(whatsappUrl, '_blank');
                     setPendingWhatsApp({ whatsappUrl });
                     setIsProcessing(false);
                 } else {
                     // Full payment: go straight to success
-                    onPlaceOrder({ id: orderId, items: cart, total, paymentId });
+                    onPlaceOrder({ id: firestoreOrderId, items: cart, total, paymentId });
                 }
             });
 

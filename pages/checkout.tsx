@@ -11,9 +11,9 @@ export default function CheckoutPage() {
         <CheckoutView
             cart={cart}
             total={cartTotal}
-            onPlaceOrder={() => {
+            onPlaceOrder={(orderDetails: any) => {
                 cartStorage.clear();
-                router.push('/order-success');
+                router.push(`/order-success?id=${orderDetails.id || ''}`);
             }}
         />
     );

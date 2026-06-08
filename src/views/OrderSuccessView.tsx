@@ -5,6 +5,7 @@ import { Icon } from '../components/common/Icon';
 
 export const OrderSuccessView: FC = () => {
     const router = useRouter();
+    const orderId = router.query.id as string || '';
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -35,6 +36,16 @@ export const OrderSuccessView: FC = () => {
                     Order Placed Successfully!
                 </h1>
 
+                {orderId && (
+                    <p style={{
+                        fontSize: '0.95rem',
+                        color: '#888',
+                        marginBottom: '1.5rem',
+                    }}>
+                        Your Order ID: <strong style={{ color: '#d4af37' }}>{orderId}</strong>
+                    </p>
+                )}
+
                 <p style={{
                     fontSize: '1.2rem',
                     maxWidth: '600px',
@@ -42,7 +53,7 @@ export const OrderSuccessView: FC = () => {
                     lineHeight: '1.6',
                     color: '#ddd'
                 }}>
-                    Your order has been placed successfully. Thanks for shopping with Wular Sports.
+                    Your order has been placed successfully. Thanks for shopping with Wular Sports. We'll reach out to you shortly with your delivery details.
                 </p>
 
                 <div className="actions" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>

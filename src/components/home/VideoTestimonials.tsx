@@ -1,7 +1,9 @@
 import { FC, useState } from 'react';
-import { VideoModal } from '../common/VideoModal';
+import dynamic from 'next/dynamic';
 import { Testimonial } from '../../types';
 import { Icon } from '../common/Icon';
+
+const VideoModal = dynamic(() => import('../common/VideoModal').then(m => ({ default: m.VideoModal })));
 
 const testimonials: Testimonial[] = [
     {

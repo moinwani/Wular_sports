@@ -1,14 +1,18 @@
 import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { blogs } from '../data/blogs';
+import { BlogPost } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { subscribeToNewsletter } from '../services/newsletter';
 import { useToast } from '../context/ToastContext';
 import { getCDNUrl } from '../services/githubService';
 import { Icon } from '../components/common/Icon';
 
-export const BlogView: FC = () => {
+interface BlogViewProps {
+    blogs: BlogPost[];
+}
+
+export const BlogView: FC<BlogViewProps> = ({ blogs }) => {
     const router = useRouter();
     const { showToast } = useToast();
     const [email, setEmail] = useState('');

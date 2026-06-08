@@ -4,23 +4,21 @@ import Link from 'next/link';
 import Image from 'next/image';
 import DOMPurify from 'isomorphic-dompurify';
 import { BlogPost } from '../types';
-import { blogs } from '../data/blogs';
 import { SEOHead } from '../components/common/SEOHead';
 import { getCDNUrl } from '../services/githubService';
 import { Icon } from '../components/common/Icon';
 
 interface BlogPostViewProps {
     post: BlogPost;
+    relatedPosts: BlogPost[];
 }
 
-export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
+export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts }) => {
     const router = useRouter();
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [post.id]);
-
-    const otherPosts = blogs.filter(b => b.id !== post.id).slice(0, 2);
 
     const sanitizedContent = useMemo(() => DOMPurify.sanitize(post.content), [post.content]);
 
@@ -91,12 +89,12 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post }) => {
                 </div>
             </article>
 
-            {otherPosts.length > 0 && (
+            {relatedPosts.length > 0 && (
                 <section className="more-articles">
                     <div className="container">
                         <h3 className="more-articles-title">Continue Reading</h3>
                         <div className="blog-grid">
-                            {otherPosts.map(p => (
+                            {relatedPosts.map(p => (
                                 <article key={p.id} className="blog-card" onClick={() => router.push(`/blog/${p.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="blog-card-image">
                                         <Image src={getCDNUrl(p.image)} alt={p.title} width={400} height={250} unoptimized />

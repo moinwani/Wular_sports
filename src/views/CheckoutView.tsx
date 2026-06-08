@@ -581,7 +581,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 let firestoreOrderId: string;
                 try {
                     firestoreOrderId = await createOrder(orderData);
-                } catch {
+                } catch (err: any) {
+                    console.error('Firestore save failed:', err?.code, err?.message, err);
                     setFormError('Your payment was successful but we could not save your order. Please contact us on WhatsApp with your payment ID: ' + paymentId);
                     setIsProcessing(false);
                     return;

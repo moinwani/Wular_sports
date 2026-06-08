@@ -486,7 +486,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             const user = getCurrentUser();
             const token = user ? await user.getIdToken() : '';
 
-            const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const orderId = 'ORD-' + crypto.randomUUID().replace(/-/g, '').substring(0, 10).toUpperCase();
             const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
             const isCOD = sanitizedData.paymentMethod === 'cod';
 

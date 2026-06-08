@@ -51,7 +51,7 @@ export const ReturnPolicyView: FC = () => (
                 <p>We at Wular Sports aim to provide high-quality cricket bats and gear. However, if you're not satisfied, here's our return policy:</p>
                 <h3>Return Eligibility:</h3>
                 <ul>
-                    <li>Return requests must be raised within 3 days of delivery.</li>
+                    <li>Return requests must be raised within 7 days of delivery.</li>
                     <li>Product must be unused, in original condition, and with all tags and packaging intact.</li>
                     <li>Customized bats (name engraved or special finishes) cannot be returned unless damaged or defective.</li>
                 </ul>

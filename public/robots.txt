@@ -1,8 +1,3 @@
 User-agent: *
 Allow: /
-
-# Sitemap
 Sitemap: https://wularsports.com/sitemap.xml
-
-# Disallow admin or internal pages (if any in future)
-# Disallow: /admin/

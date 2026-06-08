@@ -196,7 +196,7 @@ export const blogs: BlogPost[] = [
             <p>Power in cricket is a result of kinetic energy. The formula for kinetic energy is 1/2 * mass * velocity squared. While increasing the mass (weight of the bat) can increase power, it often significantly decreases your velocity (swing speed). If you can't swing a heavy bat fast enough, you'll actually lose power.</p>
 
             <h3>Why Swing Speed Matters</h3>
-            <p>Modern cricket, especially in the T20 format and Hard Tennis tournaments, requires quick reactiChoosing a bat that's too heavy can lead to poor timing and fatigue, while a bat that's too light might lack the power needed for boundary-hitting. For players looking for specific weight classes, our <a href="/hard-tennis-bats">Hard Tennis Bats</a> are balanced for power, while our <a href="/soft-tennis-bats">Soft Tennis Bats</a> prioritize speed and control.
+            <p>Modern cricket, especially in the T20 format and Hard Tennis tournaments, requires quick reactions. Choosing a bat that's too heavy can lead to poor timing and fatigue, while a bat that's too light might lack the power needed for boundary-hitting. For players looking for specific weight classes, our <a href="/hard-tennis-bats">Hard Tennis Bats</a> are balanced for power, while our <a href="/soft-tennis-bats">Soft Tennis Bats</a> prioritize speed and control.
  This is particularly crucial when facing fast bowlers or trying to execute innovative shots like the ramp or the reverse sweep.</p>
 
             <h3>The "Perfect" Weight</h3>

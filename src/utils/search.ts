@@ -70,7 +70,8 @@ export const highlightSearchTerm = (text: string, searchTerm: string): string =>
         return text;
     }
 
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
     return text.replace(regex, '<mark>$1</mark>');
 };
 

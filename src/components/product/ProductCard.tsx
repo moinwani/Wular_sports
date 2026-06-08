@@ -27,6 +27,24 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
         e.stopPropagation();
         const size = isHoneycomb ? '35 inch' : '';
         onAddToCart(product, size);
+
+        if (typeof window !== 'undefined' && window.dataLayer) {
+            window.dataLayer.push({
+                event: 'add_to_cart',
+                ecommerce: {
+                    currency: 'INR',
+                    value: product.price,
+                    items: [{
+                        item_id: product.id,
+                        item_name: product.name,
+                        price: product.price,
+                        quantity: 1,
+                        item_variant: size,
+                        item_category: product.category?.[0] || '',
+                    }]
+                }
+            });
+        }
     };
 
     const handleViewDetails = (e: React.MouseEvent) => {

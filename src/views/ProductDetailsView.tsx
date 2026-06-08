@@ -358,15 +358,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
         : 0;
 
     const handleAddToCartClick = () => {
+        let itemData: { size?: string; quantity?: number } = {};
+
         if (isHoneycomb) {
             // Automatically add 35 inch for Honeycomb
             onAddToCart(product, '35 inch');
-            return;
-        }
-
-        if (hasSizes && !selectedSize) {
+            itemData = { size: '35 inch', quantity: 1 };
+        } else if (hasSizes && !selectedSize) {
             setSizeError(true);
-            // Scroll to size selector smoothly
             setTimeout(() => {
                 const sizeSelector = document.querySelector('.size-selector-container');
                 if (sizeSelector) {
@@ -374,9 +373,30 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 }
             }, 100);
             return;
+        } else {
+            setSizeError(false);
+            onAddToCart(product, selectedSize, quantity);
+            itemData = { size: selectedSize, quantity };
         }
-        setSizeError(false);
-        onAddToCart(product, selectedSize, quantity);
+
+        // GA4 / GTM: track add_to_cart
+        if (typeof window !== 'undefined' && window.dataLayer) {
+            window.dataLayer.push({
+                event: 'add_to_cart',
+                ecommerce: {
+                    currency: 'INR',
+                    value: product.price * (itemData.quantity || 1),
+                    items: [{
+                        item_id: product.id,
+                        item_name: product.name,
+                        price: product.price,
+                        quantity: itemData.quantity || 1,
+                        item_variant: itemData.size || '',
+                        item_category: product.category?.[0] || '',
+                    }]
+                }
+            });
+        }
     };
 
     const increaseQuantity = () => setQuantity(prev => prev + 1);

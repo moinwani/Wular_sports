@@ -11,6 +11,7 @@ interface CategoryViewProps {
     title: string;
     h1Title: string;
     description: string;
+    bodyText: string;
     keywords: string;
     canonicalUrl: string;
     products: ProductFull[];
@@ -30,6 +31,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
     title,
     h1Title,
     description,
+    bodyText,
     keywords,
     canonicalUrl,
     products,
@@ -115,6 +117,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
                 <div className="container">
                     <h1 className="section-title" style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--golden)' }}>{h1Title}</h1>
                     <div className="footer-title-bar" style={{ margin: '0 auto 2rem', backgroundColor: 'var(--golden)' }}></div>
+                    <p className="category-description" style={{ maxWidth: '800px', margin: '0 auto 2.5rem', color: '#bbb', fontSize: '1.05rem', lineHeight: '1.8', textAlign: 'center' }}>{bodyText}</p>
                 </div>
             </section>
 

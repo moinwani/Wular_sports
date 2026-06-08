@@ -1,5 +1,5 @@
 import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
-import { db } from './firebase-firestore';
+import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 
 /**
@@ -28,7 +28,7 @@ export interface OrderAnalytics {
  */
 export const getAllSubscribers = async (): Promise<Subscriber[]> => {
     try {
-        const q = query(collection(db, 'subscribers'), orderBy('subscribedAt', 'desc'));
+        const q = query(collection(getFirestoreDb(), 'subscribers'), orderBy('subscribedAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
         return querySnapshot.docs.map(doc => ({
@@ -52,7 +52,7 @@ export const updateOrderStatus = async (
     status: string
 ): Promise<void> => {
     try {
-        const orderRef = doc(db, 'orders', orderId);
+        const orderRef = doc(getFirestoreDb(), 'orders', orderId);
         await updateDoc(orderRef, {
             status: status,
             updatedAt: new Date()
@@ -73,7 +73,7 @@ export const updatePaymentStatus = async (
     paymentId?: string
 ): Promise<void> => {
     try {
-        const orderRef = doc(db, 'orders', orderId);
+        const orderRef = doc(getFirestoreDb(), 'orders', orderId);
         const updateData: any = {
             paymentStatus: paymentStatus,
             updatedAt: new Date()

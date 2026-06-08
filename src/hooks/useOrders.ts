@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, onSnapshot, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { db } from '../services/firebase-firestore';
+import { getFirestoreDb } from '../services/firebase-firestore';
 import { Order } from '../services/orders';
 
 /**
@@ -22,7 +22,7 @@ export const useOrders = (customerEmail?: string) => {
         setError(null);
 
         const q = query(
-            collection(db, 'orders'),
+            collection(getFirestoreDb(), 'orders'),
             where('customerEmail', '==', customerEmail),
             orderBy('createdAt', 'desc')
         );
@@ -87,7 +87,7 @@ export const useAllOrders = () => {
 
                 // Only fetch orders if admin
                 const q = query(
-                    collection(db, 'orders'),
+                    collection(getFirestoreDb(), 'orders'),
                     orderBy('createdAt', 'desc')
                 );
 

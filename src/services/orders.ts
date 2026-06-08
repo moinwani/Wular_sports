@@ -12,7 +12,7 @@ import {
     Timestamp,
     DocumentData
 } from 'firebase/firestore';
-import { db } from './firebase-firestore';
+import { getFirestoreDb } from './firebase-firestore';
 
 export interface Order {
     id?: string;
@@ -66,7 +66,7 @@ export const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 
             updatedAt: new Date()
         };
 
-        const docRef = await addDoc(collection(db, ORDERS_COLLECTION), {
+        const docRef = await addDoc(collection(getFirestoreDb(), ORDERS_COLLECTION), {
             ...order,
             createdAt: Timestamp.fromDate(order.createdAt),
             updatedAt: Timestamp.fromDate(order.updatedAt)
@@ -85,7 +85,7 @@ export const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 
  */
 export const getOrder = async (orderId: string): Promise<Order | null> => {
     try {
-        const docRef = doc(db, ORDERS_COLLECTION, orderId);
+        const docRef = doc(getFirestoreDb(), ORDERS_COLLECTION, orderId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -110,7 +110,7 @@ export const getOrder = async (orderId: string): Promise<Order | null> => {
  */
 export const getAllOrders = async (): Promise<Order[]> => {
     try {
-        const q = query(collection(db, ORDERS_COLLECTION), orderBy('createdAt', 'desc'));
+        const q = query(collection(getFirestoreDb(), ORDERS_COLLECTION), orderBy('createdAt', 'desc'));
         const querySnapshot = await getDocs(q);
 
         return querySnapshot.docs.map(doc => {
@@ -134,7 +134,7 @@ export const getAllOrders = async (): Promise<Order[]> => {
 export const getOrdersByEmail = async (email: string): Promise<Order[]> => {
     try {
         const q = query(
-            collection(db, ORDERS_COLLECTION),
+            collection(getFirestoreDb(), ORDERS_COLLECTION),
             where('customerEmail', '==', email),
             orderBy('createdAt', 'desc')
         );
@@ -163,7 +163,7 @@ export const updateOrderStatus = async (
     status: Order['status']
 ): Promise<void> => {
     try {
-        const docRef = doc(db, ORDERS_COLLECTION, orderId);
+        const docRef = doc(getFirestoreDb(), ORDERS_COLLECTION, orderId);
         await updateDoc(docRef, {
             status,
             updatedAt: Timestamp.fromDate(new Date())
@@ -184,7 +184,7 @@ export const updatePaymentStatus = async (
     paymentId?: string
 ): Promise<void> => {
     try {
-        const docRef = doc(db, ORDERS_COLLECTION, orderId);
+        const docRef = doc(getFirestoreDb(), ORDERS_COLLECTION, orderId);
         const updateData: DocumentData = {
             paymentStatus,
             updatedAt: Timestamp.fromDate(new Date())
@@ -207,7 +207,7 @@ export const updatePaymentStatus = async (
  */
 export const deleteOrder = async (orderId: string): Promise<void> => {
     try {
-        const docRef = doc(db, ORDERS_COLLECTION, orderId);
+        const docRef = doc(getFirestoreDb(), ORDERS_COLLECTION, orderId);
         await deleteDoc(docRef);
 
     } catch (error) {

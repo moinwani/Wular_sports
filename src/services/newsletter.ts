@@ -3,7 +3,7 @@ import {
     setDoc,
     Timestamp
 } from 'firebase/firestore';
-import { db } from './firebase-firestore';
+import { getFirestoreDb } from './firebase-firestore';
 
 const SUBSCRIBERS_COLLECTION = 'subscribers';
 
@@ -23,7 +23,7 @@ export const subscribeToNewsletter = async (email: string): Promise<{ success: b
         // Note: Using email as ID ensures uniqueness. 
         // Firestore Rules 'allow create' only allows this if it doesn't exist.
         // If it exists, it's an 'update' which is blocked for public.
-        await setDoc(doc(db, SUBSCRIBERS_COLLECTION, sanitizedEmail), {
+        await setDoc(doc(getFirestoreDb(), SUBSCRIBERS_COLLECTION, sanitizedEmail), {
             email: sanitizedEmail,
             subscribedAt: Timestamp.fromDate(new Date()),
             status: 'active'

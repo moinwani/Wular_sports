@@ -45,6 +45,10 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
 
     // Open modal on video click
     const handleVideoClick = () => {
+        window.dataLayer.push({
+            event: 'watch_buy_expanded',
+            product_id: product.id,
+        });
         setIsModalOpen(true);
         if (floatingVideoRef.current) {
             floatingVideoRef.current.pause();
@@ -61,6 +65,10 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
 
     // Add to Cart handler - closes everything
     const handleAddToCart = useCallback(() => {
+        window.dataLayer.push({
+            event: 'watch_buy_add_to_cart',
+            product_id: product.id,
+        });
         const hasSizes = product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
         if (hasSizes) {
             const sizeSelector = document.querySelector('.size-selector-premium');

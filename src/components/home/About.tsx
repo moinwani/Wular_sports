@@ -15,7 +15,14 @@ const videoId = getYouTubeId(factoryVideoUrl);
 export const About = memo(() => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    const toggleModal = () => {
+        if (!isModalOpen) {
+            window.dataLayer.push({ event: 'factory_tour_opened' });
+        } else {
+            window.dataLayer.push({ event: 'factory_tour_closed' });
+        }
+        setIsModalOpen(!isModalOpen);
+    };
 
     useEffect(() => {
         document.body.style.overflow = isModalOpen ? 'hidden' : '';

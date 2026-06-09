@@ -90,7 +90,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                                         fill
                                         style={{ objectFit: 'cover' }}
                                         sizes="100vw"
-                                        unoptimized
+                                        quality={90}
                                         priority={index === currentSlide}
                                     />
                                 </div>
@@ -108,7 +108,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                             fill
                             style={{ objectFit: 'cover' }}
                             sizes="100vw"
-                            unoptimized
+                            quality={90}
                             priority
                         />
                     </div>

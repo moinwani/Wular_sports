@@ -244,22 +244,27 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                 ₹{product.price.toLocaleString('en-IN')}
                                             </div>
                                         </div>
-                                        <button
-                                            className="btn"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleClose();
-                                                router.push(`/product/${product.id}`);
-                                            }}
-                                            style={{
-                                                fontSize: '0.8rem',
-                                                padding: '0.5rem 1rem',
-                                                flexShrink: 0,
-                                                whiteSpace: 'nowrap',
-                                            }}
-                                        >
-                                            Shop Now
-                                        </button>
+                                    <button
+                                        className="btn"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            window.dataLayer.push({
+                                                event: 'testimonial_shop_click',
+                                                product_id: product.id,
+                                                testimonial_name: t.name,
+                                            });
+                                            handleClose();
+                                            router.push(`/product/${product.id}`);
+                                        }}
+                                        style={{
+                                            fontSize: '0.8rem',
+                                            padding: '0.5rem 1rem',
+                                            flexShrink: 0,
+                                            whiteSpace: 'nowrap',
+                                        }}
+                                    >
+                                        Shop Now
+                                    </button>
                                     </div>
                                 )}
                             </div>
@@ -360,9 +365,17 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price.toLocaleString('en-IN')}</span>
                                                 </div>
                                             </div>
-                                            <button className="btn" onClick={() => { handleClose(); router.push(`/product/${product.id}`); }} style={{ padding: '1rem 2.5rem', fontSize: '1rem', boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)' }}>
-                                                Shop This Bat
-                                            </button>
+                                    <button className="btn" onClick={() => {
+                                        window.dataLayer.push({
+                                            event: 'testimonial_shop_click',
+                                            product_id: product.id,
+                                            testimonial_name: t.name,
+                                        });
+                                        handleClose();
+                                        router.push(`/product/${product.id}`);
+                                    }} style={{ padding: '1rem 2.5rem', fontSize: '1rem', boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)' }}>
+                                        Shop This Bat
+                                    </button>
                                         </div>
                                     )}
                                 </div>

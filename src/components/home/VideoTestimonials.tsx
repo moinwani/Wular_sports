@@ -95,6 +95,12 @@ export const VideoTestimonials: FC = () => {
     const [startIndex, setStartIndex] = useState(0);
 
     const openReel = (index: number) => {
+        window.dataLayer.push({
+            event: 'testimonial_opened',
+            testimonial_index: index,
+            product_id: testimonials[index].productId,
+            testimonial_name: testimonials[index].name,
+        });
         setStartIndex(index);
         setIsReelOpen(true);
     };

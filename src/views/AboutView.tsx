@@ -132,8 +132,10 @@ export const AboutView: FC = () => (
                     <div className="about-contact-item">
                         <Icon name="fa-whatsapp" />
                         <div>
-                            <strong>WhatsApp</strong>
-                            <a href="https://wa.me/919320622451" target="_blank" rel="noopener noreferrer">+91 93206 22451</a>
+                        <strong>WhatsApp</strong>
+                        <a href="https://wa.me/919320622451" target="_blank" rel="noopener noreferrer" onClick={() => {
+                            window.dataLayer.push({ event: 'whatsapp_click', source: 'about_page', type: 'general_contact' });
+                        }}>+91 93206 22451</a>
                         </div>
                     </div>
                     <div className="about-contact-item">

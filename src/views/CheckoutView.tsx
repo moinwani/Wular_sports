@@ -451,6 +451,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         setFormError('');
         setFieldErrors({});
         const url = buildDeliveryInquiryUrl(validation.sanitized! as typeof formData);
+        window.dataLayer.push({
+            event: 'whatsapp_click',
+            source: 'delivery_inquiry',
+            type: 'delivery_inquiry',
+            total,
+        });
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 
@@ -697,6 +703,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
                 if (isCOD) {
                     // For COD: open WhatsApp to confirm delivery details
+                    window.dataLayer.push({
+                        event: 'whatsapp_order_confirm',
+                        source: 'checkout_cod',
+                        type: 'order_confirmation',
+                        order_id: firestoreOrderId,
+                        total,
+                    });
                     const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
                     whatsAppUrlRef.current = whatsappUrl;
                     window.open(whatsappUrl, '_blank');
@@ -746,21 +759,35 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         )}
 
                         <div className="whatsapp-confirm-actions">
-                            <a
-                                href={pendingWhatsApp.whatsappUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="btn whatsapp-retry-btn"
-                                onClick={() => setWhatsAppReminderVisible(false)}
-                            >
-                                <Icon name="fa-whatsapp" /> Open WhatsApp Again
-                            </a>
-                            <button
-                                className="btn btn-confirm-sent"
-                                onClick={() => onPlaceOrder({} as any)}
-                            >
-                                <Icon name="fa-check-circle" /> I've Sent the Message
-                            </button>
+                        <a
+                            href={pendingWhatsApp.whatsappUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn whatsapp-retry-btn"
+                            onClick={() => {
+                                setWhatsAppReminderVisible(false);
+                                window.dataLayer.push({
+                                    event: 'whatsapp_retry',
+                                    source: 'checkout_retry',
+                                    type: 'whatsapp_retry',
+                                });
+                            }}
+                        >
+                            <Icon name="fa-whatsapp" /> Open WhatsApp Again
+                        </a>
+                        <button
+                            className="btn btn-confirm-sent"
+                            onClick={() => {
+                                window.dataLayer.push({
+                                    event: 'whatsapp_confirmed',
+                                    source: 'checkout_confirmed',
+                                    type: 'whatsapp_sent',
+                                });
+                                onPlaceOrder({} as any);
+                            }}
+                        >
+                            <Icon name="fa-check-circle" /> I've Sent the Message
+                        </button>
                         </div>
                         <p className="whatsapp-confirm-note">Once we receive your message, we'll process and ship your order within 24 hours.</p>
                     </div>
@@ -775,6 +802,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 title="Checkout | Wular Sports — Kashmiri Willow Cricket Bats"
                 description="Complete your order for premium Kashmiri willow cricket bats from Wular Sports. Free delivery across India. Secure checkout via WhatsApp."
                 canonicalUrl="https://wularsports.com/checkout"
+                robots="noindex, nofollow"
             />
             <div className="container">
                 <div className="checkout-header-mobile">

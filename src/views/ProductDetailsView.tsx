@@ -3,10 +3,12 @@ import Image from 'next/image';
 import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
+import { CATEGORY_SLUGS } from '../data/constants';
 import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
 import { SEOHead } from '../components/common/SEOHead';
+import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 import { ProductCard } from '../components/product/ProductCard';
@@ -454,7 +456,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wularsports.com" },
                     { "@type": "ListItem", "position": 2, "name": "Collection", "item": "https://wularsports.com/collection" },
-                    { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com/${product.category[0].toLowerCase().replace(/\s/g, '-')}-cricket-bats` },
+                    { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com/${CATEGORY_SLUGS[product.category[0]] || product.category[0].toLowerCase().replace(/\s/g, '-')}` },
                     { "@type": "ListItem", "position": 4, "name": product.name },
                 ]
             },
@@ -504,6 +506,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 structuredData={structuredData}
             />
             <div className="container">
+                <Breadcrumb items={[
+                    { name: 'Home', url: '/' },
+                    { name: 'Collection', url: '/collection' },
+                    { name: product.category.join(' & '), url: `/${CATEGORY_SLUGS[product.category[0]]}` },
+                    { name: product.name },
+                ]} />
                 <div className={`product-details-grid-vertical ${isMobile ? 'mobile-layout' : ''}`}>
                     {/* Left Column: Images (Vertical on Desktop, Horizontal Swipe on Mobile) */}
                     <div
@@ -664,33 +672,43 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                             </div>
 
                             {/* Order on WhatsApp Button */}
-                            <a
-                                href={createWhatsAppLink(`Hi, I want to order: ${product.name} (Qty: ${quantity})`)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-whatsapp-order-premium"
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '0.8rem',
-                                    width: '100%',
-                                    padding: '1rem',
-                                    marginTop: '1rem',
-                                    backgroundColor: '#25D366',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '8px',
-                                    fontSize: '1.1rem',
-                                    fontWeight: '600',
-                                    textDecoration: 'none',
-                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                                    transition: 'transform 0.2s ease'
-                                }}
-                            >
-                                <Icon name="fa-whatsapp" style={{ fontSize: '1.4rem' }} />
-                                ORDER ON WHATSAPP
-                            </a>
+                        <a
+                            href={createWhatsAppLink(`Hi, I want to order: ${product.name} (Qty: ${quantity})`)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-whatsapp-order-premium"
+                            onClick={() => {
+                                window.dataLayer.push({
+                                    event: 'whatsapp_click',
+                                    source: 'product_order',
+                                    type: 'product_order',
+                                    product_id: product.id,
+                                    product_name: product.name,
+                                    quantity,
+                                });
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '0.8rem',
+                                width: '100%',
+                                padding: '1rem',
+                                marginTop: '1rem',
+                                backgroundColor: '#25D366',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '8px',
+                                fontSize: '1.1rem',
+                                fontWeight: '600',
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                transition: 'transform 0.2s ease'
+                            }}
+                        >
+                            <Icon name="fa-whatsapp" style={{ fontSize: '1.4rem' }} />
+                            ORDER ON WHATSAPP
+                        </a>
                         </div>
 
                         {/* Tabs Section */}
@@ -921,31 +939,49 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             <p className="contact-subtitle">Contact us for personalized assistance</p>
 
                                             <div className="contact-options-clean">
-                                                <a
-                                                    href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="contact-option-btn whatsapp"
-                                                >
-                                                    <Icon name="fa-whatsapp" />
-                                                    <div>
-                                                        <strong>Chat on WhatsApp</strong>
-                                                        <span>Typically replies within 5 minutes</span>
-                                                    </div>
-                                                </a>
+                                            <a
+                                                href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="contact-option-btn whatsapp"
+                                                onClick={() => {
+                                                    window.dataLayer.push({
+                                                        event: 'whatsapp_click',
+                                                        source: 'contact_tab_chat',
+                                                        type: 'product_inquiry',
+                                                        product_id: product.id,
+                                                        product_name: product.name,
+                                                    });
+                                                }}
+                                            >
+                                                <Icon name="fa-whatsapp" />
+                                                <div>
+                                                    <strong>Chat on WhatsApp</strong>
+                                                    <span>Typically replies within 5 minutes</span>
+                                                </div>
+                                            </a>
 
-                                                <a
-                                                    href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="contact-option-btn video"
-                                                >
-                                                    <Icon name="fa-video" />
-                                                    <div>
-                                                        <strong>Video Call</strong>
-                                                        <span>See the bat live before buying</span>
-                                                    </div>
-                                                </a>
+                                            <a
+                                                href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="contact-option-btn video"
+                                                onClick={() => {
+                                                    window.dataLayer.push({
+                                                        event: 'whatsapp_click',
+                                                        source: 'contact_tab_video',
+                                                        type: 'video_call',
+                                                        product_id: product.id,
+                                                        product_name: product.name,
+                                                    });
+                                                }}
+                                            >
+                                                <Icon name="fa-video" />
+                                                <div>
+                                                    <strong>Video Call</strong>
+                                                    <span>See the bat live before buying</span>
+                                                </div>
+                                            </a>
 
                                                 <a
                                                     href="tel:+919320622451"

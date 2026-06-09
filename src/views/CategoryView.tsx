@@ -2,6 +2,7 @@ import React, { FC, useState, useMemo } from 'react';
 import { ProductFull } from '../types';
 import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
+import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
 
 type SortOption = 'default' | 'price-asc' | 'price-desc' | 'name-asc';
@@ -112,6 +113,14 @@ export const CategoryView: FC<CategoryViewProps> = ({
                 canonicalUrl={canonicalUrl}
                 structuredData={structuredData}
             />
+
+            <div className="container" style={{ paddingTop: '2rem' }}>
+                <Breadcrumb items={[
+                    { name: 'Home', url: '/' },
+                    { name: 'Collection', url: '/collection' },
+                    { name: h1Title },
+                ]} />
+            </div>
 
             <section className="category-hero" style={{ padding: '6rem 2rem 2rem', background: 'var(--black)' }}>
                 <div className="container">

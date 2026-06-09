@@ -9,6 +9,7 @@ interface SEOHeadProps {
     ogType?: 'website' | 'product' | 'article';
     canonicalUrl?: string;
     structuredData?: object;
+    robots?: string;
 }
 
 export const SEOHead: FC<SEOHeadProps> = ({
@@ -19,13 +20,14 @@ export const SEOHead: FC<SEOHeadProps> = ({
     ogType = 'website',
     canonicalUrl,
     structuredData,
+    robots = 'index, follow',
 }) => (
     <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         <meta name="author" content="Wular Sports" />
-        <meta name="robots" content="index, follow" />
+        <meta name="robots" content={robots} />
 
         <meta property="og:type" content={ogType} />
         <meta property="og:title" content={title} />

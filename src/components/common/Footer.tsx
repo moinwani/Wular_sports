@@ -32,7 +32,9 @@ export const Footer: FC = memo(() => {
                     <h2 className="footer-section-title">Get In Touch</h2>
                     <div className="footer-title-bar"></div>
                     <p className="footer-contact-hint">Have questions? Reach out to us directly!</p>
-                    <a href={createWhatsAppLink("Hello, I have a question.")} target="_blank" rel="noopener noreferrer" className="btn-chat-whatsapp">
+                    <a href={createWhatsAppLink("Hello, I have a question.")} target="_blank" rel="noopener noreferrer" className="btn-chat-whatsapp" onClick={() => {
+                        window.dataLayer.push({ event: 'whatsapp_click', source: 'footer', type: 'general_inquiry' });
+                    }}>
                         Chat on WhatsApp
                     </a>
                     <p className="footer-email-hint">or email us at: <a href="mailto:wularsports@gmail.com">wularsports@gmail.com</a></p>
@@ -58,14 +60,18 @@ export const Footer: FC = memo(() => {
             <div className="footer-bottom-bar">
                 <div className="container container-flex">
                     <div className="footer-legal">
-                        <div className="footer-seo-links" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                            <Link href="/hard-tennis-bats" className="legal-link">Hard Tennis Bats</Link>
-                            <Link href="/soft-tennis-bats" className="legal-link">Soft Tennis Bats</Link>
-                            <Link href="/leather-cricket-bats" className="legal-link">Leather Cricket Bats</Link>
-                            <Link href="/about" className="legal-link">About Us</Link>
-                            <Link href="/blog" className="legal-link">Wular Insights</Link>
-                        </div>
-                        <Link href="/terms-conditions" className="legal-link">TERMS AND POLICIES</Link>
+                    <div className="footer-seo-links" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+                        <Link href="/hard-tennis-bats" className="legal-link">Hard Tennis Bats</Link>
+                        <Link href="/soft-tennis-bats" className="legal-link">Soft Tennis Bats</Link>
+                        <Link href="/leather-cricket-bats" className="legal-link">Leather Cricket Bats</Link>
+                        <Link href="/about" className="legal-link">About Us</Link>
+                        <Link href="/blog" className="legal-link">Wular Insights</Link>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                        <Link href="/privacy-policy" className="legal-link">Privacy Policy</Link>
+                        <Link href="/return-policy" className="legal-link">Return Policy</Link>
+                        <Link href="/terms-conditions" className="legal-link">Terms &amp; Conditions</Link>
+                    </div>
                         <span className="copyright">© 2026 WULAR SPORTS</span>
                     </div>
                     <div className="footer-social-group">

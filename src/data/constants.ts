@@ -1,4 +1,10 @@
 export const WHATSAPP_NUMBER = '919320622451';
+
+export const CATEGORY_SLUGS: Record<string, string> = {
+    'Hard Tennis': 'hard-tennis-bats',
+    'Soft Tennis': 'soft-tennis-bats',
+    'Leather Ball': 'leather-cricket-bats',
+};
 export const INSTAGRAM_LINK = "https://www.instagram.com/wular.sports?igsh=MXV5MjNyZGplYXh6aQ%3D%3D&utm_source=qr";
 export const YOUTUBE_LINK = "https://youtube.com/@wularsports?si=56ACjfcWinQRjcVg";
 

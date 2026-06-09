@@ -16,6 +16,8 @@ export const OrderSuccessView: FC = () => {
             <SEOHead
                 title="Order Confirmed | Wular Sports"
                 description="Thank you for your order. We have received your request."
+                canonicalUrl="https://wularsports.com/order-success"
+                robots="noindex, nofollow"
             />
             <div className="container" style={{ textAlign: 'center', padding: '4rem 1rem' }}>
                 <div className="success-icon" style={{

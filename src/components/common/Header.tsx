@@ -78,7 +78,8 @@ export const Header: FC = memo(() => {
                         >
                             <Icon name="fa-bars" />
                         </button>
-                        <Link href="/hard-tennis-bats" className="nav-link">Hard Tennis</Link>
+                        <Link href="/collection" className="nav-link">Shop All</Link>
+                    <Link href="/hard-tennis-bats" className="nav-link">Hard Tennis</Link>
                         <Link href="/soft-tennis-bats" className="nav-link">Soft Tennis</Link>
                         <Link href="/leather-cricket-bats" className="nav-link">Leather Bats</Link>
                     </div>

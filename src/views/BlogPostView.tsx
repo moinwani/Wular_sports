@@ -6,6 +6,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import { BlogPost } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { getCDNUrl } from '../services/githubService';
+import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
 
 interface BlogPostViewProps {
@@ -39,8 +40,17 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
                 title={`${post.title} | Wular Sports Blog`}
                 description={post.description}
                 canonicalUrl={`https://wularsports.com/blog/${post.id}`}
+                ogImage={post.image}
+                ogType="article"
                 structuredData={faqSchema ? { ...articleSchema, "@graph": [...(articleSchema as any)["@graph"], faqSchema] } : articleSchema}
             />
+            <div className="container">
+                <Breadcrumb items={[
+                    { name: 'Home', url: '/' },
+                    { name: 'Blog', url: '/blog' },
+                    { name: post.title },
+                ]} />
+            </div>
 
             <article className="blog-post-container">
                 <header className="blog-post-header">
@@ -77,9 +87,11 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
                             <div className="share-post">
                                 <span>Share this article:</span>
                                 <div className="share-links">
-                                    <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noreferrer">
-                                        <Icon name="fa-whatsapp" />
-                                    </a>
+                                <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noreferrer" onClick={() => {
+                                    window.dataLayer.push({ event: 'blog_share_whatsapp', post_id: post.id, post_title: post.title });
+                                }}>
+                                    <Icon name="fa-whatsapp" />
+                                </a>
                                     <a href="#" onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(`https://wularsports.com/blog/${post.id}`); alert('Link copied!'); }}>
                                         <Icon name="fa-link" />
                                     </a>

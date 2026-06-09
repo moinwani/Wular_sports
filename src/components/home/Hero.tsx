@@ -83,7 +83,7 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
                     <div className="hero-slider">
                         {mobileImages.length > 0 ? (
                             mobileImages.map((src, index) => (
-                                <div key={src} className={`hero-slide ${index === currentSlide ? 'active' : ''}`} style={{ position: 'relative' }}>
+                                <div key={src} className={`hero-slide ${index === currentSlide ? 'active' : ''}`}>
                                     <Image
                                         src={src}
                                         alt={`Handcrafted Kashmiri Willow Cricket Bat — Wular Sports Slide ${index + 1}`}

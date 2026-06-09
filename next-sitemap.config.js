@@ -38,22 +38,39 @@ module.exports = {
         };
     },
     additionalPaths: async () => {
-        const { products } = await import('./src/data/products');
-        const { blogs } = await import('./src/data/blogs');
         const result = [];
         const lastmod = new Date().toISOString();
-        for (const p of products) {
+        for (const id of [
+            'legacy-edition-2.0',
+            'legacy-edition',
+            'bahubali-edition',
+            'ak-47-honeycomb',
+            'standard-leather-bat',
+        ]) {
             result.push({
-                loc: `/product/${p.id}`,
+                loc: `/product/${id}`,
                 lastmod,
                 changefreq: 'monthly',
                 priority: 0.9,
             });
         }
-        for (const b of blogs) {
+        const blogDates = {
+            'kashmiri-willow-cricket-bat-buying-guide-2025': '2026-01-30',
+            'choosing-the-right-bat-weight': '2026-01-05',
+            'the-singapore-cane-handle-advantage': '2025-12-28',
+            'breaking-the-willow-myth': '2025-12-20',
+            'cricket-bat-maintenance-care-guide': '2026-01-07',
+            'from-tennis-to-leather-transition-guide': '2026-01-22',
+            'mastering-hard-tennis-cricket-gear': '2026-01-24',
+            'the-artisan-edge-handcrafted-vs-machine-made': '2026-01-23',
+            'best-kashmiri-willow-cricket-bat-under-3000': '2026-04-21',
+            'scoop-vs-non-scoop-cricket-bat-guide': '2026-04-21',
+            'buy-kashmiri-willow-cricket-bat-online-india': '2026-04-21',
+        };
+        for (const [id, date] of Object.entries(blogDates)) {
             result.push({
-                loc: `/blog/${b.id}`,
-                lastmod: new Date(b.date).toISOString(),
+                loc: `/blog/${id}`,
+                lastmod: new Date(date).toISOString(),
                 changefreq: 'monthly',
                 priority: 0.6,
             });

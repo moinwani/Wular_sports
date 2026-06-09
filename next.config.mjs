@@ -17,7 +17,7 @@ const nextConfig = {
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
             "img-src 'self' data: https://cdn.jsdelivr.net https://*.clarity.ms https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
             "frame-src 'self' https://www.youtube.com https://api.razorpay.com https://*.googletagmanager.com",
-            "connect-src 'self' https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
+            "connect-src 'self' https://api.github.com https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
             "media-src 'self' https://cdn.jsdelivr.net",
         ].join('; ');
 

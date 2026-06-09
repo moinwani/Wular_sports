@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { Testimonial } from '../../types';
 import { Icon } from '../common/Icon';
 
@@ -142,10 +143,16 @@ export const VideoTestimonials: FC = () => {
                             <span className="featured-hero-name">{featured.name}</span>
                             <span className="featured-hero-label">{playerLabel(featured)}</span>
                         </div>
-                        <span className="featured-hero-cta">
-                            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
-                            Watch Story
-                        </span>
+                        <div className="featured-hero-actions" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                            <span className="featured-hero-cta">
+                                <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M8 5v14l11-7z" /></svg>
+                                Watch Story
+                            </span>
+                            <Link href={`/product/${featured.productId}`} className="featured-hero-cta" onClick={(e) => e.stopPropagation()} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                                <Icon name="fa-shopping-bag" style={{ fontSize: '0.75rem' }} />
+                                Shop This Bat
+                            </Link>
+                        </div>
                     </div>
                 </div>
 
@@ -174,6 +181,13 @@ export const VideoTestimonials: FC = () => {
                                     <div className="story-name">{t.name}</div>
                                     <div className="story-label">{playerLabel(t)}</div>
                                     <div className="story-quote">{shortQuote(t.comment, 45)}</div>
+                                    <Link
+                                        href={`/product/${t.productId}`}
+                                        className="story-buy-btn"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        Buy This Bat →
+                                    </Link>
                                 </div>
                             </div>
                         );

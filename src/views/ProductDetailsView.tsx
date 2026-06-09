@@ -28,7 +28,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const [openSection, setOpenSection] = useState<string | null>('description');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
-    const [scrollPhase, setScrollPhase] = useState<ScrollPhase>('images');
+    const [scrollPhase] = useState<ScrollPhase>('normal');
     const [isMobile, setIsMobile] = useState(false);
     const imageGalleryRef = useRef<HTMLDivElement | null>(null);
     const imageScrollContainerRef = useRef<HTMLDivElement | null>(null);
@@ -72,275 +72,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
         imageScrollContainerRef.current = ref;
     }, []);
 
-    // Check image scroll completion
-    const checkImageScrollComplete = useCallback(() => {
-        const scrollContainer = imageScrollContainerRef.current;
-        if (!scrollContainer || isMobile) return;
-
-        const scrollTop = scrollContainer.scrollTop;
-        const scrollHeight = scrollContainer.scrollHeight;
-        const clientHeight = scrollContainer.clientHeight;
-        const maxScroll = scrollHeight - clientHeight;
-
-        // Add small threshold to account for rounding
-        const threshold = 5;
-
-        if (maxScroll <= threshold) {
-            // No scroll needed or already at bottom, move to content phase
-            if (scrollPhase === 'images') {
-                setScrollPhase('content');
-            }
-            return;
-        }
-
-        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
-        imageScrollProgressRef.current = progress;
-
-        // Check if we're at or near the bottom (with threshold)
-        if (scrollTop >= maxScroll - threshold && scrollPhase === 'images') {
-            setScrollPhase('content');
-        }
-    }, [scrollPhase, isMobile]);
-
-    // Check content scroll completion
-    /* checkContentScrollComplete is unused
-    const checkContentScrollComplete = useCallback(() => {
-        if (!contentSectionRef.current || isMobile || scrollPhase !== 'content') return;
-
-        const content = contentSectionRef.current;
-        const scrollTop = content.scrollTop;
-        const scrollHeight = content.scrollHeight;
-        const clientHeight = content.clientHeight;
-        const maxScroll = scrollHeight - clientHeight;
-
-        // Add small threshold to account for rounding
-        const threshold = 5;
-
-        if (maxScroll <= threshold) {
-            // No scroll needed or already at bottom, move to normal phase
-            if (scrollPhase === 'content') {
-                setScrollPhase('normal');
-            }
-            return;
-        }
-
-        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
-        contentScrollProgressRef.current = progress;
-
-        // Check if we're at or near the bottom (with threshold)
-        if (scrollTop >= maxScroll - threshold && scrollPhase === 'content') {
-            setScrollPhase('normal');
-        }
-    }, [scrollPhase, isMobile]);
-    */
-
-    // Handle wheel event - STRICT SEQUENTIAL SCROLL BEHAVIOR
-    const handleWheel = useCallback((e: WheelEvent) => {
-        // Ignore on mobile - use normal scroll
-        if (isMobile) return;
-
-        // Only intercept during controlled phases (images or content)
-        if (scrollPhase === 'images' || scrollPhase === 'content') {
-            // ALWAYS prevent default page scroll during controlled phases
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-
-            // Prevent simultaneous scrolling
-            if (isScrollingRef.current) return;
-            isScrollingRef.current = true;
-
-            const delta = e.deltaY;
-            const scrollSpeed = 1.5; // Smooth scroll speed
-
-            // STEP 1: Scroll Images (Left Side) - FIRST PRIORITY
-            if (scrollPhase === 'images' && imageScrollContainerRef.current) {
-                const scrollContainer = imageScrollContainerRef.current;
-                const currentScroll = scrollContainer.scrollTop;
-                const scrollHeight = scrollContainer.scrollHeight;
-                const clientHeight = scrollContainer.clientHeight;
-                const maxScroll = scrollHeight - clientHeight;
-
-                // Check if there's anything to scroll
-                if (maxScroll > 10) {
-                    // Calculate new scroll position
-                    const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-
-                    // Scroll the images container
-                    scrollContainer.scrollTop = newScroll;
-
-                    // Check completion after scroll
-                    requestAnimationFrame(() => {
-                        const newScrollTop = scrollContainer.scrollTop;
-                        const remainingScroll = maxScroll - newScrollTop;
-
-                        // If we've reached the bottom (within 10px threshold), move to next phase
-                        if (remainingScroll <= 10) {
-                            scrollContainer.scrollTop = maxScroll; // Ensure we're exactly at bottom
-                            setScrollPhase('content'); // STEP 2: Move to content scroll phase
-                        }
-                        isScrollingRef.current = false;
-                    });
-                } else {
-                    // No images to scroll, immediately move to content phase
-                    setScrollPhase('content');
-                    isScrollingRef.current = false;
-                }
-            }
-            // STEP 3: Scroll Content (Right Side) - SECOND PRIORITY  
-            else if (scrollPhase === 'content' && contentSectionRef.current) {
-                const content = contentSectionRef.current;
-                const currentScroll = content.scrollTop;
-                const scrollHeight = content.scrollHeight;
-                const clientHeight = content.clientHeight;
-                const maxScroll = scrollHeight - clientHeight;
-
-                // Check if there's anything to scroll
-                if (maxScroll > 10) {
-                    // Calculate new scroll position
-                    const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + delta * scrollSpeed));
-
-                    // Scroll the content container
-                    content.scrollTop = newScroll;
-
-                    // Check completion after scroll
-                    requestAnimationFrame(() => {
-                        const newScrollTop = content.scrollTop;
-                        const remainingScroll = maxScroll - newScrollTop;
-
-                        // If we've reached the bottom (within 10px threshold), move to normal scroll
-                        if (remainingScroll <= 10) {
-                            content.scrollTop = maxScroll; // Ensure we're exactly at bottom
-                            setScrollPhase('normal'); // STEP 4: Allow normal page scroll
-                        }
-                        isScrollingRef.current = false;
-                    });
-                } else {
-                    // No content to scroll, immediately allow normal page scroll
-                    setScrollPhase('normal');
-                    isScrollingRef.current = false;
-                }
-            }
-        }
-        // STEP 4: Normal page scroll (scrollPhase === 'normal')
-        // Don't prevent default - allow normal browser scroll behavior
-    }, [scrollPhase, isMobile]);
-
-    // Attach wheel event listener to WINDOW to catch ALL scroll events from anywhere on page
-    useEffect(() => {
-        if (isMobile) {
-            // Mobile: Normal scroll behavior
-            document.body.style.overflow = '';
-            document.documentElement.style.overflow = '';
-            return;
-        }
-
-        // Desktop: Control scroll behavior based on phase
-        if (scrollPhase === 'images' || scrollPhase === 'content') {
-            // STRICTLY prevent body/page scroll during controlled phases
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
-            document.documentElement.style.overflow = 'hidden';
-
-            // Lock window scroll position
-            const scrollY = window.scrollY;
-            window.scrollTo(0, scrollY);
-        } else {
-            // Normal scroll phase - allow page scrolling
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-            document.documentElement.style.overflow = '';
-        }
-
-        // Listen to ALL wheel events on the window (capture phase to catch early)
-        window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-
-        // Also prevent any scroll events during controlled phases
-        const preventScroll = (e: Event) => {
-            if (scrollPhase === 'images' || scrollPhase === 'content') {
-                e.preventDefault();
-                e.stopPropagation();
-                window.scrollTo(window.scrollX, window.scrollY); // Maintain position
-            }
-        };
-
-        window.addEventListener('scroll', preventScroll, { passive: false, capture: true });
-
-        return () => {
-            window.removeEventListener('wheel', handleWheel, { capture: true });
-            window.removeEventListener('scroll', preventScroll, { capture: true });
-            // Cleanup styles
-            document.body.style.overflow = '';
-            document.body.style.position = '';
-            document.body.style.width = '';
-            document.documentElement.style.overflow = '';
-        };
-    }, [handleWheel, isMobile, scrollPhase]);
-
-    // Monitor image gallery scroll for phase transition detection
-    useEffect(() => {
-        if (isMobile || scrollPhase !== 'images') return;
-
-        const scrollContainer = imageScrollContainerRef.current;
-        if (!scrollContainer) return;
-
-        const handleScroll = () => {
-            // Check if images are fully scrolled
-            const scrollTop = scrollContainer.scrollTop;
-            const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-            const remainingScroll = maxScroll - scrollTop;
-
-            // If at bottom (within 10px), transition to content phase
-            if (remainingScroll <= 10 && scrollPhase === 'images') {
-                setScrollPhase('content');
-            }
-        };
-
-        scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-        return () => scrollContainer.removeEventListener('scroll', handleScroll);
-    }, [scrollPhase, isMobile]);
-
-    // Monitor content scroll for phase transition detection
-    useEffect(() => {
-        if (isMobile || scrollPhase !== 'content') return;
-
-        const content = contentSectionRef.current;
-        if (!content) return;
-
-        const handleScroll = () => {
-            // Check if content is fully scrolled
-            const scrollTop = content.scrollTop;
-            const maxScroll = content.scrollHeight - content.clientHeight;
-            const remainingScroll = maxScroll - scrollTop;
-
-            // If at bottom (within 10px), transition to normal scroll phase
-            if (remainingScroll <= 10 && scrollPhase === 'content') {
-                setScrollPhase('normal');
-            }
-        };
-
-        content.addEventListener('scroll', handleScroll, { passive: true });
-        return () => content.removeEventListener('scroll', handleScroll);
-    }, [scrollPhase, isMobile]);
-
-    // Reset scroll phase when product changes or component mounts
-    useEffect(() => {
-        if (!isMobile) {
-            setScrollPhase('images');
-            imageScrollProgressRef.current = 0;
-            contentScrollProgressRef.current = 0;
-
-            // Reset scroll positions
-            if (imageScrollContainerRef.current) {
-                imageScrollContainerRef.current.scrollTop = 0;
-            }
-            if (contentSectionRef.current) {
-                contentSectionRef.current.scrollTop = 0;
-            }
-        }
-    }, [id, isMobile]);
+    // Handle wheel event — REMOVED (scroll-lock was blocking conversion)
+    // Gallery still works as normal scrollable sidebar on desktop
 
     if (!product) {
         return <div className="container">Product not found</div>;
@@ -516,7 +249,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     {/* Left Column: Images (Vertical on Desktop, Horizontal Swipe on Mobile) */}
                     <div
                         ref={imageGalleryRef}
-                        className={`product-gallery-section-vertical ${scrollPhase === 'images' && !isMobile ? 'scroll-active' : ''}`}
+                        className="product-gallery-section-vertical"
                     >
                         {Array.isArray(product.image) ? (
                             isMobile ? (
@@ -536,8 +269,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         setLightboxIndex(index);
                                         setIsLightboxOpen(true);
                                     }}
-                                    onScrollComplete={checkImageScrollComplete}
-                                    scrollProgress={imageScrollProgressRef.current}
                                     onScrollContainerRef={handleImageScrollContainerRef}
                                 />
                             )
@@ -566,7 +297,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     {/* Right Column: Product Info - Sticky */}
                     <div
                         ref={contentSectionRef}
-                        className={`product-info-section-sticky ${scrollPhase === 'content' && !isMobile ? 'scroll-active' : ''} ${scrollPhase === 'normal' && !isMobile ? 'scroll-normal' : ''}`}
+                        className="product-info-section-sticky"
                     >
                         {/* Above the Fold Section - Clean & Premium */}
                         <div className="product-header-clean">
@@ -615,6 +346,27 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     )}
                                 </div>
                             )}
+
+                            <div className="trust-strip" style={{
+                                display: 'flex', flexWrap: 'wrap', gap: '1rem',
+                                justifyContent: 'center', padding: '0.75rem 0',
+                                borderTop: '1px solid rgba(255,255,255,0.08)',
+                                borderBottom: '1px solid rgba(255,255,255,0.08)',
+                                marginBottom: '0.5rem',
+                            }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
+                                    <Icon name="fa-truck" style={{ color: 'var(--golden)' }} /> Free Delivery
+                                </span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
+                                    <Icon name="fa-shield-alt" style={{ color: 'var(--golden)' }} /> 1-Year Warranty
+                                </span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
+                                    <Icon name="fa-undo" style={{ color: 'var(--golden)' }} /> 7-Day Returns
+                                </span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
+                                    <Icon name="fa-money-bill" style={{ color: 'var(--golden)' }} /> COD Available
+                                </span>
+                            </div>
 
                             {/* Primary CTA with Quantity */}
                             <div className="actions-row-premium" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch' }}>

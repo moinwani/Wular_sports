@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
+import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 
 const PIXEL_ID = '988733203744597';
 const ACCESS_TOKEN = process.env.META_CAPI_ACCESS_TOKEN || '';
@@ -11,6 +12,26 @@ function sha256(value: string): string {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    // Throttle: this endpoint relays purchase events to Meta — without a limit
+    // it can be spammed to poison ad-conversion data.
+    const { allowed } = checkRateLimit(getClientIp(req), 10);
+    if (!allowed) {
+        return res.status(429).json({ error: 'Too many requests' });
+    }
+
+    // Require a signed-in Firebase session (guests are anonymous-authed at
+    // checkout), so only real checkout sessions can fire purchase events.
+    try {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            throw new Error('missing token');
+        }
+        const { auth } = await import('../../src/lib/firebaseAdmin');
+        await auth.verifyIdToken(authHeader.split('Bearer ')[1]);
+    } catch {
+        return res.status(401).json({ error: 'Authentication required' });
     }
 
     if (!ACCESS_TOKEN) {
@@ -69,12 +90,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const result = await response.json();
         if (!response.ok) {
             console.error('Meta CAPI error:', result);
-            return res.status(200).json({ status: 'error', meta: result });
+            return res.status(200).json({ status: 'error' });
         }
 
-        return res.status(200).json({ status: 'success', meta: result });
+        return res.status(200).json({ status: 'success' });
     } catch (error: any) {
         console.error('Meta CAPI handler error:', error);
-        return res.status(200).json({ status: 'error', error: error.message });
+        return res.status(200).json({ status: 'error' });
     }
 }

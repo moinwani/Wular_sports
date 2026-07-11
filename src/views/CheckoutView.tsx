@@ -8,6 +8,7 @@ import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
 import { CheckoutAuth } from '../components/checkout/CheckoutAuth';
+import { useCart } from '../context/CartContext';
 
 const hashData = async (value: string): Promise<string> => {
     const encoder = new TextEncoder();
@@ -254,8 +255,16 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const [pendingWhatsApp, setPendingWhatsApp] = useState<{ whatsappUrl: string } | null>(null);
     const [whatsAppReminderVisible, setWhatsAppReminderVisible] = useState(false);
     const whatsAppUrlRef = useRef<string>('');
+    const savedOrderIdRef = useRef<string>('');
+    const submitLockRef = useRef(false);
     const [isEmailFromAuth, setIsEmailFromAuth] = useState(false);
     const [authedEmail, setAuthedEmail] = useState<string | null>(null);
+    const { clearCart } = useCart();
+
+    // Release the synchronous double-submit lock whenever processing ends
+    useEffect(() => {
+        if (!isProcessing) submitLockRef.current = false;
+    }, [isProcessing]);
 
     // When WhatsApp is open and the user returns to this tab, remind them to send the message
     useEffect(() => {
@@ -389,56 +398,57 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         const balanceAtDoor = remaining + codFee;
         const isCOD = sanitizedData.paymentMethod === 'cod';
 
-        // Construct WhatsApp message
+        // Construct WhatsApp message (plain \n newlines — the whole message is
+        // URL-encoded at the end so &, #, + in addresses can't truncate it)
         const itemsList = cart.map((item, idx) =>
             `${idx + 1}. ${item.name} (${item.size || 'N/A'}) x${item.quantity} - ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
-        ).join('%0A');
+        ).join('\n');
 
         let paymentDetail = '';
         if (isCOD) {
-            paymentDetail = `*Payment Method:* Cash on Delivery (COD)%0A` +
-                `*Booking Amount (Pre-paid):* ₹${bookingAmount.toLocaleString('en-IN')} (₹${COD_BOOKING_PER_BAT}/bat)%0A` +
-                `*Remaining:* ₹${remaining.toLocaleString('en-IN')}%0A` +
-                `*COD Convenience Fee (5%):* ₹${codFee.toLocaleString('en-IN')} (charged by courier)%0A` +
+            paymentDetail = `*Payment Method:* Cash on Delivery (COD)\n` +
+                `*Booking Amount (Pre-paid):* ₹${bookingAmount.toLocaleString('en-IN')} (₹${COD_BOOKING_PER_BAT}/bat)\n` +
+                `*Remaining:* ₹${remaining.toLocaleString('en-IN')}\n` +
+                `*COD Convenience Fee (5%):* ₹${codFee.toLocaleString('en-IN')} (charged by courier)\n` +
                 `*Amount Due at Delivery:* ₹${balanceAtDoor.toLocaleString('en-IN')}`;
         } else {
-            paymentDetail = `*Payment Method:* Full Payment (Pre-paid)%0A` +
+            paymentDetail = `*Payment Method:* Full Payment (Pre-paid)\n` +
                 `*Total Amount:* ₹${total.toLocaleString('en-IN')}`;
         }
 
         const isIndia = (sanitizedData.country || 'India') === 'India';
         const deliveryNote = isIndia
             ? ''
-            : `%0A⚠️ *International Order* — Delivery charges will be communicated via WhatsApp / email.`;
+            : `\n⚠️ *International Order* — Delivery charges will be communicated via WhatsApp / email.`;
 
-        const message = `*New Order Request (${isCOD ? 'COD' : 'Full Payment'})! 🏏*%0A%0A` +
-            `*Order ID:* ${orderId}%0A` +
-            `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
-            `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}%0A` +
-            `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country || 'India'}%0A%0A` +
-            `*Items:*%0A${itemsList}%0A%0A` +
-            `${paymentDetail}${deliveryNote}%0A%0A` +
+        const message = `*New Order Request (${isCOD ? 'COD' : 'Full Payment'})! 🏏*\n\n` +
+            `*Order ID:* ${orderId}\n` +
+            `*Customer:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}\n` +
+            `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}\n` +
+            `*Address:* ${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country || 'India'}\n\n` +
+            `*Items:*\n${itemsList}\n\n` +
+            `${paymentDetail}${deliveryNote}\n\n` +
             `Please share payment details to confirm my order!`;
 
-        return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     };
 
     const buildDeliveryInquiryUrl = (sanitizedData: typeof formData): string => {
         const itemsList = cart.map((item, idx) =>
             `${idx + 1}. ${item.name} (${item.size || 'N/A'}) x${item.quantity}`
-        ).join('%0A');
+        ).join('\n');
 
-        const message = `*International Delivery Inquiry 🌍*%0A%0A` +
-            `Hi Wular Sports, I'd like to know the delivery charges for shipping to my address before placing my order.%0A%0A` +
-            `*Name:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}%0A` +
-            `*Email:* ${sanitizedData.email}%0A` +
-            `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}%0A` +
-            `*Shipping Address:*%0A${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country}%0A%0A` +
-            `*Items I want to order:*%0A${itemsList}%0A%0A` +
-            `*Order Subtotal:* ₹${total.toLocaleString('en-IN')}%0A%0A` +
+        const message = `*International Delivery Inquiry 🌍*\n\n` +
+            `Hi Wular Sports, I'd like to know the delivery charges for shipping to my address before placing my order.\n\n` +
+            `*Name:* ${sanitizedData.firstName} ${sanitizedData.lastName || ''}\n` +
+            `*Email:* ${sanitizedData.email}\n` +
+            `*Phone:* ${sanitizedData.countryCode || '+91'}${sanitizedData.phone}\n` +
+            `*Shipping Address:*\n${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country}\n\n` +
+            `*Items I want to order:*\n${itemsList}\n\n` +
+            `*Order Subtotal:* ₹${total.toLocaleString('en-IN')}\n\n` +
             `Please confirm the delivery charges for this address. Thank you!`;
 
-        return `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
+        return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     };
 
     const handleDeliveryInquiry = () => {
@@ -509,6 +519,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             setFormError("Please correct the errors in the form.");
             return;
         }
+
+        // Synchronous lock: the isProcessing state alone can't stop two submits
+        // landing in the same tick (double-click / Enter + click), which would
+        // open two payment modals and risk a double charge.
+        if (submitLockRef.current) return;
+        submitLockRef.current = true;
 
         const sanitizedData = validation.sanitized! as typeof formData;
         setFormError('');
@@ -584,13 +600,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 }
 
                 // Build order data
-                const remaining = total - totalBats * COD_BOOKING_PER_BAT;
+                const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
+                const remaining = isCOD ? total - bookingAmount : 0;
                 const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
                 const totalAtDoor = isCOD ? remaining + codFee : 0;
-                const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
+
+                // Resolve the uid at write time — auth state may have changed
+                // (e.g. One Tap sign-in in another tab) while the payment
+                // modal was open, and the rules require userId == auth.uid.
+                const { getCurrentUser: getUserNow } = await import('../services/auth');
+                const uidAtWrite = getUserNow()?.uid || userId;
 
                 const orderData = {
-                    userId,
+                    userId: uidAtWrite,
                     customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
                     customerEmail: sanitizedData.email || '',
                     customerPhone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
@@ -614,6 +636,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     remaining,
                     totalAtDoor,
                     razorpayPaymentId: paymentId,
+                    paymentId,
                     status: 'pending' as const,
                     paymentStatus: 'pending' as const,
                     paymentMethod: sanitizedData.paymentMethod as any
@@ -679,7 +702,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 // Meta CAPI: server-side purchase event (non-blocking, best-effort)
                 fetch('/api/capi', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
                     body: JSON.stringify({
                         event_id: eventId,
                         email: sanitizedData.email || '',
@@ -706,6 +732,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     });
                     const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
                     whatsAppUrlRef.current = whatsappUrl;
+                    savedOrderIdRef.current = firestoreOrderId;
+                    // Booking is paid and the order is saved — clear the cart now
+                    // so it can't be re-submitted for a duplicate charge.
+                    clearCart();
                     window.open(whatsappUrl, '_blank');
                     setPendingWhatsApp({ whatsappUrl });
                     setIsProcessing(false);
@@ -725,16 +755,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         }
     };
 
-    if (cart.length === 0) {
-        return (
-            <div className="container checkout-empty">
-                <h2>Your cart is empty</h2>
-                <button className="btn" onClick={() => router.push('/')}>Continue Shopping</button>
-            </div>
-        );
-    }
-
-    // WhatsApp confirmation step — shown after order is submitted and WhatsApp is opened
+    // WhatsApp confirmation step — shown after order is submitted and WhatsApp
+    // is opened. Must be checked BEFORE the empty-cart screen because the cart
+    // is cleared as soon as the COD order is saved.
     if (pendingWhatsApp) {
         return (
             <div className="checkout-page">
@@ -777,7 +800,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     source: 'checkout_confirmed',
                                     type: 'whatsapp_sent',
                                 });
-                                onPlaceOrder({} as any);
+                                onPlaceOrder({ id: savedOrderIdRef.current });
                             }}
                         >
                             <Icon name="fa-check-circle" /> I've Sent the Message
@@ -786,6 +809,15 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         <p className="whatsapp-confirm-note">Once we receive your message, we'll process and ship your order within 24 hours.</p>
                     </div>
                 </div>
+            </div>
+        );
+    }
+
+    if (cart.length === 0) {
+        return (
+            <div className="container checkout-empty">
+                <h2>Your cart is empty</h2>
+                <button className="btn" onClick={() => router.push('/')}>Continue Shopping</button>
             </div>
         );
     }

@@ -19,6 +19,11 @@ export const subscribeToNewsletter = async (email: string): Promise<{ success: b
             return { success: false, message: 'Please enter a valid email address.' };
         }
 
+        // Firestore rules require an authenticated session for subscriber
+        // creates — a silent anonymous session satisfies this for visitors.
+        const { ensureAuthenticated } = await import('./auth');
+        await ensureAuthenticated();
+
         // 1. Add/Update subscriber
         // Note: Using email as ID ensures uniqueness. 
         // Firestore Rules 'allow create' only allows this if it doesn't exist.

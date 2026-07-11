@@ -11,6 +11,7 @@ interface CartContextType {
     addToCart: (product: ProductFull, size: string | null, quantity?: number) => void;
     removeFromCart: (id: string, size?: string) => void;
     updateQuantity: (id: string, quantity: number, size?: string) => void;
+    clearCart: () => void;
     cartTotal: number;
 }
 
@@ -67,7 +68,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
             cart, cartItemCount, isCartOpen,
             openCart: () => setIsCartOpen(true),
             closeCart: () => setIsCartOpen(false),
-            addToCart, removeFromCart, updateQuantity, cartTotal
+            addToCart, removeFromCart, updateQuantity,
+            clearCart: () => setCart([]),
+            cartTotal
         }}>
             {children}
         </CartContext.Provider>

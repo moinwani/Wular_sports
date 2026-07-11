@@ -55,12 +55,6 @@ service cloud.firestore {
       return num is number && num > 0;
     }
     
-    // Rate limiting: prevent creation spam (max 5 per hour per IP)
-    function rateLimitCreate() {
-      // This is a basic check; for production use Firebase App Check
-      return request.time > resource.data.createdAt + duration.value(12, 'm');
-    }
-    
     // ========================================
     // DEFAULT DENY ALL
     // ========================================
@@ -75,10 +69,12 @@ service cloud.firestore {
     
     match /subscribers/{subscriberId} {
       
-      // PUBLIC: Can only CREATE (write-once)
-      allow create: if 
+      // PUBLIC: Can only CREATE (write-once); requires a Firebase session
+      // (anonymous is fine) so writes can't come from bare REST spam
+      allow create: if
+        isAuthenticated()
         // Must be a valid email
-        isValidEmail(request.resource.data.email)
+        && isValidEmail(request.resource.data.email)
         // Must have required fields only
         && request.resource.data.keys().hasAll(['email', 'subscribedAt', 'status'])
         && request.resource.data.keys().hasOnly(['email', 'subscribedAt', 'status'])

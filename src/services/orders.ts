@@ -10,6 +10,7 @@ import {
     where,
     orderBy,
     Timestamp,
+    serverTimestamp,
     DocumentData
 } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
@@ -59,19 +60,15 @@ const generateOrderNumber = (): string => {
  */
 export const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 'createdAt' | 'updatedAt'>): Promise<string> => {
     try {
-        const order: Omit<Order, 'id'> = {
+        // serverTimestamp() resolves to the identical server-side time for both
+        // fields, satisfying the rules' updatedAt == createdAt and freshness
+        // checks regardless of the customer's device clock.
+        const docRef = await addDoc(collection(getFirestoreDb(), ORDERS_COLLECTION), {
             ...orderData,
             orderNumber: generateOrderNumber(),
-            createdAt: new Date(),
-            updatedAt: new Date()
-        };
-
-        const docRef = await addDoc(collection(getFirestoreDb(), ORDERS_COLLECTION), {
-            ...order,
-            createdAt: Timestamp.fromDate(order.createdAt),
-            updatedAt: Timestamp.fromDate(order.updatedAt)
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
         });
-
 
         return docRef.id;
     } catch (error) {

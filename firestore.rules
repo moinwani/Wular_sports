@@ -35,12 +35,12 @@ service cloud.firestore {
         && email.matches('.*@.*\\..*');
     }
     
-    // Validate phone number (Indian format)
+    // Validate phone number: '+' country code (may contain '-') + 6-15 digits
     function isValidPhone(phone) {
-      return phone is string 
-        && phone.size() >= 10 
-        && phone.size() <= 15
-        && phone.matches('^[+0-9]*$');
+      return phone is string
+        && phone.size() >= 8
+        && phone.size() <= 23
+        && phone.matches('^[+][0-9-]*$');
     }
     
     // Validate string length
@@ -144,7 +144,13 @@ service cloud.firestore {
         && isValidString(request.resource.data.customerAddress.street, 10, 500)
         && isValidString(request.resource.data.customerAddress.city, 2, 100)
         && isValidString(request.resource.data.customerAddress.state, 2, 100)
-        && request.resource.data.customerAddress.pincode.matches('^[0-9]{6}$')
+        // India: strict 6-digit PIN. International: 3-10 char alphanumeric postal code
+        && (
+          (request.resource.data.customerAddress.get('country', 'India') == 'India'
+            && request.resource.data.customerAddress.pincode.matches('^[0-9]{6}$'))
+          || (request.resource.data.customerAddress.get('country', 'India') != 'India'
+            && request.resource.data.customerAddress.pincode.matches('^[A-Za-z0-9 -]{3,10}$'))
+        )
         // Items validation
         && request.resource.data.items is list
         && request.resource.data.items.size() > 0

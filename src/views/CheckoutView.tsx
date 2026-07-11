@@ -7,6 +7,7 @@ import { validateFormData, ValidationSchema } from '../utils/inputValidation';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
+import { CheckoutAuth } from '../components/checkout/CheckoutAuth';
 
 const hashData = async (value: string): Promise<string> => {
     const encoder = new TextEncoder();
@@ -210,19 +211,25 @@ interface CheckoutViewProps {
     onPlaceOrder: (orderDetails: any) => void;
 }
 
-const checkoutValidationSchema: ValidationSchema = {
+// Phone and ZIP rules adapt to the selected country so international
+// customers aren't blocked by India-only formats.
+const buildCheckoutSchema = (isIndianPhone: boolean, isIndiaOrder: boolean): ValidationSchema => ({
     firstName: { required: true, type: 'name', minLength: 2, maxLength: 50 },
     lastName: { required: false, type: 'name', minLength: 1, maxLength: 50 },
     email: { required: true, type: 'email', maxLength: 254 },
-    phone: { required: true, type: 'phone', minLength: 10, maxLength: 10 },
+    phone: isIndianPhone
+        ? { required: true, type: 'phone', minLength: 10, maxLength: 10 }
+        : { required: true, type: 'string', minLength: 6, maxLength: 15, pattern: /^\d{6,15}$/ },
     countryCode: { required: false, type: 'string', minLength: 1, maxLength: 7 },
     address: { required: true, type: 'address', minLength: 10, maxLength: 500 },
     city: { required: true, type: 'string', minLength: 2, maxLength: 100 },
     state: { required: true, type: 'string', minLength: 2, maxLength: 100 },
-    zip: { required: true, type: 'zip', maxLength: 6 },
+    zip: isIndiaOrder
+        ? { required: true, type: 'zip', maxLength: 6 }
+        : { required: true, type: 'string', minLength: 3, maxLength: 10, pattern: /^[A-Za-z0-9][A-Za-z0-9\s\-]{2,9}$/ },
     country: { required: true, type: 'string', minLength: 2, maxLength: 100 },
     paymentMethod: { required: true, type: 'string' },
-};
+});
 
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const router = useRouter();
@@ -248,6 +255,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const [whatsAppReminderVisible, setWhatsAppReminderVisible] = useState(false);
     const whatsAppUrlRef = useRef<string>('');
     const [isEmailFromAuth, setIsEmailFromAuth] = useState(false);
+    const [authedEmail, setAuthedEmail] = useState<string | null>(null);
 
     // When WhatsApp is open and the user returns to this tab, remind them to send the message
     useEffect(() => {
@@ -294,7 +302,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         })();
     }, []);
 
-    // Live auth state — required for placing an order
+    // Live auth state — optional convenience: prefill email when signed in.
+    // Guests can always type their email and check out without an account.
+    const emailFromAuthRef = useRef(false);
     useEffect(() => {
         let unsubscribe: (() => void) | undefined;
         (async () => {
@@ -302,45 +312,29 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 const { subscribeToAuthChanges } = await import('../services/auth');
                 unsubscribe = subscribeToAuthChanges((user) => {
                     if (user && user.email && !user.isAnonymous) {
-                        setFormData(prev => ({ ...prev, email: user.email! }));
+                        setAuthedEmail(user.email);
+                        setFormData(prev => (prev.email ? prev : { ...prev, email: user.email! }));
                         setIsEmailFromAuth(true);
+                        emailFromAuthRef.current = true;
                     } else {
-                        setFormData(prev => ({ ...prev, email: '' }));
+                        setAuthedEmail(null);
+                        // Only clear the email if we auto-filled it from the account
+                        if (emailFromAuthRef.current) {
+                            setFormData(prev => ({ ...prev, email: '' }));
+                            emailFromAuthRef.current = false;
+                        }
                         setIsEmailFromAuth(false);
                     }
                 });
             } catch {
-                // Auth unavailable
+                // Auth unavailable — guest checkout still works
             }
         })();
         return () => { if (unsubscribe) unsubscribe(); };
     }, []);
 
-    // Render Google Sign-In button when user is not signed in
-    const googleBtnRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        if (isEmailFromAuth || !googleBtnRef.current) return;
-        let cancelled = false;
-        (async () => {
-            const { renderGoogleSignInButton, signInWithGoogle } = await import('../services/auth');
-            if (cancelled || !googleBtnRef.current) return;
-            renderGoogleSignInButton(googleBtnRef.current, async (response) => {
-                try {
-                    const user = await signInWithGoogle(response.credential);
-                    if (user.email) {
-                        try {
-                            const { subscribeToNewsletter } = await import('../services/newsletter');
-                            subscribeToNewsletter(user.email);
-                        } catch { /* newsletter optional */ }
-                    }
-                } catch (err) {
-                    console.error('Google sign-in failed:', err);
-                    setFormError('Google sign-in failed. Please try again.');
-                }
-            });
-        })();
-        return () => { cancelled = true; };
-    }, [isEmailFromAuth]);
+    const isIndiaOrder = formData.country === 'India';
+    const isIndianPhone = formData.countryCode === '+91';
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -359,11 +353,22 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             // Only letters, spaces, hyphens, apostrophes, and dots
             filteredValue = value.replace(/[^a-zA-Z\s\-'\.]/g, '');
         } else if (name === 'phone') {
-            // Only digits, max 10
-            filteredValue = value.replace(/\D/g, '').substring(0, 10);
+            // Digits only — 10 for India, up to 15 internationally
+            const maxDigits = formData.countryCode === '+91' ? 10 : 15;
+            filteredValue = value.replace(/\D/g, '').substring(0, maxDigits);
         } else if (name === 'zip') {
-            // Only digits, max 6
-            filteredValue = value.replace(/\D/g, '').substring(0, 6);
+            if (formData.country === 'India') {
+                // Indian pincode: digits only, max 6
+                filteredValue = value.replace(/\D/g, '').substring(0, 6);
+            } else {
+                // International postal codes can be alphanumeric
+                filteredValue = value.replace(/[^A-Za-z0-9\s\-]/g, '').substring(0, 10);
+            }
+        }
+
+        if (name === 'email') {
+            // User is typing their own email — stop treating it as auth-sourced
+            emailFromAuthRef.current = false;
         }
 
         setFormData(prev => {
@@ -437,12 +442,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     };
 
     const handleDeliveryInquiry = () => {
-        if (!isEmailFromAuth) {
-            setFormError('Please sign in with Google to inquire about delivery charges.');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
-        const validation = validateFormData(formData, checkoutValidationSchema);
+        const validation = validateFormData(formData, buildCheckoutSchema(isIndianPhone, isIndiaOrder));
         if (!validation.valid) {
             setFieldErrors(validation.errors);
             setFormError('Please fill in all your details before checking delivery charges.');
@@ -503,13 +503,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!isEmailFromAuth) {
-            setFormError('Please sign in with Google to place your order.');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
-
-        const validation = validateFormData(formData, checkoutValidationSchema);
+        const validation = validateFormData(formData, buildCheckoutSchema(isIndianPhone, isIndiaOrder));
         if (!validation.valid) {
             setFieldErrors(validation.errors);
             setFormError("Please correct the errors in the form.");
@@ -877,15 +871,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     <div className="checkout-form-section">
                         <h2 className="section-title-compact">Shipping Information</h2>
 
-                        {!isEmailFromAuth && (
-                            <div className="signin-required-panel">
-                                <div className="signin-required-text">
-                                    <strong>Sign in with Google to continue</strong>
-                                    <span>We need your email to send the order confirmation.</span>
-                                </div>
-                                <div ref={googleBtnRef} className="signin-google-btn"></div>
-                            </div>
-                        )}
+                        <CheckoutAuth authedEmail={authedEmail} disabled={isProcessing} />
 
                         <form id="checkout-form" onSubmit={handleSubmit}>
                             <div className="form-row compact">
@@ -900,6 +886,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         className={fieldErrors.firstName ? 'error' : ''}
                                         placeholder="First Name"
+                                        autoComplete="given-name"
                                     />
                                     {fieldErrors.firstName && (
                                         <span className="error-message">{fieldErrors.firstName}</span>
@@ -915,6 +902,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         className={fieldErrors.lastName ? 'error' : ''}
                                         placeholder="Last Name"
+                                        autoComplete="family-name"
                                     />
                                     {fieldErrors.lastName && (
                                         <span className="error-message">{fieldErrors.lastName}</span>
@@ -947,9 +935,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         required
                                         disabled={isProcessing}
                                         className={fieldErrors.phone ? 'error' : ''}
-                                        placeholder="10-digit number"
-                                        maxLength={10}
+                                        placeholder={isIndianPhone ? '10-digit number' : 'Phone number'}
+                                        maxLength={isIndianPhone ? 10 : 15}
                                         inputMode="numeric"
+                                        autoComplete="tel-national"
                                     />
                                 </div>
                                 {fieldErrors.phone && (
@@ -963,15 +952,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     type="email"
                                     name="email"
                                     value={formData.email}
-                                    readOnly
+                                    onChange={handleInputChange}
+                                    required
                                     disabled={isProcessing}
-                                    className={`${fieldErrors.email ? 'error' : ''} input-readonly`}
-                                    placeholder="Sign in with Google to use your email"
+                                    className={fieldErrors.email ? 'error' : ''}
+                                    placeholder="your@email.com"
+                                    autoComplete="email"
+                                    inputMode="email"
                                 />
-                                {isEmailFromAuth ? (
+                                {isEmailFromAuth && formData.email === authedEmail ? (
                                     <span className="field-note field-note--success">Signed-in email — order confirmation will be sent here</span>
                                 ) : (
-                                    <span className="field-note">Sign in with Google above to auto-fill your email.</span>
+                                    <span className="field-note">Your order confirmation will be sent to this email.</span>
                                 )}
                                 {fieldErrors.email && (
                                     <span className="error-message">{fieldErrors.email}</span>
@@ -989,6 +981,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     required
                                     disabled={isProcessing}
                                     className={fieldErrors.address ? 'error' : ''}
+                                    autoComplete="street-address"
                                 />
                                 {fieldErrors.address && (
                                     <span className="error-message">{fieldErrors.address}</span>
@@ -1028,6 +1021,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         className={fieldErrors.city ? 'error' : ''}
                                         placeholder="City"
+                                        autoComplete="address-level2"
                                     />
                                     {fieldErrors.city && (
                                         <span className="error-message">{fieldErrors.city}</span>
@@ -1044,13 +1038,14 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         className={fieldErrors.state ? 'error' : ''}
                                         placeholder="State"
+                                        autoComplete="address-level1"
                                     />
                                     {fieldErrors.state && (
                                         <span className="error-message">{fieldErrors.state}</span>
                                     )}
                                 </div>
                                 <div className="form-group">
-                                    <label>ZIP *</label>
+                                    <label>{isIndiaOrder ? 'PIN Code *' : 'ZIP / Postal Code *'}</label>
                                     <input
                                         type="text"
                                         name="zip"
@@ -1058,9 +1053,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         onChange={handleInputChange}
                                         required
                                         disabled={isProcessing}
-                                        maxLength={6}
+                                        maxLength={isIndiaOrder ? 6 : 10}
+                                        inputMode={isIndiaOrder ? 'numeric' : 'text'}
                                         className={fieldErrors.zip ? 'error' : ''}
-                                        placeholder="ZIP"
+                                        placeholder={isIndiaOrder ? '6-digit PIN' : 'Postal code'}
+                                        autoComplete="postal-code"
                                     />
                                     {fieldErrors.zip && (
                                         <span className="error-message">{fieldErrors.zip}</span>
@@ -1225,13 +1222,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             type="submit"
                             form="checkout-form"
                             className="btn-place-order"
-                            disabled={isProcessing || !isEmailFromAuth}
-                            title={!isEmailFromAuth ? 'Sign in with Google to place your order' : ''}
+                            disabled={isProcessing}
                         >
                             {isProcessing ? (
                                 <span className="btn-spinner"><Icon name="fa-spinner" spin /> Processing...</span>
-                            ) : !isEmailFromAuth ? (
-                                "SIGN IN TO PLACE ORDER"
                             ) : (
                                 "PLACE ORDER"
                             )}
@@ -1242,8 +1236,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 type="button"
                                 className="btn-delivery-inquiry"
                                 onClick={handleDeliveryInquiry}
-                                disabled={isProcessing || !isEmailFromAuth}
-                                title={!isEmailFromAuth ? 'Sign in with Google first' : 'Ask us about delivery charges before placing your order'}
+                                disabled={isProcessing}
+                                title="Ask us about delivery charges before placing your order"
                             >
                                 <Icon name="fa-whatsapp" /> Ask Delivery Charges on WhatsApp
                             </button>

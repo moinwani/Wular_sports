@@ -1,3 +1,14 @@
+# *
 User-agent: *
 Allow: /
+
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /api
+
+# Host
+Host: https://wularsports.com
+
+# Sitemaps
 Sitemap: https://wularsports.com/sitemap.xml

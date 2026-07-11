@@ -2,7 +2,12 @@ import {
     User,
     onAuthStateChanged,
     GoogleAuthProvider,
-    signInWithCredential
+    signInWithCredential,
+    signInAnonymously,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    sendEmailVerification,
+    sendPasswordResetEmail
 } from 'firebase/auth';
 import { auth } from './firebase';
 
@@ -73,20 +78,54 @@ export const initializeGoogleOneTap = (callback: (response: any) => void) => {
 };
 
 /**
- * Ensure user is signed in with a real Google account.
- * Anonymous users are rejected — placing an order requires Google sign-in.
+ * Ensure the user has a Firebase session before writing an order.
+ * Guests get a silent anonymous session — checkout never requires an account.
  */
 export const ensureAuthenticated = async (): Promise<string> => {
-    const user = getCurrentUser();
-    if (!user || user.isAnonymous || !user.email) {
-        throw new Error('Please sign in with Google to place your order.');
+    try {
+        const user = getCurrentUser();
+        if (user) return user.uid;
+        const userCredential = await signInAnonymously(auth);
+        currentUser = userCredential.user;
+        return currentUser.uid;
+    } catch (error: any) {
+        console.error('❌ Authentication failed:', error);
+        throw new Error('Unable to process your order right now. Please try again.');
     }
-    return user.uid;
+};
+
+/**
+ * Create an account with email + password and send a verification email.
+ * Verification is informational only — it never blocks checkout.
+ */
+export const registerWithEmail = async (email: string, password: string): Promise<User> => {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    try {
+        await sendEmailVerification(credential.user);
+    } catch {
+        // Verification email failing shouldn't fail registration
+    }
+    return credential.user;
+};
+
+/**
+ * Sign in to an existing email/password account.
+ */
+export const signInWithEmail = async (email: string, password: string): Promise<User> => {
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    return credential.user;
+};
+
+/**
+ * Send a password reset email.
+ */
+export const sendPasswordReset = async (email: string): Promise<void> => {
+    await sendPasswordResetEmail(auth, email);
 };
 
 /**
  * Render the official Google Sign-In button into the given element.
- * Used on checkout to require sign-in before placing an order.
+ * Optional convenience on checkout — auto-fills the customer's email.
  */
 export const renderGoogleSignInButton = (
     element: HTMLElement,

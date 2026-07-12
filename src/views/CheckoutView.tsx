@@ -1,9 +1,9 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { CartItem } from '../types';
-import { createOrder } from '../services/orders';
 import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/email';
-import { validateFormData, ValidationSchema } from '../utils/inputValidation';
+import { validateFormData } from '../utils/inputValidation';
+import { buildCheckoutSchema } from '../utils/checkoutSchema';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
@@ -212,25 +212,6 @@ interface CheckoutViewProps {
     onPlaceOrder: (orderDetails: any) => void;
 }
 
-// Phone and ZIP rules adapt to the selected country so international
-// customers aren't blocked by India-only formats.
-const buildCheckoutSchema = (isIndianPhone: boolean, isIndiaOrder: boolean): ValidationSchema => ({
-    firstName: { required: true, type: 'name', minLength: 2, maxLength: 50 },
-    lastName: { required: false, type: 'name', minLength: 1, maxLength: 50 },
-    email: { required: true, type: 'email', maxLength: 254 },
-    phone: isIndianPhone
-        ? { required: true, type: 'phone', minLength: 10, maxLength: 10 }
-        : { required: true, type: 'string', minLength: 6, maxLength: 15, pattern: /^\d{6,15}$/ },
-    countryCode: { required: false, type: 'string', minLength: 1, maxLength: 7 },
-    address: { required: true, type: 'address', minLength: 10, maxLength: 500 },
-    city: { required: true, type: 'string', minLength: 2, maxLength: 100 },
-    state: { required: true, type: 'string', minLength: 2, maxLength: 100 },
-    zip: isIndiaOrder
-        ? { required: true, type: 'zip', maxLength: 6 }
-        : { required: true, type: 'string', minLength: 3, maxLength: 10, pattern: /^[A-Za-z0-9][A-Za-z0-9\s\-]{2,9}$/ },
-    country: { required: true, type: 'string', minLength: 2, maxLength: 100 },
-    paymentMethod: { required: true, type: 'string' },
-});
 
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const router = useRouter();
@@ -540,7 +521,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             }
 
             const { ensureAuthenticated, getCurrentUser } = await import('../services/auth');
-            const userId = await ensureAuthenticated();
+            await ensureAuthenticated();
             const user = getCurrentUser();
             const token = user ? await user.getIdToken() : '';
 
@@ -556,10 +537,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    items: cart.map(item => ({ id: item.id, quantity: item.quantity })),
+                    items: cart.map(item => ({ id: item.id, quantity: item.quantity, size: item.size })),
                     paymentMethod: sanitizedData.paymentMethod,
                     receipt: orderId,
-                    notes: { orderId, customerPhone: sanitizedData.phone }
+                    notes: { orderId, customerPhone: sanitizedData.phone },
+                    // Shipping details so the order is persisted server-side
+                    // BEFORE payment — a paid order can never be lost even if
+                    // this browser dies mid-payment.
+                    customer: {
+                        firstName: sanitizedData.firstName,
+                        lastName: sanitizedData.lastName,
+                        email: sanitizedData.email,
+                        phone: sanitizedData.phone,
+                        countryCode: sanitizedData.countryCode,
+                        address: sanitizedData.address,
+                        city: sanitizedData.city,
+                        state: sanitizedData.state,
+                        zip: sanitizedData.zip,
+                        country: sanitizedData.country,
+                    },
                 }),
             });
 
@@ -568,7 +564,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 throw new Error(err.error || 'Failed to initiate payment');
             }
 
-            const { orderId: razorpayOrderId, chargeAmount } = await res.json();
+            const { orderId: razorpayOrderId, chargeAmount, firestoreOrderId } = await res.json();
             const description = isCOD
                 ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
                 : `Full Payment — Wular Sports Order`;
@@ -586,6 +582,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             razorpay_order_id: rzpOrderId,
                             razorpay_payment_id: paymentId,
                             razorpay_signature: signature,
+                            firestoreOrderId,
                         }),
                     });
                     if (!verifyRes.ok) {
@@ -599,20 +596,15 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     return;
                 }
 
-                // Build order data
+                // The order document was already created server-side (before
+                // payment) and marked confirmed by the verify endpoint. Build
+                // the same data locally only for the notification emails.
                 const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
                 const remaining = isCOD ? total - bookingAmount : 0;
                 const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
                 const totalAtDoor = isCOD ? remaining + codFee : 0;
 
-                // Resolve the uid at write time — auth state may have changed
-                // (e.g. One Tap sign-in in another tab) while the payment
-                // modal was open, and the rules require userId == auth.uid.
-                const { getCurrentUser: getUserNow } = await import('../services/auth');
-                const uidAtWrite = getUserNow()?.uid || userId;
-
                 const orderData = {
-                    userId: uidAtWrite,
                     customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
                     customerEmail: sanitizedData.email || '',
                     customerPhone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
@@ -636,22 +628,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     remaining,
                     totalAtDoor,
                     razorpayPaymentId: paymentId,
-                    paymentId,
-                    status: 'pending' as const,
-                    paymentStatus: 'pending' as const,
                     paymentMethod: sanitizedData.paymentMethod as any
                 };
-
-                // Save order to Firestore — must succeed before continuing
-                let firestoreOrderId: string;
-                try {
-                    firestoreOrderId = await createOrder(orderData);
-                } catch (err: any) {
-                    console.error('Firestore save failed:', err?.code, err?.message, err);
-                    setFormError('Your payment was successful but we could not save your order. Please contact us on WhatsApp with your payment ID: ' + paymentId);
-                    setIsProcessing(false);
-                    return;
-                }
 
                 // Send emails in background (non-blocking, best-effort)
                 sendAdminOrderNotification({ ...orderData, id: firestoreOrderId })

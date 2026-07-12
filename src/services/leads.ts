@@ -1,6 +1,7 @@
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { CartItem } from '../types';
+import { getVisitorRef } from '../utils/helpers';
 
 /**
  * Checkout lead capture.
@@ -38,6 +39,7 @@ export const saveCheckoutLead = async (
                 .map(i => `${i.name}${i.size ? ` (${i.size})` : ''} x${i.quantity}`)
                 .join(', ')
                 .substring(0, 500),
+            visitorRef: getVisitorRef(),
             updatedAt: serverTimestamp(),
         };
 
@@ -49,6 +51,47 @@ export const saveCheckoutLead = async (
         await setDoc(doc(getFirestoreDb(), LEADS_COLLECTION, uid), data, { merge: true });
     } catch {
         // Lead capture is best-effort only
+    }
+};
+
+/**
+ * Track a WhatsApp button click anywhere on the site. Records which button
+ * was clicked (and which product, if any) on the visitor's lead — including
+ * their Ref code, which is also embedded in the pre-filled WhatsApp message.
+ * When the chat converts into a sale, the admin finds the lead by Ref and
+ * marks it sold.
+ */
+export const trackWhatsAppClick = async (
+    source: string,
+    detail?: string,
+    extra?: Record<string, any>
+): Promise<void> => {
+    try {
+        if (typeof window !== 'undefined' && (window as any).dataLayer) {
+            (window as any).dataLayer.push({
+                event: 'whatsapp_click',
+                source,
+                detail: detail || '',
+                ...(extra || {}),
+            });
+        }
+
+        const { ensureAuthenticated, getCurrentUserId } = await import('./auth');
+        await ensureAuthenticated();
+        const uid = getCurrentUserId();
+        if (!uid) return;
+
+        const data: Record<string, any> = {
+            whatsappClicks: increment(1),
+            lastWhatsAppSource: source.substring(0, 100),
+            visitorRef: getVisitorRef(),
+            updatedAt: serverTimestamp(),
+        };
+        if (detail) data.whatsappProduct = String(detail).substring(0, 200);
+
+        await setDoc(doc(getFirestoreDb(), LEADS_COLLECTION, uid), data, { merge: true });
+    } catch {
+        // Best-effort only
     }
 };
 

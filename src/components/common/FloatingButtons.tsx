@@ -11,7 +11,9 @@ export const FloatingButtons = memo(() => {
             className="fab-whatsapp"
             aria-label="Contact us on WhatsApp"
             onClick={() => {
-                window.dataLayer.push({ event: 'whatsapp_click', source: 'floating_button', type: 'general_inquiry' });
+                import('../../services/leads').then(({ trackWhatsAppClick }) =>
+                    trackWhatsAppClick('floating_button')
+                ).catch(() => { /* best-effort */ });
             }}
         >
             <Icon name="fa-whatsapp" />

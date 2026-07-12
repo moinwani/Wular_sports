@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useMemo } from 'react';
-import { collection, query, orderBy, limit, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { getFirestoreDb } from '../../services/firebase-firestore';
 import { Icon } from '../common/Icon';
 
@@ -17,6 +17,10 @@ interface Lead {
     country?: string;
     cartSummary?: string;
     cartTotal?: number;
+    whatsappClicks?: number;
+    lastWhatsAppSource?: string;
+    whatsappProduct?: string;
+    visitorRef?: string;
     status: 'browsing' | 'converted';
     updatedAt?: Date;
 }
@@ -33,6 +37,7 @@ const fetchLeads = async (): Promise<Lead[]> => {
         return {
             id: d.id,
             ...data,
+            status: data.status || 'browsing',
             updatedAt: data.updatedAt?.toDate(),
         } as Lead;
     });
@@ -83,6 +88,15 @@ export const LeadsManagement: FC = () => {
         }
     };
 
+    const handleMarkSold = async (id: string) => {
+        try {
+            await updateDoc(doc(getFirestoreDb(), 'leads', id), { status: 'converted' });
+            setLeads(prev => prev.map(l => l.id === id ? { ...l, status: 'converted' } : l));
+        } catch {
+            alert('Failed to update lead');
+        }
+    };
+
     if (loading) {
         return (
             <div className="admin-loading">
@@ -109,7 +123,7 @@ export const LeadsManagement: FC = () => {
             </div>
 
             <p className="dashboard-hint">
-                💡 These visitors typed their details on checkout but haven't completed an order yet. A friendly WhatsApp message recovers many of them — tap the green button to start a pre-written chat.
+                💡 These visitors typed their details on checkout or tapped a WhatsApp button but haven't ordered yet. Every WhatsApp message from the site includes a <strong>Ref code</strong> — when a chat turns into a sale, find that Ref here and tap ✓ to mark it sold.
             </p>
 
             <div className="orders-filters">
@@ -136,10 +150,11 @@ export const LeadsManagement: FC = () => {
                         <thead>
                             <tr>
                                 <th>Last Active</th>
+                                <th>Ref</th>
                                 <th>Name</th>
                                 <th>Contact</th>
                                 <th>Location</th>
-                                <th>Cart</th>
+                                <th>Interest</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -151,12 +166,16 @@ export const LeadsManagement: FC = () => {
                                         {lead.updatedAt ? lead.updatedAt.toLocaleString() : '—'}
                                     </td>
                                     <td>
+                                        <strong style={{ color: 'var(--golden)' }}>{lead.visitorRef || '—'}</strong>
+                                    </td>
+                                    <td>
                                         <strong>{[lead.firstName, lead.lastName].filter(Boolean).join(' ') || '—'}</strong>
                                     </td>
                                     <td>
                                         <div className="customer-cell">
                                             {lead.phone && <span>{lead.countryCode || '+91'} {lead.phone}</span>}
                                             {lead.email && <span className="customer-email">{lead.email}</span>}
+                                            {!lead.phone && !lead.email && <span>—</span>}
                                         </div>
                                     </td>
                                     <td>
@@ -164,15 +183,21 @@ export const LeadsManagement: FC = () => {
                                     </td>
                                     <td>
                                         <div className="customer-cell">
-                                            {lead.cartSummary && <span>{lead.cartSummary}</span>}
+                                            {lead.cartSummary && <span>🛒 {lead.cartSummary}</span>}
                                             {typeof lead.cartTotal === 'number' && lead.cartTotal > 0 && (
                                                 <span className="order-total">₹{lead.cartTotal.toLocaleString('en-IN')}</span>
+                                            )}
+                                            {(lead.whatsappClicks || 0) > 0 && (
+                                                <span style={{ color: '#25D366' }}>
+                                                    💬 {lead.whatsappClicks} WhatsApp tap{(lead.whatsappClicks || 0) > 1 ? 's' : ''}
+                                                    {lead.whatsappProduct ? ` — ${lead.whatsappProduct}` : ''}
+                                                </span>
                                             )}
                                         </div>
                                     </td>
                                     <td>
                                         <span className={`status-badge status-${lead.status === 'converted' ? 'delivered' : 'pending'}`}>
-                                            {lead.status === 'converted' ? 'ordered' : 'follow up'}
+                                            {lead.status === 'converted' ? 'sold' : 'follow up'}
                                         </span>
                                     </td>
                                     <td>
@@ -188,6 +213,16 @@ export const LeadsManagement: FC = () => {
                                                 >
                                                     <Icon name="fa-whatsapp" />
                                                 </a>
+                                            )}
+                                            {lead.status !== 'converted' && (
+                                                <button
+                                                    className="btn-view"
+                                                    onClick={() => handleMarkSold(lead.id)}
+                                                    title="Mark as sold"
+                                                    style={{ backgroundColor: '#388e3c' }}
+                                                >
+                                                    <Icon name="fa-check" />
+                                                </button>
                                             )}
                                             <button
                                                 className="btn-view"

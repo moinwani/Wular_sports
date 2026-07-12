@@ -33,7 +33,9 @@ export const Footer: FC = memo(() => {
                     <div className="footer-title-bar"></div>
                     <p className="footer-contact-hint">Have questions? Reach out to us directly!</p>
                     <a href={createWhatsAppLink("Hello, I have a question.")} target="_blank" rel="noopener noreferrer" className="btn-chat-whatsapp" onClick={() => {
-                        window.dataLayer.push({ event: 'whatsapp_click', source: 'footer', type: 'general_inquiry' });
+                        import('../../services/leads').then(({ trackWhatsAppClick }) =>
+                            trackWhatsAppClick('footer')
+                        ).catch(() => { /* best-effort */ });
                     }}>
                         Chat on WhatsApp
                     </a>

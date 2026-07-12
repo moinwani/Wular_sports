@@ -134,7 +134,9 @@ export const AboutView: FC = () => (
                         <div>
                         <strong>WhatsApp</strong>
                         <a href="https://wa.me/919320622451" target="_blank" rel="noopener noreferrer" onClick={() => {
-                            window.dataLayer.push({ event: 'whatsapp_click', source: 'about_page', type: 'general_contact' });
+                            import('../services/leads').then(({ trackWhatsAppClick }) =>
+                                trackWhatsAppClick('about_page')
+                            ).catch(() => { /* best-effort */ });
                         }}>+91 93206 22451</a>
                         </div>
                     </div>

@@ -123,10 +123,12 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly([
           'firstName', 'lastName', 'email', 'phone', 'countryCode',
           'address', 'city', 'state', 'zip', 'country',
-          'cartSummary', 'cartTotal', 'status', 'updatedAt'
+          'cartSummary', 'cartTotal', 'status', 'updatedAt',
+          'whatsappClicks', 'lastWhatsAppSource', 'whatsappProduct', 'visitorRef'
         ])
         && request.resource.data.get('status', 'browsing') in ['browsing', 'converted']
         && request.resource.data.get('cartTotal', 0) is number
+        && request.resource.data.get('whatsappClicks', 0) is number
         && request.resource.data.get('firstName', '').size() <= 100
         && request.resource.data.get('lastName', '').size() <= 100
         && request.resource.data.get('email', '').size() <= 254
@@ -137,10 +139,14 @@ service cloud.firestore {
         && request.resource.data.get('state', '').size() <= 100
         && request.resource.data.get('zip', '').size() <= 15
         && request.resource.data.get('country', '').size() <= 100
-        && request.resource.data.get('cartSummary', '').size() <= 600;
+        && request.resource.data.get('cartSummary', '').size() <= 600
+        && request.resource.data.get('lastWhatsAppSource', '').size() <= 100
+        && request.resource.data.get('whatsappProduct', '').size() <= 200
+        && request.resource.data.get('visitorRef', '').size() <= 20;
 
-      // Visitors cannot read leads (not even their own); admin has full access
+      // ADMIN: full access — read leads, mark them sold, clean up
       allow read: if isAdmin();
+      allow update: if isAdmin();
       allow delete: if isAdmin();
       allow list: if isAdmin() && request.query.limit <= 1000;
     }

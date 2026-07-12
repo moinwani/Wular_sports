@@ -51,7 +51,9 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                     <div className="mobile-menu-social">
                         <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="fa-instagram" /></a>
                         <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" onClick={() => {
-                            window.dataLayer.push({ event: 'whatsapp_click', source: 'mobile_menu', type: 'general_contact' });
+                            import('../../services/leads').then(({ trackWhatsAppClick }) =>
+                                trackWhatsAppClick('mobile_menu')
+                            ).catch(() => { /* best-effort */ });
                         }}><Icon name="fa-whatsapp" /></a>
                     </div>
                     <p className="mobile-menu-copyright">© 2026 Wular Sports</p>

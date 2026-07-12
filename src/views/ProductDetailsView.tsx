@@ -430,14 +430,13 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                             rel="noopener noreferrer"
                             className="btn-whatsapp-order-premium"
                             onClick={() => {
-                                window.dataLayer.push({
-                                    event: 'whatsapp_click',
-                                    source: 'product_order',
-                                    type: 'product_order',
-                                    product_id: product.id,
-                                    product_name: product.name,
-                                    quantity,
-                                });
+                                import('../services/leads').then(({ trackWhatsAppClick }) =>
+                                    trackWhatsAppClick('product_order', product.name, {
+                                        type: 'product_order',
+                                        product_id: product.id,
+                                        quantity,
+                                    })
+                                ).catch(() => { /* best-effort */ });
                             }}
                             style={{
                                 display: 'flex',
@@ -697,13 +696,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                 rel="noopener noreferrer"
                                                 className="contact-option-btn whatsapp"
                                                 onClick={() => {
-                                                    window.dataLayer.push({
-                                                        event: 'whatsapp_click',
-                                                        source: 'contact_tab_chat',
-                                                        type: 'product_inquiry',
-                                                        product_id: product.id,
-                                                        product_name: product.name,
-                                                    });
+                                                    import('../services/leads').then(({ trackWhatsAppClick }) =>
+                                                        trackWhatsAppClick('contact_tab_chat', product.name, {
+                                                            type: 'product_inquiry',
+                                                            product_id: product.id,
+                                                        })
+                                                    ).catch(() => { /* best-effort */ });
                                                 }}
                                             >
                                                 <Icon name="fa-whatsapp" />
@@ -719,13 +717,12 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                 rel="noopener noreferrer"
                                                 className="contact-option-btn video"
                                                 onClick={() => {
-                                                    window.dataLayer.push({
-                                                        event: 'whatsapp_click',
-                                                        source: 'contact_tab_video',
-                                                        type: 'video_call',
-                                                        product_id: product.id,
-                                                        product_name: product.name,
-                                                    });
+                                                    import('../services/leads').then(({ trackWhatsAppClick }) =>
+                                                        trackWhatsAppClick('contact_tab_video', product.name, {
+                                                            type: 'video_call',
+                                                            product_id: product.id,
+                                                        })
+                                                    ).catch(() => { /* best-effort */ });
                                                 }}
                                             >
                                                 <Icon name="fa-video" />

@@ -139,12 +139,9 @@ export const Customization = memo(() => {
             }
         });
 
-        window.dataLayer.push({
-            event: 'whatsapp_submit',
-            source: 'custom_bat',
-            type: 'custom_bat_form',
-            bat_type: batType,
-        });
+        import('../../services/leads').then(({ trackWhatsAppClick }) =>
+            trackWhatsAppClick('custom_bat', batType || undefined, { type: 'custom_bat_form' })
+        ).catch(() => { /* best-effort */ });
         window.open(createWhatsAppLink(message.trim()), '_blank');
         setIsSubmitted(true);
     };

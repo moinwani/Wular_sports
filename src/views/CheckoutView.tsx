@@ -4,6 +4,7 @@ import { CartItem } from '../types';
 import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/email';
 import { validateFormData } from '../utils/inputValidation';
 import { buildCheckoutSchema } from '../utils/checkoutSchema';
+import { getVisitorRef } from '../utils/helpers';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
@@ -446,7 +447,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             `*Shipping Address:*\n${sanitizedData.address}, ${sanitizedData.city}, ${sanitizedData.state} - ${sanitizedData.zip}, ${sanitizedData.country}\n\n` +
             `*Items I want to order:*\n${itemsList}\n\n` +
             `*Order Subtotal:* ₹${total.toLocaleString('en-IN')}\n\n` +
-            `Please confirm the delivery charges for this address. Thank you!`;
+            `Please confirm the delivery charges for this address. Thank you!` +
+            (getVisitorRef() ? `\n\n(Ref: ${getVisitorRef()})` : '');
 
         return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     };
@@ -461,12 +463,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         setFormError('');
         setFieldErrors({});
         const url = buildDeliveryInquiryUrl(validation.sanitized! as typeof formData);
-        window.dataLayer.push({
-            event: 'whatsapp_click',
-            source: 'delivery_inquiry',
-            type: 'delivery_inquiry',
-            total,
-        });
+        import('../services/leads').then(({ trackWhatsAppClick }) =>
+            trackWhatsAppClick('delivery_inquiry', formData.country, { type: 'delivery_inquiry', total })
+        ).catch(() => { /* best-effort */ });
         window.open(url, '_blank', 'noopener,noreferrer');
     };
 

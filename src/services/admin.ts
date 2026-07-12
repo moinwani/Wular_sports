@@ -1,4 +1,4 @@
-import { collection, query, getDocs, orderBy, where } from 'firebase/firestore';
+import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 
@@ -16,8 +16,12 @@ export interface Subscriber {
 
 export interface OrderAnalytics {
     totalOrders: number;
+    paidOrders: number;
     totalRevenue: number;
-    pendingOrders: number;
+    monthRevenue: number;
+    needsAction: number;
+    abandonedCheckouts: number;
+    codPending: number;
     totalSubscribers: number;
     recentOrders: any[];
 }
@@ -28,7 +32,13 @@ export interface OrderAnalytics {
  */
 export const getAllSubscribers = async (): Promise<Subscriber[]> => {
     try {
-        const q = query(collection(getFirestoreDb(), 'subscribers'), orderBy('subscribedAt', 'desc'));
+        // Firestore rules only allow subscriber list queries that carry an
+        // explicit limit (<= 1000) — without it the query is denied.
+        const q = query(
+            collection(getFirestoreDb(), 'subscribers'),
+            orderBy('subscribedAt', 'desc'),
+            limit(1000)
+        );
         const querySnapshot = await getDocs(q);
 
         return querySnapshot.docs.map(doc => ({
@@ -91,20 +101,48 @@ export const updatePaymentStatus = async (
 };
 
 /**
- * Calculate order analytics
+ * Calculate order analytics.
+ *
+ * Order lifecycle: 'pending' means the checkout was started but payment was
+ * never completed (an abandoned checkout — a follow-up lead, NOT revenue).
+ * Anything from 'confirmed' onwards is a real, paid order.
  */
 export const getOrderAnalytics = (orders: any[]): OrderAnalytics => {
-    const totalOrders = orders.length;
-    const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
-    const pendingOrders = orders.filter(o => o.status === 'pending').length;
-    const recentOrders = orders.slice(0, 5); // Latest 5 orders
+    const isPaid = (o: any) =>
+        ['confirmed', 'processing', 'shipped', 'delivered'].includes(o.status);
+
+    const paid = orders.filter(isPaid);
+    const totalRevenue = paid.reduce((sum, o) => sum + (o.total || 0), 0);
+
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthRevenue = paid
+        .filter(o => o.createdAt && new Date(o.createdAt) >= monthStart)
+        .reduce((sum, o) => sum + (o.total || 0), 0);
+
+    // Paid orders waiting to be packed / shipped
+    const needsAction = orders.filter(o =>
+        o.status === 'confirmed' || o.status === 'processing'
+    ).length;
+
+    // Checkouts started but never paid — call these customers on WhatsApp!
+    const abandonedCheckouts = orders.filter(o => o.status === 'pending').length;
+
+    // COD orders where the balance is still due at the door
+    const codPending = orders.filter(o =>
+        isPaid(o) && o.paymentMethod === 'cod' && o.paymentStatus !== 'completed'
+    ).length;
 
     return {
-        totalOrders,
+        totalOrders: orders.length,
+        paidOrders: paid.length,
         totalRevenue,
-        pendingOrders,
+        monthRevenue,
+        needsAction,
+        abandonedCheckouts,
+        codPending,
         totalSubscribers: 0, // Will be updated by component
-        recentOrders
+        recentOrders: orders.slice(0, 5)
     };
 };
 

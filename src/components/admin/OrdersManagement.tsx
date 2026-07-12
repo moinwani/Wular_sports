@@ -205,7 +205,8 @@ export const OrdersManagement: FC = () => {
                                 <p><strong>Phone:</strong> {selectedOrder.customerPhone}</p>
                                 <p><strong>Address:</strong><br />
                                     {selectedOrder.customerAddress?.street}<br />
-                                    {selectedOrder.customerAddress?.city}, {selectedOrder.customerAddress?.state} {selectedOrder.customerAddress?.pincode}
+                                    {selectedOrder.customerAddress?.city}, {selectedOrder.customerAddress?.state} {selectedOrder.customerAddress?.pincode}<br />
+                                    {selectedOrder.customerAddress?.country || 'India'}
                                 </p>
                             </div>
 

@@ -16,13 +16,17 @@ export const PrivacyPolicyView: FC = () => (
                 <h3>Information We Collect:</h3>
                 <ul>
                     <li>Name, phone number, address, and other order-related information</li>
-                    <li>Payment details (only processed via secure third-party gateways like Razorpay)</li>
+                    <li>Details you enter on our checkout form are saved securely as you type — including if you don't complete the order — so we can assist you with your purchase and follow up if you had trouble ordering</li>
+                    <li>Interactions with our website, such as taps on our WhatsApp buttons and the products you were viewing, along with an anonymous reference code that helps us connect your WhatsApp chat to your enquiry</li>
+                    <li>Email addresses submitted for our newsletter or discount offers</li>
+                    <li>Product reviews you choose to submit (published only after moderation)</li>
+                    <li>Payment details (only processed via secure third-party gateways like Razorpay — we never see or store your card/UPI details)</li>
                     <li>Browsing behavior and analytics (for site improvement)</li>
                 </ul>
                 <h3>How We Use It:</h3>
                 <ul>
                     <li>To process orders and deliver products</li>
-                    <li>For customer service and support</li>
+                    <li>For customer service and support, including following up on incomplete orders via WhatsApp or email</li>
                     <li>To improve user experience and website functionality</li>
                     <li>For promotional emails or WhatsApp messages (only if opted-in)</li>
                 </ul>

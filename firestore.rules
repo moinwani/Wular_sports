@@ -152,6 +152,49 @@ service cloud.firestore {
     }
 
     // ========================================
+    // REVIEWS COLLECTION (customer product reviews)
+    // ========================================
+    // Anyone signed in (anonymous ok) can submit a review, which starts as
+    // 'pending'. Only approved reviews are publicly readable; the admin
+    // moderates (approve / delete).
+
+    match /reviews/{reviewId} {
+
+      allow create: if
+        isAuthenticated()
+        && request.resource.data.keys().hasOnly([
+          'productId', 'rating', 'text', 'name', 'city',
+          'status', 'userId', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'productId', 'rating', 'status', 'userId', 'createdAt'
+        ])
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.rating is int
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.productId is string
+        && request.resource.data.productId.size() <= 60
+        && request.resource.data.get('text', '').size() <= 1000
+        && request.resource.data.get('name', '').size() <= 60
+        && request.resource.data.get('city', '').size() <= 60
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.createdAt > request.time - duration.value(1, 'm')
+        && request.resource.data.createdAt < request.time + duration.value(1, 'm');
+
+      // Public can read approved reviews only; admin sees everything
+      allow get: if resource.data.status == 'approved' || isAdmin();
+      allow list: if
+        (request.query.limit <= 50 && resource.data.status == 'approved')
+        || (isAdmin() && request.query.limit <= 500);
+
+      // ADMIN: moderate
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ========================================
     // ORDERS COLLECTION
     // ========================================
     // Security Model: Authenticated write-only, owner read, admin full access

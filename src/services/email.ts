@@ -9,7 +9,7 @@ export const sendOrderConfirmation = async (order: Order | any) => {
 
         const itemsList = order.items.map((item: any) =>
             `${item.productName || item.name} (x${item.quantity}) — ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
-        ).join('\n');
+        ).join('\n') + (order.discount > 0 ? `\nCoupon ${order.couponCode}: −₹${order.discount.toLocaleString('en-IN')}` : '');
 
         const isCOD = order.paymentMethod === 'cod';
         const codBreakdown = isCOD
@@ -56,7 +56,7 @@ export const sendAdminOrderNotification = async (order: Order | any) => {
 
         const itemsList = order.items.map((item: any) =>
             `${item.productName || item.name} (x${item.quantity}) — ₹${(item.price * item.quantity).toLocaleString('en-IN')}`
-        ).join('\n');
+        ).join('\n') + (order.discount > 0 ? `\nCoupon ${order.couponCode}: −₹${order.discount.toLocaleString('en-IN')}` : '');
 
         const isCOD = order.paymentMethod === 'cod';
         const codBreakdown = isCOD

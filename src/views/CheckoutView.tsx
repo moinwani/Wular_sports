@@ -5,6 +5,7 @@ import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/e
 import { validateFormData } from '../utils/inputValidation';
 import { buildCheckoutSchema } from '../utils/checkoutSchema';
 import { getVisitorRef } from '../utils/helpers';
+import { getCoupon, normalizeCouponCode } from '../data/coupons';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
@@ -346,6 +347,30 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const isIndiaOrder = formData.country === 'India';
     const isIndianPhone = formData.countryCode === '+91';
 
+    // Coupon state — server revalidates and recomputes the discount
+    const [couponInput, setCouponInput] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+    const [couponError, setCouponError] = useState('');
+    const cartBats = cart.reduce((acc, item) => acc + item.quantity, 0);
+    const activeCoupon = appliedCoupon ? getCoupon(appliedCoupon) : null;
+    const discount = activeCoupon ? activeCoupon.perBat * cartBats : 0;
+    const payable = total - discount;
+
+    const handleApplyCoupon = () => {
+        const code = normalizeCouponCode(couponInput);
+        if (!code) return;
+        if (getCoupon(code)) {
+            setAppliedCoupon(code);
+            setCouponError('');
+            setCouponInput('');
+            if (typeof window !== 'undefined' && window.dataLayer) {
+                window.dataLayer.push({ event: 'coupon_applied', coupon: code });
+            }
+        } else {
+            setCouponError('Invalid coupon code');
+        }
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
 
@@ -394,7 +419,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const buildWhatsAppUrl = (orderId: string, sanitizedData: typeof formData): string => {
         const totalQty = cart.reduce((acc, item) => acc + item.quantity, 0);
         const bookingAmount = totalQty * COD_BOOKING_PER_BAT;
-        const remaining = total - bookingAmount;
+        const remaining = payable - bookingAmount;
         const codFee = Math.round(remaining * COD_FEE_PERCENT);
         const balanceAtDoor = remaining + codFee;
         const isCOD = sanitizedData.paymentMethod === 'cod';
@@ -414,7 +439,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 `*Amount Due at Delivery:* ₹${balanceAtDoor.toLocaleString('en-IN')}`;
         } else {
             paymentDetail = `*Payment Method:* Full Payment (Pre-paid)\n` +
-                `*Total Amount:* ₹${total.toLocaleString('en-IN')}`;
+                (discount > 0 ? `*Coupon (${appliedCoupon}):* −₹${discount.toLocaleString('en-IN')}\n` : '') +
+                `*Total Amount:* ₹${payable.toLocaleString('en-IN')}`;
         }
 
         const isIndia = (sanitizedData.country || 'India') === 'India';
@@ -557,6 +583,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 body: JSON.stringify({
                     items: cart.map(item => ({ id: item.id, quantity: item.quantity, size: item.size })),
                     paymentMethod: sanitizedData.paymentMethod,
+                    coupon: appliedCoupon || undefined,
                     receipt: orderId,
                     notes: { orderId, customerPhone: sanitizedData.phone },
                     // Shipping details so the order is persisted server-side
@@ -618,7 +645,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 // payment) and marked confirmed by the verify endpoint. Build
                 // the same data locally only for the notification emails.
                 const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
-                const remaining = isCOD ? total - bookingAmount : 0;
+                const remaining = isCOD ? payable - bookingAmount : 0;
                 const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
                 const totalAtDoor = isCOD ? remaining + codFee : 0;
 
@@ -640,7 +667,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         quantity: item.quantity,
                         size: item.size
                     })),
-                    total,
+                    total: payable,
+                    subtotal: total,
+                    discount,
+                    couponCode: appliedCoupon || '',
                     codFee,
                     bookingAmount,
                     remaining,
@@ -683,8 +713,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         event_id: eventId,
                         ecommerce: {
                             transaction_id: firestoreOrderId,
-                            value: total,
+                            value: payable,
                             currency: 'INR',
+                            coupon: appliedCoupon || undefined,
                             payment_type: isCOD ? 'cod' : 'full',
                             items: cart.map(item => ({
                                 item_id: item.id,
@@ -712,7 +743,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         email: sanitizedData.email || '',
                         phone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
                         orderId: firestoreOrderId,
-                        total,
+                        total: payable,
                         items: cart.map(item => ({
                             id: item.id,
                             name: item.name,
@@ -729,7 +760,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         source: 'checkout_cod',
                         type: 'order_confirmation',
                         order_id: firestoreOrderId,
-                        total,
+                        total: payable,
                     });
                     const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
                     whatsAppUrlRef.current = whatsappUrl;
@@ -742,7 +773,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     setIsProcessing(false);
                 } else {
                     // Full payment: go straight to success
-                    onPlaceOrder({ id: firestoreOrderId, items: cart, total, paymentId });
+                    onPlaceOrder({ id: firestoreOrderId, items: cart, total: payable, paymentId });
                 }
             });
 
@@ -851,7 +882,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             <span>{isSummaryExpanded ? 'Hide' : 'Show'} Order Summary</span>
                             <Icon name={isSummaryExpanded ? 'fa-chevron-up' : 'fa-chevron-down'} />
                         </div>
-                        <span className="toggle-total">₹{total.toLocaleString('en-IN')}</span>
+                        <span className="toggle-total">₹{payable.toLocaleString('en-IN')}</span>
                     </button>
 
                     <div className="summary-collapsible-content">
@@ -863,6 +894,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 </div>
                             ))}
                         </div>
+                        {discount > 0 && (
+                            <div className="summary-row-mini" style={{ color: '#4ade80' }}>
+                                <span>Coupon {appliedCoupon}</span>
+                                <span>−₹{discount.toLocaleString('en-IN')}</span>
+                            </div>
+                        )}
                         <div className="summary-row-mini">
                             <span>Shipping</span>
                             <span>Free</span>
@@ -1124,13 +1161,19 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     <span>Subtotal</span>
                                     <span>₹{total.toLocaleString('en-IN')}</span>
                                 </div>
+                                {discount > 0 && (
+                                    <div className="total-row" style={{ color: '#4ade80' }}>
+                                        <span>Coupon {appliedCoupon}</span>
+                                        <span>−₹{discount.toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
                                 <div className="total-row">
                                     <span>Shipping</span>
                                     <span>{formData.country === 'India' ? 'Free' : 'Quoted via WhatsApp'}</span>
                                 </div>
                                 <div className="total-row grand-total">
                                     <span>Total</span>
-                                    <span>₹{total.toLocaleString('en-IN')}</span>
+                                    <span>₹{payable.toLocaleString('en-IN')}</span>
                                 </div>
                             </div>
 
@@ -1151,6 +1194,40 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             </div>
                         </div>
 
+                        {/* Coupon */}
+                        <div className="coupon-box">
+                            {appliedCoupon ? (
+                                <div className="coupon-applied">
+                                    <span><Icon name="fa-check-circle" /> Coupon <strong>{appliedCoupon}</strong> applied — you save ₹{discount.toLocaleString('en-IN')}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => { setAppliedCoupon(null); setCouponError(''); }}
+                                        disabled={isProcessing}
+                                        aria-label="Remove coupon"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="coupon-input-row">
+                                        <input
+                                            type="text"
+                                            value={couponInput}
+                                            onChange={(e) => { setCouponInput(e.target.value.toUpperCase()); setCouponError(''); }}
+                                            placeholder="Have a coupon code?"
+                                            disabled={isProcessing}
+                                            autoComplete="off"
+                                        />
+                                        <button type="button" onClick={handleApplyCoupon} disabled={isProcessing || !couponInput.trim()}>
+                                            Apply
+                                        </button>
+                                    </div>
+                                    {couponError && <span className="error-message">{couponError}</span>}
+                                </>
+                            )}
+                        </div>
+
                         <div className="payment-section">
                             <h3>Payment Method</h3>
 
@@ -1158,7 +1235,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 const isIndia = formData.country === 'India';
                                 const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
                                 const booking = totalBats * COD_BOOKING_PER_BAT;
-                                const remaining = total - booking;
+                                const remaining = payable - booking;
                                 const codFee = Math.round(remaining * COD_FEE_PERCENT);
                                 const totalAtDoor = remaining + codFee;
 
@@ -1211,8 +1288,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         {formData.paymentMethod === 'cod' && isIndia ? (
                                             <div className="cod-breakdown">
                                                 <div className="cod-row">
-                                                    <span>Order total</span>
-                                                    <span>₹{total.toLocaleString('en-IN')}</span>
+                                                    <span>Order total{discount > 0 ? ' (after coupon)' : ''}</span>
+                                                    <span>₹{payable.toLocaleString('en-IN')}</span>
                                                 </div>
                                                 <div className="cod-row">
                                                     <span>Booking amount <em>(paid now via Razorpay)</em></span>
@@ -1241,7 +1318,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                             <div className="full-payment-note">
                                                 <Icon name="fa-check-circle" />
                                                 <p>
-                                                    Pay ₹{total.toLocaleString('en-IN')} securely via Razorpay now.{' '}
+                                                    Pay ₹{payable.toLocaleString('en-IN')} securely via Razorpay now.{' '}
                                                     {isIndia
                                                         ? <><strong>No COD charges apply.</strong> You save ₹{codFee.toLocaleString('en-IN')} compared to Cash on Delivery.</>
                                                         : <>Delivery charges for your country will be confirmed via WhatsApp or email after order placement.</>

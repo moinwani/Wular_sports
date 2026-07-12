@@ -11,6 +11,7 @@ import { SEOHead } from '../components/common/SEOHead';
 import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
 import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
+import { ProductReviews } from '../components/product/ProductReviews';
 import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
 
@@ -757,6 +758,11 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Customer Reviews */}
+            <div className="container">
+                <ProductReviews productId={product.id} />
             </div>
 
             {/* RELATED PRODUCTS Section */}

@@ -37,6 +37,7 @@ const captureUtmParams = () => {
 const CartSidebar = dynamic(() => import('../src/components/checkout/CartSidebar').then(m => ({ default: m.CartSidebar })), { ssr: false });
 const FloatingButtons = dynamic(() => import('../src/components/common/FloatingButtons').then(m => ({ default: m.FloatingButtons })), { ssr: false });
 const FloatingCallButton = dynamic(() => import('../src/components/common/FloatingButtons').then(m => ({ default: m.FloatingCallButton })), { ssr: false });
+const ExitIntentPopup = dynamic(() => import('../src/components/common/ExitIntentPopup').then(m => ({ default: m.ExitIntentPopup })), { ssr: false });
 
 function AppShell({ Component, pageProps }: AppProps) {
     const router = useRouter();
@@ -122,6 +123,7 @@ function AppShell({ Component, pageProps }: AppProps) {
             />
             <FloatingButtons />
             <FloatingCallButton />
+            <ExitIntentPopup />
         </div>
     );
 }

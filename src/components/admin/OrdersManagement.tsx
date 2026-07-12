@@ -3,6 +3,21 @@ import { useAllOrders } from '../../hooks/useOrders';
 import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus } from '../../services/admin';
 import { Icon } from '../common/Icon';
 
+/** WhatsApp link asking a delivered customer to review their bat */
+const buildReviewRequestLink = (order: any): string => {
+    const number = String(order.customerPhone || '').replace(/\D/g, '');
+    const firstName = (order.customerName || '').split(' ')[0];
+    const productId = order.items?.[0]?.productId || '';
+    const productName = order.items?.[0]?.productName || 'your bat';
+    const message =
+        `Hi ${firstName}! This is Wular Sports 🏏\n\n` +
+        `Hope you're loving your ${productName}! Would you take 30 seconds to rate it? ` +
+        `It really helps our small Kashmiri workshop:\n\n` +
+        `https://wularsports.com/review?product=${productId}\n\n` +
+        `Thank you! 🙏`;
+    return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+};
+
 export const OrdersManagement: FC = () => {
     const { orders, loading, error } = useAllOrders();
     const [searchTerm, setSearchTerm] = useState('');
@@ -160,15 +175,30 @@ export const OrdersManagement: FC = () => {
                                         {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}
                                     </td>
                                     <td>
-                                        <button
-                                            className="btn-view"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setSelectedOrder(order);
-                                            }}
-                                        >
-                                            <Icon name="fa-eye" />
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            <button
+                                                className="btn-view"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setSelectedOrder(order);
+                                                }}
+                                            >
+                                                <Icon name="fa-eye" />
+                                            </button>
+                                            {order.status === 'delivered' && order.customerPhone && (
+                                                <a
+                                                    href={buildReviewRequestLink(order)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="btn-view"
+                                                    title="Ask this customer for a review on WhatsApp"
+                                                    style={{ backgroundColor: '#25D366' }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <Icon name="fa-star" />
+                                                </a>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

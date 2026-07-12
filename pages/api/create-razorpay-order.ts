@@ -5,6 +5,7 @@ import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 import { auth, db, FieldValue } from '../../src/lib/firebaseAdmin';
 import { validateFormData } from '../../src/utils/inputValidation';
 import { buildCheckoutSchema } from '../../src/utils/checkoutSchema';
+import { getCoupon, normalizeCouponCode } from '../../src/data/coupons';
 
 const COD_BOOKING_PER_BAT = 500;
 const COD_FEE_PERCENT = 0.05;
@@ -47,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Authentication required. Please sign in to continue.' });
     }
 
-    const { items, paymentMethod, receipt, notes, customer } = req.body;
+    const { items, paymentMethod, receipt, notes, customer, coupon } = req.body;
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Invalid items' });
@@ -97,12 +98,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 
+    // Coupon: validated server-side from the authoritative table.
+    // An unknown code is rejected so the customer isn't silently overcharged
+    // relative to what the checkout UI promised them.
+    let discount = 0;
+    let couponCode = '';
+    if (coupon) {
+        const c = getCoupon(String(coupon));
+        if (!c) {
+            return res.status(400).json({ error: 'Invalid coupon code' });
+        }
+        couponCode = normalizeCouponCode(String(coupon));
+        discount = c.perBat * totalBats;
+    }
+    const discountedTotal = orderTotal - discount;
+    if (discountedTotal < 100) {
+        return res.status(400).json({ error: 'Order total too low' });
+    }
+
     const isCOD = paymentMethod === 'cod';
     const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
-    const remaining = isCOD ? orderTotal - bookingAmount : 0;
+    const remaining = isCOD ? discountedTotal - bookingAmount : 0;
     const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
     const totalAtDoor = isCOD ? remaining + codFee : 0;
-    const chargeAmount = isCOD ? bookingAmount : orderTotal;
+    const chargeAmount = isCOD ? bookingAmount : discountedTotal;
 
     try {
         const order = await getRazorpay().orders.create({
@@ -130,7 +149,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 country: c.country || 'India',
             },
             items: orderItems.map(i => (i.size === undefined ? { ...i, size: '' } : i)),
-            total: orderTotal,
+            total: discountedTotal,
+            subtotal: orderTotal,
+            discount,
+            couponCode,
             codFee,
             bookingAmount,
             remaining,
@@ -146,7 +168,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(200).json({
             orderId: order.id,
             amount: order.amount,
-            orderTotal,
+            orderTotal: discountedTotal,
+            discount,
             chargeAmount,
             firestoreOrderId: orderDoc.id,
         });

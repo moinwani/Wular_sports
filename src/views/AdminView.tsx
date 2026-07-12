@@ -3,9 +3,10 @@ import { AdminRoute } from '../components/admin/AdminRoute';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { OrdersManagement } from '../components/admin/OrdersManagement';
 import { SubscribersManagement } from '../components/admin/SubscribersManagement';
+import { LeadsManagement } from '../components/admin/LeadsManagement';
 import { Icon } from '../components/common/Icon';
 
-type AdminTab = 'dashboard' | 'orders' | 'subscribers';
+type AdminTab = 'dashboard' | 'orders' | 'leads' | 'subscribers';
 
 export const AdminView: FC = () => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
@@ -46,6 +47,13 @@ export const AdminView: FC = () => {
                                 <span>Orders</span>
                             </button>
                             <button
+                                className={`admin-nav-item ${activeTab === 'leads' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('leads')}
+                            >
+                                <Icon name="fa-user-circle" />
+                                <span>Leads</span>
+                            </button>
+                            <button
                                 className={`admin-nav-item ${activeTab === 'subscribers' ? 'active' : ''}`}
                                 onClick={() => setActiveTab('subscribers')}
                             >
@@ -58,6 +66,7 @@ export const AdminView: FC = () => {
                     <div className="admin-content">
                         {activeTab === 'dashboard' && <AdminDashboard />}
                         {activeTab === 'orders' && <OrdersManagement />}
+                        {activeTab === 'leads' && <LeadsManagement />}
                         {activeTab === 'subscribers' && <SubscribersManagement />}
                     </div>
                 </div>

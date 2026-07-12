@@ -247,6 +247,25 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         if (!isProcessing) submitLockRef.current = false;
     }, [isProcessing]);
 
+    // Lead capture: once the visitor has entered a reachable contact detail
+    // (phone or email), save the partial form (debounced) so we can follow up
+    // even if they never complete the order.
+    useEffect(() => {
+        if (isProcessing || pendingWhatsApp) return;
+        const hasContact =
+            formData.phone.replace(/\D/g, '').length >= 7 ||
+            formData.email.includes('@');
+        if (!hasContact) return;
+
+        const timer = setTimeout(() => {
+            import('../services/leads')
+                .then(({ saveCheckoutLead }) => saveCheckoutLead(formData, cart, total))
+                .catch(() => { /* best-effort */ });
+        }, 2500);
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [formData, isProcessing, pendingWhatsApp]);
+
     // When WhatsApp is open and the user returns to this tab, remind them to send the message
     useEffect(() => {
         if (!pendingWhatsApp) return;
@@ -631,6 +650,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     paymentMethod: sanitizedData.paymentMethod as any
                 };
 
+                // This visitor is now a customer — stop showing them as a lead
+                import('../services/leads')
+                    .then(({ markLeadConverted }) => markLeadConverted())
+                    .catch(() => { /* best-effort */ });
+
                 // Send emails in background (non-blocking, best-effort)
                 sendAdminOrderNotification({ ...orderData, id: firestoreOrderId })
                     .catch(err => console.error('Admin notification failed:', err));
@@ -880,6 +904,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     {/* Left Column: Shipping Details */}
                     <div className="checkout-form-section">
                         <h2 className="section-title-compact">Shipping Information</h2>
+                        <p className="checkout-privacy-note">
+                            <Icon name="fa-lock" /> Your details are saved securely as you type, so we can assist you with your order.
+                        </p>
 
                         <CheckoutAuth authedEmail={authedEmail} disabled={isProcessing} />
 

@@ -7497,6 +7497,15 @@ img[loading="lazy"] {
 
 .dashboard-hint strong { color: var(--golden); }
 
+.checkout-privacy-note {
+    color: #888;
+    font-size: 0.82rem;
+    margin: -0.75rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .admin-stat-card {
     background-color: #1a1a1a;
     border: 1px solid #333;

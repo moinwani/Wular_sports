@@ -110,7 +110,43 @@ service cloud.firestore {
     }
     
     // ========================================
-    // ORDERS COLLECTION  
+    // LEADS COLLECTION (checkout lead capture)
+    // ========================================
+    // Visitors save their own partial checkout details (doc id == their uid);
+    // only the admin can read them.
+
+    match /leads/{leadId} {
+
+      allow create, update: if
+        isAuthenticated()
+        && request.auth.uid == leadId
+        && request.resource.data.keys().hasOnly([
+          'firstName', 'lastName', 'email', 'phone', 'countryCode',
+          'address', 'city', 'state', 'zip', 'country',
+          'cartSummary', 'cartTotal', 'status', 'updatedAt'
+        ])
+        && request.resource.data.get('status', 'browsing') in ['browsing', 'converted']
+        && request.resource.data.get('cartTotal', 0) is number
+        && request.resource.data.get('firstName', '').size() <= 100
+        && request.resource.data.get('lastName', '').size() <= 100
+        && request.resource.data.get('email', '').size() <= 254
+        && request.resource.data.get('phone', '').size() <= 20
+        && request.resource.data.get('countryCode', '').size() <= 10
+        && request.resource.data.get('address', '').size() <= 500
+        && request.resource.data.get('city', '').size() <= 100
+        && request.resource.data.get('state', '').size() <= 100
+        && request.resource.data.get('zip', '').size() <= 15
+        && request.resource.data.get('country', '').size() <= 100
+        && request.resource.data.get('cartSummary', '').size() <= 600;
+
+      // Visitors cannot read leads (not even their own); admin has full access
+      allow read: if isAdmin();
+      allow delete: if isAdmin();
+      allow list: if isAdmin() && request.query.limit <= 1000;
+    }
+
+    // ========================================
+    // ORDERS COLLECTION
     // ========================================
     // Security Model: Authenticated write-only, owner read, admin full access
     

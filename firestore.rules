@@ -17,9 +17,14 @@ service cloud.firestore {
       return request.auth != null;
     }
     
-    // Check if user is admin (custom claim)
+    // Check if user is admin: the store owner's verified Google email,
+    // or a Firebase custom claim (admin: true)
     function isAdmin() {
-      return isAuthenticated() && request.auth.token.admin == true;
+      return isAuthenticated() && (
+        (request.auth.token.email == 'moinwani91@gmail.com'
+          && request.auth.token.email_verified == true)
+        || request.auth.token.admin == true
+      );
     }
     
     // Check if user owns the resource

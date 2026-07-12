@@ -180,12 +180,24 @@ export const getCurrentUserId = (): string | null => {
 };
 
 /**
- * Check if current user is admin
+ * Check if current user is admin.
+ * The store owner's verified email grants access (simple path); a Firebase
+ * custom claim (admin: true) also works. Firestore rules enforce the same.
  */
 export const isAdmin = async (): Promise<boolean> => {
     try {
         const user = getCurrentUser();
-        if (!user) return false;
+        if (!user || user.isAnonymous) return false;
+
+        const { ADMIN_EMAIL } = await import('../data/constants');
+        if (
+            user.email &&
+            user.emailVerified &&
+            user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()
+        ) {
+            return true;
+        }
+
         const idTokenResult = await user.getIdTokenResult();
         return idTokenResult.claims.admin === true;
     } catch (error) {

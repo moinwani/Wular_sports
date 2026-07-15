@@ -32,3 +32,9 @@ serviceAccountKey.json
 
 # Analytics generated data (regenerate via analytics/etl)
 analytics/data/*.ndjson
+
+# Customer data files — never commit real PII
+*.xlsx
+*.xls
+*.csv
+analytics/data/whatsapp_orders_preview.ndjson

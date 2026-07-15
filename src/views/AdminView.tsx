@@ -1,13 +1,14 @@
 import { FC, useState } from 'react';
 import { AdminRoute } from '../components/admin/AdminRoute';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
+import { AnalyticsDashboard } from '../components/admin/AnalyticsDashboard';
 import { OrdersManagement } from '../components/admin/OrdersManagement';
 import { SubscribersManagement } from '../components/admin/SubscribersManagement';
 import { LeadsManagement } from '../components/admin/LeadsManagement';
 import { ReviewsManagement } from '../components/admin/ReviewsManagement';
 import { Icon } from '../components/common/Icon';
 
-type AdminTab = 'dashboard' | 'orders' | 'leads' | 'reviews' | 'subscribers';
+type AdminTab = 'dashboard' | 'analytics' | 'orders' | 'leads' | 'reviews' | 'subscribers';
 
 export const AdminView: FC = () => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
@@ -39,6 +40,13 @@ export const AdminView: FC = () => {
                             >
                                 <Icon name="fa-chart-line" />
                                 <span>Dashboard</span>
+                            </button>
+                            <button
+                                className={`admin-nav-item ${activeTab === 'analytics' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('analytics')}
+                            >
+                                <Icon name="fa-chart-line" />
+                                <span>Analytics</span>
                             </button>
                             <button
                                 className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
@@ -73,6 +81,7 @@ export const AdminView: FC = () => {
 
                     <div className="admin-content">
                         {activeTab === 'dashboard' && <AdminDashboard />}
+                        {activeTab === 'analytics' && <AnalyticsDashboard />}
                         {activeTab === 'orders' && <OrdersManagement />}
                         {activeTab === 'leads' && <LeadsManagement />}
                         {activeTab === 'reviews' && <ReviewsManagement />}

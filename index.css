@@ -9194,3 +9194,78 @@ img[loading="lazy"] {
 }
 
 .review-mod-card__product { color: var(--golden); font-size: 0.9rem; margin-bottom: 0.4rem; }
+
+/* ─── Admin Analytics dashboard ───────────────────────── */
+.analytics-dash h1 { font-family: 'Oswald', sans-serif; }
+
+.an-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: #2a2a2a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1.25rem 0 1.5rem;
+}
+.an-kpi { background: #141414; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.an-kpi .k-lab { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #888; }
+.an-kpi .k-val { font-family: 'Oswald', sans-serif; font-size: 1.55rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.an-kpi .k-val.gold { color: var(--golden); }
+.an-kpi .k-foot { font-size: 0.75rem; color: #888; }
+.an-kpi .k-foot.warn { color: #E8894A; }
+
+.an-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.an-panel { background: #141414; border: 1px solid #2a2a2a; border-radius: 12px; padding: 1.15rem 1.25rem; }
+.an-panel.wide { grid-column: 1 / -1; }
+.an-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
+.an-head h2 { margin: 0; font-size: 0.95rem; font-weight: 600; }
+.an-head .an-note { font-size: 0.72rem; color: #7a6a2e; font-family: monospace; }
+.an-hint, .an-empty { font-size: 0.78rem; color: #888; margin-top: 0.9rem; }
+.an-empty { margin: 0.4rem 0; }
+.mono { font-family: monospace; font-variant-numeric: tabular-nums; }
+
+/* funnel */
+.an-funnel { display: flex; flex-direction: column; gap: 0.55rem; }
+.an-fstep { display: grid; grid-template-columns: 120px 1fr 42px; gap: 0.7rem; align-items: center; }
+.an-fl { font-size: 0.82rem; color: #bbb; }
+.an-fwrap { height: 30px; background: #1e1e1e; border-radius: 6px; overflow: hidden; }
+.an-fbar { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #8a6e2a, var(--golden)); display: flex; align-items: center; padding: 0 0.7rem; min-width: 48px; transition: width 0.8s ease; }
+.an-fbar.good { background: linear-gradient(90deg, #3c7a52, #6BBE86); }
+.an-fu { font-family: monospace; font-size: 0.8rem; font-weight: 600; color: #14120c; }
+.an-fconv { font-family: monospace; font-size: 0.75rem; color: #888; text-align: right; }
+
+/* bar rows */
+.an-row { display: grid; grid-template-columns: 70px 1fr auto; gap: 0.7rem; align-items: center; margin-bottom: 0.7rem; }
+.an-rl { font-size: 0.8rem; color: #bbb; }
+.an-track { height: 8px; background: #1e1e1e; border-radius: 4px; overflow: hidden; }
+.an-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #8a6e2a, var(--golden)); transition: width 0.8s ease; }
+.an-rv { font-family: monospace; font-size: 0.78rem; color: #eee; }
+.an-rv small { color: #888; }
+
+/* rfm segments */
+.an-seg { display: grid; grid-template-columns: 1fr auto; gap: 0.2rem 0.75rem; padding: 0.7rem 0.85rem; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; margin-bottom: 0.55rem; }
+.an-sn { font-size: 0.85rem; font-weight: 600; }
+.an-sc { font-family: monospace; font-size: 0.82rem; color: var(--golden); }
+.an-sm { font-size: 0.74rem; color: #888; grid-column: 1 / -1; }
+.an-seg.good { border-color: rgba(111,190,135,.35); } .an-seg.good .an-sc { color: #6BBE86; }
+.an-seg.bad { border-color: rgba(207,92,68,.35); } .an-seg.bad .an-sc { color: #CF5C44; }
+
+/* coupon rows */
+.an-ccrow { display: grid; grid-template-columns: 1fr auto auto auto; gap: 0.6rem 1rem; align-items: center; padding: 0.7rem 0.85rem; background: #1a1a1a; border-radius: 8px; margin-bottom: 0.55rem; }
+.an-cn { font-size: 0.82rem; color: #bbb; }
+.an-cbig { font-size: 1.1rem; font-weight: 600; }
+.an-csm { font-family: monospace; font-size: 0.7rem; color: #888; text-align: right; }
+
+/* pipeline */
+.an-pipe { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+.an-pstat { padding: 0.85rem; background: #1a1a1a; border-radius: 8px; }
+.an-pstat .p-v { display: block; font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--golden); }
+.an-pstat .p-l { font-size: 0.74rem; color: #888; }
+
+@media (max-width: 860px) {
+    .an-kpis { grid-template-columns: repeat(2, 1fr); }
+    .an-grid { grid-template-columns: 1fr; }
+    .an-fstep { grid-template-columns: 90px 1fr; }
+    .an-fconv { display: none; }
+}

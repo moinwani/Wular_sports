@@ -30,7 +30,8 @@ const structuredData = {
         "url": "https://wularsports.com",
         "sameAs": [
             "https://www.instagram.com/wular.sports",
-            "https://youtube.com/@wularsports"
+            "https://youtube.com/@wularsports",
+            "https://www.wikidata.org/wiki/Q141623106"
         ]
     }
 };

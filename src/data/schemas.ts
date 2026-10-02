@@ -14,7 +14,7 @@ export const organizationSchema = {
     "address": { "@type": "PostalAddress", "addressLocality": "Srinagar", "addressRegion": "Jammu and Kashmir", "addressCountry": "IN" },
     "vatID": "01AHZPW4306K1ZU",
     "contactPoint": { "@type": "ContactPoint", "telephone": "+91-9320622451", "contactType": "customer service", "availableLanguage": ["English", "Hindi", "Urdu"] },
-    "sameAs": ["https://www.instagram.com/wular.sports", "https://youtube.com/@wularsports"],
+    "sameAs": ["https://www.instagram.com/wular.sports", "https://youtube.com/@wularsports", "https://www.wikidata.org/wiki/Q141623106"],
     "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5.0",
@@ -53,7 +53,7 @@ export const localBusinessSchema = {
     "currenciesAccepted": "INR",
     "paymentAccepted": "Cash, UPI, Bank Transfer",
     "areaServed": "India",
-    "sameAs": ["https://www.instagram.com/wular.sports", "https://youtube.com/@wularsports"],
+    "sameAs": ["https://www.instagram.com/wular.sports", "https://youtube.com/@wularsports", "https://www.wikidata.org/wiki/Q141623106"],
 };
 
 export const navigationSchema = {

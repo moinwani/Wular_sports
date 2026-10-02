@@ -1,4 +1,5 @@
 import { BlogPost } from '../types';
+import { blogsNew } from './blogsNew';
 
 export const blogs: BlogPost[] = [
     {
@@ -746,5 +747,6 @@ export const blogs: BlogPost[] = [
                 answer: "Yes. Wular Sports delivers free across India. We ship from our Srinagar, Kashmir workshop to every state — Delhi, Mumbai, Hyderabad, Chennai, Bangalore, Kolkata, Pune, and everywhere in between."
             }
         ]
-    }
+    },
+    ...blogsNew
 ];

@@ -11,9 +11,20 @@ const structuredData = {
     "mainEntity": {
         "@type": "Organization",
         "name": "Wular Sports",
+        "foundingDate": "2015",
+        "founder": {
+            "@type": "Person",
+            "name": "Moin Wani"
+        },
         "foundingLocation": {
             "@type": "Place",
             "name": "Srinagar, Jammu and Kashmir, India"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Srinagar",
+            "addressRegion": "Jammu and Kashmir",
+            "addressCountry": "IN"
         },
         "description": "Premium handcrafted Kashmiri willow cricket bat manufacturer based in Srinagar, Kashmir. Specialising in hard tennis, soft tennis, and leather ball bats for cricketers across India.",
         "url": "https://wularsports.com",

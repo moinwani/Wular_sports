@@ -68,6 +68,7 @@ export const Footer: FC = memo(() => {
                         <Link href="/leather-cricket-bats" className="legal-link">Leather Cricket Bats</Link>
                         <Link href="/about" className="legal-link">About Us</Link>
                         <Link href="/blog" className="legal-link">Wular Insights</Link>
+                        <Link href="/comparison" className="legal-link">Bat Comparison</Link>
                     </div>
                     <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
                         <Link href="/privacy-policy" className="legal-link">Privacy Policy</Link>

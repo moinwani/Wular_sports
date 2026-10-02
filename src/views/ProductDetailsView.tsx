@@ -166,8 +166,19 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
             {
                 "@type": "Product",
                 "name": product.name,
+                "sku": product.sku,
+                "category": product.category.join(", "),
+                "material": "Kashmiri Willow",
+                "countryOfOrigin": "IN",
                 "image": Array.isArray(product.image) ? product.image : [product.image],
                 "description": product.description,
+                "aggregateRating": product.aggregateRating ? {
+                    "@type": "AggregateRating",
+                    "ratingValue": product.aggregateRating.ratingValue,
+                    "reviewCount": product.aggregateRating.reviewCount,
+                    "bestRating": product.aggregateRating.bestRating,
+                    "worstRating": product.aggregateRating.worstRating,
+                } : undefined,
                 "brand": {
                     "@type": "Brand",
                     "name": "Wular Sports"

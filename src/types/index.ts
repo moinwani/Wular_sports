@@ -17,6 +17,7 @@ export interface BlogPost {
 
 export interface ProductFull {
     id: string;
+    sku?: string;
     name: string;
     category: ('Hard Tennis' | 'Soft Tennis' | 'Leather Ball')[];
     description: string;
@@ -24,6 +25,12 @@ export interface ProductFull {
     price: number;
     originalPrice: number;
     specs: string[];
+    aggregateRating?: {
+        ratingValue: string;
+        reviewCount: number;
+        bestRating: number;
+        worstRating: number;
+    };
     reviewLink?: string;
     videoUrl?: string;
 }

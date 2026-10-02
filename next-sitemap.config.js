@@ -21,6 +21,7 @@ module.exports = {
             '/leather-cricket-bats': 0.8,
             '/collection': 0.7,
             '/blog': 0.7,
+            '/comparison': 0.8,
             '/about': 0.5,
             '/privacy-policy': 0.3,
             '/return-policy': 0.3,
@@ -66,6 +67,16 @@ module.exports = {
             'best-kashmiri-willow-cricket-bat-under-3000': '2026-04-21',
             'scoop-vs-non-scoop-cricket-bat-guide': '2026-04-21',
             'buy-kashmiri-willow-cricket-bat-online-india': '2026-04-21',
+            'best-kashmiri-hard-tennis-bat-brands-2026': '2026-07-15',
+            'wular-vs-kwe-vs-valley-willow-hard-tennis-bat': '2026-07-15',
+            'why-kashmiri-willow-is-perfect-for-hard-tennis-cricket': '2026-07-15',
+            'how-to-choose-hard-tennis-bat-weight-scoop-edge': '2026-07-15',
+            'legacy-edition-2-0-review-best-hard-tennis-bat-under-3500': '2026-07-15',
+            'top-10-hard-tennis-bats-under-3000-india-2026': '2026-07-15',
+            'kashmir-willow-vs-english-willow-tennis-ball-cricket': '2026-07-15',
+            'hard-tennis-ball-weight-guide-130g-140g': '2026-07-15',
+            'hard-tennis-vs-soft-tennis-vs-tape-ball-bat-guide': '2026-07-15',
+            'behind-the-craft-wular-sports-srinagar': '2026-07-15',
         };
         for (const [id, date] of Object.entries(blogDates)) {
             result.push({

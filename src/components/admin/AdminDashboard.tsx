@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
-import { getAllSubscribers, getOrderAnalytics } from '../../services/admin';
+import { getAllSubscribers, getOrderAnalytics, adminOrderEmails, describeEmail, EmailStatus } from '../../services/admin';
+import { ADMIN_EMAIL } from '../../data/constants';
 import { Icon } from '../common/Icon';
 
 interface StatCardProps {
@@ -26,6 +27,7 @@ export const AdminDashboard: FC = () => {
     const { orders, loading } = useAllOrders();
     const [subscriberCount, setSubscriberCount] = useState(0);
     const [subscriberError, setSubscriberError] = useState(false);
+    const [emailTest, setEmailTest] = useState<{ busy: boolean; emails?: EmailStatus; error?: string }>({ busy: false });
     const [analytics, setAnalytics] = useState({
         totalOrders: 0,
         paidOrders: 0,
@@ -68,9 +70,31 @@ export const AdminDashboard: FC = () => {
         );
     }
 
+    const runEmailTest = async () => {
+        setEmailTest({ busy: true });
+        const result = await adminOrderEmails('test');
+        setEmailTest({ busy: false, ...result });
+    };
+
     return (
         <div className="admin-dashboard">
             <h1>Dashboard Overview</h1>
+
+            <div className="email-health">
+                <div>
+                    <strong>Order emails</strong>
+                    <span>Sends a sample order email and a sample customer email to {ADMIN_EMAIL}.</span>
+                </div>
+                <button className="btn" onClick={runEmailTest} disabled={emailTest.busy}>
+                    <Icon name="fa-envelope" /> {emailTest.busy ? 'Sending…' : 'Send test email'}
+                </button>
+                {emailTest.error && <p className="email-health__result bad">✗ {emailTest.error}</p>}
+                {emailTest.emails && (
+                    <p className={`email-health__result ${emailTest.emails.admin === 'sent' && emailTest.emails.customer === 'sent' ? 'good' : 'bad'}`}>
+                        Your order email: {describeEmail(emailTest.emails.admin)} · Customer email: {describeEmail(emailTest.emails.customer)}
+                    </p>
+                )}
+            </div>
 
             <div className="admin-stats-grid">
                 <StatCard

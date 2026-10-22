@@ -190,3 +190,31 @@ export const filterOrdersByStatus = (orders: any[], status: string): any[] => {
     if (status === 'all') return orders;
     return orders.filter(order => order.status === status);
 };
+
+export type EmailStatus = { admin?: string; customer?: string };
+
+/**
+ * Call the admin email tools endpoint (test email / confirm stuck order /
+ * resend order emails). Requires the signed-in owner account.
+ */
+export const adminOrderEmails = async (
+    action: 'test' | 'confirm' | 'resend',
+    orderId?: string
+): Promise<{ emails?: EmailStatus; error?: string }> => {
+    const { getCurrentUser } = await import('./auth');
+    const user = getCurrentUser();
+    if (!user) return { error: 'Not signed in' };
+    const token = await user.getIdToken();
+    const res = await fetch('/api/admin/order-emails', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ action, orderId }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return { error: data.error || `Request failed (${res.status})` };
+    return data;
+};
+
+/** Human-readable one-liner for an email status result */
+export const describeEmail = (r?: string): string =>
+    !r ? 'not sent yet' : r === 'sent' ? '✓ sent' : r === 'skipped' ? 'skipped (no customer email)' : `✗ ${r.replace(/^failed: /, 'failed — ')}`;

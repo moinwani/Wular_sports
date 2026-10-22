@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import crypto from 'crypto';
 import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
-import { auth, db, FieldValue } from '../../src/lib/firebaseAdmin';
+import { auth, db } from '../../src/lib/firebaseAdmin';
+import { confirmPaidOrder } from '../../src/lib/orderNotifications';
 
 async function verifyAuth(req: NextApiRequest): Promise<{ uid: string }> {
     const authHeader = req.headers.authorization;
@@ -53,8 +54,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Invalid payment signature' });
     }
 
-    // Payment is genuine — confirm the pending order server-side so the
-    // record is correct even if the customer's browser dies right after this.
+    // Payment is genuine — confirm the order and send the order emails from
+    // the server. The Razorpay webhook does the same if this call never
+    // arrives (e.g. the customer doesn't return from their UPI app).
     if (firestoreOrderId && typeof firestoreOrderId === 'string') {
         try {
             const orderRef = db.collection('orders').doc(firestoreOrderId);
@@ -64,23 +66,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // Only the owner of the order may confirm it, and the payment
                 // must belong to this order's Razorpay order id.
                 if (order.userId === uid && order.razorpayOrderId === razorpay_order_id) {
-                    await orderRef.update({
-                        status: 'confirmed',
-                        // COD keeps paymentStatus 'pending' (balance due at door);
-                        // full payments are complete.
-                        paymentStatus: order.paymentMethod === 'full' ? 'completed' : 'pending',
-                        paymentId: razorpay_payment_id,
-                        razorpayPaymentId: razorpay_payment_id,
-                        updatedAt: FieldValue.serverTimestamp(),
-                    });
+                    await confirmPaidOrder(orderRef, razorpay_payment_id);
                 } else {
                     console.error('Order/payment mismatch on verify:', firestoreOrderId);
                 }
             }
         } catch (err) {
             // The payment itself is verified — never fail the customer flow
-            // over a status update; the admin can reconcile via Razorpay.
-            console.error('Failed to mark order confirmed:', err);
+            // over confirmation/emails; the webhook retries those.
+            console.error('Failed to confirm order / send emails:', err);
         }
     }
 

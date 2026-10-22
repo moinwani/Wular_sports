@@ -1,6 +1,6 @@
 import { FC, useState, useMemo } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
-import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus } from '../../services/admin';
+import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus, adminOrderEmails, describeEmail, EmailStatus } from '../../services/admin';
 import { Icon } from '../common/Icon';
 
 /** WhatsApp link asking a delivered customer to review their bat */
@@ -22,8 +22,20 @@ export const OrdersManagement: FC = () => {
     const { orders, loading, error } = useAllOrders();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [selectedOrder, setSelectedOrderState] = useState<any>(null);
     const [updating, setUpdating] = useState(false);
+    const [emailAction, setEmailAction] = useState<{ busy: boolean; emails?: EmailStatus; error?: string }>({ busy: false });
+
+    const setSelectedOrder = (order: any) => {
+        setEmailAction({ busy: false });
+        setSelectedOrderState(order);
+    };
+
+    const runEmailAction = async (action: 'confirm' | 'resend') => {
+        setEmailAction({ busy: true });
+        const result = await adminOrderEmails(action, selectedOrder.id);
+        setEmailAction({ busy: false, ...result });
+    };
 
     const filteredOrders = useMemo(() => {
         let result = orders;
@@ -226,6 +238,43 @@ export const OrdersManagement: FC = () => {
                                 <p><strong>Status:</strong> <span className={`status-badge status-${selectedOrder.status}`}>{selectedOrder.status}</span></p>
                                 <p><strong>Payment Status:</strong> <span className={`status-badge payment-${selectedOrder.paymentStatus}`}>{selectedOrder.paymentStatus}</span></p>
                                 <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
+                                {selectedOrder.razorpayOrderId && (
+                                    <p><strong>Razorpay Order ID:</strong> {selectedOrder.razorpayOrderId}</p>
+                                )}
+                                {(selectedOrder.razorpayPaymentId || selectedOrder.paymentId) && (
+                                    <p><strong>Razorpay Payment ID:</strong> {selectedOrder.razorpayPaymentId || selectedOrder.paymentId}</p>
+                                )}
+                            </div>
+
+                            <div className="order-detail-section">
+                                <h3>Order Emails</h3>
+                                {(() => {
+                                    const status = emailAction.emails || selectedOrder.emailStatus || {};
+                                    return (
+                                        <>
+                                            <p><strong>Your notification:</strong> {describeEmail(status.admin)}</p>
+                                            <p><strong>Customer confirmation:</strong> {selectedOrder.customerEmail ? describeEmail(status.customer) : 'no email given'}</p>
+                                        </>
+                                    );
+                                })()}
+                                {emailAction.error && <p className="email-health__result bad">✗ {emailAction.error}</p>}
+                                {selectedOrder.status === 'pending' ? (
+                                    <button
+                                        className="btn"
+                                        disabled={emailAction.busy}
+                                        onClick={() => {
+                                            if (confirm('Only do this if Razorpay shows this order as PAID. Mark it confirmed and send the order emails?')) {
+                                                runEmailAction('confirm');
+                                            }
+                                        }}
+                                    >
+                                        <Icon name="fa-check-circle" /> {emailAction.busy ? 'Working…' : 'Payment received — mark paid & send emails'}
+                                    </button>
+                                ) : (
+                                    <button className="btn" disabled={emailAction.busy} onClick={() => runEmailAction('resend')}>
+                                        <Icon name="fa-envelope" /> {emailAction.busy ? 'Sending…' : 'Resend order emails'}
+                                    </button>
+                                )}
                             </div>
 
                             <div className="order-detail-section">

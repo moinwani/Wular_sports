@@ -1,7 +1,6 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { CartItem } from '../types';
-import { sendAdminOrderNotification, sendOrderConfirmation } from '../services/email';
 import { validateFormData } from '../utils/inputValidation';
 import { buildCheckoutSchema } from '../utils/checkoutSchema';
 import { getVisitorRef } from '../utils/helpers';
@@ -641,56 +640,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     return;
                 }
 
-                // The order document was already created server-side (before
-                // payment) and marked confirmed by the verify endpoint. Build
-                // the same data locally only for the notification emails.
-                const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
-                const remaining = isCOD ? payable - bookingAmount : 0;
-                const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
-                const totalAtDoor = isCOD ? remaining + codFee : 0;
-
-                const orderData = {
-                    customerName: `${sanitizedData.firstName} ${sanitizedData.lastName || ''}`.trim(),
-                    customerEmail: sanitizedData.email || '',
-                    customerPhone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
-                    customerAddress: {
-                        street: sanitizedData.address,
-                        city: sanitizedData.city,
-                        state: sanitizedData.state,
-                        pincode: sanitizedData.zip,
-                        country: sanitizedData.country || 'India'
-                    },
-                    items: cart.map(item => ({
-                        productId: item.id,
-                        productName: item.name,
-                        price: item.price,
-                        quantity: item.quantity,
-                        size: item.size
-                    })),
-                    total: payable,
-                    subtotal: total,
-                    discount,
-                    couponCode: appliedCoupon || '',
-                    codFee,
-                    bookingAmount,
-                    remaining,
-                    totalAtDoor,
-                    razorpayPaymentId: paymentId,
-                    paymentMethod: sanitizedData.paymentMethod as any
-                };
-
                 // This visitor is now a customer — stop showing them as a lead
                 import('../services/leads')
                     .then(({ markLeadConverted }) => markLeadConverted())
                     .catch(() => { /* best-effort */ });
 
-                // Send emails in background (non-blocking, best-effort)
-                sendAdminOrderNotification({ ...orderData, id: firestoreOrderId })
-                    .catch(err => console.error('Admin notification failed:', err));
-                if (sanitizedData.email) {
-                    sendOrderConfirmation({ ...orderData, id: firestoreOrderId })
-                        .catch(err => console.error('Customer email failed:', err));
-                }
+                // Order emails are sent by the server (verify endpoint +
+                // Razorpay webhook), so they go out even if this page dies.
 
                 // GA4 / GTM / Meta CAPI: generate event_id for deduplication
                 const eventId = crypto.randomUUID();

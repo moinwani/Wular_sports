@@ -1,7 +1,7 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 
-import { faArrowLeft, faArrowRight, faBars, faBoxOpen, faChartLine, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faDownload, faEnvelope, faExclamationCircle, faExternalLinkAlt, faEye, faGlobe, faInbox, faInfoCircle, faLightbulb, faLink, faLock, faMapMarkerAlt, faMoneyBillWave, faNewspaper, faPhone, faPlay, faRedoAlt, faRupeeSign, faSearch, faShieldAlt, faShippingFast, faShoppingBag, faShoppingCart, faSignOutAlt, faSpinner, faStar, faTimes, faTruckFast, faUndoAlt, faUserCircle, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faBars, faBoxOpen, faBullhorn, faChartLine, faCopy, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faDownload, faEnvelope, faExclamationCircle, faExternalLinkAlt, faEye, faGlobe, faInbox, faInfoCircle, faLightbulb, faLink, faLock, faMapMarkerAlt, faMoneyBillWave, faNewspaper, faPhone, faPlay, faPlus, faRedoAlt, faRupeeSign, faSearch, faShieldAlt, faShippingFast, faShoppingBag, faShoppingCart, faSignOutAlt, faSpinner, faStar, faTimes, faTrashAlt, faTruckFast, faUndoAlt, faUserCircle, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faWhatsapp, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import { faCalendar, faClock } from '@fortawesome/free-regular-svg-icons';
 
@@ -10,6 +10,10 @@ const iconMap: Record<string, IconDefinition> = {
     'fa-arrow-right': faArrowRight,
     'fa-bars': faBars,
     'fa-box-open': faBoxOpen,
+    'fa-bullhorn': faBullhorn,
+    'fa-copy': faCopy,
+    'fa-plus': faPlus,
+    'fa-trash-alt': faTrashAlt,
     'fa-chart-line': faChartLine,
     'fa-check': faCheck,
     'fa-check-circle': faCheckCircle,

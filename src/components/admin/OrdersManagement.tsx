@@ -2,6 +2,8 @@ import { FC, useState, useMemo } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
 import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus, adminOrderEmails, describeEmail, EmailStatus } from '../../services/admin';
 import { Icon } from '../common/Icon';
+import { useAdminData } from '../../hooks/useAdminData';
+import { OrderSource } from './OrderSource';
 
 /** WhatsApp link asking a delivered customer to review their bat */
 const buildReviewRequestLink = (order: any): string => {
@@ -20,6 +22,7 @@ const buildReviewRequestLink = (order: any): string => {
 
 export const OrdersManagement: FC = () => {
     const { orders, loading, error } = useAllOrders();
+    const { openRecordSale } = useAdminData();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [selectedOrder, setSelectedOrderState] = useState<any>(null);
@@ -90,6 +93,9 @@ export const OrdersManagement: FC = () => {
             <div className="management-header">
                 <h1>Orders Management</h1>
                 <p className="order-count">{filteredOrders.length} orders</p>
+                <button className="btn crm-btn-wa" onClick={() => openRecordSale()}>
+                    <Icon name="fa-whatsapp" /> Record WhatsApp sale
+                </button>
             </div>
 
             <div className="orders-filters">
@@ -247,6 +253,18 @@ export const OrdersManagement: FC = () => {
                             </div>
 
                             <div className="order-detail-section">
+                                <h3>Where this sale came from</h3>
+                                <OrderSource key={selectedOrder.id} order={orders.find(o => o.id === selectedOrder.id) || selectedOrder} />
+                            </div>
+
+                            {selectedOrder.channel === 'whatsapp' ? (
+                                <div className="order-detail-section">
+                                    <h3>WhatsApp sale</h3>
+                                    <p>{selectedOrder.recordedBy === 'admin' ? 'Recorded by you from a WhatsApp chat' : 'Sold on WhatsApp'} · paid by {selectedOrder.paymentMode || selectedOrder.paymentMethod}.</p>
+                                    {selectedOrder.notes && <p><strong>Notes:</strong> {selectedOrder.notes}</p>}
+                                </div>
+                            ) : (
+                            <div className="order-detail-section">
                                 <h3>Order Emails</h3>
                                 {(() => {
                                     const status = emailAction.emails || selectedOrder.emailStatus || {};
@@ -276,6 +294,7 @@ export const OrdersManagement: FC = () => {
                                     </button>
                                 )}
                             </div>
+                            )}
 
                             <div className="order-detail-section">
                                 <h3>Customer Information</h3>

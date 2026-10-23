@@ -1,10 +1,12 @@
 import { FC, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Icon } from './Icon';
-import { COUPONS } from '../../data/coupons';
+import { BUILT_IN_COUPONS } from '../../data/coupons';
+import { couponLabel } from '../../lib/marketing';
 
 const STORAGE_KEY = 'ws_exit_popup_shown';
-const COUPON_CODE = 'WELCOME100';
+const COUPON = BUILT_IN_COUPONS.find(c => c.code === 'WELCOME100')!;
+const COUPON_CODE = COUPON.code;
 const EXCLUDED_PATHS = ['/checkout', '/admin', '/order-success', '/review'];
 
 /**
@@ -102,7 +104,7 @@ export const ExitIntentPopup: FC = () => {
                         <div className="exit-popup__emoji">🎉</div>
                         <h3>Here's your code!</h3>
                         <div className="exit-popup__code">{COUPON_CODE}</div>
-                        <p>{COUPONS[COUPON_CODE].label} — enter it at checkout.</p>
+                        <p>{couponLabel(COUPON)} — enter it at checkout.</p>
                         <button className="exit-popup__cta" onClick={() => setVisible(false)}>
                             Continue Shopping
                         </button>

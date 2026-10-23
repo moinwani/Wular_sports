@@ -1,22 +1,13 @@
+import type { CouponDef } from '../lib/marketing';
+
 /**
- * Coupon definitions — shared by the checkout UI and the payment API.
- * The server ALWAYS recomputes the discount from this table; the client
- * copy is only for instant feedback in the UI.
+ * Coupons that work even before anything is set up in the admin panel.
+ * Creating a coupon with the same code in Admin → Marketing → Coupons
+ * overrides it (e.g. to switch WELCOME100 off). The server always
+ * recomputes the discount; the browser copy is only for instant feedback.
  */
-
-export interface Coupon {
-    /** Flat discount in ₹ applied per bat in the cart */
-    perBat: number;
-    label: string;
-}
-
-export const COUPONS: Record<string, Coupon> = {
-    WELCOME100: { perBat: 100, label: '₹100 off per bat' },
-};
-
-export const getCoupon = (code: string | null | undefined): Coupon | null => {
-    if (!code || typeof code !== 'string') return null;
-    return COUPONS[code.trim().toUpperCase()] || null;
-};
+export const BUILT_IN_COUPONS: CouponDef[] = [
+    { code: 'WELCOME100', type: 'per_bat', value: 100, active: true, builtIn: true, note: 'Welcome offer (exit popup)' },
+];
 
 export const normalizeCouponCode = (code: string): string => code.trim().toUpperCase();

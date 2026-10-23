@@ -7,6 +7,7 @@ import {
 import { WA_TEMPLATES, defaultTemplateFor, templateById } from '../../services/whatsappTemplates';
 import { inr, daysAgo, shortDate } from './format';
 import { Icon } from '../common/Icon';
+import { sourceDef } from '../../lib/marketing';
 
 type SegmentFilter = 'all' | Segment | 'atrisk';
 type SortKey = 'spent' | 'recent' | 'orders' | 'lead';
@@ -215,7 +216,8 @@ export const CustomersManagement: FC = () => {
 /* ───────────────────────── Customer drawer ───────────────────────── */
 
 const CustomerDrawer: FC<{ customer: Customer; onClose: () => void }> = ({ customer: c, onClose }) => {
-    const { saveProfile, contact } = useAdminData();
+    const { saveProfile, contact, attributed, openRecordSale } = useAdminData();
+    const acquired = attributed.find(a => a.customerKey === c.key);
     const [tags, setTags] = useState<string[]>(c.profile.tags || []);
     const [tagInput, setTagInput] = useState('');
     const [notes, setNotes] = useState(c.profile.notes || '');
@@ -255,7 +257,7 @@ const CustomerDrawer: FC<{ customer: Customer; onClose: () => void }> = ({ custo
                             <span className={segClass(c.segment)}>{c.segment}</span>
                             {c.atRisk && <span className="crm-risk">at risk · {c.daysSinceLastOrder}d since last order</span>}
                             {c.subscribed && <span className="crm-tag">newsletter</span>}
-                            {c.sources.includes('whatsapp') && <span className="crm-tag">pre-website WhatsApp buyer</span>}
+                            {c.sources.includes('whatsapp') && <span className="crm-tag">buys on WhatsApp</span>}
                         </p>
                     </div>
                     <button className="modal-close" onClick={onClose} aria-label="Close"><Icon name="fa-times" /></button>
@@ -266,6 +268,17 @@ const CustomerDrawer: FC<{ customer: Customer; onClose: () => void }> = ({ custo
                         {c.phone && <a href={`tel:${c.phone}`}><Icon name="fa-phone" /> {c.phone}</a>}
                         {c.email && <a href={`mailto:${c.email}`}><Icon name="fa-envelope" /> {c.email}</a>}
                         {(c.city || c.state) && <span><Icon name="fa-map-marker-alt" /> {[c.city, c.state, c.country !== 'India' ? c.country : ''].filter(Boolean).join(', ')}</span>}
+                    </section>
+
+                    <section className="mk-acquired">
+                        <span>
+                            {acquired
+                                ? <>First came from <strong>{sourceDef(acquired.source).label}</strong>{acquired.campaignName && <> · {acquired.campaignName}</>}</>
+                                : <span className="crm-muted">No paid order yet</span>}
+                        </span>
+                        <button className="btn crm-btn-wa" onClick={() => { onClose(); openRecordSale({ name: c.name, phone: c.phone, email: c.email, city: c.city, state: c.state }); }}>
+                            <Icon name="fa-plus" /> Record a sale
+                        </button>
                     </section>
 
                     <section className="crm-stats">

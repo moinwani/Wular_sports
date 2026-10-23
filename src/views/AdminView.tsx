@@ -2,6 +2,7 @@ import { FC, useState } from 'react';
 import { AdminRoute } from '../components/admin/AdminRoute';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { AnalyticsDashboard } from '../components/admin/AnalyticsDashboard';
+import { MarketingDashboard } from '../components/admin/MarketingDashboard';
 import { OrdersManagement } from '../components/admin/OrdersManagement';
 import { CustomersManagement } from '../components/admin/CustomersManagement';
 import { SubscribersManagement } from '../components/admin/SubscribersManagement';
@@ -10,11 +11,12 @@ import { ReviewsManagement } from '../components/admin/ReviewsManagement';
 import { AdminDataProvider } from '../hooks/useAdminData';
 import { Icon } from '../components/common/Icon';
 
-export type AdminTab = 'dashboard' | 'analytics' | 'customers' | 'orders' | 'leads' | 'reviews' | 'subscribers';
+export type AdminTab = 'dashboard' | 'analytics' | 'marketing' | 'customers' | 'orders' | 'leads' | 'reviews' | 'subscribers';
 
 const TABS: { id: AdminTab; label: string; icon: string }[] = [
     { id: 'dashboard', label: 'Today', icon: 'fa-inbox' },
     { id: 'analytics', label: 'Analytics', icon: 'fa-chart-line' },
+    { id: 'marketing', label: 'Marketing', icon: 'fa-bullhorn' },
     { id: 'customers', label: 'Customers', icon: 'fa-users' },
     { id: 'orders', label: 'Orders', icon: 'fa-shopping-cart' },
     { id: 'leads', label: 'Leads', icon: 'fa-user-circle' },
@@ -63,6 +65,7 @@ export const AdminView: FC = () => {
                         <div className="admin-content">
                             {activeTab === 'dashboard' && <AdminDashboard onNavigate={setActiveTab} />}
                             {activeTab === 'analytics' && <AnalyticsDashboard />}
+                            {activeTab === 'marketing' && <MarketingDashboard />}
                             {activeTab === 'customers' && <CustomersManagement />}
                             {activeTab === 'orders' && <OrdersManagement />}
                             {activeTab === 'leads' && <LeadsManagement />}

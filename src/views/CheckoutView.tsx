@@ -4,7 +4,9 @@ import { CartItem } from '../types';
 import { validateFormData } from '../utils/inputValidation';
 import { buildCheckoutSchema } from '../utils/checkoutSchema';
 import { getVisitorRef } from '../utils/helpers';
-import { getCoupon, normalizeCouponCode } from '../data/coupons';
+import { normalizeCouponCode } from '../data/coupons';
+import { couponDiscount, CouponType } from '../lib/marketing';
+import { getAttribution } from '../utils/attributionCapture';
 import { WHATSAPP_NUMBER } from '../data/constants';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
@@ -348,25 +350,35 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
 
     // Coupon state — server revalidates and recomputes the discount
     const [couponInput, setCouponInput] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+    const [activeCoupon, setActiveCoupon] = useState<{ code: string; type: CouponType; value: number } | null>(null);
     const [couponError, setCouponError] = useState('');
+    const [couponChecking, setCouponChecking] = useState(false);
+    const appliedCoupon = activeCoupon?.code || null;
     const cartBats = cart.reduce((acc, item) => acc + item.quantity, 0);
-    const activeCoupon = appliedCoupon ? getCoupon(appliedCoupon) : null;
-    const discount = activeCoupon ? activeCoupon.perBat * cartBats : 0;
+    const discount = activeCoupon ? couponDiscount(activeCoupon, total, cartBats) : 0;
     const payable = total - discount;
 
-    const handleApplyCoupon = () => {
+    const handleApplyCoupon = async () => {
         const code = normalizeCouponCode(couponInput);
-        if (!code) return;
-        if (getCoupon(code)) {
-            setAppliedCoupon(code);
+        if (!code || couponChecking) return;
+        setCouponChecking(true);
+        try {
+            const res = await fetch(`/api/coupon?code=${encodeURIComponent(code)}`);
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                setCouponError(data.error || 'Invalid coupon code');
+                return;
+            }
+            setActiveCoupon({ code: data.code, type: data.type, value: data.value });
             setCouponError('');
             setCouponInput('');
             if (typeof window !== 'undefined' && window.dataLayer) {
-                window.dataLayer.push({ event: 'coupon_applied', coupon: code });
+                window.dataLayer.push({ event: 'coupon_applied', coupon: data.code });
             }
-        } else {
-            setCouponError('Invalid coupon code');
+        } catch {
+            setCouponError('Could not check the coupon. Please try again.');
+        } finally {
+            setCouponChecking(false);
         }
     };
 
@@ -583,6 +595,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     items: cart.map(item => ({ id: item.id, quantity: item.quantity, size: item.size })),
                     paymentMethod: sanitizedData.paymentMethod,
                     coupon: appliedCoupon || undefined,
+                    // Which ad / post brought this buyer (for the Marketing tab and Meta)
+                    attribution: getAttribution(),
                     receipt: orderId,
                     notes: { orderId, customerPhone: sanitizedData.phone },
                     // Shipping details so the order is persisted server-side
@@ -648,8 +662,9 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 // Order emails are sent by the server (verify endpoint +
                 // Razorpay webhook), so they go out even if this page dies.
 
-                // GA4 / GTM / Meta CAPI: generate event_id for deduplication
-                const eventId = crypto.randomUUID();
+                // Same event id the server uses when it reports this purchase
+                // to Meta, so the pixel and the server copy are counted once
+                const eventId = `purchase_${firestoreOrderId}`;
 
                 // GA4 / GTM: track purchase with Advanced Matching
                 if (typeof window !== 'undefined' && window.dataLayer) {
@@ -687,27 +702,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                     window.dataLayer.push(payload);
                 }
 
-                // Meta CAPI: server-side purchase event (non-blocking, best-effort)
-                fetch('/api/capi', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                        event_id: eventId,
-                        email: sanitizedData.email || '',
-                        phone: `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`,
-                        orderId: firestoreOrderId,
-                        total: payable,
-                        items: cart.map(item => ({
-                            id: item.id,
-                            name: item.name,
-                            price: item.price,
-                            quantity: item.quantity,
-                        })),
-                    }),
-                }).catch(err => console.error('Meta CAPI send failed:', err));
+                // The Meta Conversions API purchase is sent by the server once
+                // payment is confirmed (verify endpoint + Razorpay webhook).
 
                 if (isCOD) {
                     // For COD: open WhatsApp to confirm delivery details
@@ -1157,7 +1153,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                     <span><Icon name="fa-check-circle" /> Coupon <strong>{appliedCoupon}</strong> applied — you save ₹{discount.toLocaleString('en-IN')}</span>
                                     <button
                                         type="button"
-                                        onClick={() => { setAppliedCoupon(null); setCouponError(''); }}
+                                        onClick={() => { setActiveCoupon(null); setCouponError(''); }}
                                         disabled={isProcessing}
                                         aria-label="Remove coupon"
                                     >
@@ -1175,8 +1171,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                             disabled={isProcessing}
                                             autoComplete="off"
                                         />
-                                        <button type="button" onClick={handleApplyCoupon} disabled={isProcessing || !couponInput.trim()}>
-                                            Apply
+                                        <button type="button" onClick={handleApplyCoupon} disabled={isProcessing || couponChecking || !couponInput.trim()}>
+                                            {couponChecking ? 'Checking…' : 'Apply'}
                                         </button>
                                     </div>
                                     {couponError && <span className="error-message">{couponError}</span>}

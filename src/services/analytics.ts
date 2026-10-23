@@ -9,8 +9,11 @@
  */
 
 import { isPaid, toDate, Customer, SEGMENTS, Segment } from './customers';
+import { products } from '../data/products';
 
 const DAY = 86400000;
+/** Short catalog names ("Legacy Edition 2.0"), so website and WhatsApp sales of a bat group together */
+const CATALOG_NAME = new Map(products.map(p => [p.id, p.name.split(' — ')[0].trim()]));
 
 /* ───────────── Date ranges (scope every number on the Analytics tab) ───────────── */
 
@@ -55,14 +58,15 @@ export const computeRangeKpis = (orders: any[]): RangeKpis => {
 
 export interface SeriesPoint { label: string; tooltipLabel: string; revenue: number; orders: number; }
 
-/** Paid revenue bucketed by day (≤31 days), week (≤120 days) or month. */
-export const revenueSeries = (orders: any[], win: RangeWindow, now: number): SeriesPoint[] => {
-    const paid = orders.filter(isPaid).map(o => ({ t: timeOf(o), total: o.total || 0 })).filter(x => x.t > 0);
-    const first = win.days == null ? Math.min(now, ...paid.map(p => p.t)) : win.start;
+export interface TimeBucket { start: number; end: number; label: string; tooltipLabel: string; }
+
+/** Chart buckets for a window: by day (≤31 days), week (≤120 days) or month. */
+export const timeBuckets = (win: RangeWindow, now: number, earliest: number[]): TimeBucket[] => {
+    const first = win.days == null ? Math.min(now, ...earliest) : win.start;
     const spanDays = Math.max(1, Math.ceil((now - first) / DAY));
     const unit: 'day' | 'week' | 'month' = spanDays <= 31 ? 'day' : spanDays <= 120 ? 'week' : 'month';
 
-    const buckets: { start: number; end: number; label: string; tooltipLabel: string }[] = [];
+    const buckets: TimeBucket[] = [];
     const fmt = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleDateString('en-IN', o);
     if (unit === 'month') {
         const d = new Date(first); d.setDate(1); d.setHours(0, 0, 0, 0);
@@ -83,8 +87,13 @@ export const revenueSeries = (orders: any[], win: RangeWindow, now: number): Ser
             });
         }
     }
+    return buckets;
+};
 
-    return buckets.map(b => {
+/** Paid revenue per time bucket. */
+export const revenueSeries = (orders: any[], win: RangeWindow, now: number): SeriesPoint[] => {
+    const paid = orders.filter(isPaid).map(o => ({ t: timeOf(o), total: o.total || 0 })).filter(x => x.t > 0);
+    return timeBuckets(win, now, paid.map(p => p.t)).map(b => {
         const hits = paid.filter(p => p.t >= b.start && p.t < b.end);
         return { label: b.label, tooltipLabel: b.tooltipLabel, revenue: hits.reduce((s, p) => s + p.total, 0), orders: hits.length };
     });
@@ -126,7 +135,7 @@ const split = (orders: any[], a: [string, (o: any) => boolean], bLabel: string):
 export const paymentSplit = (orders: any[]) => split(orders, ['Prepaid', o => o.paymentMethod !== 'cod'], 'Cash on delivery');
 
 export const channelSplit = (orders: any[]) =>
-    split(orders, ['Website', o => isWebsiteOrder(o)], 'WhatsApp (pre-website)');
+    split(orders, ['Website', o => isWebsiteOrder(o)], 'WhatsApp');
 
 /** Each paid order is either the customer's first purchase or a repeat purchase. */
 export const firstVsRepeat = (ordersInWindow: any[], customers: Customer[]): SplitPart[] => {
@@ -138,7 +147,7 @@ export const firstVsRepeat = (ordersInWindow: any[], customers: Customer[]): Spl
     return split(ordersInWindow, ['First orders', o => firstOrders.has(o)], 'Repeat orders');
 };
 
-const isWebsiteOrder = (o: any) => o.source !== 'whatsapp_pre_website' && o.channel !== 'whatsapp';
+export const isWebsiteOrder = (o: any) => o.source !== 'whatsapp_pre_website' && o.channel !== 'whatsapp';
 
 /**
  * Website checkout conversion: of the checkouts started on the site (every
@@ -228,7 +237,7 @@ export const computeProducts = (orders: any[], reviews: any[]): ProductRow[] => 
         for (const it of (o.items || [])) {
             const id = it.productId || it.id || it.productName;
             if (!id) continue;
-            const name = String(it.productName || it.name || id).trim();
+            const name = CATALOG_NAME.get(it.productId) || String(it.productName || it.name || id).trim();
             const k = name.toLowerCase();
             sales[k] = sales[k] || { name, ids: new Set(), units: 0, revenue: 0 };
             sales[k].ids.add(String(id));

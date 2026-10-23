@@ -2,14 +2,16 @@ import { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMe
 import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { getFirestoreDb } from '../services/firebase-firestore';
 import { useAllOrders } from './useOrders';
-import { getAllSubscribers, fetchCustomerProfiles, saveCustomerProfile } from '../services/admin';
+import { getAllSubscribers, fetchCustomerProfiles, saveCustomerProfile, fetchMarketing, MarketingData } from '../services/admin';
 import { getAllReviews } from '../services/reviews';
 import { buildCustomers, Customer, CustomerProfileData, whatsappLink } from '../services/customers';
 import { templateById } from '../services/whatsappTemplates';
+import { attributeOrders, AttributedOrder } from '../services/marketing';
+import { RecordSaleModal, SaleDraft } from '../components/admin/RecordSaleModal';
 
 /**
  * One shared data source for the admin panel: live orders plus leads,
- * subscribers, reviews and the owner's customer notes — loaded once and
+ * subscribers, reviews, the owner's customer notes and marketing data — loaded once and
  * shared by every tab, so Customers, Dashboard and Analytics always agree.
  */
 
@@ -26,7 +28,16 @@ interface AdminData {
     saveProfile: (key: string, patch: { tags?: string[]; notes?: string }) => Promise<string | null>;
     /** Open WhatsApp with a message and log the contact against the customer */
     contact: (c: Customer, templateId: string, message?: string) => void;
+    /** Campaigns, ad spend, coupons and website visitor trails */
+    marketing: MarketingData;
+    setMarketing: (update: (m: MarketingData) => MarketingData) => void;
+    /** Every paid order with the source / campaign it is credited to */
+    attributed: AttributedOrder[];
+    /** Open the "Record a WhatsApp sale" form, optionally pre-filled */
+    openRecordSale: (draft?: SaleDraft) => void;
 }
+
+const EMPTY_MARKETING: MarketingData = { campaigns: [], spend: [], coupons: [], visitors: [], metaConfigured: false };
 
 const Ctx = createContext<AdminData | null>(null);
 
@@ -44,6 +55,8 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
     const [extraLoading, setExtraLoading] = useState(true);
     const [failed, setFailed] = useState<string[]>([]);
     const [version, setVersion] = useState(0);
+    const [marketing, setMarketingState] = useState<MarketingData>(EMPTY_MARKETING);
+    const [saleDraft, setSaleDraft] = useState<SaleDraft | null>(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -59,6 +72,7 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
             settle('subscribers', getAllSubscribers(), setSubscribers),
             settle('reviews', getAllReviews(), setReviews),
             settle('customer notes', fetchCustomerProfiles(), setProfiles),
+            settle('marketing', fetchMarketing(), setMarketingState),
         ]).finally(() => {
             if (cancelled) return;
             setFailed(errors);
@@ -71,6 +85,14 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
         () => buildCustomers(orders, leads, subscribers, profiles),
         [orders, leads, subscribers, profiles]
     );
+
+    const attributed = useMemo(
+        () => attributeOrders(orders, marketing.campaigns),
+        [orders, marketing.campaigns]
+    );
+
+    const setMarketing = useCallback((update: (m: MarketingData) => MarketingData) => setMarketingState(update), []);
+    const openRecordSale = useCallback((draft?: SaleDraft) => setSaleDraft(draft || {}), []);
 
     const saveProfile = useCallback(async (key: string, patch: { tags?: string[]; notes?: string }) => {
         const res = await saveCustomerProfile(key, patch);
@@ -97,9 +119,18 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
         refresh: () => setVersion(v => v + 1),
         saveProfile,
         contact,
-    }), [orders, leads, subscribers, reviews, customers, ordersLoading, extraLoading, failed, saveProfile, contact]);
+        marketing,
+        setMarketing,
+        attributed,
+        openRecordSale,
+    }), [orders, leads, subscribers, reviews, customers, ordersLoading, extraLoading, failed, saveProfile, contact, marketing, setMarketing, attributed, openRecordSale]);
 
-    return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
+    return (
+        <Ctx.Provider value={value}>
+            {children}
+            {saleDraft && <RecordSaleModal draft={saleDraft} onClose={() => setSaleDraft(null)} />}
+        </Ctx.Provider>
+    );
 };
 
 export const useAdminData = (): AdminData => {

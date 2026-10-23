@@ -2,6 +2,7 @@ import { doc, setDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { CartItem } from '../types';
 import { getVisitorRef } from '../utils/helpers';
+import { syncVisitor } from '../utils/attributionCapture';
 
 /**
  * Checkout lead capture.
@@ -49,6 +50,7 @@ export const saveCheckoutLead = async (
         }
 
         await setDoc(doc(getFirestoreDb(), LEADS_COLLECTION, uid), data, { merge: true });
+        syncVisitor('checkout');
     } catch {
         // Lead capture is best-effort only
     }
@@ -75,6 +77,10 @@ export const trackWhatsAppClick = async (
                 ...(extra || {}),
             });
         }
+
+        // Remember which ad brought this visitor, under the Ref code that
+        // travels in their WhatsApp message
+        syncVisitor('whatsapp');
 
         const { ensureAuthenticated, getCurrentUserId } = await import('./auth');
         await ensureAuthenticated();

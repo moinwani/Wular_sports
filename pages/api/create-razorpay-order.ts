@@ -5,7 +5,9 @@ import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 import { auth, db, FieldValue } from '../../src/lib/firebaseAdmin';
 import { validateFormData } from '../../src/utils/inputValidation';
 import { buildCheckoutSchema } from '../../src/utils/checkoutSchema';
-import { getCoupon, normalizeCouponCode } from '../../src/data/coupons';
+import { normalizeCouponCode } from '../../src/data/coupons';
+import { resolveCoupon } from '../../src/lib/coupons';
+import { couponDiscount, sanitizeAttribution } from '../../src/lib/marketing';
 
 const COD_BOOKING_PER_BAT = 500;
 const COD_FEE_PERCENT = 0.05;
@@ -49,6 +51,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { items, paymentMethod, receipt, notes, customer, coupon } = req.body;
+    // Where this buyer came from (ad tags, Meta click ids, visitor Ref)
+    const attribution = sanitizeAttribution(req.body.attribution);
 
     if (!Array.isArray(items) || items.length === 0) {
         return res.status(400).json({ error: 'Invalid items' });
@@ -98,18 +102,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 
-    // Coupon: validated server-side from the authoritative table.
+    // Coupon: validated server-side (admin-managed coupons + built-ins).
     // An unknown code is rejected so the customer isn't silently overcharged
     // relative to what the checkout UI promised them.
     let discount = 0;
     let couponCode = '';
     if (coupon) {
-        const c = getCoupon(String(coupon));
-        if (!c) {
-            return res.status(400).json({ error: 'Invalid coupon code' });
+        let c;
+        try {
+            c = await resolveCoupon(coupon);
+        } catch {
+            return res.status(503).json({ error: 'Could not check the coupon. Please try again.' });
         }
-        couponCode = normalizeCouponCode(String(coupon));
-        discount = c.perBat * totalBats;
+        if (!c) {
+            return res.status(400).json({ error: 'Invalid or expired coupon code' });
+        }
+        couponCode = normalizeCouponCode(c.code);
+        discount = couponDiscount(c, orderTotal, totalBats);
     }
     const discountedTotal = orderTotal - discount;
     if (discountedTotal < 100) {
@@ -161,6 +170,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             status: 'pending',
             paymentStatus: 'pending',
             paymentMethod,
+            channel: 'website',
+            ...(attribution ? { attribution } : {}),
+            // Lets the server report the purchase to Meta after payment,
+            // even if this browser never comes back from the UPI app
+            client: {
+                ip: getClientIp(req),
+                userAgent: String(req.headers['user-agent'] || '').slice(0, 400),
+                pageUrl: String(req.headers.referer || 'https://wularsports.com/checkout').slice(0, 300),
+            },
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
         });

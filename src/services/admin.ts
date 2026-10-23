@@ -2,6 +2,7 @@ import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 import type { CustomerProfileData } from './customers';
+import type { Attribution, Campaign, CouponDef, SpendEntry } from '../lib/marketing';
 
 /**
  * Admin Service
@@ -232,6 +233,33 @@ export const saveCustomerProfile = (
     patch: { tags?: string[]; notes?: string; contact?: { template: string } }
 ): Promise<{ profile?: CustomerProfileData; error?: string }> =>
     adminApi('/api/admin/customer-profiles', 'POST', { key, ...patch });
+
+export interface VisitorTrail {
+    ref: string;
+    attribution: Attribution | null;
+    whatsappClicks: number;
+    startedCheckout: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface MarketingData {
+    campaigns: Campaign[];
+    spend: SpendEntry[];
+    coupons: CouponDef[];
+    visitors: VisitorTrail[];
+    metaConfigured: boolean;
+}
+
+export const fetchMarketing = async (): Promise<MarketingData> => {
+    const data = await adminApi('/api/admin/marketing', 'GET');
+    if (data.error) throw new Error(data.error);
+    return data;
+};
+
+/** Run one marketing action (save campaign, record sale, …); returns { error } on failure. */
+export const marketingAction = (action: string, payload: Record<string, unknown>): Promise<any> =>
+    adminApi('/api/admin/marketing', 'POST', { action, ...payload });
 
 /** Human-readable one-liner for an email status result */
 export const describeEmail = (r?: string): string =>

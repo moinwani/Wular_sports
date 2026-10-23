@@ -89,7 +89,7 @@ const Kpi: FC<{ label: string; value: string; cur: number; prev: number; hint?: 
 };
 
 export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ onNavigate }) => {
-    const { orders, customers, loading, failed, refresh } = useAdminData();
+    const { orders, customers, loading, failed, refresh, openRecordSale } = useAdminData();
     const [emailTest, setEmailTest] = useState<{ busy: boolean; emails?: EmailStatus; error?: string }>({ busy: false });
     const [now] = useState(() => Date.now());
 
@@ -183,6 +183,9 @@ export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ on
             <div className="management-header">
                 <h1>Today</h1>
                 <p className="order-count">{new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                <button className="btn crm-btn-wa" onClick={() => openRecordSale()}>
+                    <Icon name="fa-whatsapp" /> Record WhatsApp sale
+                </button>
             </div>
 
             {failed.length > 0 && (

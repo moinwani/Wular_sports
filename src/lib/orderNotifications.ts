@@ -1,6 +1,7 @@
 import type { DocumentReference } from 'firebase-admin/firestore';
 import { db, FieldValue, Timestamp } from './firebaseAdmin';
 import { ADMIN_EMAIL } from '../data/constants';
+import { metaConfigured, purchaseFromOrder, sendPurchase } from './metaCapi';
 
 /**
  * Server-side order emails (admin notification + customer confirmation),
@@ -11,6 +12,7 @@ import { ADMIN_EMAIL } from '../data/constants';
  * browser verify call and the Razorpay webhook call confirmPaidOrder(); a
  * per-order lock plus per-recipient status make it safe for both to fire:
  * each email is sent exactly once, and a failed one is retried on the next call.
+ * The Meta purchase event rides on the same lock.
  */
 
 export type EmailResult = 'sent' | 'skipped' | string; // anything else = failure reason
@@ -158,8 +160,10 @@ export async function confirmPaidOrder(
             admin: prev.admin !== 'sent',
             customer: !!o.customerEmail && prev.customer !== 'sent',
         };
+        const metaDone = ['sent', 'skipped'].includes(o.metaPurchase?.status);
+        const wantMeta = !metaDone && metaConfigured();
         const locked = o.emailLockUntil && o.emailLockUntil.toMillis() > Date.now();
-        const shouldSend = (want.admin || want.customer) && !locked;
+        const shouldSend = (want.admin || want.customer || wantMeta) && !locked;
         if (shouldSend) update.emailLockUntil = Timestamp.fromMillis(Date.now() + LOCK_MS);
 
         tx.update(ref, update);
@@ -171,6 +175,7 @@ export async function confirmPaidOrder(
         return {
             order,
             want: shouldSend ? want : null,
+            wantMeta: shouldSend && wantMeta,
             prev,
         };
     });
@@ -178,12 +183,18 @@ export async function confirmPaidOrder(
     if (!claim) return { found: false, emailFailed: false };
     if (!claim.want) return { found: true, emails: claim.prev, emailFailed: false };
 
-    const sent = await sendOrderEmails(ref.id, claim.order, claim.want);
+    const [sent, meta] = await Promise.all([
+        sendOrderEmails(ref.id, claim.order, claim.want),
+        claim.wantMeta
+            ? sendPurchase(purchaseFromOrder(ref.id, claim.order, claim.order.channel === 'whatsapp' ? 'chat' : 'website', Date.now()))
+            : Promise.resolve(null),
+    ]);
     const merged: EmailStatus = { ...claim.prev, ...sent };
     await ref.update({
         emailStatus: merged,
         emailLockUntil: FieldValue.delete(),
         ...(merged.admin === 'sent' && !claim.order.notifiedAt ? { notifiedAt: FieldValue.serverTimestamp() } : {}),
+        ...(meta ? { metaPurchase: meta } : {}),
     });
 
     const failed = (r?: EmailResult) => !!r && r !== 'sent' && r !== 'skipped';

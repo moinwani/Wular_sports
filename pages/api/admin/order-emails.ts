@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { auth, db } from '../../../src/lib/firebaseAdmin';
+import { db } from '../../../src/lib/firebaseAdmin';
+import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { ADMIN_EMAIL } from '../../../src/data/constants';
 import { confirmPaidOrder, sendOrderEmails } from '../../../src/lib/orderNotifications';
 
@@ -10,23 +11,11 @@ import { confirmPaidOrder, sendOrderEmails } from '../../../src/lib/orderNotific
  *  - { action: 'resend', orderId }     → re-send both emails for an order
  */
 
-async function isAdmin(req: NextApiRequest): Promise<boolean> {
-    const header = req.headers.authorization;
-    if (!header?.startsWith('Bearer ')) return false;
-    try {
-        const t = await auth.verifyIdToken(header.split('Bearer ')[1]);
-        return t.admin === true ||
-            (t.email_verified === true && t.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-    } catch {
-        return false;
-    }
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
-    if (!(await isAdmin(req))) {
+    if (!(await isAdminRequest(req))) {
         return res.status(403).json({ error: 'Admin access required' });
     }
 

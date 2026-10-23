@@ -1,6 +1,7 @@
 import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
+import type { CustomerProfileData } from './customers';
 
 /**
  * Admin Service
@@ -197,23 +198,40 @@ export type EmailStatus = { admin?: string; customer?: string };
  * Call the admin email tools endpoint (test email / confirm stuck order /
  * resend order emails). Requires the signed-in owner account.
  */
-export const adminOrderEmails = async (
+export const adminOrderEmails = (
     action: 'test' | 'confirm' | 'resend',
     orderId?: string
-): Promise<{ emails?: EmailStatus; error?: string }> => {
+): Promise<{ emails?: EmailStatus; error?: string }> =>
+    adminApi('/api/admin/order-emails', 'POST', { action, orderId });
+
+/** Authenticated call to an admin-only API route as the signed-in owner. */
+async function adminApi(path: string, method: 'GET' | 'POST', body?: unknown): Promise<any> {
     const { getCurrentUser } = await import('./auth');
     const user = getCurrentUser();
     if (!user) return { error: 'Not signed in' };
     const token = await user.getIdToken();
-    const res = await fetch('/api/admin/order-emails', {
-        method: 'POST',
+    const res = await fetch(path, {
+        method,
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ action, orderId }),
+        body: body === undefined ? undefined : JSON.stringify(body),
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) return { error: data.error || `Request failed (${res.status})` };
     return data;
+}
+
+/** Tags, notes and contact history the owner keeps per customer. */
+export const fetchCustomerProfiles = async (): Promise<Record<string, CustomerProfileData>> => {
+    const data = await adminApi('/api/admin/customer-profiles', 'GET');
+    if (data.error) throw new Error(data.error);
+    return data.profiles || {};
 };
+
+export const saveCustomerProfile = (
+    key: string,
+    patch: { tags?: string[]; notes?: string; contact?: { template: string } }
+): Promise<{ profile?: CustomerProfileData; error?: string }> =>
+    adminApi('/api/admin/customer-profiles', 'POST', { key, ...patch });
 
 /** Human-readable one-liner for an email status result */
 export const describeEmail = (r?: string): string =>

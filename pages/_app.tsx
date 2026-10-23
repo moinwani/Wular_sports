@@ -121,8 +121,13 @@ function AppShell({ Component, pageProps }: AppProps) {
                 type={toast?.type}
                 onClose={clearToast}
             />
-            <FloatingButtons />
-            <FloatingCallButton />
+            {/* Customer-facing contact buttons would cover admin tables */}
+            {!router.pathname.startsWith('/admin') && (
+                <>
+                    <FloatingButtons />
+                    <FloatingCallButton />
+                </>
+            )}
             <ExitIntentPopup />
         </div>
     );

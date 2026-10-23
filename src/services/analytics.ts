@@ -8,59 +8,158 @@
  * (leads → orders started → paid) instead.
  */
 
-const PAID = ['confirmed', 'processing', 'shipped', 'delivered'];
-const isPaid = (o: any) => PAID.includes(o.status);
+import { isPaid, toDate, Customer, SEGMENTS, Segment } from './customers';
 
-const toDate = (v: any): Date | null => {
-    if (!v) return null;
-    if (v instanceof Date) return v;
-    if (typeof v.toDate === 'function') return v.toDate();
-    const d = new Date(v);
-    return isNaN(d.getTime()) ? null : d;
+const DAY = 86400000;
+
+/* ───────────── Date ranges (scope every number on the Analytics tab) ───────────── */
+
+export type RangeId = '30d' | '90d' | '12m' | 'all';
+
+export const RANGES: { id: RangeId; label: string; days: number | null }[] = [
+    { id: '30d', label: 'Last 30 days', days: 30 },
+    { id: '90d', label: 'Last 90 days', days: 90 },
+    { id: '12m', label: 'Last 12 months', days: 365 },
+    { id: 'all', label: 'All time', days: null },
+];
+
+export interface RangeWindow { start: number; end: number; prevStart: number | null; days: number | null; }
+
+export const rangeWindow = (id: RangeId, now: number): RangeWindow => {
+    const days = RANGES.find(r => r.id === id)!.days;
+    if (days == null) return { start: 0, end: now + 1, prevStart: null, days: null };
+    const start = now - days * DAY;
+    return { start, end: now + 1, prevStart: start - days * DAY, days };
 };
 
-export interface Kpis {
-    paidRevenue: number;
-    paidOrders: number;
-    abandoned: number;
-    cancelled: number;
-    avgOrderValue: number;
-    uniqueCustomers: number;
-    discountGiven: number;
-    ordersPerCustomer: number;
+const timeOf = (o: any) => toDate(o.createdAt)?.getTime() || 0;
+export const inWindow = (list: any[], start: number, end: number, at: (x: any) => number = timeOf) =>
+    list.filter(x => { const t = at(x); return t >= start && t < end; });
+
+export interface RangeKpis {
+    revenue: number; orders: number; aov: number; customers: number; bats: number;
 }
 
-export const computeKpis = (orders: any[]): Kpis => {
+export const computeRangeKpis = (orders: any[]): RangeKpis => {
     const paid = orders.filter(isPaid);
     const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
-    const customers = new Set(paid.map(o => o.userId).filter(Boolean));
+    const keys = new Set(paid.map(o => String(o.customerPhone || o.customerEmail || o.userId)));
     return {
-        paidRevenue: revenue,
-        paidOrders: paid.length,
-        abandoned: orders.filter(o => o.status === 'pending').length,
-        cancelled: orders.filter(o => o.status === 'cancelled').length,
-        avgOrderValue: paid.length ? Math.round(revenue / paid.length) : 0,
-        uniqueCustomers: customers.size,
-        discountGiven: paid.reduce((s, o) => s + (o.discount || 0), 0),
-        ordersPerCustomer: customers.size ? +(paid.length / customers.size).toFixed(2) : 0,
+        revenue,
+        orders: paid.length,
+        aov: paid.length ? revenue / paid.length : 0,
+        customers: keys.size,
+        bats: paid.reduce((s, o) => s + (o.items || []).reduce((q: number, it: any) => q + (it.quantity || 1), 0), 0),
     };
 };
 
-export interface FunnelStep { step: string; count: number; pct: number; stepConv: number | null; }
+export interface SeriesPoint { label: string; tooltipLabel: string; revenue: number; orders: number; }
 
-/** Checkout-level funnel from Firestore (leads → orders → paid). */
-export const computeCheckoutFunnel = (orders: any[], leads: any[]): FunnelStep[] => {
-    const leadsCount = leads.length;
-    const ordersStarted = orders.length;            // any order doc = checkout reached
-    const paid = orders.filter(isPaid).length;
-    const top = Math.max(leadsCount, ordersStarted, 1);
-    const pct = (n: number) => +(100 * n / top).toFixed(1);
-    const conv = (n: number, prev: number) => prev ? +(100 * n / prev).toFixed(1) : null;
+/** Paid revenue bucketed by day (≤31 days), week (≤120 days) or month. */
+export const revenueSeries = (orders: any[], win: RangeWindow, now: number): SeriesPoint[] => {
+    const paid = orders.filter(isPaid).map(o => ({ t: timeOf(o), total: o.total || 0 })).filter(x => x.t > 0);
+    const first = win.days == null ? Math.min(now, ...paid.map(p => p.t)) : win.start;
+    const spanDays = Math.max(1, Math.ceil((now - first) / DAY));
+    const unit: 'day' | 'week' | 'month' = spanDays <= 31 ? 'day' : spanDays <= 120 ? 'week' : 'month';
+
+    const buckets: { start: number; end: number; label: string; tooltipLabel: string }[] = [];
+    const fmt = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleDateString('en-IN', o);
+    if (unit === 'month') {
+        const d = new Date(first); d.setDate(1); d.setHours(0, 0, 0, 0);
+        while (d.getTime() <= now) {
+            const s = d.getTime(); d.setMonth(d.getMonth() + 1);
+            const sd = new Date(s);
+            buckets.push({ start: s, end: d.getTime(), label: fmt(sd, { month: 'short' }) + (sd.getMonth() === 0 ? ` ’${String(sd.getFullYear()).slice(2)}` : ''), tooltipLabel: fmt(sd, { month: 'long', year: 'numeric' }) });
+        }
+    } else {
+        const step = unit === 'day' ? DAY : 7 * DAY;
+        const d = new Date(first); d.setHours(0, 0, 0, 0);
+        for (let s = d.getTime(); s <= now; s += step) {
+            const sd = new Date(s);
+            buckets.push({
+                start: s, end: s + step,
+                label: fmt(sd, { day: 'numeric', month: 'short' }),
+                tooltipLabel: unit === 'day' ? fmt(sd, { weekday: 'short', day: 'numeric', month: 'short' }) : `Week of ${fmt(sd, { day: 'numeric', month: 'short' })}`,
+            });
+        }
+    }
+
+    return buckets.map(b => {
+        const hits = paid.filter(p => p.t >= b.start && p.t < b.end);
+        return { label: b.label, tooltipLabel: b.tooltipLabel, revenue: hits.reduce((s, p) => s + p.total, 0), orders: hits.length };
+    });
+};
+
+export interface BarRow { label: string; value: number; sub?: string; }
+
+/** Paid revenue by shipping state, top N + "Other". */
+export const salesByState = (orders: any[], top = 8): BarRow[] => {
+    const m = new Map<string, { revenue: number; orders: number }>();
+    for (const o of orders.filter(isPaid)) {
+        const s = (o.customerAddress?.state || 'Unknown').trim() || 'Unknown';
+        const cur = m.get(s) || { revenue: 0, orders: 0 };
+        cur.revenue += o.total || 0; cur.orders++;
+        m.set(s, cur);
+    }
+    const rows = [...m.entries()].sort((a, b) => b[1].revenue - a[1].revenue);
+    const head = rows.slice(0, top).map(([label, v]) => ({ label, value: v.revenue, sub: `${v.orders} order${v.orders === 1 ? '' : 's'}` }));
+    const rest = rows.slice(top);
+    if (rest.length) {
+        const r = rest.reduce((a, [, v]) => ({ revenue: a.revenue + v.revenue, orders: a.orders + v.orders }), { revenue: 0, orders: 0 });
+        head.push({ label: `Other (${rest.length} state${rest.length === 1 ? '' : 's'})`, value: r.revenue, sub: `${r.orders} order${r.orders === 1 ? '' : 's'}` });
+    }
+    return head;
+};
+
+export interface SplitPart { label: string; value: number; count: number; }
+
+const split = (orders: any[], a: [string, (o: any) => boolean], bLabel: string): SplitPart[] => {
+    const paid = orders.filter(isPaid);
+    const yes = paid.filter(a[1]), no = paid.filter(o => !a[1](o));
+    const sum = (l: any[]) => l.reduce((s, o) => s + (o.total || 0), 0);
     return [
-        { step: 'Leads captured', count: leadsCount, pct: pct(leadsCount), stepConv: null },
-        { step: 'Reached checkout', count: ordersStarted, pct: pct(ordersStarted), stepConv: conv(ordersStarted, leadsCount) },
-        { step: 'Paid', count: paid, pct: pct(paid), stepConv: conv(paid, ordersStarted) },
+        { label: a[0], value: sum(yes), count: yes.length },
+        { label: bLabel, value: sum(no), count: no.length },
     ];
+};
+
+export const paymentSplit = (orders: any[]) => split(orders, ['Prepaid', o => o.paymentMethod !== 'cod'], 'Cash on delivery');
+
+export const channelSplit = (orders: any[]) =>
+    split(orders, ['Website', o => isWebsiteOrder(o)], 'WhatsApp (pre-website)');
+
+/** Each paid order is either the customer's first purchase or a repeat purchase. */
+export const firstVsRepeat = (ordersInWindow: any[], customers: Customer[]): SplitPart[] => {
+    const firstOrders = new Set<any>();
+    customers.forEach(c => {
+        const paid = c.orders.filter(isPaid);
+        if (paid.length) firstOrders.add(paid.reduce((a, b) => (timeOf(b) < timeOf(a) ? b : a)));
+    });
+    return split(ordersInWindow, ['First orders', o => firstOrders.has(o)], 'Repeat orders');
+};
+
+const isWebsiteOrder = (o: any) => o.source !== 'whatsapp_pre_website' && o.channel !== 'whatsapp';
+
+/**
+ * Website checkout conversion: of the checkouts started on the site (every
+ * order document is created when the customer clicks Pay), how many paid.
+ * Pre-website WhatsApp sales are excluded — they never went through checkout.
+ */
+export const checkoutConversion = (orders: any[]) => {
+    const site = orders.filter(o => isWebsiteOrder(o) && o.status !== 'cancelled');
+    const paid = site.filter(isPaid).length;
+    return { started: site.length, paid, unpaid: site.length - paid, rate: site.length ? Math.round((paid / site.length) * 100) : 0 };
+};
+
+export interface SegmentRow { segment: Segment; customers: number; revenue: number; share: number; }
+
+export const segmentSummary = (customers: Customer[]): SegmentRow[] => {
+    const total = customers.reduce((s, c) => s + c.totalSpent, 0) || 1;
+    return SEGMENTS.map(segment => {
+        const list = customers.filter(c => c.segment === segment);
+        const revenue = list.reduce((s, c) => s + c.totalSpent, 0);
+        return { segment, customers: list.length, revenue, share: revenue / total };
+    }).filter(r => r.customers > 0);
 };
 
 export interface Cohort { cohort: string; customers: number; repeat: number; repeatRate: number; avgLtv: number; }
@@ -105,64 +204,6 @@ export const computeCohorts = (orders: any[]): Cohort[] => {
         }));
 };
 
-export interface RfmSegment { segment: string; customers: number; avgOrders: number; avgSpend: number; tone: 'good' | 'bad' | 'neutral'; }
-
-const quartile = (sortedAsc: number[], value: number): number => {
-    // 1..4 by position; ties share
-    const n = sortedAsc.length;
-    if (n === 0) return 1;
-    const rank = sortedAsc.filter(v => v <= value).length; // 1..n
-    return Math.min(4, Math.max(1, Math.ceil(rank / n * 4)));
-};
-
-export const computeRfm = (orders: any[]): RfmSegment[] => {
-    const paid = orders.filter(isPaid).map(o => ({ userId: o.userId, ts: toDate(o.createdAt), total: o.total || 0 }))
-        .filter(o => o.userId && o.ts) as { userId: string; ts: Date; total: number }[];
-    if (!paid.length) return [];
-
-    const now = Date.now();
-    const per: Record<string, { recency: number; freq: number; mon: number }> = {};
-    for (const o of paid) {
-        const days = (now - o.ts.getTime()) / 86400000;
-        per[o.userId] = per[o.userId] || { recency: days, freq: 0, mon: 0 };
-        per[o.userId].recency = Math.min(per[o.userId].recency, days);
-        per[o.userId].freq++;
-        per[o.userId].mon += o.total;
-    }
-    const custs = Object.entries(per).map(([userId, v]) => ({ userId, ...v }));
-    // recency: lower is better → invert for scoring
-    const recSorted = custs.map(c => -c.recency).sort((a, b) => a - b);
-    const freqSorted = custs.map(c => c.freq).sort((a, b) => a - b);
-    const monSorted = custs.map(c => c.mon).sort((a, b) => a - b);
-
-    const segCount: Record<string, { n: number; orders: number; spend: number }> = {};
-    for (const c of custs) {
-        const r = quartile(recSorted, -c.recency);
-        const f = quartile(freqSorted, c.freq);
-        const m = quartile(monSorted, c.mon);
-        let seg: string;
-        if (r >= 3 && f >= 3 && m >= 3) seg = 'Champions';
-        else if (r >= 3 && f >= 2) seg = 'Loyal';
-        else if (r >= 3 && f === 1) seg = 'New / Promising';
-        else if (r === 2) seg = 'Needs Attention';
-        else seg = 'At Risk / Lapsed';
-        segCount[seg] = segCount[seg] || { n: 0, orders: 0, spend: 0 };
-        segCount[seg].n++;
-        segCount[seg].orders += c.freq;
-        segCount[seg].spend += c.mon;
-    }
-    const tone = (s: string): 'good' | 'bad' | 'neutral' =>
-        s === 'Champions' ? 'good' : s === 'At Risk / Lapsed' ? 'bad' : 'neutral';
-    return Object.entries(segCount)
-        .map(([segment, v]) => ({
-            segment, customers: v.n,
-            avgOrders: +(v.orders / v.n).toFixed(1),
-            avgSpend: Math.round(v.spend / v.n),
-            tone: tone(segment),
-        }))
-        .sort((a, b) => b.customers - a.customers);
-};
-
 export interface CouponRow { segment: string; orders: number; avgOrderValue: number; avgCart: number; discountCost: number; }
 
 export const computeCoupon = (orders: any[]): CouponRow[] => {
@@ -181,14 +222,18 @@ export const computeCoupon = (orders: any[]): CouponRow[] => {
 export interface ProductRow { product: string; units: number; revenue: number; avgRating: number | null; reviews: number; }
 
 export const computeProducts = (orders: any[], reviews: any[]): ProductRow[] => {
-    const sales: Record<string, { name: string; units: number; revenue: number }> = {};
+    // Grouped by name: imported WhatsApp orders can carry a different id for the same bat
+    const sales: Record<string, { name: string; ids: Set<string>; units: number; revenue: number }> = {};
     for (const o of orders.filter(isPaid)) {
         for (const it of (o.items || [])) {
             const id = it.productId || it.id || it.productName;
             if (!id) continue;
-            sales[id] = sales[id] || { name: it.productName || it.name || id, units: 0, revenue: 0 };
-            sales[id].units += it.quantity || 1;
-            sales[id].revenue += (it.price || 0) * (it.quantity || 1);
+            const name = String(it.productName || it.name || id).trim();
+            const k = name.toLowerCase();
+            sales[k] = sales[k] || { name, ids: new Set(), units: 0, revenue: 0 };
+            sales[k].ids.add(String(id));
+            sales[k].units += it.quantity || 1;
+            sales[k].revenue += (it.price || 0) * (it.quantity || 1);
         }
     }
     const rate: Record<string, { sum: number; n: number }> = {};
@@ -197,13 +242,18 @@ export const computeProducts = (orders: any[], reviews: any[]): ProductRow[] => 
         rate[r.productId].sum += r.rating || 0;
         rate[r.productId].n++;
     }
-    return Object.entries(sales).map(([id, s]) => ({
-        product: s.name,
-        units: s.units,
-        revenue: Math.round(s.revenue),
-        avgRating: rate[id] ? +(rate[id].sum / rate[id].n).toFixed(2) : null,
-        reviews: rate[id]?.n || 0,
-    })).sort((a, b) => b.revenue - a.revenue);
+    return Object.values(sales).map(s => {
+        const rs = [...s.ids].map(id => rate[id]).filter(Boolean);
+        const n = rs.reduce((t, x) => t + x.n, 0);
+        const sum = rs.reduce((t, x) => t + x.sum, 0);
+        return {
+            product: s.name,
+            units: s.units,
+            revenue: Math.round(s.revenue),
+            avgRating: n ? +(sum / n).toFixed(2) : null,
+            reviews: n,
+        };
+    }).sort((a, b) => b.revenue - a.revenue);
 };
 
 export interface LeadPipeline {

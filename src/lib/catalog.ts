@@ -114,6 +114,8 @@ export { CatalogError };
 const fail = (msg: string): never => { throw new CatalogError(msg); };
 const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const isUrl = (v: unknown): v is string => typeof v === 'string' && /^https:\/\/[^\s"'<>]+$/.test(v) && v.length <= 600;
+/** Photo address: a full https link, or one served by our own /api/photo/ route (private photo store) */
+const isPhoto = (v: unknown): v is string => isUrl(v) || (typeof v === 'string' && /^\/api\/photo\/[\w./%-]+$/.test(v) && v.length <= 600);
 
 export function cleanProduct(raw: any, categoryNames: string[], isNew: boolean): ProductFull {
     const name = str(raw?.name, 140) || fail('Give the product a name');
@@ -125,7 +127,7 @@ export function cleanProduct(raw: any, categoryNames: string[], isNew: boolean):
     if (!Number.isFinite(originalPrice) || originalPrice < price) fail('“Original price” must be the same as or higher than the selling price');
     const category: string[] = Array.isArray(raw?.category) ? raw.category.filter((c: unknown) => typeof c === 'string' && categoryNames.includes(c)) : [];
     if (!category.length) fail('Pick at least one category');
-    const images = (Array.isArray(raw?.image) ? raw.image : []).filter(isUrl).slice(0, 20);
+    const images = (Array.isArray(raw?.image) ? raw.image : []).filter(isPhoto).slice(0, 20);
     if (!images.length) fail('Add at least one photo');
     const specs = (Array.isArray(raw?.specs) ? raw.specs : []).map((s: unknown) => str(s, 200)).filter(Boolean).slice(0, 40);
     const sizes = Array.isArray(raw?.sizes) ? raw.sizes.map((s: unknown) => str(s, 30)).filter(Boolean).slice(0, 12) : undefined;

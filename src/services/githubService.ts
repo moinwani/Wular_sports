@@ -79,7 +79,7 @@ export function getCDNUrl(pathOrUrl: string, sha?: string): string {
     const repoPrefix = `https://cdn.jsdelivr.net/gh/${REPO_OWNER}/${REPO_NAME}@${BRANCH}/`;
 
     // Photos uploaded from the admin panel (Vercel Blob etc.) are used as-is
-    if (/^https?:\/\//.test(pathOrUrl) && !pathOrUrl.startsWith(repoPrefix)) return pathOrUrl;
+    if ((/^https?:\/\//.test(pathOrUrl) && !pathOrUrl.startsWith(repoPrefix)) || pathOrUrl.startsWith('/api/photo/')) return pathOrUrl;
 
     // Extract path if it's a full repo URL
     let cleanPath = pathOrUrl;

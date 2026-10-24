@@ -3,7 +3,7 @@ import { db, FieldValue } from '../../../src/lib/firebaseAdmin';
 import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { BUILT_IN_CATALOG, getCatalog, invalidateCatalog } from '../../../src/lib/catalogServer';
 import { Category, CatalogError, cleanCategory, cleanProduct, productImages, productSizes } from '../../../src/lib/catalog';
-import { deleteUnusedPhotos } from '../../../src/lib/productPhotos';
+import { deleteUnusedPhotos, photosReady } from '../../../src/lib/productPhotos';
 import type { ProductFull } from '../../../src/types';
 
 /**
@@ -78,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 products: [...catalog.products].sort((a, b) => (a.order ?? 999) - (b.order ?? 999)),
                 categories: catalog.categories,
                 managed: catalog.managed,
-                photosReady: !!process.env.BLOB_READ_WRITE_TOKEN,
+                photosReady: photosReady(),
             });
         }
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });

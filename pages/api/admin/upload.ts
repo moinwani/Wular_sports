@@ -63,6 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(405).json({ error: 'Method not allowed' });
     } catch (err: any) {
         console.error('admin/upload failed:', err?.message);
-        return res.status(500).json({ error: 'Upload failed. Please try again.' });
+        // Show the storage service's own reason so problems can be fixed quickly
+        return res.status(500).json({ error: `Upload failed: ${String(err?.message || 'unknown error').slice(0, 200)}` });
     }
 }

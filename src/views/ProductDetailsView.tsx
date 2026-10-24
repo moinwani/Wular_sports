@@ -1,9 +1,9 @@
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { products } from '../data/products';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
-import { CATEGORY_SLUGS } from '../data/constants';
+import { useCatalog, categoryPathFor } from '../context/CatalogContext';
+import { productSizes, productsIn } from '../lib/catalog';
 import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
@@ -23,6 +23,8 @@ export interface ProductDetailsViewProps {
 type ScrollPhase = 'images' | 'content' | 'normal';
 
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAddToCart }) => {
+    const { products, categories } = useCatalog();
+    const categoryPath = categoryPathFor(categories, product?.category[0]);
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [quantity, setQuantity] = useState(1);
     const [sizeError, setSizeError] = useState(false);
@@ -86,9 +88,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
     if (!product) return null;
 
-    // EXCEPTION: AK-47 Honeycomb is only 35 inch, so no size selector for it
-    const isHoneycomb = product.id === 'ak-47-honeycomb';
-    const hasSizes = !isHoneycomb && product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
+    // One size (e.g. AK-47 is only 35 inch) is added automatically; several → customer picks
+    const sizes = productSizes(product);
+    const singleSize = sizes.length === 1 ? sizes[0] : null;
+    const hasSizes = sizes.length > 1;
     const discountPercentage = product.originalPrice
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
@@ -96,10 +99,9 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const handleAddToCartClick = () => {
         let itemData: { size?: string; quantity?: number } = {};
 
-        if (isHoneycomb) {
-            // Automatically add 35 inch for Honeycomb
-            onAddToCart(product, '35 inch');
-            itemData = { size: '35 inch', quantity: 1 };
+        if (singleSize) {
+            onAddToCart(product, singleSize, quantity);
+            itemData = { size: singleSize, quantity };
         } else if (hasSizes && !selectedSize) {
             setSizeError(true);
             setTimeout(() => {
@@ -201,7 +203,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 "itemListElement": [
                     { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://wularsports.com" },
                     { "@type": "ListItem", "position": 2, "name": "Collection", "item": "https://wularsports.com/collection" },
-                    { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com/${CATEGORY_SLUGS[product.category[0]] || product.category[0].toLowerCase().replace(/\s/g, '-')}` },
+                    { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com${categoryPath}` },
                     { "@type": "ListItem", "position": 4, "name": product.name },
                 ]
             },
@@ -254,7 +256,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 <Breadcrumb items={[
                     { name: 'Home', url: '/' },
                     { name: 'Collection', url: '/collection' },
-                    { name: product.category.join(' & '), url: `/${CATEGORY_SLUGS[product.category[0]]}` },
+                    { name: product.category.join(' & '), url: categoryPath },
                     { name: product.name },
                 ]} />
                 <div className={`product-details-grid-vertical ${isMobile ? 'mobile-layout' : ''}`}>
@@ -338,7 +340,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         Select Size <span className="required-asterisk">*</span>
                                     </label>
                                     <div className="size-options-premium">
-                                        {['35 inch', '36 inch'].map(size => (
+                                        {sizes.map(size => (
                                             <label key={size} className={`size-option-premium ${selectedSize === size ? 'selected' : ''} ${sizeError ? 'error' : ''}`}>
                                                 <input
                                                     type="radio"
@@ -782,15 +784,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     <h2 className="related-title">More to Explore</h2>
 
                     <div className="related-categories">
-                        {[
-                            { title: "Hard Tennis Bats", type: "Hard Tennis" },
-                            { title: "Soft Tennis Bats", type: "Soft Tennis" },
-                            { title: "Leather Bat Collection", type: "Leather Ball" }
-                        ].map(category => {
-                            const otherProducts = products.filter(p =>
-                                p.id !== product.id &&
-                                p.category.includes(category.type as any)
-                            );
+                        {categories.map(c => ({ title: c.id === 'leather-ball' ? 'Leather Bat Collection' : c.title, type: c.name, cat: c })).map(category => {
+                            const otherProducts = productsIn(products, category.cat).filter(p => p.id !== product.id);
 
                             if (otherProducts.length === 0) return null;
 

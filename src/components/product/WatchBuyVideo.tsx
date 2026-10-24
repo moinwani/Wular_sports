@@ -1,6 +1,7 @@
 import { FC, useState, useRef, useEffect, useCallback } from 'react';
 import { ProductFull } from '../../types';
 import { Icon } from '../common/Icon';
+import { productSizes } from '../../lib/catalog';
 
 interface WatchBuyVideoProps {
     product: ProductFull;
@@ -69,8 +70,8 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
             event: 'watch_buy_add_to_cart',
             product_id: product.id,
         });
-        const hasSizes = product.category.some(cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat));
-        if (hasSizes) {
+        const sizes = productSizes(product);
+        if (sizes.length > 1) {
             const sizeSelector = document.querySelector('.size-selector-premium');
             if (sizeSelector) {
                 sizeSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -78,7 +79,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
                 setTimeout(() => sizeSelector.classList.remove('pulse-highlight'), 2000);
             }
         } else {
-            onAddToCart(product, '35 inch');
+            onAddToCart(product, sizes[0] || '');
         }
         handleCloseComplete();
     }, [product, onAddToCart, handleCloseComplete]);

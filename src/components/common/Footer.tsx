@@ -5,8 +5,10 @@ import { INSTAGRAM_LINK, YOUTUBE_LINK } from '../../data/constants';
 import { subscribeToNewsletter } from '../../services/newsletter';
 import { useToast } from '../../context/ToastContext';
 import { Icon } from './Icon';
+import { useCatalog } from '../../context/CatalogContext';
 
 export const Footer: FC = memo(() => {
+    const { categories } = useCatalog();
     const { showToast } = useToast();
     const [email, setEmail] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -63,9 +65,9 @@ export const Footer: FC = memo(() => {
                 <div className="container container-flex">
                     <div className="footer-legal">
                     <div className="footer-seo-links" style={{ marginBottom: '1.5rem', display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
-                        <Link href="/hard-tennis-bats" className="legal-link">Hard Tennis Bats</Link>
-                        <Link href="/soft-tennis-bats" className="legal-link">Soft Tennis Bats</Link>
-                        <Link href="/leather-cricket-bats" className="legal-link">Leather Cricket Bats</Link>
+                        {categories.map(c => (
+                            <Link key={c.id} href={c.path} className="legal-link">{c.title}</Link>
+                        ))}
                         <Link href="/about" className="legal-link">About Us</Link>
                         <Link href="/blog" className="legal-link">Wular Insights</Link>
                         <Link href="/comparison" className="legal-link">Bat Comparison</Link>

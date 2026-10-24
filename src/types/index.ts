@@ -19,7 +19,8 @@ export interface ProductFull {
     id: string;
     sku?: string;
     name: string;
-    category: ('Hard Tennis' | 'Soft Tennis' | 'Leather Ball')[];
+    /** Category names, e.g. ['Hard Tennis'] — managed in Admin → Products */
+    category: string[];
     description: string;
     image: string | string[];
     price: number;
@@ -33,6 +34,12 @@ export interface ProductFull {
     };
     reviewLink?: string;
     videoUrl?: string;
+    /** Sizes the customer picks from; one size = added automatically, empty = no size */
+    sizes?: string[];
+    /** Hidden products stay in the admin panel but not on the website */
+    hidden?: boolean;
+    /** Position in lists (lower first) */
+    order?: number;
 }
 
 export interface CartItem extends ProductFull {

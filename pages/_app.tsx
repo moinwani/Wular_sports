@@ -8,6 +8,7 @@ import { Header } from '../src/components/common/Header';
 import { Footer } from '../src/components/common/Footer';
 import { Toast } from '../src/components/common/Toast';
 import { captureAttribution } from '../src/utils/attributionCapture';
+import { CatalogProvider } from '../src/context/CatalogContext';
 import '../index.css';
 
 declare global {
@@ -117,10 +118,12 @@ function AppShell({ Component, pageProps }: AppProps) {
 
 export default function App(props: AppProps) {
     return (
-        <CartProvider>
-            <ToastProvider>
-                <AppShell {...props} />
-            </ToastProvider>
-        </CartProvider>
+        <CatalogProvider initial={props.pageProps?.catalog || null}>
+            <CartProvider>
+                <ToastProvider>
+                    <AppShell {...props} />
+                </ToastProvider>
+            </CartProvider>
+        </CatalogProvider>
     );
 }

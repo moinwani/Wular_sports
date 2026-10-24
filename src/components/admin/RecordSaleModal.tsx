@@ -1,6 +1,7 @@
 import { FC, useEffect, useMemo, useState } from 'react';
 import { useAdminData } from '../../hooks/useAdminData';
-import { products } from '../../data/products';
+import { useCatalog } from '../../context/CatalogContext';
+import type { ProductFull } from '../../types';
 import { INDIAN_STATES } from '../../data/constants';
 import { keyFor } from '../../services/customers';
 import { marketingAction } from '../../services/admin';
@@ -20,7 +21,7 @@ export interface SaleDraft {
 
 interface Line { productId: string; name: string; price: string; quantity: string; }
 
-const CATALOG = products.map(p => ({ id: p.id, name: p.name.split(' — ')[0].trim(), price: p.price }));
+const shortCatalog = (products: ProductFull[]) => products.map(p => ({ id: p.id, name: p.name.split(' — ')[0].trim(), price: p.price }));
 const PAYMENT_MODES = [
     { id: 'upi', label: 'UPI' }, { id: 'bank', label: 'Bank transfer' }, { id: 'cash', label: 'Cash' },
     { id: 'cod', label: 'Cash on delivery' }, { id: 'card', label: 'Card' }, { id: 'other', label: 'Other' },
@@ -31,11 +32,14 @@ const STATUSES = [
     { id: 'delivered', label: 'Delivered' },
 ];
 const today = () => new Date(Date.now() + 5.5 * 3600000).toISOString().slice(0, 10);
-const blankLine = (): Line => ({ productId: CATALOG[0].id, name: CATALOG[0].name, price: String(CATALOG[0].price), quantity: '1' });
+const blankLine = (catalog: ReturnType<typeof shortCatalog>): Line =>
+    catalog[0] ? { productId: catalog[0].id, name: catalog[0].name, price: String(catalog[0].price), quantity: '1' } : { productId: '', name: '', price: '', quantity: '1' };
 const last10 = (p: string) => p.replace(/\D/g, '').slice(-10);
 
 export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({ draft, onClose }) => {
     const { customers, leads, marketing } = useAdminData();
+    const { products } = useCatalog();
+    const CATALOG = useMemo(() => shortCatalog(products), [products]);
     const [phone, setPhone] = useState(draft.phone || '');
     const [name, setName] = useState(draft.name || '');
     const [city, setCity] = useState(draft.city || '');
@@ -43,7 +47,7 @@ export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({
     const [email, setEmail] = useState(draft.email || '');
     const [address, setAddress] = useState('');
     const [pincode, setPincode] = useState('');
-    const [lines, setLines] = useState<Line[]>([blankLine()]);
+    const [lines, setLines] = useState<Line[]>(() => [blankLine(CATALOG)]);
     const [coupon, setCoupon] = useState('');
     const [extraDiscount, setExtraDiscount] = useState('');
     const [paymentMode, setPaymentMode] = useState('upi');
@@ -251,7 +255,7 @@ export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({
                                     )}
                                 </div>
                             ))}
-                            <button className="crm-linkbtn" onClick={() => setLines(ls => [...ls, blankLine()])}>+ Add another bat</button>
+                            <button className="crm-linkbtn" onClick={() => setLines(ls => [...ls, blankLine(CATALOG)])}>+ Add another bat</button>
                             <div className="mk-grid mk-grid--tight">
                                 <label className="mk-field">
                                     <span>Coupon used</span>

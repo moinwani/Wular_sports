@@ -2,8 +2,9 @@ import { useRouter } from 'next/router';
 import { useCart } from '../src/context/CartContext';
 import { useToast } from '../src/context/ToastContext';
 import { HomeView } from '../src/views/HomeView';
-import { products } from '../src/data/products';
+import { GetStaticProps } from 'next';
 import { ProductFull } from '../src/types';
+import { catalogPageProps, PAGE_REVALIDATE_SECONDS } from '../src/lib/catalogServer';
 
 export default function HomePage() {
     const router = useRouter();
@@ -24,3 +25,8 @@ export default function HomePage() {
         />
     );
 }
+
+export const getStaticProps: GetStaticProps = async () => ({
+    props: await catalogPageProps(),
+    revalidate: PAGE_REVALIDATE_SECONDS,
+});

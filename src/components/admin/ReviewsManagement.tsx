@@ -1,9 +1,10 @@
 import { FC, useState, useEffect, useMemo } from 'react';
 import { getAllReviews, approveReview, deleteReview, Review } from '../../services/reviews';
-import { products } from '../../data/products';
+import { useCatalog } from '../../context/CatalogContext';
 import { Icon } from '../common/Icon';
 
 export const ReviewsManagement: FC = () => {
+    const { products } = useCatalog();
     const [reviews, setReviews] = useState<Review[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);

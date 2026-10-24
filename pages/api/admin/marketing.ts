@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { db, FieldValue, Timestamp } from '../../../src/lib/firebaseAdmin';
 import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { BUILT_IN_COUPONS } from '../../../src/data/coupons';
-import { products } from '../../../src/data/products';
+import { getCatalog } from '../../../src/lib/catalogServer';
 import {
     Campaign, CouponDef, SpendEntry, PLATFORMS, SOURCES, normalizeCode, sanitizeAttribution,
 } from '../../../src/lib/marketing';
@@ -169,6 +169,7 @@ async function recordSale(b: any) {
     if (digits.length < 10 || digits.length > 15) bad('Enter a valid phone number');
     const phone10 = last10(digits);
 
+    const { products } = await getCatalog({ fresh: true });
     const items: any[] = Array.isArray(b.items) ? b.items.slice(0, 50) : [];
     if (!items.length) bad('Add at least one bat');
     const orderItems = items.map(it => {

@@ -5,6 +5,8 @@ const nextConfig = {
     images: {
         remotePatterns: [
             { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
+            // Product photos uploaded from the admin panel
+            { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
         ],
         formats: ['image/webp', 'image/avif'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
@@ -15,7 +17,7 @@ const nextConfig = {
             "script-src 'self' 'unsafe-inline' https://*.clarity.ms https://apis.google.com https://accounts.google.com https://checkout.razorpay.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-            "img-src 'self' data: https://cdn.jsdelivr.net https://*.clarity.ms https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
+            "img-src 'self' data: blob: https://cdn.jsdelivr.net https://*.public.blob.vercel-storage.com https://*.clarity.ms https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
             "frame-src 'self' https://www.youtube.com https://api.razorpay.com https://*.googletagmanager.com",
             "connect-src 'self' https://api.github.com https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
             "media-src 'self' https://cdn.jsdelivr.net",

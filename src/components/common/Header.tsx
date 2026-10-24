@@ -6,10 +6,12 @@ import { MobileMenu } from './MobileMenu';
 import { useCart } from '../../context/CartContext';
 import { getFileSHA, getCDNUrl } from '../../services/githubService';
 import { Icon } from './Icon';
+import { useCatalog } from '../../context/CatalogContext';
 
 export const Header: FC = memo(() => {
     const router = useRouter();
     const { cartItemCount, openCart } = useCart();
+    const navCategories = useCatalog().categories.filter(c => c.showInNav);
     const [isLogoDimmed, setIsLogoDimmed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -79,9 +81,9 @@ export const Header: FC = memo(() => {
                             <Icon name="fa-bars" />
                         </button>
                         <Link href="/collection" className="nav-link">Shop All</Link>
-                    <Link href="/hard-tennis-bats" className="nav-link">Hard Tennis</Link>
-                        <Link href="/soft-tennis-bats" className="nav-link">Soft Tennis</Link>
-                        <Link href="/leather-cricket-bats" className="nav-link">Leather Bats</Link>
+                        {navCategories.map(c => (
+                            <Link key={c.id} href={c.path} className="nav-link">{c.navLabel}</Link>
+                        ))}
                     </div>
 
                     <Link

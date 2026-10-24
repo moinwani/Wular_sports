@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react';
 import Link from 'next/link';
 import { WHATSAPP_NUMBER, INSTAGRAM_LINK } from '../../data/constants';
 import { Icon } from './Icon';
+import { useCatalog } from '../../context/CatalogContext';
 
 interface MobileMenuProps {
     isOpen: boolean;
@@ -9,6 +10,7 @@ interface MobileMenuProps {
 }
 
 export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
+    const { categories } = useCatalog();
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
         return () => { document.body.style.overflow = ''; };
@@ -30,9 +32,9 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                         <span>Shop Collection</span>
                     </Link>
                     <div className="mobile-menu-sublinks" style={{ paddingLeft: '3rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1rem' }}>
-                        <Link href="/hard-tennis-bats" onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>Hard Tennis</Link>
-                        <Link href="/soft-tennis-bats" onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>Soft Tennis</Link>
-                        <Link href="/leather-cricket-bats" onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>Leather Bat</Link>
+                        {categories.filter(c => c.showInNav).map(c => (
+                            <Link key={c.id} href={c.path} onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>{c.navLabel}</Link>
+                        ))}
                     </div>
                     <Link href="/blog" className="mobile-menu-link" onClick={onClose}>
                         <Icon name="fa-newspaper" />

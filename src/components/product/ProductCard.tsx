@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
+import { productSizes } from '../../lib/catalog';
 
 export interface ProductCardProps {
     product: ProductFull;
@@ -14,10 +15,9 @@ export interface ProductCardProps {
 export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart }) => {
     const router = useRouter();
 
-    const isHoneycomb = product.id === 'ak-47-honeycomb';
-    const needsSizeSelection = !isHoneycomb && product.category.some(
-        cat => ['Hard Tennis', 'Soft Tennis', 'Leather Ball'].includes(cat)
-    );
+    // More than one size → the customer picks on the product page
+    const sizes = productSizes(product);
+    const needsSizeSelection = sizes.length > 1;
 
     const handleCardClick = () => {
         router.push(`/product/${product.id}`);
@@ -25,7 +25,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.stopPropagation();
-        const size = isHoneycomb ? '35 inch' : '';
+        const size = sizes[0] || '';
         onAddToCart(product, size);
 
         if (typeof window !== 'undefined' && window.dataLayer) {

@@ -1,14 +1,12 @@
 import { GetStaticProps } from 'next';
 import { CollectionView } from '../src/views/CollectionView';
-import { products } from '../src/data/products';
-import { ProductFull } from '../src/types';
+import { catalogPageProps, PAGE_REVALIDATE_SECONDS } from '../src/lib/catalogServer';
 
-interface Props { products: ProductFull[]; }
-
-export default function CollectionPage({ products }: Props) {
-    return <CollectionView products={products} />;
+export default function CollectionPage() {
+    return <CollectionView />;
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-    return { props: { products } };
-};
+export const getStaticProps: GetStaticProps = async () => ({
+    props: await catalogPageProps(),
+    revalidate: PAGE_REVALIDATE_SECONDS,
+});

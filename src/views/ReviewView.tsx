@@ -1,10 +1,11 @@
 import { FC, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { products } from '../data/products';
+import { useCatalog } from '../context/CatalogContext';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
 
 export const ReviewView: FC = () => {
+    const { products } = useCatalog();
     const router = useRouter();
     const [productId, setProductId] = useState('');
     const [rating, setRating] = useState(0);

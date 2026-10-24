@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Razorpay from 'razorpay';
-import { products } from '../../src/data/products';
+import { getCatalog } from '../../src/lib/catalogServer';
 import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 import { auth, db, FieldValue } from '../../src/lib/firebaseAdmin';
 import { validateFormData } from '../../src/utils/inputValidation';
@@ -77,7 +77,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     const c = validation.sanitized! as Record<string, string>;
 
-    // Compute amount server-side from authoritative product catalog
+    // Compute amount server-side from the live catalog (prices set in the admin panel)
+    const catalog = await getCatalog({ fresh: true });
+    if (catalog.failed) {
+        return res.status(503).json({ error: 'Could not load prices right now. Please try again in a minute.' });
+    }
+    const products = catalog.products.filter(p => !p.hidden);
     let orderTotal = 0;
     let totalBats = 0;
     const orderItems: Array<{ productId: string; productName: string; price: number; quantity: number; size?: string }> = [];
@@ -85,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     for (const item of items) {
         const product = products.find(p => p.id === item.id);
         if (!product) {
-            return res.status(400).json({ error: `Unknown product: ${item.id}` });
+            return res.status(400).json({ error: 'One of the bats in your cart is no longer available. Please remove it and try again.' });
         }
         const qty = Number(item.quantity);
         if (!Number.isInteger(qty) || qty < 1 || qty > 100) {

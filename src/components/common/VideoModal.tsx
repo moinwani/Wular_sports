@@ -1,6 +1,6 @@
 import { FC, useRef, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { products } from '../../data/products';
+import { useCatalog } from '../../context/CatalogContext';
 import { Testimonial } from '../../types';
 import { Icon } from './Icon';
 
@@ -13,6 +13,7 @@ export interface VideoModalProps {
 const MAX_MOBILE_WIDTH = 450;
 
 export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, onClose }) => {
+    const { products } = useCatalog();
     const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
     const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);

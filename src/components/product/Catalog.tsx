@@ -1,7 +1,8 @@
 import { memo, forwardRef, RefObject } from 'react';
 import { ProductFull } from '../../types';
 import { ProductCard } from './ProductCard';
-import { products } from '../../data/products';
+import { useCatalog } from '../../context/CatalogContext';
+import { productsIn } from '../../lib/catalog';
 
 export interface CatalogProps {
     onAddToCart: (product: ProductFull, size: string | null) => void;
@@ -10,11 +11,11 @@ export interface CatalogProps {
 }
 
 export const Catalog = memo(forwardRef<HTMLElement, CatalogProps>(({ onAddToCart, onImageClick, onWatchVideo }, ref) => {
-    const categories = {
-        "Hard Tennis Bats": products.filter(p => p.category.includes("Hard Tennis")),
-        "Soft Tennis Bats": products.filter(p => p.category.includes("Soft Tennis")),
-        "Leather Bat Collection": products.filter(p => p.category.includes("Leather Ball")),
-    };
+    const { products, categories: cats } = useCatalog();
+    // Section headings in menu order; the leather one keeps its original wording
+    const categories = Object.fromEntries(
+        cats.map(c => [c.id === 'leather-ball' ? 'Leather Bat Collection' : c.title, productsIn(products, c)])
+    );
 
     return (
         <section id="catalog" ref={ref}>

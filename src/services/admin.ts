@@ -3,6 +3,8 @@ import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 import type { CustomerProfileData } from './customers';
 import type { Attribution, Campaign, CouponDef, SpendEntry } from '../lib/marketing';
+import type { Category } from '../lib/catalog';
+import type { ProductFull } from '../types';
 
 /**
  * Admin Service
@@ -260,6 +262,76 @@ export const fetchMarketing = async (): Promise<MarketingData> => {
 /** Run one marketing action (save campaign, record sale, …); returns { error } on failure. */
 export const marketingAction = (action: string, payload: Record<string, unknown>): Promise<any> =>
     adminApi('/api/admin/marketing', 'POST', { action, ...payload });
+
+/* ───────────── Products & categories ───────────── */
+
+export interface AdminCatalog {
+    products: ProductFull[];
+    categories: Category[];
+    /** false until the first change copies the built-in list into the database */
+    managed: boolean;
+    /** Photo storage (Vercel Blob) is connected */
+    photosReady: boolean;
+}
+
+export const fetchAdminCatalog = async (): Promise<AdminCatalog> => {
+    const data = await adminApi('/api/admin/products', 'GET');
+    if (data.error) throw new Error(data.error);
+    return data;
+};
+
+/** Save / delete / reorder products and categories; returns { error } on failure. */
+export const productAction = (action: string, payload: Record<string, unknown>): Promise<any> =>
+    adminApi('/api/admin/products', 'POST', { action, ...payload });
+
+/** Shrink a photo in the browser (max 1600px, WebP or JPEG) so uploads are fast and pages stay light. */
+async function shrinkPhoto(file: File): Promise<Blob> {
+    const MAX = 1600;
+    const bitmap = await createImageBitmap(file).catch(() => null);
+    if (!bitmap) return file;
+    const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const encode = (type: string) => new Promise<Blob | null>(r => canvas.toBlob(r, type, 0.85));
+    const webp = await encode('image/webp');
+    const out = webp && webp.type === 'image/webp' ? webp : await encode('image/jpeg');
+    return out && out.size < file.size ? out : file;
+}
+
+/** Upload one product photo; returns its public address. */
+export const uploadProductPhoto = async (file: File, productId: string): Promise<{ url?: string; error?: string }> => {
+    const { getCurrentUser } = await import('./auth');
+    const user = getCurrentUser();
+    if (!user) return { error: 'Not signed in' };
+    if (!file.type.startsWith('image/')) return { error: `${file.name} isn’t a photo` };
+    const blob = await shrinkPhoto(file);
+    const type = ['image/jpeg', 'image/png', 'image/webp'].includes(blob.type) ? blob.type : 'image/jpeg';
+    const ext = type.split('/')[1].replace('jpeg', 'jpg');
+    const name = file.name.replace(/\.[^.]+$/, '') + '.' + ext;
+    const res = await fetch(`/api/admin/upload?product=${encodeURIComponent(productId || 'new')}&name=${encodeURIComponent(name)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': type, Authorization: `Bearer ${await user.getIdToken()}` },
+        body: blob,
+    });
+    const data = await res.json().catch(() => ({}));
+    return res.ok ? { url: data.url } : { error: data.error || `Upload failed (${res.status})` };
+};
+
+/** Remove an uploaded photo that was never saved on a product. Best-effort. */
+export const discardProductPhoto = async (url: string): Promise<void> => {
+    try {
+        const { getCurrentUser } = await import('./auth');
+        const user = getCurrentUser();
+        if (!user) return;
+        await fetch('/api/admin/upload', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await user.getIdToken()}` },
+            body: JSON.stringify({ url }),
+        });
+    } catch { /* best-effort */ }
+};
 
 /** Human-readable one-liner for an email status result */
 export const describeEmail = (r?: string): string =>

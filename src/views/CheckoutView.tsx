@@ -219,7 +219,8 @@ interface CheckoutViewProps {
 export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder }) => {
     const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
-    const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+    // Phones: show what's being bought up front (most carts are one or two bats)
+    const [isSummaryExpanded, setIsSummaryExpanded] = useState(true);
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -1292,9 +1293,20 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                             {isProcessing ? (
                                 <span className="btn-spinner"><Icon name="fa-spinner" spin /> Processing...</span>
                             ) : (
-                                "PLACE ORDER"
+                                <><Icon name="fa-lock" /> {formData.paymentMethod === 'cod' && isIndiaOrder
+                                    ? `Pay ₹${(COD_BOOKING_PER_BAT * cartBats).toLocaleString('en-IN')} booking & place order`
+                                    : `Pay ₹${payable.toLocaleString('en-IN')} & place order`}</>
                             )}
                         </button>
+                        <p className="checkout-secure-note">
+                            <Icon name="fa-shield-alt" /> Secure payment by Razorpay — UPI, cards, net banking
+                        </p>
+                        <p className="checkout-help">
+                            Questions before you pay?{' '}
+                            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi! I have a question before placing my order.${getVisitorRef() ? ` (Ref: ${getVisitorRef()})` : ''}`)}`} target="_blank" rel="noopener noreferrer">
+                                Chat with us on WhatsApp
+                            </a>
+                        </p>
 
                         {formData.country !== 'India' && (
                             <button

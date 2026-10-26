@@ -4103,7 +4103,8 @@ main {
     background-color: #0a0a0a;
     border-right: 2px solid var(--golden);
     z-index: 2999;
-    transform: translateX(-100%);
+    /* A little past -100% so the gold border never peeks in at the screen edge */
+    transform: translateX(calc(-100% - 4px));
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
@@ -9627,4 +9628,215 @@ img[loading="lazy"] {
     .pm-thumb { width: 56px; height: 56px; }
     .pm-actions { grid-column: 1 / -1; justify-content: flex-start; }
     .pe-url { flex-direction: column; align-items: stretch; }
+}
+
+/* ═══════════ Mobile-first conversion pass ═══════════ */
+
+/* Product page: breathing room at the screen edges (the shared .container has no padding) */
+.product-details-page > .container { padding: 0 1.25rem; }
+@media (max-width: 768px) {
+    .product-details-page { padding-top: 0.5rem; }
+    .product-details-page > .container { padding: 0 1rem; }
+    /* Photos stay edge-to-edge */
+    .product-details-grid-vertical.mobile-layout .product-gallery-section-vertical { margin: 0 -1rem; }
+    .product-details-page .breadcrumb, .product-details-page nav[aria-label="Breadcrumb"] { font-size: 0.78rem; }
+}
+
+.product-title-premium .product-title-sub {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+    color: #9a9a9a;
+    font-weight: 400;
+}
+@media (max-width: 768px) {
+    .product-title-premium { font-size: 1.6rem; line-height: 1.15; }
+    .product-title-premium .product-title-sub { font-size: 0.82rem; }
+}
+
+.product-rating-line {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: none; border: none; padding: 0.25rem 0; margin: 0.25rem 0 0.75rem;
+    color: #ccc; font-size: 0.88rem; cursor: pointer;
+}
+.product-rating-line strong { color: #fff; }
+.product-rating-stars { color: var(--golden); letter-spacing: 1px; }
+.product-rating-line:hover span:last-child { text-decoration: underline; }
+
+.product-highlights {
+    list-style: none; margin: 0.75rem 0 1rem; padding: 0;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem;
+}
+.product-highlights li {
+    background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px; padding: 0.55rem 0.7rem; display: flex; flex-direction: column; gap: 0.15rem; min-width: 0;
+}
+.product-highlights span { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: #8a8a8a; }
+.product-highlights strong { font-size: 0.85rem; color: #eee; font-weight: 500; line-height: 1.3; }
+
+.trust-strip-pdp {
+    list-style: none; margin: 0.25rem 0 1rem; padding: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.55rem 1rem;
+}
+.trust-strip-pdp li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #bbb; }
+.trust-strip-pdp li svg { color: var(--golden); width: 1rem; flex-shrink: 0; }
+
+.pdp-add-link {
+    display: block; width: 100%; margin: 0.6rem 0 0.9rem; background: none; border: none;
+    color: #aaa; font-size: 0.85rem; text-decoration: underline; cursor: pointer;
+}
+.pdp-add-link:hover { color: var(--golden); }
+
+/* Sticky buy bar (phones) */
+.pdp-buy-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 1001;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+    padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom));
+    background: rgba(12, 12, 12, 0.97); border-top: 1px solid rgba(212, 175, 55, 0.35);
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
+    transform: translateY(110%); transition: transform 0.25s ease;
+}
+.pdp-buy-bar.is-visible { transform: none; }
+.pdp-buy-bar__price { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.45rem; min-width: 0; }
+.pdp-buy-bar__price strong { font-size: 1.2rem; color: #fff; font-variant-numeric: tabular-nums; }
+.pdp-buy-bar__price s { font-size: 0.8rem; color: #777; }
+.pdp-buy-bar__price span { flex-basis: 100%; font-size: 0.72rem; color: #9a9a9a; }
+.pdp-buy-bar__btn {
+    flex-shrink: 0; min-width: 9.5rem; min-height: 48px; border: none; border-radius: 8px;
+    background: var(--golden); color: #111; font-family: 'Oswald', sans-serif; font-size: 1.05rem;
+    letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+}
+/* Keep floating helpers clear of the bar */
+body.has-buy-bar .fab-call { display: none; }
+body.has-buy-bar .fab-whatsapp { bottom: calc(84px + env(safe-area-inset-bottom)); }
+body.has-buy-bar .watch-buy-video-container { bottom: calc(150px + env(safe-area-inset-bottom)) !important; }
+body.has-buy-bar .product-details-page { padding-bottom: 6rem; }
+
+/* Product cards: short name + subtitle instead of the full name in huge capitals */
+.product-card-sub { margin: -0.25rem 0 0.45rem; font-size: 0.8rem; color: #9a9a9a; line-height: 1.35; }
+.product-card-rating { margin: 0 0 0.35rem; font-size: 0.82rem; color: #ddd; }
+.product-card-rating span:first-child { color: var(--golden); }
+.product-card-rating__n { color: #888; }
+.product-card-perks { margin: 0.35rem 0 0.6rem; font-size: 0.75rem; color: #6BBE86; }
+@media (max-width: 768px) {
+    .product-card.compact .product-name { font-size: 1.3rem; line-height: 1.2; margin-bottom: 0.4rem; }
+    .product-card.compact .btn-view-details, .product-card.compact .btn-add-to-cart { min-height: 44px; width: 100%; font-size: 0.95rem; }
+}
+
+/* Toast: bottom of the screen on phones so it never covers the cart header */
+@media (max-width: 768px) {
+    .toast { top: auto; bottom: calc(1rem + env(safe-area-inset-bottom)); width: calc(100% - 2rem); max-width: 420px; padding: 0.8rem 1rem; text-align: center; }
+}
+
+/* Category pages: products first, story after */
+.category-hero { padding: 2.5rem 1.25rem 1.5rem; background: var(--black); text-align: center; }
+.category-h1 { font-size: 2.4rem; margin-bottom: 0.75rem; color: var(--golden); }
+.category-lede { max-width: 720px; margin: 0 auto 1rem; color: #bbb; font-size: 1.02rem; line-height: 1.6; }
+.category-perks { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 0.5rem; }
+.category-perks li { font-size: 0.78rem; color: #ccc; border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 999px; padding: 0.25rem 0.7rem; }
+.category-about { background: var(--black); padding: 1rem 1.25rem 3rem; }
+.category-about .container { max-width: 800px; }
+.category-about h2 { font-size: 1.2rem; color: var(--golden); margin: 0 0 0.75rem; text-align: left; }
+.category-about p { color: #aaa; font-size: 0.95rem; line-height: 1.75; margin: 0; text-align: left; }
+.category-about p.is-clamped { display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.category-about__more { background: none; border: none; color: var(--golden); padding: 0.5rem 0; font-size: 0.9rem; text-decoration: underline; cursor: pointer; }
+@media (max-width: 768px) {
+    .category-hero { padding: 1.25rem 1rem 1rem; }
+    .category-h1 { font-size: 1.6rem; line-height: 1.2; }
+    .category-lede { font-size: 0.92rem; }
+    .category-view > .container { padding: 0 1rem; }
+    .category-products { padding-left: 1rem !important; padding-right: 1rem !important; }
+}
+
+/* Checkout on phones */
+@media (max-width: 768px) {
+    /* The summary block existed but was never switched on for phones */
+    .checkout-summary-mobile { display: block; }
+    /* City | PIN on one row, State full width below */
+    .form-row.compact-triple { grid-template-columns: 1fr 1fr; }
+    .form-row.compact-triple > :nth-child(2) { grid-column: 1 / -1; order: 3; }
+    .country-code-select { flex-basis: 96px; max-width: 96px; }
+    .form-group input, .form-group select { font-size: 16px; min-height: 46px; } /* 16px stops iPhone zooming into fields */
+    .btn-place-order { min-height: 54px; font-size: 1.05rem; }
+}
+.btn-place-order { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.checkout-secure-note { margin: 0.75rem 0 0.25rem; font-size: 0.8rem; color: #9a9a9a; text-align: center; display: flex; gap: 0.4rem; align-items: center; justify-content: center; }
+.checkout-secure-note svg { color: #6BBE86; }
+.checkout-help { margin: 0.25rem 0 0; font-size: 0.85rem; color: #aaa; text-align: center; }
+.checkout-help a { color: #25D366; }
+
+/* Admin on phones: the sidebar (hidden before — no way to switch tabs) becomes a swipeable tab strip */
+@media (max-width: 768px) {
+    .admin-header { padding: 0.6rem 1rem; }
+    .admin-header h1 { font-size: 1.05rem; }
+    .btn-logout { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+    .admin-body { flex-direction: column; }
+    .admin-sidebar {
+        display: block; width: 100%; padding: 0;
+        position: sticky; top: 0; z-index: 90;
+        border-right: none; border-bottom: 1px solid #2a2a2a; background: #111;
+        overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .admin-sidebar::-webkit-scrollbar { display: none; }
+    .admin-nav { flex-direction: row; gap: 0; width: max-content; }
+    .admin-nav-item {
+        flex-direction: column; gap: 0.25rem; padding: 0.55rem 0.85rem; min-width: 64px;
+        font-size: 0.72rem; letter-spacing: 0.04em; white-space: nowrap;
+        border-left: none; border-bottom: 2px solid transparent;
+    }
+    .admin-nav-item svg { font-size: 1.05rem; }
+    .admin-nav-item:hover { border-left-color: transparent; }
+    .admin-nav-item.active { border-left-color: transparent; border-bottom-color: var(--golden); }
+    .admin-content { padding: 1rem 0.85rem 5rem; overflow-x: hidden; }
+    .admin-content .management-header h1 { font-size: 1.6rem; }
+}
+
+/* Admin tables never push the page sideways */
+.orders-table-container, .subscribers-table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 768px) {
+    .orders-table-container .admin-table:not(.orders-table), .subscribers-table-container .admin-table { min-width: 640px; }
+    .orders-filters { gap: 0.6rem; }
+
+    /* Orders: one card per order on phones */
+    .orders-table thead { display: none; }
+    .orders-table, .orders-table tbody, .orders-table tr, .orders-table td { display: block; width: 100%; }
+    .orders-table tr { background: #141414; border: 1px solid #2a2a2a; border-radius: 10px; margin-bottom: 0.7rem; padding: 0.4rem 0.8rem; }
+    .orders-table td { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.45rem 0; border: none; text-align: right; }
+    .orders-table td + td { border-top: 1px solid #1f1f1f; }
+    .orders-table td::before { color: #888; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; text-align: left; flex-shrink: 0; }
+    .orders-table td:nth-child(1)::before { content: 'Order'; }
+    .orders-table td:nth-child(2)::before { content: 'Customer'; }
+    .orders-table td:nth-child(3)::before { content: 'Items'; }
+    .orders-table td:nth-child(4)::before { content: 'Total'; }
+    .orders-table td:nth-child(5)::before { content: 'Status'; }
+    .orders-table td:nth-child(6)::before { content: 'Payment'; }
+    .orders-table td:nth-child(7)::before { content: 'Date'; }
+    .orders-table td:nth-child(8)::before { content: ''; }
+    .orders-table .customer-cell { align-items: flex-end; text-align: right; min-width: 0; }
+    .orders-table .customer-email { word-break: break-all; }
+    .orders-table .status-select { min-height: 40px; }
+}
+/* "More to explore" rows sit inside the padding-less .container — give them room so the swipe row doesn't push the page sideways */
+@media (max-width: 768px) {
+    .related-products-section > .container { padding: 0 1rem; }
+    .related-products-section { overflow-x: clip; }
+}
+/* Phones: the floating "Watch & Buy" preview used to cover the product title on the first screen —
+   it now appears once the shopper scrolls past the main Buy button (sitting above the buy bar) */
+@media (max-width: 768px) {
+    body:not(.has-buy-bar) .watch-buy-video-container { opacity: 0; pointer-events: none; transform: translateY(20px); }
+    .fab-whatsapp, .fab-call { width: 50px; height: 50px; }
+}
+/* Phones: name, rating and price reach the first screen; breadcrumb shows the short path only */
+@media (max-width: 768px) {
+    .product-details-page .horizontal-gallery-image { max-height: 52vh; }
+    .product-details-page .breadcrumb { padding: 0.25rem 0 0.6rem; margin: 0; }
+    .product-details-page .breadcrumb li:last-child, .product-details-page .breadcrumb > *:last-child:not(:first-child) { display: none; }
+}
+
+@media (max-width: 768px) {
+    .product-details-page .product-price-section-premium { margin-top: 0; }
 }

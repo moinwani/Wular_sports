@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
-import { productSizes } from '../../lib/catalog';
+import { productSizes, splitProductName } from '../../lib/catalog';
 
 export interface ProductCardProps {
     product: ProductFull;
@@ -17,6 +17,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
 
     // More than one size → the customer picks on the product page
     const sizes = productSizes(product);
+    const [title, subtitle] = splitProductName(product.name);
     const needsSizeSelection = sizes.length > 1;
 
     const handleCardClick = () => {
@@ -85,7 +86,14 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
             {imageElement}
 
             <div className="product-info-compact">
-                <h3 className="product-name">{product.name}</h3>
+                <h3 className="product-name">{title}</h3>
+                {subtitle && <p className="product-card-sub">{subtitle}</p>}
+                {product.aggregateRating && product.aggregateRating.reviewCount > 0 && (
+                    <p className="product-card-rating" aria-label={`Rated ${product.aggregateRating.ratingValue} out of 5`}>
+                        <span aria-hidden="true">★</span> {product.aggregateRating.ratingValue}
+                        <span className="product-card-rating__n"> ({product.aggregateRating.reviewCount})</span>
+                    </p>
+                )}
                 <div className="product-price">
                     <span className="current-price">₹{product.price.toLocaleString('en-IN')}</span>
                     {product.originalPrice && (
@@ -95,6 +103,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
                         </>
                     )}
                 </div>
+                <p className="product-card-perks">Free delivery · Cash on delivery</p>
                 <button className="btn-view-details" onClick={handleViewDetails}>
                     View Details
                 </button>

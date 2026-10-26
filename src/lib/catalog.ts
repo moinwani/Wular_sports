@@ -82,6 +82,25 @@ export const slugify = (s: string) =>
 export const productImages = (p: Pick<ProductFull, 'image'>): string[] =>
     (Array.isArray(p.image) ? p.image : p.image ? [p.image] : []).filter(Boolean);
 
+/** "Legacy Edition 2.0 — Kashmiri Willow Hard Tennis Bat" → ["Legacy Edition 2.0", "Kashmiri Willow Hard Tennis Bat"] */
+export const splitProductName = (name: string): [string, string] => {
+    const i = name.indexOf(' — ');
+    return i > 0 ? [name.slice(0, i).trim(), name.slice(i + 3).trim()] : [name, ''];
+};
+
+/** Up to `max` short selling points from the specs ("Weight: 980–1100 grams" → "980–1100 grams") */
+export const productHighlights = (p: Pick<ProductFull, 'specs'>, max = 4): { label: string; value: string }[] => {
+    const wanted = ['wood', 'weight', 'scoop profile', 'handle', 'edge', 'processing'];
+    const parsed = (p.specs || []).map(s => {
+        const i = s.indexOf(':');
+        return i > 0 ? { label: s.slice(0, i).trim(), value: s.slice(i + 1).trim() } : null;
+    }).filter((x): x is { label: string; value: string } => !!x && !!x.value);
+    return wanted
+        .map(w => parsed.find(x => x.label.toLowerCase() === w))
+        .filter((x): x is { label: string; value: string } => !!x)
+        .slice(0, max);
+};
+
 /** Categories in menu order */
 export const sortCategories = (cats: Category[]) => [...cats].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 

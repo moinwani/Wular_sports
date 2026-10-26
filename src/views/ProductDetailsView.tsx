@@ -3,7 +3,9 @@ import Image from 'next/image';
 import { ProductFull } from '../types';
 import { createWhatsAppLink } from '../utils/helpers';
 import { useCatalog, categoryPathFor } from '../context/CatalogContext';
-import { productSizes, productsIn } from '../lib/catalog';
+import { productHighlights, productSizes, productsIn, splitProductName } from '../lib/catalog';
+import { useRouter } from 'next/router';
+import { useCart } from '../context/CartContext';
 import { Lightbox } from '../components/common/Lightbox';
 import { VerticalImageGallery } from '../components/product/VerticalImageGallery';
 import { HorizontalImageGallery } from '../components/product/HorizontalImageGallery';
@@ -25,6 +27,19 @@ type ScrollPhase = 'images' | 'content' | 'normal';
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAddToCart }) => {
     const { products, categories } = useCatalog();
     const categoryPath = categoryPathFor(categories, product?.category[0]);
+    const router = useRouter();
+    const { closeCart } = useCart();
+
+    // Phones: a buy bar slides up once the main "Buy now" button scrolls out of view
+    const ctaRef = useRef<HTMLDivElement>(null);
+    const [showBuyBar, setShowBuyBar] = useState(false);
+    useEffect(() => {
+        const el = ctaRef.current;
+        if (!el || typeof IntersectionObserver === 'undefined') return;
+        const io = new IntersectionObserver(([e]) => setShowBuyBar(!e.isIntersecting && e.boundingClientRect.top < 0));
+        io.observe(el);
+        return () => io.disconnect();
+    }, []);
     const [selectedSize, setSelectedSize] = useState<string>('');
     const [quantity, setQuantity] = useState(1);
     const [sizeError, setSizeError] = useState(false);
@@ -33,6 +48,10 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const [scrollPhase] = useState<ScrollPhase>('normal');
     const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        document.body.classList.toggle('has-buy-bar', showBuyBar && isMobile);
+        return () => document.body.classList.remove('has-buy-bar');
+    }, [showBuyBar, isMobile]);
     const imageGalleryRef = useRef<HTMLDivElement | null>(null);
     const imageScrollContainerRef = useRef<HTMLDivElement | null>(null);
     const contentSectionRef = useRef<HTMLDivElement>(null);
@@ -90,13 +109,16 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
     // One size (e.g. AK-47 is only 35 inch) is added automatically; several → customer picks
     const sizes = productSizes(product);
+    const [titleMain, titleSub] = splitProductName(product.name);
+    const rating = product.aggregateRating;
+    const highlights = productHighlights(product);
     const singleSize = sizes.length === 1 ? sizes[0] : null;
     const hasSizes = sizes.length > 1;
     const discountPercentage = product.originalPrice
         ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
         : 0;
 
-    const handleAddToCartClick = () => {
+    const handleAddToCartClick = (goToCheckout = false) => {
         let itemData: { size?: string; quantity?: number } = {};
 
         if (singleSize) {
@@ -105,7 +127,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
         } else if (hasSizes && !selectedSize) {
             setSizeError(true);
             setTimeout(() => {
-                const sizeSelector = document.querySelector('.size-selector-container');
+                const sizeSelector = document.querySelector('.size-selector-premium');
                 if (sizeSelector) {
                     sizeSelector.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
@@ -135,6 +157,22 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 }
             });
         }
+
+        // "Buy now" skips the cart drawer and goes straight to checkout
+        if (goToCheckout) {
+            closeCart();
+            router.push('/checkout');
+        }
+    };
+
+    /** Bottom bar on phones: pick a size first if needed, otherwise buy */
+    const buyFromBar = () => {
+        if (hasSizes && !selectedSize) {
+            setSizeError(true);
+            document.querySelector('.size-selector-premium')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        handleAddToCartClick(true);
     };
 
     const increaseQuantity = () => setQuantity(prev => prev + 1);
@@ -315,12 +353,27 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     >
                         {/* Above the Fold Section - Clean & Premium */}
                         <div className="product-header-clean">
-                            <h1 className="product-title-premium">{product.name}</h1>
+                            <h1 className="product-title-premium">
+                                {titleMain}
+                                {titleSub && <span className="product-title-sub">{titleSub}</span>}
+                            </h1>
 
-                            {/* Short one-line description */}
-                            <p className="product-subtitle-premium">
-                                {product.category.join(' | ')} Cricket Bat
-                            </p>
+                            {rating && rating.reviewCount > 0 ? (
+                                <button
+                                    type="button"
+                                    className="product-rating-line"
+                                    onClick={() => document.querySelector('.product-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                                    aria-label={`Rated ${rating.ratingValue} out of 5 from ${rating.reviewCount} reviews — read reviews`}
+                                >
+                                    <span className="product-rating-stars" aria-hidden="true">★★★★★</span>
+                                    <strong>{rating.ratingValue}</strong>
+                                    <span>· {rating.reviewCount} review{rating.reviewCount === 1 ? '' : 's'}</span>
+                                </button>
+                            ) : (
+                                <p className="product-subtitle-premium">
+                                    {product.category.join(' | ')} Cricket Bat
+                                </p>
+                            )}
 
                             {/* Price Section */}
                             <div className="product-price-section-premium">
@@ -332,6 +385,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     </div>
                                 )}
                             </div>
+
+                            {highlights.length > 0 && (
+                                <ul className="product-highlights">
+                                    {highlights.map(h => (
+                                        <li key={h.label}><span>{h.label}</span><strong>{h.value}</strong></li>
+                                    ))}
+                                </ul>
+                            )}
 
                             {/* Size Selector */}
                             {hasSizes && (
@@ -361,29 +422,15 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 </div>
                             )}
 
-                            <div className="trust-strip" style={{
-                                display: 'flex', flexWrap: 'wrap', gap: '1rem',
-                                justifyContent: 'center', padding: '0.75rem 0',
-                                borderTop: '1px solid rgba(255,255,255,0.08)',
-                                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                                marginBottom: '0.5rem',
-                            }}>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
-                                    <Icon name="fa-truck" style={{ color: 'var(--golden)' }} /> Free Delivery
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
-                                    <Icon name="fa-shield-alt" style={{ color: 'var(--golden)' }} /> 1-Year Warranty
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
-                                    <Icon name="fa-undo" style={{ color: 'var(--golden)' }} /> 7-Day Returns
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.85rem', color: '#aaa' }}>
-                                    <Icon name="fa-money-bill" style={{ color: 'var(--golden)' }} /> COD Available
-                                </span>
-                            </div>
+                            <ul className="trust-strip-pdp">
+                                <li><Icon name="fa-truck-fast" /> Free delivery across India</li>
+                                <li><Icon name="fa-money-bill-wave" /> Cash on delivery</li>
+                                <li><Icon name="fa-undo-alt" /> 7-day easy returns</li>
+                                <li><Icon name="fa-shield-alt" /> 1-year warranty</li>
+                            </ul>
 
                             {/* Primary CTA with Quantity */}
-                            <div className="actions-row-premium" style={{ display: 'flex', gap: '1rem', alignItems: 'stretch' }}>
+                            <div className="actions-row-premium" ref={ctaRef} style={{ display: 'flex', gap: '1rem', alignItems: 'stretch' }}>
                                 {/* Quantity Selector */}
                                 <div className="quantity-selector-premium" style={{
                                     display: 'flex',
@@ -431,11 +478,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     </button>
                                 </div>
 
-                                <button className="btn-primary-premium" onClick={handleAddToCartClick} style={{ flex: 1, margin: 0 }}>
+                                <button className="btn-primary-premium" onClick={() => handleAddToCartClick(true)} style={{ flex: 1, margin: 0 }}>
                                     <Icon name="fa-shopping-bag" />
                                     BUY NOW - ₹{(product.price * quantity).toLocaleString('en-IN')}
                                 </button>
                             </div>
+                            <button type="button" className="pdp-add-link" onClick={() => handleAddToCartClick(false)}>
+                                or add to cart and keep shopping
+                            </button>
 
                             {/* Order on WhatsApp Button */}
                         <a
@@ -819,11 +869,25 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
             )}
 
             {/* Watch & Buy Video - For Legacy Editions & AK-47 Honeycomb */}
-            {(product.id === 'legacy-edition' || product.id === 'legacy-edition-2.0' || product.id === 'ak-47-honeycomb') && (
+            {(['legacy-edition', 'legacy-edition-2.0', 'ak-47-honeycomb'].includes(product.id) || !!product.videoUrl) && (
                 <WatchBuyVideo
                     product={product}
                     onAddToCart={onAddToCart}
                 />
+            )}
+
+            {/* Phones: price + Buy now always within thumb's reach once scrolled past the main button */}
+            {isMobile && (
+                <div className={`pdp-buy-bar ${showBuyBar ? 'is-visible' : ''}`} aria-hidden={!showBuyBar}>
+                    <div className="pdp-buy-bar__price">
+                        <strong>₹{(product.price * quantity).toLocaleString('en-IN')}</strong>
+                        {product.originalPrice > product.price && <s>₹{(product.originalPrice * quantity).toLocaleString('en-IN')}</s>}
+                        <span>{hasSizes && selectedSize ? selectedSize : 'Free delivery · COD'}</span>
+                    </div>
+                    <button className="pdp-buy-bar__btn" tabIndex={showBuyBar ? 0 : -1} onClick={buyFromBar}>
+                        {hasSizes && !selectedSize ? 'Choose size' : 'Buy now'}
+                    </button>
+                </div>
             )}
         </div>
     );

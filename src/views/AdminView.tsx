@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { AdminRoute } from '../components/admin/AdminRoute';
 import { AdminDashboard } from '../components/admin/AdminDashboard';
 import { AnalyticsDashboard } from '../components/admin/AnalyticsDashboard';
@@ -28,6 +28,12 @@ const TABS: { id: AdminTab; label: string; icon: string }[] = [
 
 export const AdminView: FC = () => {
     const [activeTab, setActiveTab] = useState<AdminTab>('dashboard');
+
+    // Phones: keep the selected tab visible in the swipeable tab strip, and start each tab at the top
+    useEffect(() => {
+        document.querySelector('.admin-nav-item.active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+        if (window.innerWidth <= 768) window.scrollTo({ top: 0 });
+    }, [activeTab]);
 
     const handleLogout = () => {
         if (confirm('Are you sure you want to logout?')) {

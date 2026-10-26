@@ -41,6 +41,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
     onWatchVideo
 }) => {
     const [sortBy, setSortBy] = useState<SortOption>('default');
+    const [aboutOpen, setAboutOpen] = useState(false);
     const [scoopFilter, setScoopFilter] = useState<ScoopFilter>('all');
 
     const hasBothScoopTypes = useMemo(() => {
@@ -122,11 +123,17 @@ export const CategoryView: FC<CategoryViewProps> = ({
                 ]} />
             </div>
 
-            <section className="category-hero" style={{ padding: '6rem 2rem 2rem', background: 'var(--black)' }}>
+            {/* Short intro so the bats show on the first screen; the long text sits below them */}
+            <section className="category-hero">
                 <div className="container">
-                    <h1 className="section-title" style={{ fontSize: '3rem', marginBottom: '1rem', color: 'var(--golden)' }}>{h1Title}</h1>
-                    <div className="footer-title-bar" style={{ margin: '0 auto 2rem', backgroundColor: 'var(--golden)' }}></div>
-                    <p className="category-description" style={{ maxWidth: '800px', margin: '0 auto 2.5rem', color: '#bbb', fontSize: '1.05rem', lineHeight: '1.8', textAlign: 'center' }}>{bodyText}</p>
+                    <h1 className="section-title category-h1">{h1Title}</h1>
+                    <p className="category-lede">{description}</p>
+                    <ul className="category-perks">
+                        <li>Handcrafted in Kashmir</li>
+                        <li>Free delivery</li>
+                        <li>Cash on delivery</li>
+                        <li>7-day returns</li>
+                    </ul>
                 </div>
             </section>
 
@@ -188,6 +195,18 @@ export const CategoryView: FC<CategoryViewProps> = ({
                     </div>
                 </div>
             </section>
+
+            {bodyText && (
+                <section className="category-about">
+                    <div className="container">
+                        <h2>About our {title.toLowerCase()}</h2>
+                        <p className={aboutOpen ? '' : 'is-clamped'}>{bodyText}</p>
+                        <button type="button" className="category-about__more" onClick={() => setAboutOpen(o => !o)} aria-expanded={aboutOpen}>
+                            {aboutOpen ? 'Show less' : 'Read more'}
+                        </button>
+                    </div>
+                </section>
+            )}
         </div>
     );
 };

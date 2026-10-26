@@ -83,7 +83,8 @@ function AppShell({ Component, pageProps }: AppProps) {
             <main>
                 <Component {...pageProps} />
             </main>
-            <Footer />
+            {/* A focused checkout: no footer links pulling shoppers away */}
+            {router.pathname !== '/checkout' && <Footer />}
 
             <CartSidebar
                 isOpen={isCartOpen}
@@ -100,12 +101,13 @@ function AppShell({ Component, pageProps }: AppProps) {
 
             <Toast
                 message={toast?.message || ''}
-                isVisible={!!toast}
+                // "Added to cart" is noise once the shopper is already at checkout
+                isVisible={!!toast && router.pathname !== '/checkout'}
                 type={toast?.type}
                 onClose={clearToast}
             />
-            {/* Customer-facing contact buttons would cover admin tables */}
-            {!router.pathname.startsWith('/admin') && (
+            {/* Contact buttons would cover admin tables and distract at checkout (it has its own WhatsApp link) */}
+            {!router.pathname.startsWith('/admin') && router.pathname !== '/checkout' && (
                 <>
                     <FloatingButtons />
                     <FloatingCallButton />

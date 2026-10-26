@@ -129,7 +129,7 @@ export const OrdersManagement: FC = () => {
                 </div>
             ) : (
                 <div className="orders-table-container">
-                    <table className="admin-table">
+                    <table className="admin-table orders-table">
                         <thead>
                             <tr>
                                 <th>Order #</th>

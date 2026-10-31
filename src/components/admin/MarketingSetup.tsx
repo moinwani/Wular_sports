@@ -47,7 +47,19 @@ export const MarketingSetup: FC = () => {
         const tagged = web.filter(o => classifyTouch(o.attribution?.last) === 'meta_ads' || classifyTouch(o.attribution?.first) === 'meta_ads');
         const recorded = recent.filter(o => o.recordedBy === 'admin');
         const lastSpend = marketing.spend.reduce((m, s) => (s.to > m ? s.to : m), '');
+        // Meta's own reply to each purchase we reported (stored on the order)
+        const reported = recent.filter(o => o.metaPurchase);
+        const metaOf = (list: any[], status: string) => list.filter(o => o.metaPurchase?.status === status);
+        const failed = metaOf(reported, 'error');
+        const meta = {
+            whatsappSent: metaOf(recorded, 'sent').length,
+            websiteSent: metaOf(reported.filter(o => o.recordedBy !== 'admin'), 'sent').length,
+            failed: failed.length,
+            lastError: failed.sort((a, b) => String(b.metaPurchase.at).localeCompare(String(a.metaPurchase.at)))[0]?.metaPurchase?.reason || '',
+            skipped: metaOf(reported, 'skipped').length,
+        };
         return {
+            meta,
             webOrders: web.length,
             taggedOrders: tagged.length,
             recordedSales: recorded.length,
@@ -78,6 +90,11 @@ export const MarketingSetup: FC = () => {
                         {marketing.metaConfigured
                             ? 'Meta is connected — paid website orders and the WhatsApp sales you record are reported to Meta from the server.'
                             : 'Meta isn’t connected on the server (META_CAPI_ACCESS_TOKEN missing in Vercel).'}
+                    </Check>
+                    <Check ok={health.meta.failed === 0 && health.meta.whatsappSent + health.meta.websiteSent > 0}>
+                        Meta confirmed receiving {health.meta.whatsappSent} WhatsApp sale{health.meta.whatsappSent === 1 ? '' : 's'} and {health.meta.websiteSent} website sale{health.meta.websiteSent === 1 ? '' : 's'}.
+                        {health.meta.failed > 0 && <> {health.meta.failed} were rejected — last reason: “{health.meta.lastError}”.</>}
+                        {health.meta.skipped > 0 && <> {health.meta.skipped} skipped (older than 7 days).</>}
                     </Check>
                     <Check ok={health.taggedOrders > 0}>
                         {health.taggedOrders} of {health.webOrders} website orders came from a tagged Meta ad link.

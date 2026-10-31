@@ -52,29 +52,51 @@ const toDay = (v: string): string | null => {
  * breakdown) or "Reporting starts/ends". Rows for the same campaign and
  * period (e.g. one per ad set) are added together.
  */
-export const parseMetaExport = (text: string): { rows: ImportRow[]; error?: string } => {
+export type ImportLevel = 'campaign' | 'ad set' | 'ad';
+
+/**
+ * Read an Ads Manager export (Reports → Export table data → .csv), made from
+ * the Campaigns, Ad sets or Ads tab. Rows are grouped by campaign name, or —
+ * when the report has no campaign column — by ad set name, then ad name.
+ * Dates come from "Day" (daily breakdown) or "Reporting starts/ends". Rows
+ * for the same name and period are added together; the unnamed totals row
+ * Meta puts at the top is skipped.
+ */
+export const parseMetaExport = (text: string): { rows: ImportRow[]; level?: ImportLevel; error?: string } => {
     const table = parseCsv(text);
     if (table.length < 2) return { rows: [], error: 'The file looks empty.' };
     const head = table[0].map(h => h.trim().toLowerCase());
     const col = (re: RegExp) => head.findIndex(h => re.test(h));
-    const cName = col(/^campaign name$/);
+    const hasValues = (i: number) => i >= 0 && table.slice(1).some(r => (r[i] || '').trim());
+    const levels: [ImportLevel, number][] = [
+        ['campaign', col(/^campaign name$/)],
+        ['ad set', col(/^ad set name$/)],
+        ['ad', col(/^ad name$/)],
+    ];
+    const found = levels.find(([, i]) => hasValues(i));
     const cSpend = col(/^amount spent/);
     const cDay = col(/^day$/);
     const cStart = col(/^reporting starts$/);
     const cEnd = col(/^reporting ends$/);
     const cResults = col(/^results$/);
-    if (cName < 0 || cSpend < 0) return { rows: [], error: 'Couldn’t find the “Campaign name” and “Amount spent” columns. Export from Ads Manager at campaign level as CSV.' };
+    const cChats = col(/^messaging conversations started$/);
+    if (cSpend < 0) return { rows: [], error: 'Couldn’t find the “Amount spent” column — keep it in the export (Ads Manager → Reports → Export table data → CSV).' };
+    if (!found) return { rows: [], error: 'Couldn’t find a “Campaign name”, “Ad set name” or “Ad name” column in this file.' };
     if (cDay < 0 && (cStart < 0 || cEnd < 0)) return { rows: [], error: 'Couldn’t find the dates — keep the “Reporting starts” and “Reporting ends” columns in the export.' };
+    const [level, cName] = found;
+    const num = (v?: string) => Number(String(v ?? '').replace(/[^\d.]/g, ''));
 
     const merged = new Map<string, ImportRow>();
     for (const r of table.slice(1)) {
         const name = (r[cName] || '').trim();
-        if (!name) continue;
+        if (!name) continue; // Meta's totals row has no name
         const from = toDay(cDay >= 0 ? r[cDay] || '' : r[cStart] || '');
         const to = toDay(cDay >= 0 ? r[cDay] || '' : r[cEnd] || '');
-        const amount = Number(String(r[cSpend] || '').replace(/[^\d.]/g, ''));
+        const amount = num(r[cSpend]);
         if (!from || !to || !Number.isFinite(amount)) continue;
-        const results = cResults >= 0 ? Number(String(r[cResults] || '').replace(/[^\d.]/g, '')) : NaN;
+        // "Results" is whatever the campaign optimises for; fall back to WhatsApp chats started
+        const rawResults = cResults >= 0 && (r[cResults] || '').trim() ? r[cResults] : cChats >= 0 ? r[cChats] : '';
+        const results = (rawResults || '').trim() ? num(rawResults) : NaN;
         const key = `${name.toLowerCase()}|${from}|${to}`;
         const cur = merged.get(key) || { campaignName: name, from, to, amount: 0 };
         cur.amount += amount;
@@ -82,7 +104,7 @@ export const parseMetaExport = (text: string): { rows: ImportRow[]; error?: stri
         merged.set(key, cur);
     }
     const rows = [...merged.values()].filter(r => r.amount > 0 || (r.results || 0) > 0);
-    return rows.length ? { rows } : { rows: [], error: 'No rows with spend found in this file.' };
+    return rows.length ? { rows, level } : { rows: [], error: 'No rows with spend found in this file.' };
 };
 
 /* ───────────── Screen ───────────── */
@@ -98,6 +120,7 @@ export const MarketingCampaigns: FC = () => {
     const [busy, setBusy] = useState(false);
     const [spend, setSpend] = useState({ campaignId: '', from: dayOffset(7), to: dayOffset(1), amount: '', results: '' });
     const [importRows, setImportRows] = useState<ImportRow[] | null>(null);
+    const [importLevel, setImportLevel] = useState<ImportLevel>('campaign');
     const [showAllSpend, setShowAllSpend] = useState(false);
 
     const campaigns = useMemo(
@@ -156,9 +179,13 @@ export const MarketingCampaigns: FC = () => {
     const onFile = async (file?: File | null) => {
         if (!file) return;
         setMsg(null);
-        const { rows, error } = parseMetaExport(await file.text());
+        if (/\.xlsx?$/i.test(file.name)) {
+            return setMsg({ ok: false, text: 'That’s an Excel file — in Ads Manager choose “CSV” when exporting, then pick that file here.' });
+        }
+        const { rows, level, error } = parseMetaExport(await file.text());
         if (error) return setMsg({ ok: false, text: error });
         setImportRows(rows);
+        setImportLevel(level || 'campaign');
     };
 
     const confirmImport = async () => {
@@ -262,13 +289,16 @@ export const MarketingCampaigns: FC = () => {
                     </div>
                     <label className="btn mk-file">
                         <Icon name="fa-download" /> Choose CSV file
-                        <input type="file" accept=".csv,text/csv" onChange={e => { onFile(e.target.files?.[0]); e.target.value = ''; }} />
+                        <input type="file" accept=".csv,text/csv,.xlsx,.xls" onChange={e => { onFile(e.target.files?.[0]); e.target.value = ''; }} />
                     </label>
                 </div>
 
                 {importRows && (
                     <div className="mk-form">
                         <p><strong>{importRows.length} row{importRows.length === 1 ? '' : 's'} found</strong> · {inr(importRows.reduce((t, r) => t + r.amount, 0))} total. New campaign names are added automatically.</p>
+                        {importLevel !== 'campaign' && (
+                            <p className="crm-muted">This report was exported from the {importLevel === 'ad' ? 'Ads' : 'Ad sets'} tab, so each {importLevel} becomes a campaign here. Export from the Campaigns tab next time to group by campaign.</p>
+                        )}
                         <div className="scroll">
                             <table className="admin-table">
                                 <thead><tr><th>Campaign</th><th>Dates</th><th className="num">Spent</th><th className="num">Results</th></tr></thead>

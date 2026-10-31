@@ -221,8 +221,9 @@ export const MarketingCampaigns: FC = () => {
                                 </select>
                             </label>
                             <label className="mk-field">
-                                <span>WhatsApp ad code</span>
-                                <input className="mk-input" value={editing.code || ''} onChange={e => setEditing({ ...editing, code: normalizeCode(e.target.value).slice(0, 12) })} placeholder="e.g. L2" />
+                                <span>WhatsApp ad code (optional)</span>
+                                <input className="mk-input" value={editing.code || ''} onChange={e => setEditing({ ...editing, code: normalizeCode(e.target.value).slice(0, 12) })} placeholder="e.g. D400" />
+                                <small className="mk-hint">A short label you make up. Put it in this ad’s pre-filled WhatsApp message — every chat from the ad then arrives with it, so you know which ad brought the buyer.</small>
                             </label>
                             <label className="mk-field">
                                 <span>Coupon for this campaign</span>
@@ -247,7 +248,12 @@ export const MarketingCampaigns: FC = () => {
                                 <input className="mk-input" value={editing.utmCampaign || ''} onChange={e => setEditing({ ...editing, utmCampaign: e.target.value })} />
                             </label>
                         </details>
-                        {editing.code && <CopyBox label="Pre-filled WhatsApp message for this ad" text={whatsappAdMessage(normalizeCode(editing.code))} />}
+                        {editing.code && (
+                            <>
+                                <CopyBox label="Paste this as the ad’s pre-filled WhatsApp message (Ads Manager → your ad → Message template)" text={whatsappAdMessage(normalizeCode(editing.code))} />
+                                <p className="crm-muted">When a chat with this code turns into a sale: Record WhatsApp sale → type <strong>{normalizeCode(editing.code)}</strong> in “Ad code”.</p>
+                            </>
+                        )}
                         <div className="crm-save-row">
                             <button className="btn" onClick={saveCampaign} disabled={busy || !editing.name?.trim()}>{busy ? 'Saving…' : 'Save campaign'}</button>
                             <button className="crm-linkbtn" onClick={() => setEditing(null)}>Cancel</button>

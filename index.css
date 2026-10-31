@@ -9840,3 +9840,4 @@ body.has-buy-bar .product-details-page { padding-bottom: 6rem; }
 @media (max-width: 768px) {
     .product-details-page .product-price-section-premium { margin-top: 0; }
 }
+.mk-hint { font-size: 0.74rem; color: #8a8a8a; line-height: 1.4; }

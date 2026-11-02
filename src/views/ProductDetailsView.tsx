@@ -24,6 +24,15 @@ export interface ProductDetailsViewProps {
 
 type ScrollPhase = 'images' | 'content' | 'normal';
 
+/** Search snippets show ~155 characters: lead sentence of the description, then price and perks. */
+const metaDescription = (product: ProductFull): string => {
+    const suffix = ` ₹${product.price.toLocaleString('en-IN')}, free delivery across India.`;
+    const lead = (product.description || '').replace(/\s+/g, ' ').trim().split(/(?<=\.)\s/)[0] || product.name;
+    const room = 158 - suffix.length;
+    const clipped = lead.length <= room ? lead : `${lead.slice(0, lead.lastIndexOf(' ', room - 1))}…`;
+    return clipped + suffix;
+};
+
 export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAddToCart }) => {
     const { products, categories } = useCatalog();
     const categoryPath = categoryPathFor(categories, product?.category[0]);
@@ -282,8 +291,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     return (
         <div className="product-details-page" ref={productPageRef}>
             <SEOHead
-                title={`${product.name} - Buy Online | Wular Sports`}
-                description={`${product.description} Price: ₹${product.price}. Free shipping. 1-year warranty. Ready to play.`}
+                title={`${product.name} | Wular Sports`}
+                description={metaDescription(product)}
                 keywords={`${product.name}, buy ${product.name}, ${product.category.join(', ')}, cricket bat price, Kashmir willow bat`}
                 ogImage={productImage}
                 ogType="product"
@@ -339,7 +348,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         className={isMobile ? "horizontal-gallery-image" : "vertical-gallery-image"}
                                         width={600}
                                         height={600}
-                                        unoptimized
+                                        sizes="(max-width: 768px) 100vw, 600px"
                                     />
                                 </div>
                             </div>

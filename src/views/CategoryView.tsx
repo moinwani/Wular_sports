@@ -107,7 +107,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
     return (
         <div className="view category-view">
             <SEOHead
-                title={`${title} | Wular Sports`}
+                title={`${/kashmir/i.test(title) ? title : `Kashmir Willow ${title}`} | Wular Sports`}
                 description={description}
                 keywords={keywords}
                 ogType="website"

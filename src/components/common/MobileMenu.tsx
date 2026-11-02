@@ -21,7 +21,7 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
             <div className={`mobile-menu-backdrop ${isOpen ? 'active' : ''}`} onClick={onClose} aria-hidden="true" />
             <div className={`mobile-menu ${isOpen ? 'active' : ''}`} role="dialog" aria-modal="true">
                 <div className="mobile-menu-header">
-                    <h2>Menu</h2>
+                    <p className="mobile-menu-title">Menu</p>
                     <button className="mobile-menu-close" onClick={onClose} aria-label="Close menu">
                         <Icon name="fa-times" />
                     </button>

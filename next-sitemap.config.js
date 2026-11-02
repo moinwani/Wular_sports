@@ -8,8 +8,8 @@ module.exports = {
     exclude: ['/admin', '/checkout', '/order-success', '/404'],
     robotsTxtOptions: {
         policies: [
-            { userAgent: '*', allow: '/' },
-            { userAgent: '*', disallow: ['/admin', '/api'] },
+            // /api/photo/ serves product photos, which Google Images and link previews need
+            { userAgent: '*', allow: ['/', '/api/photo/'], disallow: ['/admin', '/api'] },
         ],
         additionalSitemaps: [],
     },
@@ -28,7 +28,11 @@ module.exports = {
             '/terms-conditions': 0.3,
         };
         const lastmod = new Date().toISOString();
-        if (path.startsWith('/product/') || path.startsWith('/blog/')) {
+        // Product pages come from the live catalog at build time, so admin-added products are included
+        if (path.startsWith('/product/')) {
+            return { loc: path, lastmod, changefreq: 'monthly', priority: 0.9 };
+        }
+        if (path.startsWith('/blog/')) {
             return null;
         }
         return {
@@ -41,20 +45,6 @@ module.exports = {
     additionalPaths: async () => {
         const result = [];
         const lastmod = new Date().toISOString();
-        for (const id of [
-            'legacy-edition-2.0',
-            'legacy-edition',
-            'bahubali-edition',
-            'ak-47-honeycomb',
-            'standard-leather-bat',
-        ]) {
-            result.push({
-                loc: `/product/${id}`,
-                lastmod,
-                changefreq: 'monthly',
-                priority: 0.9,
-            });
-        }
         const blogDates = {
             'kashmiri-willow-cricket-bat-buying-guide-2025': '2026-01-30',
             'choosing-the-right-bat-weight': '2026-01-05',

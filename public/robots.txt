@@ -1,9 +1,7 @@
 # *
 User-agent: *
 Allow: /
-
-# *
-User-agent: *
+Allow: /api/photo/
 Disallow: /admin
 Disallow: /api
 

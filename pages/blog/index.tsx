@@ -10,5 +10,9 @@ export default function BlogPage({ blogs }: Props) {
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-    return { props: { blogs } };
+    // Cards only need these fields; full articles would bloat the page by ~200 KB
+    const cards = blogs.map(({ id, title, description, author, date, image, category, readTime }) => ({
+        id, title, description, author, date, image, category, readTime, content: '',
+    }));
+    return { props: { blogs: cards } };
 };

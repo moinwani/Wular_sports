@@ -20,7 +20,7 @@ export const Catalog = memo(forwardRef<HTMLElement, CatalogProps>(({ onAddToCart
     return (
         <section id="catalog" ref={ref}>
             <div className="container">
-                <h2 className="section-title">Our Collection</h2>
+                <h1 className="section-title">Kashmir Willow Cricket Bats</h1>
 
                 <div className="catalog-categories">
                     {Object.entries(categories).map(([title, productsInCategory]) => (

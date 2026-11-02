@@ -76,7 +76,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
 
                 <div className="blog-post-main-image">
                     <div className="container">
-                        <Image src={getCDNUrl(post.image)} alt={post.title} width={800} height={450} unoptimized />
+                        <Image src={getCDNUrl(post.image)} alt={post.title} width={800} height={450} sizes="(max-width: 768px) 100vw, 800px" priority />
                     </div>
                 </div>
 
@@ -110,7 +110,7 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
                             {relatedPosts.map(p => (
                                 <article key={p.id} className="blog-card" onClick={() => router.push(`/blog/${p.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="blog-card-image">
-                                        <Image src={getCDNUrl(p.image)} alt={p.title} width={400} height={250} unoptimized />
+                                        <Image src={getCDNUrl(p.image)} alt={p.title} width={400} height={250} sizes="(max-width: 768px) 100vw, 400px" />
                                     </div>
                                     <div className="blog-card-content">
                                         <h4 className="blog-card-title">{p.title}</h4>

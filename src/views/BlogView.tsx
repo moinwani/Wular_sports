@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BlogPost } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { subscribeToNewsletter } from '../services/newsletter';
@@ -48,7 +49,7 @@ export const BlogView: FC<BlogViewProps> = ({ blogs }) => {
                         {blogs.map(post => (
                             <article key={post.id} className="blog-card" onClick={() => router.push(`/blog/${post.id}`)} style={{ cursor: 'pointer' }}>
                                 <div className="blog-card-image">
-                                    <Image src={getCDNUrl(post.image)} alt={post.title} width={400} height={250} unoptimized />
+                                    <Image src={getCDNUrl(post.image)} alt={post.title} width={400} height={250} sizes="(max-width: 768px) 100vw, 400px" />
                                     <span className="blog-category-tag">{post.category}</span>
                                 </div>
                                 <div className="blog-card-content">
@@ -56,7 +57,9 @@ export const BlogView: FC<BlogViewProps> = ({ blogs }) => {
                                         <span><Icon name="fa-calendar" /> {post.date}</span>
                                         <span><Icon name="fa-clock" /> {post.readTime}</span>
                                     </div>
-                                    <h2 className="blog-card-title">{post.title}</h2>
+                                    <h2 className="blog-card-title">
+                                        <Link href={`/blog/${post.id}`} onClick={e => e.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>{post.title}</Link>
+                                    </h2>
                                     <p className="blog-card-desc">{post.description}</p>
                                     <button className="blog-read-more">Read Article <Icon name="fa-arrow-right" /></button>
                                 </div>

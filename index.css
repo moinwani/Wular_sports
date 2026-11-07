@@ -4123,7 +4123,8 @@ main {
     border-bottom: 1px solid #333;
 }
 
-.mobile-menu-header h2 {
+.mobile-menu-header h2,
+.mobile-menu-title {
     font-family: 'Oswald', sans-serif;
     color: var(--golden);
     font-size: 1.5rem;

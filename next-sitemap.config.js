@@ -9,8 +9,8 @@ module.exports = {
     exclude: ['/admin', '/checkout', '/order-success', '/404', '/server-sitemap.xml', '/category/*'],
     robotsTxtOptions: {
         policies: [
-            { userAgent: '*', allow: '/' },
-            { userAgent: '*', disallow: ['/admin', '/api'] },
+            // /api/photo/ serves product photos, which Google Images and link previews need
+            { userAgent: '*', allow: ['/', '/api/photo/'], disallow: ['/admin', '/api'] },
         ],
         additionalSitemaps: ['https://wularsports.com/server-sitemap.xml'],
     },

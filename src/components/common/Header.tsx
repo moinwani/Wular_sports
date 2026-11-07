@@ -98,7 +98,6 @@ export const Header: FC = memo(() => {
                             className={`nav-logo-centered ${isLogoDimmed ? 'dimming' : ''}`}
                             width={135}
                             height={75}
-                            unoptimized
                             priority
                         />
                     </Link>

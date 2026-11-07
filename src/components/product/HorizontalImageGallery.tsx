@@ -59,7 +59,7 @@ export const HorizontalImageGallery: FC<HorizontalImageGalleryProps> = ({ images
                                 className="horizontal-gallery-image"
                                 width={800}
                                 height={800}
-                                unoptimized
+                                sizes="(max-width: 768px) 100vw, 600px"
                                 loading={index === 0 ? "eager" : "lazy"}
                             />
                         </div>

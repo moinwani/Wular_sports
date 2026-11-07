@@ -91,7 +91,7 @@ export const VerticalImageGallery: FC<VerticalImageGalleryProps> = ({
                             className="vertical-gallery-image"
                             width={800}
                             height={800}
-                            unoptimized
+                            sizes="(max-width: 768px) 100vw, 600px"
                             loading={index === 0 ? "eager" : "lazy"}
                         />
                     </div>

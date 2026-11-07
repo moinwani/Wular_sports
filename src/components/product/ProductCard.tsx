@@ -1,6 +1,7 @@
 import { FC, memo, RefObject } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
 import { productSizes, splitProductName } from '../../lib/catalog';
@@ -64,7 +65,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
                 width={300}
                 height={300}
                 className="product-image"
-                unoptimized
+                sizes="(max-width: 768px) 50vw, 300px"
             />
         );
     } else if (typeof product.image === 'string') {
@@ -76,7 +77,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
                 width={300}
                 height={300}
                 className="product-image"
-                unoptimized
+                sizes="(max-width: 768px) 50vw, 300px"
             />
         );
     }
@@ -86,7 +87,9 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
             {imageElement}
 
             <div className="product-info-compact">
-                <h3 className="product-name">{title}</h3>
+                <h3 className="product-name">
+                    <Link href={`/product/${product.id}`} onClick={e => e.stopPropagation()} style={{ color: 'inherit', textDecoration: 'none' }}>{title}</Link>
+                </h3>
                 {subtitle && <p className="product-card-sub">{subtitle}</p>}
                 {product.aggregateRating && product.aggregateRating.reviewCount > 0 && (
                     <p className="product-card-rating" aria-label={`Rated ${product.aggregateRating.ratingValue} out of 5`}>

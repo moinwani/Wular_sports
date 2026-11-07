@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { CartProvider, useCart } from '../src/context/CartContext';
 import { ToastProvider, useToast } from '../src/context/ToastContext';
@@ -79,6 +80,9 @@ function AppShell({ Component, pageProps }: AppProps) {
 
     return (
         <div className="app">
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </Head>
             <Header />
             <main>
                 <Component {...pageProps} />

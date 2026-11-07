@@ -29,10 +29,10 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
     };
 
     return (
-        <main>
+        <div className="home-page">
             <SEOHead
-                title="Wular Sports — Handcrafted Kashmiri Willow Cricket Bats | Free Delivery India"
-                description="Buy premium handcrafted Kashmiri willow cricket bats online. Hard tennis, soft tennis & leather ball bats made in Srinagar, Kashmir. Free delivery across India. Shop now."
+                title="Handcrafted Kashmir Willow Cricket Bats | Wular Sports"
+                description="Handcrafted Kashmir willow cricket bats made in Srinagar — hard tennis, soft tennis and leather ball bats. Free delivery across India."
                 keywords="kashmiri willow cricket bat, hard tennis bat Kashmir, soft tennis bat buy online, leather cricket bat Kashmir, scoop bat, non-scoop bat, buy cricket bat India, Wular Sports"
                 ogType="website"
                 canonicalUrl="https://wularsports.com"
@@ -43,6 +43,6 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
             <VideoTestimonials />
             <Customization />
             <About />
-        </main>
+        </div>
     );
 };

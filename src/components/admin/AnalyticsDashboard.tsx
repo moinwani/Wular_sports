@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import { useAdminData } from '../../hooks/useAdminData';
+import { useCatalog } from '../../context/CatalogContext';
 import {
     RANGES, RangeId, rangeWindow, inWindow, computeRangeKpis, revenueSeries,
     salesByState, paymentSplit, channelSplit, firstVsRepeat, segmentSummary,
@@ -26,6 +27,7 @@ const Tile: FC<{ label: string; value: string; cur: number; prev: number | null;
 
 export const AnalyticsDashboard: FC = () => {
     const { orders, leads, reviews, customers, loading } = useAdminData();
+    const { products: catalogProducts } = useCatalog();
     const [range, setRange] = useState<RangeId>('90d');
     const [now] = useState(() => Date.now());
 
@@ -42,14 +44,14 @@ export const AnalyticsDashboard: FC = () => {
             payment: paymentSplit(cur),
             channel: channelSplit(cur),
             newRet: firstVsRepeat(cur, customers),
-            products: computeProducts(cur, reviews),
+            products: computeProducts(cur, reviews, catalogProducts),
             checkout: checkoutConversion(cur),
             coupon: computeCoupon(cur),
             segments: segmentSummary(customers),
             cohorts: computeCohorts(orders),
             pipeline: computeLeadPipeline(leads),
         };
-    }, [orders, leads, reviews, customers, range, now]);
+    }, [orders, leads, reviews, customers, range, now, catalogProducts]);
 
     if (loading && orders.length === 0) {
         return <div className="admin-loading"><div className="loading-spinner"></div><p>Crunching your store data…</p></div>;

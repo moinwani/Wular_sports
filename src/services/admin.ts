@@ -2,6 +2,7 @@ import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
 import { updateDoc, doc } from 'firebase/firestore';
 import type { CustomerProfileData } from './customers';
+import { csvCell } from './customers';
 import type { Attribution, Campaign, CouponDef, SpendEntry } from '../lib/marketing';
 import type { Category } from '../lib/catalog';
 import type { ManagedPost } from '../lib/blog';
@@ -68,10 +69,17 @@ export const updateOrderStatus = async (
 ): Promise<void> => {
     try {
         const orderRef = doc(getFirestoreDb(), 'orders', orderId);
-        await updateDoc(orderRef, {
-            status: status,
-            updatedAt: new Date()
-        });
+        const update: Record<string, any> = { status, updatedAt: new Date() };
+        // Remember when it was delivered — "Ask for reviews" counts from this date
+        if (status === 'delivered') update.deliveredAt = new Date();
+        try {
+            await updateDoc(orderRef, update);
+        } catch (err) {
+            // Older Firestore rules don't allow deliveredAt yet — still save the status
+            if (!('deliveredAt' in update)) throw err;
+            delete update.deliveredAt;
+            await updateDoc(orderRef, update);
+        }
     } catch (error) {
         console.error('Error updating order status:', error);
         throw error;
@@ -155,9 +163,10 @@ export const getOrderAnalytics = (orders: any[]): OrderAnalytics => {
  * Export subscribers to CSV
  */
 export const exportSubscribersCSV = (subscribers: Subscriber[]): void => {
+    // Each cell escaped — the date has a comma ("31/10/2026, 3:45 pm") that used to split it
     const csvHeader = 'Email,Status,Subscribed Date\n';
     const csvRows = subscribers.map(sub =>
-        `${sub.email},${sub.status},${sub.subscribedAt.toLocaleString()}`
+        [sub.email, sub.status, sub.subscribedAt.toLocaleString('en-IN')].map(csvCell).join(',')
     ).join('\n');
 
     const csvContent = csvHeader + csvRows;
@@ -180,11 +189,14 @@ export const exportSubscribersCSV = (subscribers: Subscriber[]): void => {
 export const searchOrders = (orders: any[], searchTerm: string): any[] => {
     if (!searchTerm) return orders;
 
-    const term = searchTerm.toLowerCase();
+    const term = searchTerm.toLowerCase().trim();
+    // Phone search ignores spaces and +91 — "98765 43210" finds +919876543210
+    const digits = term.replace(/\D/g, '');
     return orders.filter(order =>
         order.customerName?.toLowerCase().includes(term) ||
         order.customerEmail?.toLowerCase().includes(term) ||
-        order.orderNumber?.toLowerCase().includes(term)
+        order.orderNumber?.toLowerCase().includes(term) ||
+        (digits.length >= 4 && String(order.customerPhone || '').replace(/\D/g, '').includes(digits))
     );
 };
 

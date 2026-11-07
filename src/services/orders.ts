@@ -1,6 +1,5 @@
 import {
     collection,
-    addDoc,
     updateDoc,
     deleteDoc,
     doc,
@@ -10,7 +9,6 @@ import {
     where,
     orderBy,
     Timestamp,
-    serverTimestamp,
     DocumentData
 } from 'firebase/firestore';
 import { getFirestoreDb } from './firebase-firestore';
@@ -58,24 +56,6 @@ const generateOrderNumber = (): string => {
 /**
  * Create a new order
  */
-export const createOrder = async (orderData: Omit<Order, 'id' | 'orderNumber' | 'createdAt' | 'updatedAt'>): Promise<string> => {
-    try {
-        // serverTimestamp() resolves to the identical server-side time for both
-        // fields, satisfying the rules' updatedAt == createdAt and freshness
-        // checks regardless of the customer's device clock.
-        const docRef = await addDoc(collection(getFirestoreDb(), ORDERS_COLLECTION), {
-            ...orderData,
-            orderNumber: generateOrderNumber(),
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-        });
-
-        return docRef.id;
-    } catch (error) {
-        console.error('Error creating order:', error);
-        throw new Error('Failed to create order');
-    }
-};
 
 /**
  * Get order by ID

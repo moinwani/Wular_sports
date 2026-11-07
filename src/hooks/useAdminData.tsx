@@ -5,7 +5,8 @@ import { useAllOrders } from './useOrders';
 import { getAllSubscribers, fetchCustomerProfiles, saveCustomerProfile, fetchMarketing, MarketingData } from '../services/admin';
 import { getAllReviews } from '../services/reviews';
 import { buildCustomers, Customer, CustomerProfileData, whatsappLink } from '../services/customers';
-import { templateById } from '../services/whatsappTemplates';
+import { templateById, setTemplateOffer } from '../services/whatsappTemplates';
+import { couponLabel, couponLive } from '../lib/marketing';
 import { attributeOrders, AttributedOrder } from '../services/marketing';
 import { RecordSaleModal, SaleDraft } from '../components/admin/RecordSaleModal';
 
@@ -26,8 +27,8 @@ interface AdminData {
     failed: string[];
     refresh: () => void;
     saveProfile: (key: string, patch: { tags?: string[]; notes?: string }) => Promise<string | null>;
-    /** Open WhatsApp with a message and log the contact against the customer */
-    contact: (c: Customer, templateId: string, message?: string) => void;
+    /** Open WhatsApp with a message and log the contact; false when the number can't be used */
+    contact: (c: Customer, templateId: string, message?: string) => boolean;
     /** Campaigns, ad spend, coupons and website visitor trails */
     marketing: MarketingData;
     setMarketing: (update: (m: MarketingData) => MarketingData) => void;
@@ -47,7 +48,7 @@ const fetchLeads = async () => {
 };
 
 export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const { orders, loading: ordersLoading } = useAllOrders();
+    const { orders, loading: ordersLoading, error: ordersError } = useAllOrders();
     const [leads, setLeads] = useState<any[]>([]);
     const [subscribers, setSubscribers] = useState<any[]>([]);
     const [reviews, setReviews] = useState<any[]>([]);
@@ -91,6 +92,13 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
         [orders, marketing.campaigns]
     );
 
+    // Messages only promise the welcome coupon while it's switched on
+    useEffect(() => {
+        if (!marketing.coupons.length) return;
+        const w = marketing.coupons.find(c => c.code === 'WELCOME100');
+        setTemplateOffer(w && couponLive(w) ? { code: w.code, text: couponLabel(w) } : null);
+    }, [marketing.coupons]);
+
     const setMarketing = useCallback((update: (m: MarketingData) => MarketingData) => setMarketingState(update), []);
     const openRecordSale = useCallback((draft?: SaleDraft) => setSaleDraft(draft || {}), []);
 
@@ -104,18 +112,20 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
     const contact = useCallback((c: Customer, templateId: string, message?: string) => {
         const text = message ?? templateById(templateId)?.build(c) ?? '';
         const link = whatsappLink(c.phone, text);
-        if (!link) return;
+        if (!link) return false;
         window.open(link, '_blank', 'noopener,noreferrer');
         // Log in the background; the WhatsApp tab is already open
         saveCustomerProfile(c.key, { contact: { template: templateId } }).then(res => {
             if (res.profile) setProfiles(p => ({ ...p, [c.key]: res.profile! }));
         });
+        return true;
     }, []);
 
     const value = useMemo<AdminData>(() => ({
         orders, leads, subscribers, reviews, customers,
         loading: ordersLoading || extraLoading,
-        failed,
+        // If orders can't load, say so — otherwise every number would silently read ₹0
+        failed: ordersError ? ['orders', ...failed] : failed,
         refresh: () => setVersion(v => v + 1),
         saveProfile,
         contact,
@@ -123,7 +133,7 @@ export const AdminDataProvider: FC<{ children: ReactNode }> = ({ children }) => 
         setMarketing,
         attributed,
         openRecordSale,
-    }), [orders, leads, subscribers, reviews, customers, ordersLoading, extraLoading, failed, saveProfile, contact, marketing, setMarketing, attributed, openRecordSale]);
+    }), [orders, leads, subscribers, reviews, customers, ordersLoading, ordersError, extraLoading, failed, saveProfile, contact, marketing, setMarketing, attributed, openRecordSale]);
 
     return (
         <Ctx.Provider value={value}>

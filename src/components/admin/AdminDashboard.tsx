@@ -29,9 +29,11 @@ interface ActionCardProps {
     tone: 'gold' | 'orange' | 'green' | 'blue' | 'purple';
     onSeeAll?: () => void;
     seeAllLabel?: string;
+    /** Number shown in the corner when it differs from the list (e.g. orders vs customers) */
+    count?: number;
 }
 
-const ActionCard: FC<ActionCardProps> = ({ title, why, template, items, tone, onSeeAll, seeAllLabel }) => {
+const ActionCard: FC<ActionCardProps> = ({ title, why, template, items, tone, onSeeAll, seeAllLabel, count }) => {
     const { contact } = useAdminData();
     const [done, setDone] = useState<Set<string>>(new Set());
     const shown = items.slice(0, 5);
@@ -39,7 +41,7 @@ const ActionCard: FC<ActionCardProps> = ({ title, why, template, items, tone, on
         <section className={`today-card today-card--${tone}`}>
             <header>
                 <h2>{title}</h2>
-                <span className="today-card__count">{items.length}</span>
+                <span className="today-card__count">{count ?? items.length}</span>
             </header>
             <p className="today-card__why">{why}</p>
             {items.length === 0 ? (
@@ -59,7 +61,7 @@ const ActionCard: FC<ActionCardProps> = ({ title, why, template, items, tone, on
                                         className="btn-view crm-wa-icon"
                                         title={`WhatsApp: ${templateById(template)?.label}`}
                                         aria-label={`WhatsApp ${c.name}`}
-                                        onClick={() => { contact(c, template); setDone(prev => new Set(prev).add(c.key)); }}
+                                        onClick={() => { if (contact(c, template)) setDone(prev => new Set(prev).add(c.key)); }}
                                     >
                                         <Icon name="fa-whatsapp" />
                                     </button>
@@ -91,7 +93,8 @@ const Kpi: FC<{ label: string; value: string; cur: number; prev: number; hint?: 
 export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ onNavigate }) => {
     const { orders, customers, loading, failed, refresh, openRecordSale } = useAdminData();
     const [emailTest, setEmailTest] = useState<{ busy: boolean; emails?: EmailStatus; error?: string }>({ busy: false });
-    const [now] = useState(() => Date.now());
+    // Re-read the clock whenever data changes, so new orders land in "last 30 days"
+    const now = useMemo(() => Date.now(), [orders, customers]);
 
     const kpis = useMemo(() => {
         const start = now - PERIOD_DAYS * DAY;
@@ -124,8 +127,10 @@ export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ on
             if (!c || seen.has(c.key)) continue;
             seen.add(c.key);
             const items = (o.items || []).map((i: any) => i.productName).join(', ');
-            shipItems.push({ c, detail: `${items} · paid ${daysAgo(toDate(o.createdAt))}` });
+            const more = toShip.filter(x => ownerOf.get(x) === c).length - 1;
+            shipItems.push({ c, detail: `${items}${more > 0 ? ` +${more} more order${more === 1 ? '' : 's'}` : ''} · paid ${daysAgo(toDate(o.createdAt))}` });
         }
+        const toShipCount = toShip.length;
 
         // 2. Started checkout recently but didn't pay
         const recoverSince = now - 14 * DAY;
@@ -147,9 +152,9 @@ export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ on
         // 3. Delivered in the last 60 days and not yet asked for a review
         const reviewSince = now - 60 * DAY;
         const reviews: ActionItem[] = customers
-            .map(c => ({ c, o: c.orders.find(o => o.status === 'delivered' && (toDate(o.updatedAt || o.createdAt)?.getTime() || 0) >= reviewSince) }))
+            .map(c => ({ c, o: c.orders.find(o => o.status === 'delivered' && (toDate(o.deliveredAt || o.createdAt)?.getTime() || 0) >= reviewSince) }))
             .filter(x => x.o && !contactedWith(x.c, 'review_request', toDate(x.o.createdAt)?.getTime() || 0))
-            .map(({ c, o }) => ({ c, detail: `${o.items?.[0]?.productName || 'bat'} · delivered ${daysAgo(toDate(o.updatedAt || o.createdAt))}` }));
+            .map(({ c, o }) => ({ c, detail: `${o.items?.[0]?.productName || 'bat'} · delivered ${daysAgo(toDate(o.deliveredAt || o.createdAt))}` }));
 
         // 4. Lapsed buyers worth winning back — biggest spenders first
         const winBack: ActionItem[] = customers
@@ -163,7 +168,7 @@ export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ on
             .sort((a, b) => b.totalSpent - a.totalSpent)
             .map(c => ({ c, detail: `${inrShort(c.totalSpent)} lifetime · last order ${daysAgo(c.lastOrderAt)}` }));
 
-        return { shipItems, recover, reviews, winBack, wholesale };
+        return { shipItems, toShipCount, recover, reviews, winBack, wholesale };
     }, [orders, customers, now]);
 
     const codDue = orders.filter(o => isPaid(o) && o.paymentMethod === 'cod' && o.paymentStatus !== 'completed').length;
@@ -212,6 +217,7 @@ export const AdminDashboard: FC<{ onNavigate: (tab: AdminTab) => void }> = ({ on
                     why="Paid orders waiting to go out. Send a quick “being packed” message — it cuts “where is my order?” calls."
                     template="order_update"
                     items={actions.shipItems}
+                    count={actions.toShipCount}
                     onSeeAll={() => onNavigate('orders')}
                     seeAllLabel="Open Orders"
                 />

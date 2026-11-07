@@ -22,10 +22,15 @@ const hashIf = (v?: string) => (v && v.trim() ? sha(v) : undefined);
 
 /** Phone in E.164 digits without '+', defaulting 10-digit numbers to India */
 export const phoneDigits = (p?: string) => {
-    const d = String(p || '').replace(/\D/g, '');
+    let d = String(p || '').replace(/\D/g, '');
+    if (d.length === 11 && d.startsWith('0')) d = d.slice(1);   // 09876543210 → 9876543210
+    if (d.length === 12 && d.startsWith('00')) d = d.slice(2);
     if (d.length === 10) return `91${d}`;
     return d;
 };
+
+/** Meta's normalisation for names: lowercase letters only (no spaces or punctuation) */
+const nameKey = (s?: string) => (s || '').toLowerCase().normalize('NFKD').replace(/[^a-z\u0900-\u097f]/g, '');
 
 export interface PurchaseInput {
     eventId: string;
@@ -68,8 +73,8 @@ export async function sendPurchase(e: PurchaseInput): Promise<MetaResult> {
     const user: Record<string, any> = {
         ph: digits ? [sha(digits)] : undefined,
         em: e.email ? [sha(e.email)] : undefined,
-        fn: hashIf(first),
-        ln: hashIf(rest.join(' ')),
+        fn: hashIf(nameKey(first)),
+        ln: hashIf(nameKey(rest.join(' '))),
         ct: hashIf(e.city?.replace(/\s+/g, '')),
         st: hashIf(e.state?.replace(/\s+/g, '')),
         zp: hashIf(e.zip?.replace(/\s+/g, '')),
@@ -101,7 +106,9 @@ export async function sendPurchase(e: PurchaseInput): Promise<MetaResult> {
     };
     if (e.actionSource === 'website') event.event_source_url = e.pageUrl || 'https://wularsports.com/checkout';
 
-    const testCode = e.testCode || process.env.META_CAPI_TEST_CODE;
+    // Only the admin panel's "Send test purchase" uses a test code — never real sales,
+    // which would otherwise all land in Meta's Test Events and never reach your ads
+    const testCode = e.testCode;
     try {
         const res = await fetch(`https://graph.facebook.com/${GRAPH_VERSION}/${PIXEL_ID}/events?access_token=${encodeURIComponent(token)}`, {
             method: 'POST',

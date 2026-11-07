@@ -2,6 +2,7 @@ import type { DocumentReference } from 'firebase-admin/firestore';
 import { db, FieldValue, Timestamp } from './firebaseAdmin';
 import { ADMIN_EMAIL } from '../data/constants';
 import { metaConfigured, purchaseFromOrder, sendPurchase } from './metaCapi';
+import { orderProblem } from './orderIntegrity';
 
 /**
  * Server-side order emails (admin notification + customer confirmation),
@@ -128,6 +129,8 @@ export interface ConfirmResult {
     emails?: EmailStatus;
     /** true when an email that should have gone out failed — caller may retry */
     emailFailed: boolean;
+    /** Another call is sending this order's emails right now — caller should retry later */
+    inProgress?: boolean;
 }
 
 /**
@@ -145,10 +148,20 @@ export async function confirmPaidOrder(
         const o = snap.data()!;
         const update: Record<string, any> = { updatedAt: FieldValue.serverTimestamp() };
 
+        // COD keeps paymentStatus 'pending' (balance due at the door)
+        const paidStatus = o.paymentMethod === 'full' ? 'completed' : 'pending';
         if (o.status === 'pending') {
             update.status = 'confirmed';
-            // COD keeps paymentStatus 'pending' (balance due at the door)
-            update.paymentStatus = o.paymentMethod === 'full' ? 'completed' : 'pending';
+            update.paymentStatus = paidStatus;
+        } else if (o.status === 'cancelled') {
+            // The owner cancelled it as abandoned, but the customer did pay —
+            // bring it back so it gets packed (and say so in the admin panel)
+            update.status = 'confirmed';
+            update.paymentStatus = paidStatus;
+            update.reopenedAfterPayment = true;
+        } else if (paidStatus === 'completed' && o.paymentStatus === 'pending') {
+            // Moved forward by hand before the payment landed
+            update.paymentStatus = 'completed';
         }
         if (paymentId && !o.paymentId) {
             update.paymentId = paymentId;
@@ -176,12 +189,18 @@ export async function confirmPaidOrder(
             order,
             want: shouldSend ? want : null,
             wantMeta: shouldSend && wantMeta,
+            busy: !!locked && (want.admin || want.customer || wantMeta),
             prev,
         };
     });
 
+    // Their checkout lead is now a customer (the browser may never come back to say so)
+    if (claim?.order.userId) {
+        db.collection('leads').doc(String(claim.order.userId)).update({ status: 'converted' }).catch(() => { /* no lead */ });
+    }
+
     if (!claim) return { found: false, emailFailed: false };
-    if (!claim.want) return { found: true, emails: claim.prev, emailFailed: false };
+    if (!claim.want) return { found: true, emails: claim.prev, emailFailed: false, inProgress: claim.busy };
 
     const [sent, meta] = await Promise.all([
         sendOrderEmails(ref.id, claim.order, claim.want),
@@ -201,8 +220,18 @@ export async function confirmPaidOrder(
     return { found: true, emails: merged, emailFailed: failed(merged.admin) || failed(merged.customer) };
 }
 
-/** Look up our order by the Razorpay order id stored at checkout. */
-export async function findOrderByRazorpayOrderId(rzpOrderId: string): Promise<DocumentReference | null> {
-    const snap = await db.collection('orders').where('razorpayOrderId', '==', rzpOrderId).limit(1).get();
-    return snap.empty ? null : snap.docs[0].ref;
+/**
+ * Look up our order by the Razorpay order id stored at checkout. If more than
+ * one document claims that id, the oldest one whose totals match what
+ * Razorpay charged wins (checkout writes the real order first).
+ */
+export async function findOrderByRazorpayOrderId(
+    rzpOrderId: string,
+    paidPaise?: number | null
+): Promise<{ ref: DocumentReference; problem: string | null } | null> {
+    const snap = await db.collection('orders').where('razorpayOrderId', '==', rzpOrderId).limit(10).get();
+    if (snap.empty) return null;
+    const docs = [...snap.docs].sort((a, b) => (a.get('createdAt')?.toMillis?.() || 0) - (b.get('createdAt')?.toMillis?.() || 0));
+    const ok = docs.find(d => !orderProblem(d.data(), paidPaise));
+    return ok ? { ref: ok.ref, problem: null } : { ref: docs[0].ref, problem: orderProblem(docs[0].data(), paidPaise) };
 }

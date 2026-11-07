@@ -20,6 +20,11 @@ export const config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 const POSTS = 'blogPosts';
 const fail = (msg: string): never => { throw new BlogError(msg); };
 
+// Links that open a new tab get rel="noopener" so the new page can't control ours
+DOMPurify.addHook('afterSanitizeAttributes', node => {
+    if (node.tagName === 'A' && node.getAttribute('target') === '_blank') node.setAttribute('rel', 'noopener noreferrer');
+});
+
 /** Article HTML without scripts, event handlers or other unsafe markup */
 const sanitize = (html: string) => DOMPurify.sanitize(html, { ADD_ATTR: ['target'], FORBID_TAGS: ['style', 'form', 'input', 'button'] });
 
@@ -39,17 +44,20 @@ async function ensureManaged() {
     await batch.commit();
 }
 
+/** Live post pages — their "Continue reading" links point at other posts */
+async function allPostPages(): Promise<string[]> {
+    const snap = await db.collection(POSTS).get();
+    return snap.docs.filter(d => d.get('published') !== false).map(d => `/blog/${d.id}`);
+}
+
 async function refreshPages(res: NextApiResponse, paths: string[]): Promise<string[]> {
-    const failed: string[] = [];
-    for (const path of [...new Set(paths)]) {
-        try {
-            await res.revalidate(path);
-        } catch (err: any) {
-            console.error('revalidate failed', path, err?.message);
-            failed.push(path);
-        }
-    }
-    return failed;
+    const list = [...new Set(paths)];
+    const results = await Promise.allSettled(list.map(p => res.revalidate(p)));
+    return list.filter((p, i) => {
+        const r = results[i];
+        if (r.status === 'rejected') console.error('revalidate failed', p, (r.reason as any)?.message);
+        return r.status === 'rejected';
+    });
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -87,7 +95,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // A replaced cover photo is deleted from storage if nothing else uses it
                 if (prev?.image && prev.image !== post.image) await deleteUnusedPhotos([prev.image]);
 
-                const refreshFailed = await refreshPages(res, ['/blog', `/blog/${post.id}`]);
+                // Unpublishing or renaming changes the "Continue reading" links on other posts too
+                const wentOffline = prev?.published !== false && !post.published;
+                const titleChanged = prev && (prev.title !== post.title || prev.image !== post.image);
+                const refreshFailed = await refreshPages(res, ['/blog', `/blog/${post.id}`, ...(wentOffline || titleChanged ? await allPostPages() : [])]);
                 return res.status(200).json({ post, refreshFailed });
             }
 
@@ -99,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const prev = snap.data() as ManagedPost;
                 await ref.delete();
                 if (prev.image) await deleteUnusedPhotos([prev.image]);
-                const refreshFailed = await refreshPages(res, ['/blog', `/blog/${id}`]);
+                const refreshFailed = await refreshPages(res, ['/blog', `/blog/${id}`, ...(await allPostPages())]);
                 return res.status(200).json({ ok: true, refreshFailed });
             }
 

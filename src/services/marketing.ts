@@ -76,7 +76,8 @@ export const resolveTrail = (a: Attribution | null | undefined, idx: CampaignInd
     for (const t of [a?.last, a?.first]) {
         const s = classifyTouch(t);
         if (!s) continue;
-        const c = t?.campaign ? idx.byName.get(norm(t.campaign)) : undefined;
+        // Match the campaign by name — or by ad set / ad name, for spend imported from those tabs
+        const c = [t?.campaign, t?.term, t?.content].map(n => (n ? idx.byName.get(norm(n)) : undefined)).find(Boolean);
         return {
             source: s,
             campaignKey: c ? c.id : t?.campaign ? `utm:${norm(t.campaign)}` : null,

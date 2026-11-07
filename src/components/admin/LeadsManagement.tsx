@@ -1,7 +1,8 @@
 import { FC, useState, useEffect, useMemo } from 'react';
-import { collection, query, orderBy, limit, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { getFirestoreDb } from '../../services/firebase-firestore';
 import { Icon } from '../common/Icon';
+import { useAdminData } from '../../hooks/useAdminData';
 
 interface Lead {
     id: string;
@@ -44,6 +45,7 @@ const fetchLeads = async (): Promise<Lead[]> => {
 };
 
 export const LeadsManagement: FC = () => {
+    const { openRecordSale } = useAdminData();
     const [leads, setLeads] = useState<Lead[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -88,14 +90,6 @@ export const LeadsManagement: FC = () => {
         }
     };
 
-    const handleMarkSold = async (id: string) => {
-        try {
-            await updateDoc(doc(getFirestoreDb(), 'leads', id), { status: 'converted' });
-            setLeads(prev => prev.map(l => l.id === id ? { ...l, status: 'converted' } : l));
-        } catch {
-            alert('Failed to update lead');
-        }
-    };
 
     if (loading) {
         return (
@@ -123,7 +117,7 @@ export const LeadsManagement: FC = () => {
             </div>
 
             <p className="dashboard-hint">
-                💡 These visitors typed their details on checkout or tapped a WhatsApp button but haven't ordered yet. Every WhatsApp message from the site includes a <strong>Ref code</strong> — when a chat turns into a sale, find that Ref here and tap ✓ to mark it sold.
+                💡 These visitors typed their details on checkout or tapped a WhatsApp button but haven't ordered yet. Every WhatsApp message from the site includes a <strong>Ref code</strong> — when a chat turns into a sale, find that Ref here and tap ✓ to record the sale — it goes into revenue and the lead moves to “sold”.
             </p>
 
             <div className="orders-filters">
@@ -217,8 +211,15 @@ export const LeadsManagement: FC = () => {
                                             {lead.status !== 'converted' && (
                                                 <button
                                                     className="btn-view"
-                                                    onClick={() => handleMarkSold(lead.id)}
-                                                    title="Mark as sold"
+                                                    onClick={() => openRecordSale({
+                                                        name: [lead.firstName, lead.lastName].filter(Boolean).join(' '),
+                                                        phone: lead.phone ? `${lead.countryCode || '+91'}${lead.phone}` : '',
+                                                        email: lead.email || '',
+                                                        city: lead.city || '',
+                                                        state: lead.state || '',
+                                                        ref: lead.visitorRef || '',
+                                                    })}
+                                                    title="Record the sale (adds it to revenue and marks the lead sold)"
                                                     style={{ backgroundColor: '#388e3c' }}
                                                 >
                                                     <Icon name="fa-check" />

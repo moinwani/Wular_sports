@@ -201,62 +201,10 @@ service cloud.firestore {
     
     match /orders/{orderId} {
       
-      // AUTHENTICATED USERS: Can CREATE orders only
-      allow create: if 
-        isAuthenticated()
-        // Must include userId and it must match authenticated user
-        && request.resource.data.userId == request.auth.uid
-        // Required fields validation
-        && request.resource.data.keys().hasAll([
-          'userId',
-          'orderNumber', 
-          'customerName', 
-          'customerEmail',
-          'customerPhone',
-          'customerAddress',
-          'items',
-          'total',
-          'status',
-          'paymentStatus',
-          'paymentMethod',
-          'createdAt',
-          'updatedAt'
-        ])
-        // Field type and format validation
-        && isValidString(request.resource.data.customerName, 2, 100)
-        && isValidEmail(request.resource.data.customerEmail)
-        && isValidPhone(request.resource.data.customerPhone)
-        && request.resource.data.customerAddress is map
-        && isValidString(request.resource.data.customerAddress.street, 10, 500)
-        && isValidString(request.resource.data.customerAddress.city, 2, 100)
-        && isValidString(request.resource.data.customerAddress.state, 2, 100)
-        // India: strict 6-digit PIN. International: 3-10 char alphanumeric postal code
-        && (
-          (request.resource.data.customerAddress.get('country', 'India') == 'India'
-            && request.resource.data.customerAddress.pincode.matches('^[0-9]{6}$'))
-          || (request.resource.data.customerAddress.get('country', 'India') != 'India'
-            && request.resource.data.customerAddress.pincode.matches('^[A-Za-z0-9 -]{3,10}$'))
-        )
-        // Items validation
-        && request.resource.data.items is list
-        && request.resource.data.items.size() > 0
-        && request.resource.data.items.size() <= 50  // Max 50 items per order
-        // Total must be positive
-        && isPositiveNumber(request.resource.data.total)
-        && request.resource.data.total >= 100  // Minimum order value ₹100
-        && request.resource.data.total <= 1000000  // Maximum ₹10 lakh
-        // Status must be 'pending' on creation
-        && request.resource.data.status == 'pending'
-        && request.resource.data.paymentStatus == 'pending'
-        // Payment method validation
-        && request.resource.data.paymentMethod in ['full', 'cod']
-        // Timestamps must be close to now
-        && request.resource.data.createdAt is timestamp
-        && request.resource.data.createdAt > request.time - duration.value(1, 'm')
-        && request.resource.data.createdAt < request.time + duration.value(1, 'm')
-        && request.resource.data.updatedAt == request.resource.data.createdAt
-        // Order number must follow pattern
-        && request.resource.data.orderNumber.matches('^WS[0-9]+$');
+      // Orders are created only by the server (checkout API, Admin SDK).
+      // Browsers can't create them — otherwise anyone could write a fake
+      // "paid" order straight into the database.
+      allow create: if false;
       
       // USERS: Can read ONLY their own orders
       allow read: if isOwner(resource.data.userId);
@@ -275,7 +223,8 @@ service cloud.firestore {
           'status', 
           'paymentStatus', 
           'paymentId',
-          'updatedAt'
+          'updatedAt',
+          'deliveredAt'
         ])
         && request.resource.data.status in [
           'pending', 

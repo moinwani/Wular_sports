@@ -403,12 +403,18 @@ const CampaignQueue: FC<{ customers: Customer[]; onClose: () => void }> = ({ cus
     const [sent, setSent] = useState<Set<string>>(new Set());
     const [skipRecent, setSkipRecent] = useState(true);
 
-    const queue = customers.filter(c => !skipRecent || !recentlyContacted(c));
+    // People messaged during this campaign stay in the list (marked sent) — only
+    // contacts from before it started count as "messaged recently"
+    const [startedAt] = useState(() => Date.now());
+    const contactedBefore = (c: Customer) => {
+        const t = c.profile.lastContactedAt ? new Date(c.profile.lastContactedAt).getTime() : 0;
+        return t > 0 && t < startedAt && recentlyContacted(c);
+    };
+    const queue = customers.filter(c => !skipRecent || !contactedBefore(c) || sent.has(c.key));
     const tpl = templateById(tplId)!;
 
     const send = (c: Customer) => {
-        contact(c, tplId);
-        setSent(prev => new Set(prev).add(c.key));
+        if (contact(c, tplId)) setSent(prev => new Set(prev).add(c.key));
     };
 
     return (

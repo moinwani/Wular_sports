@@ -49,19 +49,23 @@ async function loadCategories(): Promise<Category[]> {
 /** Rebuild website pages so changes show up straight away. Failures are reported, not fatal. */
 async function refreshPages(res: NextApiResponse, paths: string[]): Promise<string[]> {
     invalidateCatalog();
-    const failed: string[] = [];
-    for (const path of [...new Set(paths)]) {
-        try {
-            await res.revalidate(path);
-        } catch (err: any) {
-            console.error('revalidate failed', path, err?.message);
-            failed.push(path);
-        }
-    }
-    return failed;
+    // In parallel, so refreshing every product page still finishes in a few seconds
+    const list = [...new Set(paths)];
+    const results = await Promise.allSettled(list.map(p => res.revalidate(p)));
+    return list.filter((p, i) => {
+        const r = results[i];
+        if (r.status === 'rejected') console.error('revalidate failed', p, (r.reason as any)?.message);
+        return r.status === 'rejected';
+    });
 }
 
 const LIST_PAGES = ['/', '/collection', '/review'];
+
+/** Every product page shows other products ("More to explore") and feeds the cart its prices */
+async function allProductPages(): Promise<string[]> {
+    const snap = await db.collection(PRODUCTS).get();
+    return snap.docs.filter(d => !d.get('hidden')).map(d => `/product/${d.id}`);
+}
 const pathsFor = (categories: Category[], names: string[]) =>
     categories.filter(c => names.includes(c.name)).map(c => c.path);
 
@@ -118,6 +122,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const failed = await refreshPages(res, [
                     ...LIST_PAGES,
                     `/product/${product.id}`,
+                    ...(await allProductPages()),
                     ...pathsFor(categories, [...product.category, ...(prev?.category || [])]),
                 ]);
                 return res.status(200).json({ product, refreshFailed: failed });
@@ -132,7 +137,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await ref.delete();
                 await deleteUnusedPhotos(productImages(prev));
                 const categories = await loadCategories();
-                const failed = await refreshPages(res, [...LIST_PAGES, `/product/${id}`, ...pathsFor(categories, prev.category || [])]);
+                const failed = await refreshPages(res, [...LIST_PAGES, `/product/${id}`, ...(await allProductPages()), ...pathsFor(categories, prev.category || [])]);
                 return res.status(200).json({ ok: true, refreshFailed: failed });
             }
 

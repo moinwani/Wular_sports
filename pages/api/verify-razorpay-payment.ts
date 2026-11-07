@@ -3,6 +3,13 @@ import crypto from 'crypto';
 import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 import { auth, db } from '../../src/lib/firebaseAdmin';
 import { confirmPaidOrder } from '../../src/lib/orderNotifications';
+import { orderProblem } from '../../src/lib/orderIntegrity';
+import Razorpay from 'razorpay';
+
+const razorpay = () => new Razorpay({
+    key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
+    key_secret: process.env.RAZORPAY_KEY_SECRET || '',
+});
 
 async function verifyAuth(req: NextApiRequest): Promise<{ uid: string }> {
     const authHeader = req.headers.authorization;
@@ -66,7 +73,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // Only the owner of the order may confirm it, and the payment
                 // must belong to this order's Razorpay order id.
                 if (order.userId === uid && order.razorpayOrderId === razorpay_order_id) {
-                    await confirmPaidOrder(orderRef, razorpay_payment_id);
+                    // The amount on Razorpay's order was set by our server at checkout;
+                    // the order document must match it, or it was tampered with
+                    const rzpOrder: any = await razorpay().orders.fetch(razorpay_order_id);
+                    const problem = orderProblem(order, Number(rzpOrder?.amount));
+                    if (problem) {
+                        console.error('Order failed integrity check on verify:', firestoreOrderId, problem);
+                        await orderRef.update({ needsReview: problem });
+                    } else {
+                        await confirmPaidOrder(orderRef, razorpay_payment_id);
+                    }
                 } else {
                     console.error('Order/payment mismatch on verify:', firestoreOrderId);
                 }

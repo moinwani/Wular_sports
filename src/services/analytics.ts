@@ -8,10 +8,12 @@
  * (leads → orders started → paid) instead.
  */
 
-import { isPaid, toDate, Customer, SEGMENTS, Segment } from './customers';
+import { isPaid, toDate, Customer, SEGMENTS, Segment, keyFor } from './customers';
 import { products } from '../data/products';
 
 const DAY = 86400000;
+/** One person = one phone number (else email), as on the Customers tab */
+const personKey = (o: any) => keyFor(o.customerPhone, o.customerEmail) || String(o.userId || o.id);
 /** Short catalog names ("Legacy Edition 2.0"), so website and WhatsApp sales of a bat group together */
 const CATALOG_NAME = new Map(products.map(p => [p.id, p.name.split(' — ')[0].trim()]));
 
@@ -46,7 +48,7 @@ export interface RangeKpis {
 export const computeRangeKpis = (orders: any[]): RangeKpis => {
     const paid = orders.filter(isPaid);
     const revenue = paid.reduce((s, o) => s + (o.total || 0), 0);
-    const keys = new Set(paid.map(o => String(o.customerPhone || o.customerEmail || o.userId)));
+    const keys = new Set(paid.map(personKey));
     return {
         revenue,
         orders: paid.length,
@@ -155,9 +157,13 @@ export const isWebsiteOrder = (o: any) => o.source !== 'whatsapp_pre_website' &&
  * Pre-website WhatsApp sales are excluded — they never went through checkout.
  */
 export const checkoutConversion = (orders: any[]) => {
+    // Counted per shopper, not per tap on Pay — closing the payment window and
+    // trying again creates a second order record for the same person
     const site = orders.filter(o => isWebsiteOrder(o) && o.status !== 'cancelled');
-    const paid = site.filter(isPaid).length;
-    return { started: site.length, paid, unpaid: site.length - paid, rate: site.length ? Math.round((paid / site.length) * 100) : 0 };
+    const started = new Set(site.map(personKey));
+    const paidKeys = new Set(site.filter(isPaid).map(personKey));
+    const paid = paidKeys.size;
+    return { started: started.size, paid, unpaid: started.size - paid, rate: started.size ? Math.round((paid / started.size) * 100) : 0 };
 };
 
 export interface SegmentRow { segment: Segment; customers: number; revenue: number; share: number; }
@@ -174,7 +180,9 @@ export const segmentSummary = (customers: Customer[]): SegmentRow[] => {
 export interface Cohort { cohort: string; customers: number; repeat: number; repeatRate: number; avgLtv: number; }
 
 export const computeCohorts = (orders: any[]): Cohort[] => {
-    const paid = orders.filter(isPaid).map(o => ({ userId: o.userId, ts: toDate(o.createdAt), total: o.total || 0 }))
+    // Grouped by phone/email (as on the Customers tab) — userId is a new anonymous
+    // login per browser, which made repeat buyers look like new ones
+    const paid = orders.filter(isPaid).map(o => ({ userId: personKey(o), ts: toDate(o.createdAt), total: o.total || 0 }))
         .filter(o => o.userId && o.ts) as { userId: string; ts: Date; total: number }[];
 
     const firstMonth: Record<string, string> = {};
@@ -230,14 +238,16 @@ export const computeCoupon = (orders: any[]): CouponRow[] => {
 
 export interface ProductRow { product: string; units: number; revenue: number; avgRating: number | null; reviews: number; }
 
-export const computeProducts = (orders: any[], reviews: any[]): ProductRow[] => {
+export const computeProducts = (orders: any[], reviews: any[], liveProducts: { id: string; name: string }[] = []): ProductRow[] => {
+    const liveName = new Map(liveProducts.map(p => [p.id, p.name.split(' — ')[0].trim()]));
     // Grouped by name: imported WhatsApp orders can carry a different id for the same bat
     const sales: Record<string, { name: string; ids: Set<string>; units: number; revenue: number }> = {};
     for (const o of orders.filter(isPaid)) {
         for (const it of (o.items || [])) {
             const id = it.productId || it.id || it.productName;
             if (!id) continue;
-            const name = CATALOG_NAME.get(it.productId) || String(it.productName || it.name || id).trim();
+            // Live short name, so "Thunder — Kashmiri Willow…" (website) and "Thunder" (WhatsApp) are one row
+            const name = liveName.get(it.productId) || CATALOG_NAME.get(it.productId) || String(it.productName || it.name || id).split(' — ')[0].trim();
             const k = name.toLowerCase();
             sales[k] = sales[k] || { name, ids: new Set(), units: 0, revenue: 0 };
             sales[k].ids.add(String(id));

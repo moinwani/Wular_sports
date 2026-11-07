@@ -1,4 +1,4 @@
-import { Customer, firstName, toDate } from './customers';
+import { Customer, firstName, isPaid, toDate } from './customers';
 
 /**
  * Pre-written WhatsApp messages for reaching customers from the admin panel.
@@ -19,10 +19,18 @@ const lastProduct = (c: Customer) => c.products[0] || 'bat';
 const hasRecentOrder = (c: Customer, statuses: string[], days: number) =>
     c.orders.some(o => statuses.includes(o.status) &&
         Date.now() - (toDate(o.createdAt)?.getTime() || 0) <= days * 86400000);
+/** The bat from their latest PAID order (not an abandoned checkout) */
 const productIdOfLastOrder = (c: Customer) => {
-    const o = c.orders.find(x => x.items?.length);
+    const o = c.orders.find(x => isPaid(x) && x.items?.length);
     return o?.items?.[0]?.productId || '';
 };
+
+/**
+ * The welcome offer messages mention — kept in step with Marketing → Coupons
+ * by the admin panel, so a switched-off coupon is never promised.
+ */
+let offer: { code: string; text: string } | null = { code: 'WELCOME100', text: '₹100 off per bat' };
+export const setTemplateOffer = (o: { code: string; text: string } | null) => { offer = o; };
 
 export const WA_TEMPLATES: WaTemplate[] = [
     {
@@ -66,7 +74,7 @@ export const WA_TEMPLATES: WaTemplate[] = [
         label: 'Win-back offer',
         suits: c => c.atRisk,
         build: c => `Hi ${firstName(c.name)}! It's been a while 🏏\n\n` +
-            `As one of our valued customers, here's ₹100 off per bat on your next order with code WELCOME100. ` +
+            (offer ? `As one of our valued customers, here's ${offer.text} on your next order with code ${offer.code}. ` : `We'd love to have you back. `) +
             `New season Kashmiri willow is in — want me to send you photos of what's available?`,
     },
     {
@@ -90,7 +98,9 @@ export const WA_TEMPLATES: WaTemplate[] = [
         label: 'Refer a teammate',
         suits: c => c.paidOrders > 0 && (c.segment === 'VIP' || c.segment === 'Repeat'),
         build: c => `Hi ${firstName(c.name)}! Thanks for being a regular at Wular Sports 🙌\n\n` +
-            `If your teammates need a bat, send them our way — they get ₹100 off per bat with code WELCOME100, ` +
+            (offer
+                ? `If your teammates need a bat, send them our way — they get ${offer.text} with code ${offer.code}, `
+                : `If your teammates need a bat, send them our way — `) +
             `and we'll look after you on your next order too.\n\nhttps://wularsports.com`,
     },
 ];

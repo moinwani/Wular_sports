@@ -63,12 +63,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        const ref = await findOrderByRazorpayOrderId(rzpOrderId);
-        if (!ref) {
+        // Amount Razorpay actually charged (paise) — must match the order
+        const paid = Number(payment?.amount ?? body.payload?.order?.entity?.amount_paid);
+        const found = await findOrderByRazorpayOrderId(rzpOrderId, Number.isFinite(paid) ? paid : null);
+        if (!found) {
             // A payment not created by our checkout (e.g. a manual payment link)
             return res.status(200).json({ status: 'ignored', reason: 'order not found' });
         }
-        const result = await confirmPaidOrder(ref, payment?.id);
+        if (found.problem) {
+            // Never mark a forged or tampered order paid — flag it for the owner instead
+            console.error('Webhook: order failed integrity check', found.ref.id, found.problem);
+            await found.ref.update({ needsReview: found.problem });
+            return res.status(200).json({ status: 'flagged' });
+        }
+        const result = await confirmPaidOrder(found.ref, payment?.id);
+        if (result.inProgress) {
+            // Another request is sending the emails right now; ask Razorpay to retry so
+            // nothing is lost if that request dies before finishing
+            return res.status(503).json({ status: 'in_progress' });
+        }
         if (result.emailFailed) {
             // Non-2xx makes Razorpay retry later; already-sent emails won't repeat
             return res.status(502).json({ status: 'email_failed', emails: result.emails });

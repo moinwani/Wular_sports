@@ -12,6 +12,7 @@ import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
 import { CheckoutAuth } from '../components/checkout/CheckoutAuth';
 import { useCart } from '../context/CartContext';
+import { useCatalog } from '../context/CatalogContext';
 
 const hashData = async (value: string): Promise<string> => {
     const encoder = new TextEncoder();
@@ -221,6 +222,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const [isProcessing, setIsProcessing] = useState(false);
     // Phones: show what's being bought up front (most carts are one or two bats)
     const [isSummaryExpanded, setIsSummaryExpanded] = useState(true);
+
+    // Pull the newest prices so the cart shows exactly what Razorpay will charge
+    const { refresh: refreshCatalog } = useCatalog();
+    useEffect(() => { refreshCatalog(); }, [refreshCatalog]);
 
     const [formData, setFormData] = useState({
         firstName: '',

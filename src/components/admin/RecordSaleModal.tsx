@@ -6,7 +6,7 @@ import { INDIAN_STATES } from '../../data/constants';
 import { keyFor } from '../../services/customers';
 import { marketingAction } from '../../services/admin';
 import { indexCampaigns, resolveTrail, describeTouch } from '../../services/marketing';
-import { SOURCES, isPaidSource, normalizeCode, couponDiscount, couponLive } from '../../lib/marketing';
+import { SOURCES, isPaidSource, normalizeCode, couponDiscount, couponLive, platformSource } from '../../lib/marketing';
 import { inr } from './format';
 import { Icon } from '../common/Icon';
 
@@ -17,6 +17,8 @@ export interface SaleDraft {
     email?: string;
     city?: string;
     state?: string;
+    /** Visitor Ref code (from a lead) — links the sale to their website visit */
+    ref?: string;
 }
 
 interface Line { productId: string; name: string; price: string; quantity: string; }
@@ -53,7 +55,7 @@ export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({
     const [paymentMode, setPaymentMode] = useState('upi');
     const [status, setStatus] = useState('confirmed');
     const [date, setDate] = useState(today());
-    const [ref, setRef] = useState('');
+    const [ref, setRef] = useState(draft.ref || '');
     const [adCode, setAdCode] = useState('');
     const [source, setSource] = useState('');
     const [campaignId, setCampaignId] = useState('');
@@ -100,7 +102,7 @@ export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({
     const codeCampaign = adCode ? idx.byCode.get(normalizeCode(adCode)) : undefined;
     useEffect(() => {
         if (codeCampaign) {
-            setSource('meta_ads');
+            setSource(platformSource(codeCampaign.platform));
             setCampaignId(codeCampaign.id);
         }
     }, [codeCampaign]);
@@ -142,7 +144,8 @@ export const RecordSaleModal: FC<{ draft: SaleDraft; onClose: () => void }> = ({
                 ref: trail?.ref || '',
                 adCode, source, campaignId,
                 notes,
-                sendToMeta,
+                // Meta only accepts recent sales; the box is shown off for older ones, so send what it shows
+                sendToMeta: sendToMeta && marketing.metaConfigured && !tooOldForMeta,
             });
             if (res.error) return setError(res.error);
             setDone({ meta: res.meta, foundWebsiteVisit: res.foundWebsiteVisit });

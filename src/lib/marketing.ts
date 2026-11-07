@@ -104,13 +104,14 @@ export const classifyTouch = (t?: Touch | null): SourceId | null => {
     const m = lower(t.medium);
     const paid = /paid|cpc|ppc|cpm|^ads?$|_ads?$|sponsored/.test(m);
     if (s) {
+        // Checked first: influencer links are often tagged utm_source=instagram&utm_medium=influencer
+        if (/influenc|creator|collab/.test(s) || /influenc|creator|collab/.test(m)) return 'influencer';
         if (s === 'meta' || /facebook|instagram|^fb$|^ig$|^an$|messenger/.test(s)) {
             if (paid || s === 'meta') return 'meta_ads';
             return /insta|^ig$/.test(s) ? 'instagram' : 'facebook';
         }
         if (/google|adwords/.test(s)) return paid || t.gclid ? 'google_ads' : 'search';
         if (/youtube|^yt$/.test(s)) return paid ? 'google_ads' : 'youtube';
-        if (/influenc|creator|collab/.test(s) || /influenc/.test(m)) return 'influencer';
         return 'other';
     }
     if (t.gclid) return 'google_ads';

@@ -24,9 +24,14 @@ const read = (): { first?: Touch; last?: Touch } => {
     try {
         const v = JSON.parse(localStorage.getItem(KEY) || '{}');
         if (!v || typeof v !== 'object') return {};
-        const firstAt = Date.parse(v.first?.at || '');
-        if (!isNaN(firstAt) && Date.now() - firstAt > KEEP_MS) return {};
-        return v;
+        // Each visit expires on its own — an old first visit must not wipe a recent ad click
+        const fresh = (t?: Touch) => {
+            const at = Date.parse(t?.at || '');
+            return t && (isNaN(at) || Date.now() - at <= KEEP_MS) ? t : undefined;
+        };
+        const first = fresh(v.first);
+        const last = fresh(v.last);
+        return { ...(first ? { first } : {}), ...(last ? { last } : {}) };
     } catch {
         return {};
     }

@@ -12,3 +12,4 @@ Host: https://wularsports.com
 
 # Sitemaps
 Sitemap: https://wularsports.com/sitemap.xml
+Sitemap: https://wularsports.com/server-sitemap.xml

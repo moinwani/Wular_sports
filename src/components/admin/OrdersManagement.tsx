@@ -1,6 +1,7 @@
 import { FC, useState, useMemo } from 'react';
 import { useAllOrders } from '../../hooks/useOrders';
 import { updateOrderStatus, updatePaymentStatus, searchOrders, filterOrdersByStatus, adminOrderEmails, describeEmail, EmailStatus } from '../../services/admin';
+import { keyFor } from '../../services/customers';
 import { Icon } from '../common/Icon';
 import { useAdminData } from '../../hooks/useAdminData';
 import { OrderSource } from './OrderSource';
@@ -22,10 +23,12 @@ const buildReviewRequestLink = (order: any): string => {
 
 export const OrdersManagement: FC = () => {
     const { orders, loading, error } = useAllOrders();
-    const { openRecordSale } = useAdminData();
+    const { openRecordSale, customers, contact } = useAdminData();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [selectedOrder, setSelectedOrderState] = useState<any>(null);
+    const [selectedRaw, setSelectedOrderState] = useState<any>(null);
+    // Always the live version — status changes and "mark paid" show up straight away
+    const selectedOrder = selectedRaw ? (orders.find((o: any) => o.id === selectedRaw.id) || selectedRaw) : null;
     const [updating, setUpdating] = useState(false);
     const [emailAction, setEmailAction] = useState<{ busy: boolean; emails?: EmailStatus; error?: string }>({ busy: false });
 
@@ -48,6 +51,10 @@ export const OrdersManagement: FC = () => {
     }, [orders, statusFilter, searchTerm]);
 
     const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+        const order = orders.find((o: any) => o.id === orderId);
+        // One mis-tap shouldn't cancel a paid order
+        if (newStatus === 'cancelled' && order && order.status !== 'pending'
+            && !confirm(`Cancel ${order.customerName || 'this'}’s order? It’s marked as paid — remember to refund the customer if needed.`)) return;
         setUpdating(true);
         try {
             await updateOrderStatus(orderId, newStatus);
@@ -101,7 +108,7 @@ export const OrdersManagement: FC = () => {
             <div className="orders-filters">
                 <input
                     type="text"
-                    placeholder="Search by customer name, email, or order number..."
+                    placeholder="Search by name, phone, email or order number…"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="search-input"
@@ -145,7 +152,7 @@ export const OrdersManagement: FC = () => {
                         <tbody>
                             {filteredOrders.map((order: any) => (
                                 <tr key={order.id} onClick={() => setSelectedOrder(order)}>
-                                    <td className="order-number">{order.orderNumber || order.id.slice(0, 8)}</td>
+                                    <td className="order-number">{order.needsReview && <span title={`Payment check failed: ${order.needsReview}`}>⚠️ </span>}{order.orderNumber || order.id.slice(0, 8)}</td>
                                     <td>
                                         <div className="customer-cell">
                                             <strong>{order.customerName}</strong>
@@ -211,7 +218,12 @@ export const OrdersManagement: FC = () => {
                                                     className="btn-view"
                                                     title="Ask this customer for a review on WhatsApp"
                                                     style={{ backgroundColor: '#25D366' }}
-                                                    onClick={(e) => e.stopPropagation()}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        // Send through the shared contact log, so Today's "Ask for reviews" knows they were asked
+                                                        const c = customers.find(x => x.key === keyFor(order.customerPhone, order.customerEmail));
+                                                        if (c && contact(c, 'review_request')) e.preventDefault();
+                                                    }}
                                                 >
                                                     <Icon name="fa-star" />
                                                 </a>
@@ -237,6 +249,12 @@ export const OrdersManagement: FC = () => {
                         </div>
 
                         <div className="modal-body">
+                            {selectedOrder.needsReview && (
+                                <p className="order-flag">⚠️ Payment check failed: {selectedOrder.needsReview}. This order was NOT marked paid — check it in your Razorpay dashboard before packing anything.</p>
+                            )}
+                            {selectedOrder.reopenedAfterPayment && (
+                                <p className="order-flag order-flag--info">This order had been cancelled, but the customer’s payment came through — it was moved back to Confirmed.</p>
+                            )}
                             <div className="order-detail-section">
                                 <h3>Order Information</h3>
                                 <p><strong>Order Number:</strong> {selectedOrder.orderNumber || selectedOrder.id}</p>
@@ -317,10 +335,24 @@ export const OrdersManagement: FC = () => {
                                         <span>₹{item.price?.toLocaleString()}</span>
                                     </div>
                                 ))}
+                                {selectedOrder.discount > 0 && (
+                                    <div className="order-item-row">
+                                        <span>Coupon {selectedOrder.couponCode || ''}</span>
+                                        <span></span>
+                                        <span>−₹{Number(selectedOrder.discount).toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
                                 <div className="order-total-row">
                                     <strong>Total:</strong>
-                                    <strong>₹{selectedOrder.total?.toLocaleString()}</strong>
+                                    <strong>₹{selectedOrder.total?.toLocaleString('en-IN')}</strong>
                                 </div>
+                                {selectedOrder.paymentMethod === 'cod' && selectedOrder.channel !== 'whatsapp' && (
+                                    <div className="order-cod-box">
+                                        <p><span>Booking paid online</span><span>₹{Number(selectedOrder.bookingAmount || 0).toLocaleString('en-IN')}</span></p>
+                                        <p><span>COD fee (5%)</span><span>₹{Number(selectedOrder.codFee || 0).toLocaleString('en-IN')}</span></p>
+                                        <p><strong>Collect at the door</strong><strong>₹{Number(selectedOrder.totalAtDoor || 0).toLocaleString('en-IN')}</strong></p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

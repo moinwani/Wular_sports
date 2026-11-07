@@ -37,8 +37,13 @@ export const AdminView: FC = () => {
         if (window.innerWidth <= 768) window.scrollTo({ top: 0 });
     }, [activeTab]);
 
-    const handleLogout = () => {
-        if (confirm('Are you sure you want to logout?')) {
+    const handleLogout = async () => {
+        if (!confirm('Are you sure you want to logout?')) return;
+        // Really sign out — otherwise anyone on this device could reopen /admin
+        try {
+            const { signOut } = await import('../services/auth');
+            await signOut();
+        } finally {
             window.location.href = '/';
         }
     };

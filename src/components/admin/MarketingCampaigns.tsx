@@ -42,8 +42,9 @@ const toDay = (v: string): string | null => {
     if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
     const dmy = t.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/);
     if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, '0')}-${dmy[1].padStart(2, '0')}`;
+    // Local calendar date (toISOString would shift "Oct 5" to Oct 4 in India)
     const d = new Date(t);
-    return isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+    return isNaN(d.getTime()) ? null : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 };
 
 /**
@@ -94,8 +95,9 @@ export const parseMetaExport = (text: string): { rows: ImportRow[]; level?: Impo
         const to = toDay(cDay >= 0 ? r[cDay] || '' : r[cEnd] || '');
         const amount = num(r[cSpend]);
         if (!from || !to || !Number.isFinite(amount)) continue;
-        // "Results" is whatever the campaign optimises for; fall back to WhatsApp chats started
-        const rawResults = cResults >= 0 && (r[cResults] || '').trim() ? r[cResults] : cChats >= 0 ? r[cChats] : '';
+        // Prefer WhatsApp chats started: "Results" means chats for one campaign and
+        // link clicks for another, so adding them up would distort cost per chat
+        const rawResults = cChats >= 0 && (r[cChats] || '').trim() ? r[cChats] : cResults >= 0 ? r[cResults] : '';
         const results = (rawResults || '').trim() ? num(rawResults) : NaN;
         const key = `${name.toLowerCase()}|${from}|${to}`;
         const cur = merged.get(key) || { campaignName: name, from, to, amount: 0 };
@@ -157,10 +159,11 @@ export const MarketingCampaigns: FC = () => {
     const applySpend = (res: any) => {
         const saved = res.spend as SpendEntry[];
         const created = (res.created || []) as Campaign[];
+        const removed = (res.removed || []) as string[];
         setMarketing(m => ({
             ...m,
             campaigns: [...m.campaigns, ...created],
-            spend: [...m.spend.filter(s => !saved.some(x => x.id === s.id)), ...saved],
+            spend: [...m.spend.filter(s => !saved.some(x => x.id === s.id) && !removed.includes(s.id)), ...saved],
         }));
     };
 
@@ -190,9 +193,19 @@ export const MarketingCampaigns: FC = () => {
 
     const confirmImport = async () => {
         if (!importRows) return;
-        const res = await run('saveSpend', { via: 'csv', entries: importRows }, `Imported ${importRows.length} row${importRows.length === 1 ? '' : 's'} of ad spend`);
-        if (!res) return;
-        applySpend(res);
+        // Big reports go up in parts of 200 rows; stop at the first part that fails
+        let done = 0;
+        for (let i = 0; i < importRows.length; i += 200) {
+            const part = importRows.slice(i, i + 200);
+            const res = await run('saveSpend', { via: 'csv', entries: part }, '');
+            if (!res) {
+                if (done) setMsg(m => ({ ok: false, text: `Saved ${done} of ${importRows.length} rows, then: ${m?.text || 'an error'}` }));
+                return;
+            }
+            applySpend(res);
+            done += part.length;
+        }
+        setMsg({ ok: true, text: `Imported ${done} row${done === 1 ? '' : 's'} of ad spend` });
         setImportRows(null);
     };
 

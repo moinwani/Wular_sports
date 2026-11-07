@@ -5,7 +5,8 @@
  */
 
 export const PAID_STATUSES = ['confirmed', 'processing', 'shipped', 'delivered'];
-export const isPaid = (o: any) => PAID_STATUSES.includes(o?.status);
+/** Counts as a sale: in a paid status and not marked "payment failed" (e.g. COD refused at the door) */
+export const isPaid = (o: any) => PAID_STATUSES.includes(o?.status) && o?.paymentStatus !== 'failed';
 
 export type Segment = 'Wholesale' | 'VIP' | 'Repeat' | 'New buyer' | 'Lead' | 'Subscriber';
 
@@ -144,7 +145,8 @@ export function buildCustomers(
         c.daysSinceLastOrder = c.lastOrderAt ? Math.floor((now - c.lastOrderAt.getTime()) / DAY) : null;
         c.products = [...new Set(paid.flatMap(o => (o.items || []).map((it: any) => it.productName || it.name)).filter(Boolean))];
         c.name = c.name || (c.email ? c.email.split('@')[0] : 'Unknown');
-        c.profile = profiles[c.key] || {};
+        // Notes saved while we only knew their email stay with them once a phone number appears
+        c.profile = profiles[c.key] || (c.email ? profiles[c.email.trim().toLowerCase()] : undefined) || {};
 
         const maxBatsInOrder = Math.max(0, ...paid.map(o => (o.items || []).reduce((q: number, it: any) => q + (it.quantity || 1), 0)));
         c.segment =
@@ -170,9 +172,15 @@ export const whatsappLink = (phone: string, message: string): string | null => {
     return `https://wa.me/${full}?text=${encodeURIComponent(message)}`;
 };
 
-const csvCell = (v: any) => {
-    const s = String(v ?? '');
-    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+/**
+ * One CSV cell, quoted when needed. Text a visitor typed (e.g. a lead's name)
+ * that starts with = + - @ is prefixed with ' so Excel never runs it as a
+ * formula; plain numbers and phone numbers like +9198… are left alone.
+ */
+export const csvCell = (v: any) => {
+    let s = String(v ?? '');
+    if (/^[=+\-@\t\r]/.test(s) && !/^[+-]?\d[\d\s.]*$/.test(s)) s = `'${s}`;
+    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 };
 
 const download = (filename: string, rows: (string | number)[][]) => {

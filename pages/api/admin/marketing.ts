@@ -4,7 +4,7 @@ import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { BUILT_IN_COUPONS } from '../../../src/data/coupons';
 import { getCatalog } from '../../../src/lib/catalogServer';
 import {
-    Campaign, CouponDef, SpendEntry, PLATFORMS, SOURCES, normalizeCode, sanitizeAttribution,
+    Campaign, CouponDef, SpendEntry, PLATFORMS, SOURCES, normalizeCode, platformSource, sanitizeAttribution,
 } from '../../../src/lib/marketing';
 import { metaConfigured, phoneDigits, purchaseFromOrder, sendPurchase } from '../../../src/lib/metaCapi';
 
@@ -70,7 +70,7 @@ async function loadAll() {
 /* ───────────── Campaigns & spend ───────────── */
 
 function cleanCampaign(c: any, existing: Campaign[]): Omit<Campaign, 'id'> & { id?: string } {
-    const name = str(c?.name, 80) || bad('Give the campaign a name');
+    const name = str(c?.name, 200) || bad('Give the campaign a name');
     const platform = PLATFORMS.some(p => p.id === c?.platform) ? c.platform : 'meta';
     const code = normalizeCode(c?.code).slice(0, 12);
     if (code && existing.some(x => x.code === code && x.id !== c?.id)) bad(`Code ${code} is already used by another campaign`);
@@ -83,15 +83,22 @@ function cleanCampaign(c: any, existing: Campaign[]): Omit<Campaign, 'id'> & { i
     return out;
 }
 
+const MAX_SPEND_ROWS = 250;
+
 async function saveSpend(body: any) {
-    const rows: any[] = Array.isArray(body.entries) ? body.entries.slice(0, 500) : bad('No spend rows');
+    const all: any[] = Array.isArray(body.entries) ? body.entries : bad('No spend rows');
+    // The admin panel sends big imports in parts; refuse rather than silently drop rows
+    if (all.length > MAX_SPEND_ROWS) bad(`Send at most ${MAX_SPEND_ROWS} spend rows at a time`);
+    const rows = all;
     const via = body.via === 'csv' ? 'csv' : 'manual';
-    const campSnap = await db.collection(CAMPAIGNS).get();
+    const [campSnap, spendSnap] = await Promise.all([db.collection(CAMPAIGNS).get(), db.collection(SPEND).get()]);
     const campaigns = campSnap.docs.map(d => ({ id: d.id, ...(d.data() as any) })) as Campaign[];
+    const existing = spendSnap.docs.map(d => ({ id: d.id, ...(d.data() as any) })) as SpendEntry[];
     const byName = new Map(campaigns.map(c => [norm(c.name), c]));
     const created: Campaign[] = [];
     const saved: SpendEntry[] = [];
-    const batch = db.batch();
+    const removed: string[] = [];
+    const ops: ((b: FirebaseFirestore.WriteBatch) => void)[] = [];
 
     for (const r of rows) {
         const amount = num(r.amount, 0, 10_000_000);
@@ -101,31 +108,55 @@ async function saveSpend(body: any) {
 
         let campaign = r.campaignId ? campaigns.find(c => c.id === r.campaignId) : undefined;
         if (!campaign) {
-            const name = str(r.campaignName, 80) || bad('Each spend row needs a campaign');
+            // Full names (Meta allows long ones) so they still match the names in ad links
+            const name = str(r.campaignName, 200) || bad('Each spend row needs a campaign');
             campaign = byName.get(norm(name));
             if (!campaign) {
                 const ref = db.collection(CAMPAIGNS).doc();
                 const platform = PLATFORMS.some(p => p.id === r.platform) ? r.platform : 'meta';
-                campaign = { id: ref.id, name, platform, status: 'active' };
-                batch.set(ref, { name, platform, status: 'active', createdAt: FieldValue.serverTimestamp() });
-                byName.set(norm(name), campaign);
-                campaigns.push(campaign);
-                created.push(campaign);
+                const c: Campaign = { id: ref.id, name, platform, status: 'active' };
+                ops.push(b => b.set(ref, { name, platform, status: 'active', createdAt: FieldValue.serverTimestamp() }));
+                byName.set(norm(name), c);
+                campaigns.push(c);
+                created.push(c);
+                campaign = c;
             }
         }
-        // One entry per campaign + period: importing the same report twice replaces, never doubles
-        const id = `${campaign.id}_${r.from}_${r.to}`;
+        const cid = campaign.id;
+
+        // Never count the same days twice: entries inside the new dates are replaced;
+        // an entry that only partly overlaps them is refused (it can't be split safely)
+        for (const e of existing) {
+            if (e.campaignId !== cid || e.to < r.from || e.from > r.to) continue;
+            if (e.from >= r.from && e.to <= r.to) {
+                if (!removed.includes(e.id)) {
+                    removed.push(e.id);
+                    ops.push(b => b.delete(db.collection(SPEND).doc(e.id)));
+                }
+            } else {
+                bad(`“${campaign.name}” already has spend entered for ${e.from} to ${e.to}, which overlaps ${r.from} to ${r.to}. Delete that entry under Ad spend first, or import the same dates.`);
+            }
+        }
+
+        const id = `${cid}_${r.from}_${r.to}`;
         const results = num(r.results, 0, 10_000_000);
         const entry: SpendEntry = {
-            id, campaignId: campaign.id, from: r.from, to: r.to, amount: Math.round(amount! * 100) / 100, via,
+            id, campaignId: cid, from: r.from, to: r.to, amount: Math.round(amount! * 100) / 100, via,
             ...(results != null ? { results } : {}),
         };
         const { id: _id, ...doc } = entry;
-        batch.set(db.collection(SPEND).doc(id), { ...doc, createdAt: FieldValue.serverTimestamp() });
+        ops.push(b => b.set(db.collection(SPEND).doc(id), { ...doc, createdAt: FieldValue.serverTimestamp() }));
+        // Later rows in this import must see this entry too
+        existing.push(entry);
         saved.push(entry);
     }
-    await batch.commit();
-    return { spend: saved, created };
+    // Firestore batches hold up to 500 writes
+    for (let i = 0; i < ops.length; i += 450) {
+        const b = db.batch();
+        ops.slice(i, i + 450).forEach(op => op(b));
+        await b.commit();
+    }
+    return { spend: saved, created, removed: removed.filter(id => !saved.some(s => s.id === id)) };
 }
 
 /* ───────────── Coupons ───────────── */
@@ -206,8 +237,10 @@ async function recordSale(b: any) {
     const web = sanitizeAttribution({ ...(visitor?.attribution || {}), ref: visitor?.ref });
     const attribution: Record<string, any> = { ...(web || {}) };
     if (source || campaignId || adCode) {
+        const campaigns = source ? [] : (await db.collection(CAMPAIGNS).get()).docs.map(d => ({ id: d.id, ...(d.data() as any) })) as Campaign[];
         attribution.manual = {
-            source: source || 'meta_ads',
+            // An ad code or campaign without a picked source counts under that campaign's platform
+            source: source || platformSource(campaigns.find(c => c.id === campaignId || (adCode && c.code === adCode))?.platform),
             ...(campaignId ? { campaignId } : {}),
             ...(adCode ? { adCode } : {}),
             at: new Date().toISOString(),
@@ -240,6 +273,7 @@ async function recordSale(b: any) {
         // No order emails for chat sales — the conversation already has the details
         emailStatus: { admin: 'skipped', customer: 'skipped' },
         createdAt: Timestamp.fromMillis(createdAt),
+        ...(status === 'delivered' ? { deliveredAt: Timestamp.fromMillis(createdAt) } : {}),
         updatedAt: FieldValue.serverTimestamp(),
         ...(Object.keys(attribution).length ? { attribution } : {}),
     };

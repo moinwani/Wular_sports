@@ -1,4 +1,4 @@
-import { createContext, FC, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { products as BUILT_IN_PRODUCTS } from '../data/products';
 import { Category, DEFAULT_CATEGORIES, PublicCatalog, visibleProducts } from '../lib/catalog';
 
@@ -11,7 +11,7 @@ import { Category, DEFAULT_CATEGORIES, PublicCatalog, visibleProducts } from '..
 
 const BUILT_IN: PublicCatalog = { products: visibleProducts(BUILT_IN_PRODUCTS), categories: DEFAULT_CATEGORIES };
 
-const Ctx = createContext<PublicCatalog>(BUILT_IN);
+const Ctx = createContext<PublicCatalog & { refresh: () => void }>({ ...BUILT_IN, refresh: () => {} });
 
 export const CatalogProvider: FC<{ initial?: PublicCatalog | null; children: ReactNode }> = ({ initial, children }) => {
     // Last catalog seen (from a page or the API) — kept while moving between pages
@@ -33,7 +33,19 @@ export const CatalogProvider: FC<{ initial?: PublicCatalog | null; children: Rea
         return () => { cancelled = true; };
     }, [latest]);
 
-    const value = useMemo(() => initial || latest || BUILT_IN, [initial, latest]);
+    // Newest catalog fetched on request (e.g. at checkout); a new page's own data takes over again
+    const [fresh, setFresh] = useState<PublicCatalog | null>(null);
+    useEffect(() => { if (initial) setFresh(null); }, [initial]);
+
+    /** Fetch the newest catalog now (bypassing the short CDN cache) — e.g. when checkout opens */
+    const refresh = useCallback(() => {
+        fetch(`/api/catalog?fresh=${Date.now()}`)
+            .then(r => (r.ok ? r.json() : null))
+            .then(data => { if (data?.products) setFresh({ products: data.products, categories: data.categories }); })
+            .catch(() => { /* keep what we have */ });
+    }, []);
+
+    const value = useMemo(() => ({ ...(fresh || initial || latest || BUILT_IN), refresh }), [fresh, initial, latest, refresh]);
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 };
 

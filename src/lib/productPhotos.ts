@@ -43,14 +43,17 @@ export async function savePhoto(folder: string, filename: string, body: Buffer, 
     }
 }
 
-/** Delete uploaded photos that no product uses any more. Best-effort. */
+/** Delete uploaded photos that no product or blog post uses any more. Best-effort. */
 export async function deleteUnusedPhotos(urls: string[]): Promise<void> {
     const candidates = urls.filter(u => blobTarget(u));
     if (!candidates.length || !photosReady()) return;
     try {
-        const all = await db.collection('products').get();
-        const inUse = new Set(all.docs.flatMap(d => productImages(d.data() as any)));
-        const unused = candidates.filter(u => !inUse.has(u)).map(u => blobTarget(u)!);
+        // Still used by a product, a blog cover, or inside an article? Keep it.
+        const [products, posts] = await Promise.all([db.collection('products').get(), db.collection('blogPosts').get()]);
+        const inUse = new Set(products.docs.flatMap(d => productImages(d.data() as any)));
+        posts.docs.forEach(d => { if (d.get('image')) inUse.add(d.get('image')); });
+        const articles = posts.docs.map(d => String(d.get('content') || '')).join('\n');
+        const unused = candidates.filter(u => !inUse.has(u) && !articles.includes(u)).map(u => blobTarget(u)!);
         if (unused.length) await del(unused);
     } catch (err: any) {
         console.error('photo cleanup failed:', err?.message);

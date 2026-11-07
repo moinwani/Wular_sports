@@ -4,6 +4,7 @@ import { updateDoc, doc } from 'firebase/firestore';
 import type { CustomerProfileData } from './customers';
 import type { Attribution, Campaign, CouponDef, SpendEntry } from '../lib/marketing';
 import type { Category } from '../lib/catalog';
+import type { ManagedPost } from '../lib/blog';
 import type { ProductFull } from '../types';
 
 /**
@@ -332,6 +333,18 @@ export const discardProductPhoto = async (url: string): Promise<void> => {
         });
     } catch { /* best-effort */ }
 };
+
+/* ───────────── Blog ───────────── */
+
+export const fetchAdminBlog = async (): Promise<{ posts: ManagedPost[]; managed: boolean }> => {
+    const data = await adminApi('/api/admin/blog', 'GET');
+    if (data.error) throw new Error(data.error);
+    return data;
+};
+
+/** Save / delete a blog post; returns { error } on failure. */
+export const blogAction = (action: string, payload: Record<string, unknown>): Promise<any> =>
+    adminApi('/api/admin/blog', 'POST', { action, ...payload });
 
 /** Human-readable one-liner for an email status result */
 export const describeEmail = (r?: string): string =>

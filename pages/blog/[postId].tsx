@@ -1,7 +1,8 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { BlogPostView } from '../../src/views/BlogPostView';
-import { blogs } from '../../src/data/blogs';
 import { BlogPost } from '../../src/types';
+import { blogForPage, BLOG_REVALIDATE_SECONDS } from '../../src/lib/blogServer';
+import { isLive, isoDateOf, livePosts, relatedTo, toSummary } from '../../src/lib/blog';
 
 interface Props {
     post: BlogPost;
@@ -13,15 +14,21 @@ export default function BlogPostPage({ post, relatedPosts, articleSchema }: Prop
     return <BlogPostView post={post} relatedPosts={relatedPosts} articleSchema={articleSchema} />;
 }
 
-export const getStaticPaths: GetStaticPaths = async () => ({
-    paths: blogs.map(b => ({ params: { postId: b.id } })),
-    fallback: false,
-});
+export const getStaticPaths: GetStaticPaths = async () => {
+    const { posts } = await blogForPage();
+    return {
+        paths: livePosts(posts).map(b => ({ params: { postId: b.id } })),
+        // Posts written in the admin panel are built on their first visit
+        fallback: 'blocking',
+    };
+};
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
-    const post = blogs.find(b => b.id === params?.postId);
-    if (!post) return { notFound: true };
-    const relatedPosts = blogs.filter(b => b.id !== post.id).slice(0, 2);
+    const { posts } = await blogForPage();
+    const post = posts.find(b => b.id === params?.postId);
+    // Drafts and deleted posts are not on the website
+    if (!post || !isLive(post)) return { notFound: true, revalidate: 60 };
+    const relatedPosts = relatedTo(post, posts).map(p => ({ ...toSummary(p), content: '' })) as BlogPost[];
 
     const articleSchema = {
         "@context": "https://schema.org",
@@ -31,7 +38,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
                 "headline": post.title,
                 "description": post.description,
                 "image": post.image,
-                "datePublished": post.date,
+                "datePublished": isoDateOf(post) || post.date,
                 "author": {
                     "@type": "Person",
                     "name": post.author,
@@ -60,5 +67,5 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
         ],
     };
 
-    return { props: { post, relatedPosts, articleSchema } };
+    return { props: { post, relatedPosts, articleSchema }, revalidate: BLOG_REVALIDATE_SECONDS };
 };

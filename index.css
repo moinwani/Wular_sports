@@ -9841,3 +9841,35 @@ body.has-buy-bar .product-details-page { padding-bottom: 6rem; }
     .product-details-page .product-price-section-premium { margin-top: 0; }
 }
 .mk-hint { font-size: 0.74rem; color: #8a8a8a; line-height: 1.4; }
+
+/* ─── Admin: Blog ─────────────────────────────────────── */
+.be-drawer { width: min(860px, 100%); }
+.be-title { font-size: 1.05rem; }
+.be-count { font-style: normal; color: #6a6a6a; margin-left: 0.4rem; }
+.be-cover { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 0.9rem; align-items: center; }
+.be-cover img, .be-cover__empty { width: 220px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid #2a2a2a; background: #1a1a1a; }
+.be-cover__empty { display: grid; place-items: center; color: #666; }
+.be-cover__actions { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+.be-faq { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.7rem; margin-bottom: 0.6rem; background: #161616; border: 1px solid #222; border-radius: 8px; }
+.be-faq .crm-textarea { margin: 0; }
+.be-faq .crm-linkbtn { align-self: flex-start; }
+
+.rte { border: 1px solid #333; border-radius: 10px; overflow: hidden; background: #0f0f0f; }
+.rte__bar { display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.4rem; background: #181818; border-bottom: 1px solid #2a2a2a; position: sticky; top: 0; z-index: 2; }
+.rte__bar button { background: #222; border: 1px solid #333; color: #ddd; border-radius: 6px; padding: 0.3rem 0.55rem; font-size: 0.8rem; cursor: pointer; min-height: 32px; display: inline-flex; align-items: center; gap: 0.3rem; }
+.rte__bar button:hover:not(:disabled) { border-color: var(--golden); color: var(--golden); }
+.rte__bar button:disabled { opacity: 0.4; cursor: default; }
+.rte__sep { width: 1px; background: #333; margin: 0 0.15rem; }
+.rte__grow { flex: 1; }
+.rte__mode.on { border-color: var(--golden) !important; color: var(--golden) !important; }
+.rte__picker { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; padding: 0.5rem; background: #141414; border-bottom: 1px solid #2a2a2a; font-size: 0.8rem; color: #999; }
+.rte__picker button { background: #1f1f1f; border: 1px solid #333; color: #ddd; border-radius: 999px; padding: 0.25rem 0.7rem; font-size: 0.78rem; cursor: pointer; }
+.rte__area { min-height: 380px; max-height: 70vh; overflow-y: auto; padding: 1rem 1.1rem; outline: none; }
+.rte__area:focus { box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.4); }
+.rte__area img { max-width: 100%; height: auto; border-radius: 6px; }
+.rte__html { border: none; border-radius: 0; margin: 0; font-family: ui-monospace, monospace; font-size: 0.8rem; min-height: 380px; }
+@media (max-width: 640px) {
+    .be-cover { grid-template-columns: 1fr; }
+    .be-cover img, .be-cover__empty { width: 100%; }
+    .rte__area { min-height: 300px; }
+}

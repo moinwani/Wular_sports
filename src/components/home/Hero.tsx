@@ -1,69 +1,52 @@
 import { FC, memo, useState, useEffect } from 'react';
-import Image from 'next/image';
-import { getFolderFiles, getCDNUrl } from '../../services/githubService';
+import { getImageProps } from 'next/image';
+import { assetFiles, getCDNUrl } from '../../services/githubService';
 
 export interface HeroProps {
     onShopCollectionClick: () => void;
 }
 
+/*
+ * Hero photos come from the repo folders assets/images/hero/mobile (the phone
+ * slider, in name order) and assets/images/hero/desktop (first photo). The
+ * list is fixed when the site is built, so the first photo is in the page from
+ * the very first moment — no waiting for JavaScript or GitHub — and the phone
+ * downloads only the photo for its screen size.
+ */
+const IMAGE = /\.(png|jpe?g|webp)$/i;
+const MOBILE_SLIDES = assetFiles('assets/images/hero/mobile').filter(f => IMAGE.test(f.name)).map(f => getCDNUrl(f.path));
+const DESKTOP_IMAGE = getCDNUrl(assetFiles('assets/images/hero/desktop').find(f => IMAGE.test(f.name))?.path || 'assets/images/hero/desktop/hero-1.png');
+const ALT = 'Handcrafted Kashmiri Willow Cricket Bats — Wular Sports';
+
+const optimised = (src: string) => getImageProps({ src, alt: '', fill: true, sizes: '100vw', quality: 75 }).props;
+
 export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
-    const [isMobile, setIsMobile] = useState(false);
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [mobileImages, setMobileImages] = useState<string[]>([]);
-    const [desktopImage, setDesktopImage] = useState<string>('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [showMoreSlides, setShowMoreSlides] = useState(false);
 
-    // Initial Desktop Fallback (for speed)
-    const fallbackDesktop = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/hero/desktop/hero-1.png';
-
+    // Phone slider: the other photos start downloading only after the page has
+    // finished loading, so they never slow down the first one.
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 768);
-        handleResize(); // set correct value immediately on mount
-        window.addEventListener('resize', handleResize);
-
-        // Fetch Dynamic Hero Images
-        async function loadHeroAssets() {
-            try {
-                // Fetch Mobile Slider Images
-                const mobileFiles = await getFolderFiles('assets/images/hero/mobile');
-                const mImages = mobileFiles
-                    .filter(f => /\.(png|jpe?g|webp|PNG|JPG)$/.test(f.name))
-                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
-                    .map(f => getCDNUrl(f.path, f.sha));
-
-                if (mImages.length > 0) setMobileImages(mImages);
-
-                // Fetch Desktop Image (takes the first image found in desktop folder)
-                const desktopFiles = await getFolderFiles('assets/images/hero/desktop');
-                const dImage = desktopFiles.find(f => /\.(png|jpe?g|webp|PNG|JPG)$/.test(f.name));
-                if (dImage) {
-                    setDesktopImage(getCDNUrl(dImage.path, dImage.sha));
-                } else {
-                    setDesktopImage(fallbackDesktop);
-                }
-            } catch {
-                setDesktopImage(fallbackDesktop);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-
-        loadHeroAssets();
-        return () => window.removeEventListener('resize', handleResize);
+        if (MOBILE_SLIDES.length <= 1 || !window.matchMedia('(max-width: 767px)').matches) return;
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        let interval: ReturnType<typeof setInterval> | undefined;
+        const begin = () => {
+            timer = setTimeout(() => {
+                setShowMoreSlides(true);
+                interval = setInterval(() => setCurrentSlide(prev => (prev + 1) % MOBILE_SLIDES.length), 5000);
+            }, 1500);
+        };
+        if (document.readyState === 'complete') begin();
+        else window.addEventListener('load', begin, { once: true });
+        return () => {
+            window.removeEventListener('load', begin);
+            clearTimeout(timer);
+            clearInterval(interval);
+        };
     }, []);
 
-    // Auto-slide for mobile only
-    useEffect(() => {
-        if (!isMobile || mobileImages.length <= 1) return;
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % mobileImages.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [isMobile, mobileImages.length]);
-
-    if (isLoading && !desktopImage && mobileImages.length === 0) {
-        return <div className="hero-loading" style={{ height: '60vh', background: '#0a0a0a' }} />;
-    }
+    const first = optimised(MOBILE_SLIDES[0] || DESKTOP_IMAGE);
+    const desktop = optimised(DESKTOP_IMAGE);
 
     return (
         <>
@@ -78,41 +61,38 @@ export const Hero: FC<HeroProps> = memo(({ onShopCollectionClick }) => {
 
             {/* Hero Section */}
             <section className="hero" id="home">
-                {isMobile ? (
-                    /* Mobile: Dynamic slider with crossfade */
-                    <div className="hero-slider">
-                        {mobileImages.length > 0 ? (
-                            mobileImages.map((src, index) => (
-                                <div key={src} className={`hero-slide ${index === currentSlide ? 'active' : ''}`}>
-                                    <Image
-                                        src={src}
-                                        alt={`Handcrafted Kashmiri Willow Cricket Bat — Wular Sports Slide ${index + 1}`}
-                                        fill
-                                        style={{ objectFit: 'cover' }}
-                                        sizes="100vw"
-                                        quality={90}
-                                        priority={index === currentSlide}
-                                    />
-                                </div>
-                            ))
-                        ) : (
-                            <div className="hero-placeholder" />
-                        )}
+                <div className="hero-slider">
+                    <div className={`hero-slide ${currentSlide === 0 ? 'active' : ''}`}>
+                        <picture>
+                            <source media="(min-width: 768px)" srcSet={desktop.srcSet} sizes="100vw" />
+                            <img
+                                src={first.src}
+                                srcSet={first.srcSet}
+                                sizes="100vw"
+                                alt={ALT}
+                                className="hero-photo"
+                                fetchPriority="high"
+                                decoding="async"
+                            />
+                        </picture>
                     </div>
-                ) : (
-                    /* Desktop: Dynamic image with cache busting */
-                    <div className="hero-img" style={{ position: 'relative', width: '100%', height: '100%' }}>
-                        <Image
-                            src={desktopImage || fallbackDesktop}
-                            alt="Handcrafted Kashmiri Willow Cricket Bats — Wular Sports Legacy Edition"
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            sizes="100vw"
-                            quality={90}
-                            priority
-                        />
-                    </div>
-                )}
+                    {showMoreSlides && MOBILE_SLIDES.slice(1).map((src, i) => {
+                        const photo = optimised(src);
+                        return (
+                            <div key={src} className={`hero-slide hero-slide--extra ${currentSlide === i + 1 ? 'active' : ''}`}>
+                                <img
+                                    src={photo.src}
+                                    srcSet={photo.srcSet}
+                                    sizes="100vw"
+                                    alt={`${ALT} — photo ${i + 2}`}
+                                    className="hero-photo"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
 
                 <div className="hero-content-overlay">
                     <button

@@ -1,4 +1,4 @@
-import { FC, useState, useRef, TouchEvent } from 'react';
+import { FC, useState, useRef, useEffect, TouchEvent } from 'react';
 import Image from 'next/image';
 
 export interface HorizontalImageGalleryProps {
@@ -11,8 +11,19 @@ export const HorizontalImageGallery: FC<HorizontalImageGalleryProps> = ({ images
     const [currentIndex, setCurrentIndex] = useState(0);
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
+    // Photos 2+ load once the page has finished loading (or as soon as the
+    // shopper starts swiping), so the first photo gets the whole connection.
+    const [showAll, setShowAll] = useState(false);
+
+    useEffect(() => {
+        const show = () => setShowAll(true);
+        if (document.readyState === 'complete') { show(); return; }
+        window.addEventListener('load', show, { once: true });
+        return () => window.removeEventListener('load', show);
+    }, []);
 
     const handleTouchStart = (e: TouchEvent) => {
+        setShowAll(true);
         touchStartX.current = e.targetTouches[0].clientX;
     };
 
@@ -53,15 +64,16 @@ export const HorizontalImageGallery: FC<HorizontalImageGalleryProps> = ({ images
                             className="horizontal-gallery-slide"
                             onClick={() => onImageClick(index)}
                         >
-                            <Image 
+                            {(index === 0 || showAll) && <Image 
                                 src={src} 
                                 alt={`${altText} - View ${index + 1}`} 
                                 className="horizontal-gallery-image"
                                 width={800}
                                 height={800}
                                 sizes="(max-width: 768px) 100vw, 600px"
-                                loading={index === 0 ? "eager" : "lazy"}
-                            />
+                                priority={index === 0}
+                                loading={index === 0 ? undefined : "lazy"}
+                            />}
                         </div>
                     ))}
                 </div>
@@ -73,7 +85,7 @@ export const HorizontalImageGallery: FC<HorizontalImageGalleryProps> = ({ images
                     <button
                         key={index}
                         className={`gallery-indicator ${index === currentIndex ? 'active' : ''}`}
-                        onClick={() => setCurrentIndex(index)}
+                        onClick={() => { setShowAll(true); setCurrentIndex(index); }}
                         aria-label={`View image ${index + 1}`}
                     />
                 ))}

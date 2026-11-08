@@ -1,5 +1,10 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { config, IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
+// Icon sizing ships with the page's CSS, so icons are the right size from the
+// first paint (otherwise it is injected by JavaScript later and the page jumps)
+import '@fortawesome/fontawesome-svg-core/styles.css';
+
+config.autoAddCss = false;
 
 import { faArrowLeft, faArrowRight, faBars, faBoxOpen, faBullhorn, faChartLine, faCopy, faCheck, faCheckCircle, faChevronDown, faChevronLeft, faChevronRight, faChevronUp, faDownload, faEnvelope, faExclamationCircle, faExternalLinkAlt, faEye, faGlobe, faInbox, faInfoCircle, faLightbulb, faLink, faLock, faMapMarkerAlt, faMoneyBillWave, faNewspaper, faPhone, faPlay, faPlus, faRedoAlt, faRupeeSign, faSearch, faShieldAlt, faShippingFast, faShoppingBag, faShoppingCart, faSignOutAlt, faSpinner, faStar, faTimes, faTrashAlt, faTruckFast, faUndoAlt, faUserCircle, faUsers, faVideo } from '@fortawesome/free-solid-svg-icons';
 import { faInstagram, faWhatsapp, faYoutube } from '@fortawesome/free-brands-svg-icons';

@@ -1,7 +1,7 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Icon } from '../common/Icon';
-import { Review } from '../../services/reviews';
+import type { Review } from '../../services/reviews';
 
 interface ProductReviewsProps {
     productId: string;
@@ -21,17 +21,34 @@ const Stars: FC<{ value: number }> = ({ value }) => (
  */
 export const ProductReviews: FC<ProductReviewsProps> = ({ productId }) => {
     const [reviews, setReviews] = useState<Review[] | null>(null);
+    const [near, setNear] = useState(false);
+    const markerRef = useRef<HTMLDivElement>(null);
+
+    // Reviews sit far down the page: fetch them (and the Firebase library they
+    // need) only when the shopper scrolls towards them, so they never slow
+    // down the bat photos at the top.
+    useEffect(() => {
+        if (near) return;
+        const el = markerRef.current;
+        if (!el || typeof IntersectionObserver === 'undefined') { setNear(true); return; }
+        const io = new IntersectionObserver(entries => {
+            if (entries.some(e => e.isIntersecting)) { setNear(true); io.disconnect(); }
+        }, { rootMargin: '800px 0px' });
+        io.observe(el);
+        return () => io.disconnect();
+    }, [near]);
 
     useEffect(() => {
+        if (!near) return;
         let cancelled = false;
         import('../../services/reviews')
             .then(({ getApprovedReviews }) => getApprovedReviews(productId))
             .then(r => { if (!cancelled) setReviews(r); })
             .catch(() => { if (!cancelled) setReviews([]); });
         return () => { cancelled = true; };
-    }, [productId]);
+    }, [near, productId]);
 
-    if (reviews === null) return null;
+    if (reviews === null) return <div ref={markerRef} aria-hidden="true" />;
 
     if (reviews.length === 0) {
         return (

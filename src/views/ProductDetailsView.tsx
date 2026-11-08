@@ -312,8 +312,11 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                         ref={imageGalleryRef}
                         className="product-gallery-section-vertical"
                     >
+                        {/* Both galleries are in the page; the screen size (CSS) picks one, so
+                            the first photo shows straight away instead of after JavaScript runs.
+                            Both start with the same photo, so it downloads once. */}
                         {Array.isArray(product.image) ? (
-                            isMobile ? (
+                            <>
                                 <HorizontalImageGallery
                                     images={product.image.map(img => getCDNUrl(img))}
                                     altText={product.name}
@@ -322,7 +325,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         setIsLightboxOpen(true);
                                     }}
                                 />
-                            ) : (
                                 <VerticalImageGallery
                                     images={product.image.map(img => getCDNUrl(img))}
                                     altText={product.name}
@@ -332,7 +334,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     }}
                                     onScrollContainerRef={handleImageScrollContainerRef}
                                 />
-                            )
+                            </>
                         ) : (
                             <div className={isMobile ? "horizontal-image-gallery-mobile" : "vertical-gallery-scroll-container"}>
                                 <div
@@ -349,6 +351,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                         width={600}
                                         height={600}
                                         sizes="(max-width: 768px) 100vw, 600px"
+                                        priority
                                     />
                                 </div>
                             </div>
@@ -834,7 +837,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
             {/* Customer Reviews */}
             <div className="container">
-                <ProductReviews productId={product.id} />
+                <ProductReviews key={product.id} productId={product.id} />
             </div>
 
             {/* RELATED PRODUCTS Section */}

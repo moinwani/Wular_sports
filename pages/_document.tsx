@@ -1,4 +1,26 @@
+
 import { Html, Head, Main, NextScript } from 'next/document';
+
+/**
+ * Tracking (Google Tag Manager → GA4 / Meta pixel, and Microsoft Clarity) starts
+ * as soon as the visitor first touches, scrolls or types — or 5 seconds after
+ * the page has loaded, whichever comes first. Until then the phone spends its
+ * time showing the page instead of running tracking code. Nothing is lost:
+ * events pushed to dataLayer / clarity() before that are queued and sent once
+ * the scripts arrive.
+ */
+const DEFERRED_TRACKING = `(function(w,d){
+w.dataLayer=w.dataLayer||[];w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};
+var started=false,ev=['pointerdown','touchstart','scroll','keydown','mousemove'];
+function add(src){var s=d.createElement('script');s.async=true;s.src=src;d.head.appendChild(s);}
+function start(){if(started)return;started=true;
+ev.forEach(function(e){w.removeEventListener(e,start,true)});
+add('https://www.googletagmanager.com/gtm.js?id=GTM-MFRCHQ8X');
+add('https://www.clarity.ms/tag/tn1mu1gwo1');}
+ev.forEach(function(e){w.addEventListener(e,start,{capture:true,passive:true})});
+if(d.readyState==='complete')setTimeout(start,5000);else w.addEventListener('load',function(){setTimeout(start,5000)});
+})(window,document);`;
 
 export default function Document() {
     return (
@@ -6,34 +28,10 @@ export default function Document() {
             <Head>
                 <meta charSet="UTF-8" />
                 <link rel="icon" href="https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/site-icon.png" type="image/png" />
-                <link rel="preconnect" href="https://fonts.googleapis.com" />
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-                <link rel="preconnect" href="https://www.googletagmanager.com" />
-                <link
-                    rel="preload"
-                    as="style"
-                    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
-                    crossOrigin="anonymous"
-                />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
-                    rel="stylesheet"
-                    media="print"
-                />
-                <noscript>
-                    <link
-                        href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald:wght@400;500;700&display=swap"
-                        rel="stylesheet"
-                    />
-                </noscript>
-                <script dangerouslySetInnerHTML={{ __html: `document.querySelector('link[media="print"]').media='all'` }} />
-                <script src="https://accounts.google.com/gsi/client" async defer></script>
-                {/* Google Tag Manager */}
-                <script dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MFRCHQ8X');` }} />
-                {/* End Google Tag Manager */}
-                {/* Microsoft Clarity */}
-                <script dangerouslySetInnerHTML={{ __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","tn1mu1gwo1");` }} />
+                {/* Our own fonts (public/fonts) — the two used above the fold load first */}
+                <link rel="preload" href="/fonts/oswald-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+                <link rel="preload" href="/fonts/lato-400-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+                <script dangerouslySetInnerHTML={{ __html: DEFERRED_TRACKING }} />
             </Head>
             <body>
                 {/* Google Tag Manager (noscript) */}

@@ -9,6 +9,7 @@ import { Header } from '../src/components/common/Header';
 import { Footer } from '../src/components/common/Footer';
 import { Toast } from '../src/components/common/Toast';
 import { captureAttribution } from '../src/utils/attributionCapture';
+import { startGoogleOneTap } from '../src/services/googleIdentity';
 import { CatalogProvider } from '../src/context/CatalogContext';
 import '../index.css';
 
@@ -28,37 +29,29 @@ function AppShell({ Component, pageProps }: AppProps) {
     const { cart, cartTotal, isCartOpen, openCart, closeCart, addToCart, removeFromCart, updateQuantity } = useCart();
     const { toast, showToast, clearToast } = useToast();
 
+    // Google One Tap ("Continue as …") — 4 seconds after the page has loaded, so
+    // it never competes with the page itself. Not on checkout (it would cover the
+    // form) or admin (it has its own sign-in). Firebase loads only if they tap it.
     useEffect(() => {
-        const schedule = typeof requestIdleCallback !== 'undefined' ? requestIdleCallback : setTimeout;
+        if (/^\/(checkout|admin)/.test(router.pathname)) return;
 
-        const initId = schedule(async () => {
-            const { initializeAssetCache } = await import('../src/services/githubService');
-            initializeAssetCache();
-        });
-
-        const handleGoogleResponse = async (response: { credential: string }) => {
+        const handleCredential = async (credential: string) => {
             try {
                 const { signInWithGoogle } = await import('../src/services/auth');
                 const { subscribeToNewsletter } = await import('../src/services/newsletter');
-                const user = await signInWithGoogle(response.credential);
+                const user = await signInWithGoogle(credential);
                 if (user.email) await subscribeToNewsletter(user.email);
                 showToast(`Welcome back, ${user.displayName || 'Friend'}!`, 'success');
             } catch { /* silent */ }
         };
 
-        const googleId = schedule(async () => {
-            const { initializeGoogleOneTap } = await import('../src/services/auth');
-            initializeGoogleOneTap(handleGoogleResponse);
-        });
-
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const begin = () => { timer = setTimeout(() => { startGoogleOneTap(handleCredential); }, 4000); };
+        if (document.readyState === 'complete') begin();
+        else window.addEventListener('load', begin, { once: true });
         return () => {
-            if (typeof cancelIdleCallback !== 'undefined') {
-                cancelIdleCallback(initId as number);
-                cancelIdleCallback(googleId as number);
-            } else {
-                clearTimeout(initId as ReturnType<typeof setTimeout>);
-                clearTimeout(googleId as ReturnType<typeof setTimeout>);
-            }
+            window.removeEventListener('load', begin);
+            clearTimeout(timer);
         };
     }, []);
 

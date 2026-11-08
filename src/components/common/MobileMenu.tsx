@@ -19,7 +19,9 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
     return (
         <>
             <div className={`mobile-menu-backdrop ${isOpen ? 'active' : ''}`} onClick={onClose} aria-hidden="true" />
-            <div className={`mobile-menu ${isOpen ? 'active' : ''}`} role="dialog" aria-modal="true">
+            {/* Links don't prefetch: the closed menu sits just off-screen, so Next.js would
+                otherwise download every linked page while this page is still opening */}
+            <div className={`mobile-menu ${isOpen ? 'active' : ''}`} role="dialog" aria-modal="true" aria-label="Menu" inert={!isOpen}>
                 <div className="mobile-menu-header">
                     <p className="mobile-menu-title">Menu</p>
                     <button className="mobile-menu-close" onClick={onClose} aria-label="Close menu">
@@ -27,27 +29,27 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                     </button>
                 </div>
                 <nav className="mobile-menu-nav">
-                    <Link href="/collection" className="mobile-menu-link" onClick={onClose}>
+                    <Link prefetch={false} href="/collection" className="mobile-menu-link" onClick={onClose}>
                         <Icon name="fa-shopping-bag" />
                         <span>Shop Collection</span>
                     </Link>
                     <div className="mobile-menu-sublinks" style={{ paddingLeft: '3rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', paddingBottom: '1rem' }}>
                         {categories.filter(c => c.showInNav).map(c => (
-                            <Link key={c.id} href={c.path} onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>{c.navLabel}</Link>
+                            <Link prefetch={false} key={c.id} href={c.path} onClick={onClose} style={{ color: '#ccc', textDecoration: 'none', fontSize: '0.95rem' }}>{c.navLabel}</Link>
                         ))}
                     </div>
-                    <Link href="/blog" className="mobile-menu-link" onClick={onClose}>
+                    <Link prefetch={false} href="/blog" className="mobile-menu-link" onClick={onClose}>
                         <Icon name="fa-newspaper" />
                         <span>Wular Insights (Blog)</span>
                     </Link>
-                    <Link href="/about" className="mobile-menu-link" onClick={onClose}>
+                    <Link prefetch={false} href="/about" className="mobile-menu-link" onClick={onClose}>
                         <Icon name="fa-info-circle" />
                         <span>About Us</span>
                     </Link>
                     <div className="mobile-menu-divider"></div>
-                    <Link href="/privacy-policy" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Privacy Policy</span></Link>
-                    <Link href="/return-policy" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Return Policy</span></Link>
-                    <Link href="/terms-conditions" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Terms &amp; Conditions</span></Link>
+                    <Link prefetch={false} href="/privacy-policy" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Privacy Policy</span></Link>
+                    <Link prefetch={false} href="/return-policy" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Return Policy</span></Link>
+                    <Link prefetch={false} href="/terms-conditions" className="mobile-menu-link mobile-menu-link-secondary" onClick={onClose}><span>Terms &amp; Conditions</span></Link>
                 </nav>
                 <div className="mobile-menu-footer">
                     <div className="mobile-menu-social">

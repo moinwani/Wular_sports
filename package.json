@@ -3,7 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "predev": "node scripts/asset-versions.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/asset-versions.mjs",
     "build": "next build",
     "postbuild": "next-sitemap",
     "start": "next start"

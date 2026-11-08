@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { BlogPost } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
-import { subscribeToNewsletter } from '../services/newsletter';
+import { subscribe } from '../services/subscribe';
 import { useToast } from '../context/ToastContext';
 import { getCDNUrl } from '../services/githubService';
 import { Icon } from '../components/common/Icon';
@@ -23,7 +23,7 @@ export const BlogView: FC<BlogViewProps> = ({ blogs }) => {
         e.preventDefault();
         if (!email) return;
         setSubmitting(true);
-        const result = await subscribeToNewsletter(email);
+        const result = await subscribe(email);
         showToast(result.message, result.success ? 'success' : (result.message.includes('already') ? 'info' : 'error'));
         if (result.success) setEmail('');
         setSubmitting(false);

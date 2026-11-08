@@ -1,3 +1,53 @@
+/* Fonts are served from our own site (public/fonts) — no extra trip to Google on a slow phone */
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 200 700;
+    font-display: swap;
+    src: url(/fonts/oswald-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 200 700;
+    font-display: swap;
+    src: url(/fonts/oswald-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/lato-400-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/lato-400-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/lato-700-latin.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/lato-700-latin-ext.woff2) format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 :root {
     --black: #0a0a0a;
     --golden: #D4AF37;
@@ -489,6 +539,27 @@ main {
 
 .hero-slide.active {
     opacity: 1;
+}
+
+.hero-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Desktop: one wide photo (the box used to collapse to 0px tall, hiding it) */
+@media (min-width: 768px) {
+    .hero-slider {
+        aspect-ratio: 16 / 9;
+        max-height: 85vh;
+    }
+
+    .hero-slide--extra {
+        display: none;
+    }
 }
 
 /* Remove dark overlay - client wants full clarity */
@@ -2501,6 +2572,26 @@ main {
     background-color: var(--golden);
     width: 24px;
     border-radius: 4px;
+}
+
+/* Phone or desktop gallery is chosen by screen size from the first paint
+   (the page used to start in the desktop layout and switch after JavaScript) */
+@media (max-width: 767px) {
+    .product-gallery-section-vertical .vertical-image-gallery {
+        display: none;
+    }
+
+    .product-details-grid-vertical {
+        grid-template-columns: 1fr;
+        gap: 0;
+        align-items: stretch;
+    }
+}
+
+@media (min-width: 768px) {
+    .product-gallery-section-vertical .horizontal-image-gallery-mobile {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -9640,6 +9731,10 @@ img[loading="lazy"] {
     .product-details-page > .container { padding: 0 1rem; }
     /* Photos stay edge-to-edge */
     .product-details-grid-vertical.mobile-layout .product-gallery-section-vertical { margin: 0 -1rem; }
+}
+@media (max-width: 767px) {
+    /* Same, from the first paint (before JavaScript adds .mobile-layout) */
+    .product-details-grid-vertical .product-gallery-section-vertical { margin: 0 -1rem; }
     .product-details-page .breadcrumb, .product-details-page nav[aria-label="Breadcrumb"] { font-size: 0.78rem; }
 }
 

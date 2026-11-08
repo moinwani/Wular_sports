@@ -13,10 +13,23 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
     const [isVisible, setIsVisible] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const floatingVideoRef = useRef<HTMLVideoElement>(null);
+    // The floating preview appears 3 seconds after the page has loaded: a
+    // playing video (YouTube's player is ~1 MB) would otherwise compete with
+    // the bat photos while the page is opening.
+    const [ready, setReady] = useState(false);
 
-    // Default video if product doesn't have one
-    const defaultVideoUrl = "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/videos/watch-buy-default.mp4";
-    const videoUrl = product.videoUrl || defaultVideoUrl;
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const begin = () => { timer = setTimeout(() => setReady(true), 3000); };
+        if (document.readyState === 'complete') begin();
+        else window.addEventListener('load', begin, { once: true });
+        return () => {
+            window.removeEventListener('load', begin);
+            clearTimeout(timer);
+        };
+    }, []);
+
+    const videoUrl = product.videoUrl || '';
 
     const isYouTube = (url: string) => url.includes('youtube.com') || url.includes('youtu.be');
 
@@ -116,7 +129,7 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
             floatingVideoRef.current.muted = true;
             floatingVideoRef.current.play().catch(() => { });
         }
-    }, [isVisible, isModalOpen, videoId]);
+    }, [isVisible, isModalOpen, videoId, ready]);
 
     // Handle ESC key to close modal
     useEffect(() => {
@@ -138,7 +151,8 @@ export const WatchBuyVideo: FC<WatchBuyVideoProps> = ({ product, onAddToCart, on
         return () => { document.body.style.overflow = ''; };
     }, [isModalOpen]);
 
-    if (!isVisible) return null;
+    // No video for this bat → no empty black box (the old default video file never existed)
+    if (!product.videoUrl || !isVisible || !ready) return null;
 
     return (
         <>

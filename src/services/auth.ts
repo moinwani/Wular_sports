@@ -10,6 +10,7 @@ import {
     sendPasswordResetEmail
 } from 'firebase/auth';
 import { auth } from './firebase-auth';
+import { loadGoogleIdentity } from './googleIdentity';
 
 /**
  * Authentication Service for Wular Sports
@@ -51,29 +52,6 @@ export const signInWithGoogle = async (idToken: string): Promise<User> => {
         }
 
         throw error;
-    }
-};
-
-/**
- * Initialize Google One Tap
- * Requires VITE_GOOGLE_CLIENT_ID
- */
-export const initializeGoogleOneTap = (callback: (response: any) => void) => {
-    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-    if (!clientId) {
-        console.warn('⚠️ Google Client ID not found. One Tap disabled.');
-        return;
-    }
-
-    if (typeof window !== 'undefined' && (window as any).google) {
-        (window as any).google.accounts.id.initialize({
-            client_id: clientId,
-            callback: callback,
-            auto_select: true, // Attempt to sign in automatically
-            cancel_on_tap_outside: false
-        });
-
-        (window as any).google.accounts.id.prompt(); // Display the One Tap prompt
     }
 };
 
@@ -127,7 +105,7 @@ export const sendPasswordReset = async (email: string): Promise<void> => {
  * Render the official Google Sign-In button into the given element.
  * Optional convenience on checkout — auto-fills the customer's email.
  */
-export const renderGoogleSignInButton = (
+export const renderGoogleSignInButton = async (
     element: HTMLElement,
     onCredential: (response: { credential: string }) => void
 ) => {
@@ -136,10 +114,12 @@ export const renderGoogleSignInButton = (
         console.warn('⚠️ Google Client ID not configured.');
         return;
     }
-    if (typeof window === 'undefined' || !(window as any).google?.accounts?.id) {
-        console.warn('⚠️ Google Identity Services not loaded yet.');
+    // The Google script loads on demand (it is no longer on every page)
+    if (!(await loadGoogleIdentity())) {
+        console.warn('⚠️ Google Identity Services could not be loaded.');
         return;
     }
+    if (!element.isConnected) return; // the panel closed while the script was loading
 
     (window as any).google.accounts.id.initialize({
         client_id: clientId,

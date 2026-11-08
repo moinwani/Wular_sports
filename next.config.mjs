@@ -10,6 +10,9 @@ const nextConfig = {
         ],
         formats: ['image/webp', 'image/avif'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+        // Photo links carry a fingerprint (?v=…) or are unique uploads, so a
+        // resized photo can be kept for a month instead of being redone every minute
+        minimumCacheTTL: 2678400,
     },
     async headers() {
         const csp = [
@@ -24,6 +27,11 @@ const nextConfig = {
         ].join('; ');
 
         return [
+            {
+                // Font files never change under the same name
+                source: '/fonts/:file*',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+            },
             {
                 source: '/(.*)',
                 headers: [

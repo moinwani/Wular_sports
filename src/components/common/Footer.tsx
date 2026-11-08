@@ -2,7 +2,7 @@ import { FC, memo, useState } from 'react';
 import Link from 'next/link';
 import { createWhatsAppLink } from '../../utils/helpers';
 import { INSTAGRAM_LINK, YOUTUBE_LINK } from '../../data/constants';
-import { subscribeToNewsletter } from '../../services/newsletter';
+import { subscribe } from '../../services/subscribe';
 import { useToast } from '../../context/ToastContext';
 import { Icon } from './Icon';
 import { useCatalog } from '../../context/CatalogContext';
@@ -17,7 +17,7 @@ export const Footer: FC = memo(() => {
         e.preventDefault();
         if (!email) return;
         setSubmitting(true);
-        const result = await subscribeToNewsletter(email);
+        const result = await subscribe(email);
         if (result.success) {
             showToast(result.message, 'success');
             setEmail('');

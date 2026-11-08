@@ -375,7 +375,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                     type="button"
                                     className="product-rating-line"
                                     onClick={() => document.querySelector('.product-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                                    aria-label={`Rated ${rating.ratingValue} out of 5 from ${rating.reviewCount} reviews — read reviews`}
+                                    aria-label={`${rating.ratingValue} · ${rating.reviewCount} review${rating.reviewCount === 1 ? '' : 's'} — rated ${rating.ratingValue} out of 5, read reviews`}
                                 >
                                     <span className="product-rating-stars" aria-hidden="true">★★★★★</span>
                                     <strong>{rating.ratingValue}</strong>
@@ -523,7 +523,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 padding: '1rem',
                                 marginTop: '1rem',
                                 backgroundColor: '#25D366',
-                                color: 'white',
+                                color: '#05301a', // dark text: white on this green is hard to read (contrast 2:1)
                                 border: 'none',
                                 borderRadius: '8px',
                                 fontSize: '1.1rem',
@@ -579,7 +579,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'description' && (
                                     <div className="tab-panel active">
                                         <div className="product-specs-clean">
-                                            <h3 className="specs-title">Product Details</h3>
+                                            <h2 className="specs-title">Product Details</h2>
                                             <ul className="specs-list-clean">
                                                 {product.specs
                                                     .filter(spec =>
@@ -606,7 +606,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'included' && (
                                     <div className="tab-panel active">
                                         <div className="included-section-clean">
-                                            <h3 className="included-title">What Comes With Your Bat</h3>
+                                            <h2 className="included-title">What Comes With Your Bat</h2>
                                             <ul className="included-list-clean">
                                                 <li>
                                                     <div className="included-item-left">
@@ -656,7 +656,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'shipping' && (
                                     <div className="tab-panel active">
                                         <div className="shipping-section-clean">
-                                            <h3 className="shipping-title">When Will I Get My Order?</h3>
+                                            <h2 className="shipping-title">When Will I Get My Order?</h2>
 
                                             <div className="shipping-steps">
                                                 <div className="shipping-step">
@@ -724,7 +724,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'returns' && (
                                     <div className="tab-panel active">
                                         <div className="returns-section-clean">
-                                            <h3 className="returns-title">Hassle-Free Returns</h3>
+                                            <h2 className="returns-title">Hassle-Free Returns</h2>
 
                                             <div className="returns-info">
                                                 <div className="policy-note">
@@ -762,7 +762,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'contact' && (
                                     <div className="tab-panel active">
                                         <div className="contact-section-clean">
-                                            <h3 className="contact-title">Need Help Choosing?</h3>
+                                            <h2 className="contact-title">Need Help Choosing?</h2>
                                             <p className="contact-subtitle">Contact us for personalized assistance</p>
 
                                             <div className="contact-options-clean">

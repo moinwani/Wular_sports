@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Writes src/data/assetVersions.json: for every file in assets/, a short
+ * Writes src/data/assetVersions.json: for every file in assets/ (and
+ * public/admin.css), a short
  * fingerprint (the same one GitHub shows for the file). Image links carry it
  * as ?v=…, so a photo replaced in the repo shows up straight away, without
  * the visitor's phone asking GitHub for the file list on every page view.
@@ -25,7 +26,9 @@ const walk = (dir) => readdirSync(dir).flatMap((name) => {
 const blobId = (buf) => createHash('sha1').update(`blob ${buf.length}\0`).update(buf).digest('hex');
 
 const versions = {};
-for (const file of walk(assetsDir).sort()) {
+// public/admin.css (admin panel styles) is fingerprinted too, so the admin page
+// always loads the current version
+for (const file of [...walk(assetsDir).sort(), join(root, 'public', 'admin.css')]) {
     versions[relative(root, file).split(sep).join('/')] = blobId(readFileSync(file)).slice(0, 7);
 }
 

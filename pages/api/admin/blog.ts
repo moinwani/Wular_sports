@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import DOMPurify from 'isomorphic-dompurify';
+import { cleanArticleHtml } from '../../../src/lib/articleHtml';
 import { db, FieldValue } from '../../../src/lib/firebaseAdmin';
 import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { BUILT_IN_BLOG, getBlog } from '../../../src/lib/blogServer';
@@ -20,13 +20,8 @@ export const config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 const POSTS = 'blogPosts';
 const fail = (msg: string): never => { throw new BlogError(msg); };
 
-// Links that open a new tab get rel="noopener" so the new page can't control ours
-DOMPurify.addHook('afterSanitizeAttributes', node => {
-    if (node.tagName === 'A' && node.getAttribute('target') === '_blank') node.setAttribute('rel', 'noopener noreferrer');
-});
-
 /** Article HTML without scripts, event handlers or other unsafe markup */
-const sanitize = (html: string) => DOMPurify.sanitize(html, { ADD_ATTR: ['target'], FORBID_TAGS: ['style', 'form', 'input', 'button'] });
+const sanitize = cleanArticleHtml;
 
 /** The first change copies the built-in posts into Firestore, so everything is edited in one place. */
 async function ensureManaged() {
@@ -87,6 +82,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 if (!isNew && !prevSnap.exists) fail('This post no longer exists');
                 const prev = prevSnap.exists ? (prevSnap.data() as ManagedPost) : null;
 
+                // Last-edited date, shown to Google as dateModified
+                post.modifiedAt = new Date(Date.now() + 5.5 * 3600000).toISOString().slice(0, 10);
                 await ref.set({
                     ...post,
                     updatedAt: FieldValue.serverTimestamp(),

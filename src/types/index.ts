@@ -13,6 +13,8 @@ export interface BlogPost {
     category: string;
     readTime: string;
     faq?: { question: string; answer: string }[];
+    /** Shorter title for Google's results (the page heading stays the full title) */
+    seoTitle?: string;
 }
 
 export interface ProductFull {

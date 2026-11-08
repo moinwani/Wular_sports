@@ -10,6 +10,8 @@ interface SEOHeadProps {
     canonicalUrl?: string;
     structuredData?: object;
     robots?: string;
+    /** Article dates/section for blog posts (Open Graph article tags) */
+    article?: { publishedTime?: string; modifiedTime?: string; section?: string; author?: string };
 }
 
 export const SEOHead: FC<SEOHeadProps> = ({
@@ -21,6 +23,7 @@ export const SEOHead: FC<SEOHeadProps> = ({
     canonicalUrl,
     structuredData,
     robots = 'index, follow',
+    article,
 }) => (
     <Head>
         <title>{title}</title>
@@ -34,6 +37,11 @@ export const SEOHead: FC<SEOHeadProps> = ({
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:site_name" content="Wular Sports" />
+        <meta property="og:locale" content="en_IN" />
+        {article?.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+        {article?.modifiedTime && <meta property="article:modified_time" content={article.modifiedTime} />}
+        {article?.section && <meta property="article:section" content={article.section} />}
+        {article?.author && <meta property="article:author" content={article.author} />}
         {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
         <meta name="twitter:card" content="summary_large_image" />

@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     const urls: { loc: string; lastmod: string; priority: string; changefreq: string }[] = [
         ...visibleProducts(catalog.products).map(p => ({ loc: `/product/${p.id}`, lastmod: today, priority: '0.9', changefreq: 'weekly' })),
         ...catalog.categories.filter(c => !c.builtIn).map(c => ({ loc: c.path, lastmod: today, priority: '0.8', changefreq: 'weekly' })),
-        ...livePosts(blog.posts).map(p => ({ loc: `/blog/${p.id}`, lastmod: isoDateOf(p) || today, priority: '0.6', changefreq: 'monthly' })),
+        ...livePosts(blog.posts).map(p => ({ loc: `/blog/${p.id}`, lastmod: p.modifiedAt || isoDateOf(p) || today, priority: '0.6', changefreq: 'monthly' })),
     ];
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
         .map(u => `  <url><loc>${esc(SITE + u.loc)}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`)

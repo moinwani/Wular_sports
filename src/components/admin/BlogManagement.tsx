@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { blogAction, fetchAdminBlog, uploadProductPhoto, discardProductPhoto } from '../../services/admin';
-import { DEFAULT_AUTHOR, ManagedPost, displayDate, readTimeFor, slugify } from '../../lib/blog';
+import { DEFAULT_AUTHOR, ManagedPost, displayDate, pageTitleFor, readTimeFor, seoChecks, slugify } from '../../lib/blog';
 import { RichTextEditor } from './RichTextEditor';
 import { Icon } from '../common/Icon';
 
@@ -29,6 +29,7 @@ const PostEditor: FC<{
     const [image, setImage] = useState(post?.image || '');
     const [content, setContent] = useState(post?.content || '');
     const [faq, setFaq] = useState<{ question: string; answer: string }[]>(post?.faq || []);
+    const [seoTitle, setSeoTitle] = useState(post?.seoTitle || '');
     const [published, setPublished] = useState(post ? post.published !== false : true);
     const [busy, setBusy] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -64,7 +65,7 @@ const PostEditor: FC<{
         setBusy(true);
         const res = await blogAction('savePost', {
             isNew,
-            post: { id, title, description, category, author, publishedAt, image, content, faq, published },
+            post: { id, title, seoTitle, description, category, author, publishedAt, image, content, faq, published },
         }).catch(() => ({ error: 'Could not save — check your connection.' }));
         setBusy(false);
         if (res.error) return setMsg({ ok: false, text: res.error });
@@ -150,6 +151,27 @@ const PostEditor: FC<{
                         <h3>Article</h3>
                         <p className="crm-muted">Use “Heading” for each main section — Google reads them. Link to your bats with the “Bat” button.</p>
                         <RichTextEditor value={content} onChange={setContent} photoFolder={`blog-${id || 'new'}`} photosReady={true} />
+                    </section>
+
+                    <section className="crm-section">
+                        <h3>How it looks on Google</h3>
+                        <div className="be-serp" aria-label="Google search preview">
+                            <div className="be-serp__url">wularsports.com › blog › {id || '…'}</div>
+                            <div className="be-serp__title">{pageTitleFor({ title: title || 'Your title', seoTitle }).slice(0, 65)}{pageTitleFor({ title, seoTitle }).length > 65 ? '…' : ''}</div>
+                            <div className="be-serp__desc">{(description || 'Your summary appears here.').slice(0, 160)}{description.length > 160 ? '…' : ''}</div>
+                        </div>
+                        <label className="mk-field">
+                            <span>SEO title (optional) <em className="be-count">a shorter title just for Google, e.g. “Kashmir Willow vs English Willow (2026)”</em></span>
+                            <input className="mk-input" value={seoTitle} onChange={e => setSeoTitle(e.target.value)} maxLength={70} placeholder={title} />
+                        </label>
+                        <ul className="be-seo">
+                            {seoChecks({ id, title, seoTitle, description, content, image, faq }).map(c => (
+                                <li key={c.label} className={c.ok ? 'ok' : 'todo'}>
+                                    <span aria-hidden="true">{c.ok ? '✓' : '!'}</span>
+                                    <span>{c.label}{!c.ok && <small>{c.tip}</small>}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </section>
 
                     <section className="crm-section">

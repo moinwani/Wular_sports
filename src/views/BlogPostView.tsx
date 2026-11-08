@@ -1,10 +1,10 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
 import { BlogPost } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
+import { absoluteUrl, isoDateOf, ManagedPost, pageTitleFor } from '../lib/blog';
 import { getCDNUrl } from '../services/githubService';
 import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
@@ -22,27 +22,24 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
         window.scrollTo(0, 0);
     }, [post.id]);
 
-    const sanitizedContent = useMemo(() => DOMPurify.sanitize(post.content), [post.content]);
 
-    const faqSchema = post.faq && post.faq.length > 0 ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": post.faq.map(item => ({
-            "@type": "Question",
-            "name": item.question,
-            "acceptedAnswer": { "@type": "Answer", "text": item.answer }
-        }))
-    } : null;
 
     return (
         <div className="blog-post-page">
             <SEOHead
-                title={`${post.title} | Wular Sports Blog`}
+                title={pageTitleFor(post as ManagedPost)}
                 description={post.description}
                 canonicalUrl={`https://wularsports.com/blog/${post.id}`}
-                ogImage={post.image}
+                ogImage={absoluteUrl(post.image)}
                 ogType="article"
-                structuredData={faqSchema ? { ...articleSchema, "@graph": [...(articleSchema as any)["@graph"], faqSchema] } : articleSchema}
+                keywords={`${post.category}, ${post.title}, kashmir willow cricket bat, Wular Sports`}
+                structuredData={articleSchema}
+                article={{
+                    publishedTime: isoDateOf(post as ManagedPost) || undefined,
+                    modifiedTime: (post as ManagedPost).modifiedAt || isoDateOf(post as ManagedPost) || undefined,
+                    section: post.category,
+                    author: post.author,
+                }}
             />
             <div className="container">
                 <Breadcrumb items={[
@@ -82,7 +79,19 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
 
                 <div className="blog-post-content-wrapper">
                     <div className="container narrow">
-                        <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
+                        <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: post.content /* cleaned on the server in getStaticProps */ }} />
+                        {/* Visible FAQ — Google only shows FAQ results when the answers are on the page */}
+                        {post.faq && post.faq.length > 0 && (
+                            <section className="blog-faq" aria-labelledby="blog-faq-title">
+                                <h2 id="blog-faq-title">Frequently asked questions</h2>
+                                {post.faq.map((f, i) => (
+                                    <details key={i} className="blog-faq__item" open={i === 0}>
+                                        <summary>{f.question}</summary>
+                                        <p>{f.answer}</p>
+                                    </details>
+                                ))}
+                            </section>
+                        )}
                         <div className="blog-post-footer">
                             <div className="share-post">
                                 <span>Share this article:</span>

@@ -13,6 +13,10 @@ export interface ManagedPost extends BlogPost {
     published?: boolean;
     /** YYYY-MM-DD — drives the order on the blog page (newest first) */
     publishedAt?: string;
+    /** YYYY-MM-DD of the last edit — tells Google the article is kept up to date */
+    modifiedAt?: string;
+    /** Optional shorter title for Google (the page heading stays the full title) */
+    seoTitle?: string;
 }
 
 /** A post without its body — what the blog list page needs */
@@ -44,6 +48,36 @@ const textOf = (html: string) => String(html || '').replace(/<[^>]+>/g, ' ').rep
 export const readTimeFor = (html: string) => `${Math.max(1, Math.round(textOf(html).split(' ').filter(Boolean).length / 220))} min read`;
 
 export const isLive = (p: ManagedPost) => p.published !== false;
+
+export const SITE_URL = 'https://wularsports.com';
+/** Full https link for an image or page path (Google and link previews need absolute URLs) */
+export const absoluteUrl = (src: string) => (/^https?:\/\//.test(src) ? src : `${SITE_URL}${src.startsWith('/') ? '' : '/'}${src}`);
+
+/** The <title> Google shows: the SEO title if set, else the post title */
+export const pageTitleFor = (p: Pick<ManagedPost, 'title' | 'seoTitle'>) => `${p.seoTitle || p.title} | Wular Sports`;
+
+export interface SeoCheck { ok: boolean; label: string; tip: string; }
+
+/** A quick on-page SEO checklist for the editor */
+export const seoChecks = (p: Pick<ManagedPost, 'title' | 'seoTitle' | 'description' | 'content' | 'image' | 'faq' | 'id'>): SeoCheck[] => {
+    const html = String(p.content || '');
+    const words = textOf(html).split(' ').filter(Boolean).length;
+    const titleLen = pageTitleFor(p).length;
+    const h2 = (html.match(/<h2[\s>]/gi) || []).length;
+    const imgs = html.match(/<img\b[^>]*>/gi) || [];
+    const noAlt = imgs.filter(t => !/\balt="[^"]+"/i.test(t)).length;
+    return [
+        { ok: titleLen >= 30 && titleLen <= 65, label: `Google title is ${titleLen} characters`, tip: 'Aim for 30–65 so it isn’t cut off. Use “SEO title” for a shorter version.' },
+        { ok: p.description.length >= 110 && p.description.length <= 160, label: `Summary is ${p.description.length} characters`, tip: 'Aim for 110–160 — this is the grey text under your link on Google.' },
+        { ok: words >= 800, label: `${words} words`, tip: 'Guides that rank usually have 800+ words that fully answer the question.' },
+        { ok: h2 >= 2, label: `${h2} section heading${h2 === 1 ? '' : 's'}`, tip: 'Use “Heading” (H2) for each main section — at least 2. Put the main search words in them.' },
+        { ok: /href="\/product\//.test(html), label: 'Links to one of your bats', tip: 'Use the “Bat” button to link a relevant bat — it helps that product rank and sell.' },
+        { ok: !!p.image, label: 'Has a cover photo', tip: 'Posts with a cover photo get more clicks from Google and WhatsApp shares.' },
+        { ok: noAlt === 0, label: noAlt ? `${noAlt} photo${noAlt === 1 ? '' : 's'} without a description` : 'Photos have descriptions', tip: 'Describe each photo in a few words (alt text) — Google Images reads it.' },
+        { ok: (p.faq || []).length >= 2, label: `${(p.faq || []).length} FAQ question${(p.faq || []).length === 1 ? '' : 's'}`, tip: 'Add 2–5 real questions buyers ask — they can show directly in Google results.' },
+        { ok: !!p.id && p.id.length <= 70, label: 'Short web address', tip: 'Keep the address short and made of the main search words.' },
+    ];
+};
 
 /** Published posts, newest first */
 export const livePosts = (posts: ManagedPost[]) =>
@@ -83,6 +117,7 @@ export function cleanPost(raw: any, isNew: boolean, sanitize: (html: string) => 
         .filter((f: { question: string; answer: string }) => f.question && f.answer)
         .slice(0, 20);
 
+    const seoTitle = str(raw?.seoTitle, 70);
     const post: ManagedPost = {
         id,
         title,
@@ -97,5 +132,6 @@ export function cleanPost(raw: any, isNew: boolean, sanitize: (html: string) => 
         published: raw?.published !== false,
     };
     if (faq.length) post.faq = faq;
+    if (seoTitle) post.seoTitle = seoTitle;
     return post;
 }

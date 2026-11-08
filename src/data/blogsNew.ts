@@ -4,6 +4,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'legacy-edition-2-0-review-best-hard-tennis-bat-under-3500',
         title: 'Legacy Edition 2.0 Review: Is It the Best Hard Tennis Bat Under ₹3,500?',
+        seoTitle: 'Legacy Edition 2.0 Review: Best Bat Under ₹3,500?',
         description: 'Honest review of the Wular Sports Legacy Edition 2.0: 3-year seasoned Kashmir willow, ramp scoop, Singapore cane. Best hard tennis bat under ₹3,500?',
         category: 'Reviews',
         author: 'Moin Wani',
@@ -95,6 +96,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'top-10-hard-tennis-bats-under-3000-india-2026',
         title: 'Top 10 Hard Tennis Bats Under ₹3,000 in India (2026)',
+        seoTitle: 'Top 10 Hard Tennis Bats Under ₹3,000 (2026)',
         description: 'The best hard tennis bats under ₹3,000 in India for 2026, ranked by willow quality, edge size and pickup. Includes Wular Sports Legacy 1.0 and Bahubali.',
         category: 'Buying Guides',
         author: 'Moin Wani',
@@ -185,6 +187,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'kashmir-willow-vs-english-willow-tennis-ball-cricket',
         title: 'Kashmir Willow vs English Willow: Which Is Better for Tennis Ball Cricket?',
+        seoTitle: 'Kashmir vs English Willow for Tennis Ball Cricket',
         description: 'Kashmir willow vs English willow for tennis ball cricket: price, ping, durability and performance compared, and why Kashmir willow wins for hard tennis.',
         category: 'Materials',
         author: 'Moin Wani',
@@ -266,6 +269,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'hard-tennis-ball-weight-guide-130g-140g',
         title: 'Hard Tennis Ball Weights Explained: 130g vs 140g vs Heavy Balls (And the Right Bat)',
+        seoTitle: 'Hard Tennis Ball Weight: 130g vs 140g Explained',
         description: 'How 130g, 140g and heavy hard tennis balls change your bat choice — and which Wular Sports Kashmir willow bat suits each weight.',
         category: 'Guides',
         author: 'Moin Wani',
@@ -341,6 +345,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'hard-tennis-vs-soft-tennis-vs-tape-ball-bat-guide',
         title: 'Hard Tennis vs Soft Tennis vs Tape Ball Cricket: Which Bat Do You Need?',
+        seoTitle: 'Hard Tennis vs Soft Tennis vs Tape Ball Bats',
         description: 'Hard tennis, soft tennis or tape ball? Learn how each format changes the bat you need and which Wular Sports Kashmir willow bat fits your game.',
         category: 'Guides',
         author: 'Moin Wani',
@@ -432,6 +437,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'behind-the-craft-wular-sports-srinagar',
         title: 'Behind the Craft: How Wular Sports Makes Handcrafted Bats in Srinagar',
+        seoTitle: 'How Our Bats Are Handcrafted in Srinagar',
         description: 'Inside Wular Sports, the Srinagar workshop handcrafting Kashmir willow bats since 2015. See how 1–3 year seasoned willow becomes a ready-to-play bat.',
         category: 'Craftsmanship',
         author: 'Moin Wani',
@@ -516,6 +522,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'best-kashmiri-hard-tennis-bat-brands-2026',
         title: 'Best Kashmiri Hard Tennis Bat Brands in 2026 (Complete Guide)',
+        seoTitle: 'Best Kashmiri Hard Tennis Bat Brands (2026)',
         description: 'Compare the best Kashmiri hard tennis bat brands in 2026 — Wular Sports, KWE, Valley Willow and Tramboo — with specs, prices and honest buying advice.',
         category: 'Buying Guides',
         author: 'Moin Wani',
@@ -591,6 +598,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'wular-vs-kwe-vs-valley-willow-hard-tennis-bat',
         title: 'Wular Sports vs KWE Sports vs Valley Willow: Which Hard Tennis Bat Should You Buy?',
+        seoTitle: 'Wular vs KWE vs Valley Willow: Hard Tennis Bats',
         description: 'Wular Sports vs KWE Sports vs Valley Willow: an honest hard tennis bat comparison on build, seasoning, pricing and who each Srinagar brand suits best.',
         category: 'Comparison',
         author: 'Moin Wani',
@@ -684,6 +692,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'why-kashmiri-willow-is-perfect-for-hard-tennis-cricket',
         title: 'What Makes Kashmiri Willow Bats Perfect for Hard Tennis Cricket?',
+        seoTitle: 'Why Kashmiri Willow Is Best for Hard Tennis',
         description: 'Why Kashmir willow — seasoned, hard-pressed and paired with Singapore cane — is ideal for hard tennis cricket and how to spot a quality bat.',
         category: 'Materials',
         author: 'Moin Wani',
@@ -754,6 +763,7 @@ export const blogsNew: BlogPost[] = [
     {
         id: 'how-to-choose-hard-tennis-bat-weight-scoop-edge',
         title: 'How to Choose the Right Hard Tennis Bat: Weight, Scoop, and Edge Guide',
+        seoTitle: 'How to Choose a Hard Tennis Bat: Weight & Scoop',
         description: 'How to choose a hard tennis bat: understand weight, scoop, edges and handle, and pick the right Wular Sports model for your game.',
         category: 'Guides',
         author: 'Moin Wani',

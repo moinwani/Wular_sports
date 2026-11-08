@@ -5,7 +5,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'kashmiri-willow-cricket-bat-buying-guide-2025',
         title: 'Kashmiri Willow Cricket Bat: Complete Buying Guide (2025)',
-        description: 'Discover everything about Kashmiri willow cricket bats in 2025. Learn about durability, performance, price comparison with English willow, and find the best bat for your game.',
+        seoTitle: 'Kashmiri Willow Cricket Bat: Buying Guide',
+        description: 'Everything about Kashmiri willow cricket bats: durability, performance, price vs English willow, and how to choose the best bat for your game.',
         category: 'Guides',
         author: 'Wular Sports Team',
         date: 'Jan 30, 2026',
@@ -184,7 +185,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'choosing-the-right-bat-weight',
         title: 'Choosing the Right Bat Weight: The Science of Power',
-        description: 'Does a heavier bat always mean more power? Learn how to find the perfect weight for your playing style.',
+        seoTitle: 'Cricket Bat Weight Guide: Pick the Right Weight',
+        description: 'Does a heavier cricket bat mean more power? Learn how bat weight affects bat speed and control, and find the right weight for your playing style.',
         category: 'Guides',
         author: 'Wular Sports Team',
         date: 'Jan 05, 2026',
@@ -211,7 +213,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'the-singapore-cane-handle-advantage',
         title: 'Why Singapore Cane Handles are the Choice of Professionals',
-        description: 'Explore why we use premium Singapore cane in every Wular Sports bat handle.',
+        seoTitle: 'Singapore Cane Bat Handles: Why Pros Choose Them',
+        description: 'Why premium Singapore cane handles absorb shock and add control, and why every Wular Sports Kashmir willow bat is fitted with one.',
         category: 'Craftsmanship',
         author: 'Wular Sports Team',
         date: 'Dec 28, 2025',
@@ -236,7 +239,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'breaking-the-willow-myth',
         title: 'Kashmir Willow vs. English Willow: Breaking the Myth',
-        description: 'Think English Willow is always better? Think again. We explore the strengths of premium Kashmir Willow.',
+        seoTitle: 'Kashmir Willow vs English Willow: The Myth',
+        description: 'Is English willow always better? We compare Kashmir willow and English willow on price, durability and performance to bust a common myth.',
         category: 'Materials',
         author: 'Wular Sports Team',
         date: 'Dec 20, 2025',
@@ -261,7 +265,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'cricket-bat-maintenance-care-guide',
         title: 'Cricket Bat Maintenance & Care: Complete Guide for Long-Lasting Performance',
-        description: 'Learn how to knock-in a cricket bat, oil it properly, and protect it using essential accessories. A complete cricket bat maintenance guide for long-lasting performance.',
+        seoTitle: 'Cricket Bat Care: Knock-In, Oiling & Maintenance',
+        description: 'How to knock in, oil and protect a cricket bat with the right accessories — a complete maintenance guide to make your bat last longer.',
         category: 'Maintenance',
         author: 'Wular Sports Team',
         date: 'Jan 07, 2026',
@@ -364,6 +369,7 @@ export const blogs: BlogPost[] = [
     {
         id: 'from-tennis-to-leather-transition-guide',
         title: 'From Tennis to Leather: The Ultimate Transition Guide',
+        seoTitle: 'Tennis Ball to Leather Ball Cricket: Guide',
         description: 'Moving from tennis ball cricket to professional leather ball cricket? Here is everything you need to know about gear, technique, and safety.',
         category: 'Guides',
         author: 'Wular Sports Team',
@@ -400,6 +406,7 @@ export const blogs: BlogPost[] = [
     {
         id: 'mastering-hard-tennis-cricket-gear',
         title: 'Mastering Hard Tennis Cricket: Why Specialized Gear Matters',
+        seoTitle: 'Hard Tennis Cricket Gear: Why It Matters',
         description: 'Hard tennis cricket is a different beast. Learn why using a regular bat is a mistake and how to dominate the T10/T20 circuit.',
         category: 'Tactics',
         author: 'Wular Sports Team',
@@ -431,6 +438,7 @@ export const blogs: BlogPost[] = [
     {
         id: 'the-artisan-edge-handcrafted-vs-machine-made',
         title: "The Artisan's Touch: Why Handcrafted Bats Outperform Machine-Made Ones",
+        seoTitle: 'Handcrafted vs Machine-Made Cricket Bats',
         description: 'Discover the meticulous process of hand-crafting a Wular Sports bat and why it gives you a superior edge on the field.',
         category: 'Craftsmanship',
         author: 'Wular Sports Team',
@@ -462,7 +470,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'best-kashmiri-willow-cricket-bat-under-3000',
         title: 'Best Kashmiri Willow Cricket Bat Under ₹3000 in 2026',
-        description: 'Looking for the best cricket bat under ₹3000? We compare the top Kashmiri willow bats for hard tennis, soft tennis, and leather ball cricket. Find the best value bat in India.',
+        seoTitle: 'Best Kashmiri Willow Bat Under ₹3000 (2026)',
+        description: 'The best Kashmiri willow cricket bats under ₹3000 for hard tennis, soft tennis and leather ball cricket, compared for value, build and pickup.',
         category: 'Buying Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
@@ -550,7 +559,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'scoop-vs-non-scoop-cricket-bat-guide',
         title: 'Scoop vs Non-Scoop Cricket Bat: Which Should You Choose?',
-        description: 'Not sure whether to buy a scoop or non-scoop cricket bat? This complete guide explains ramp scoop, honeycomb scoop, and flat-back bats — and which is best for your game.',
+        seoTitle: 'Scoop vs Non-Scoop Cricket Bat: Which to Buy?',
+        description: 'Scoop or non-scoop bat? This guide explains ramp scoop, honeycomb scoop and flat-back bats, and which one suits your style of cricket.',
         category: 'Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
@@ -669,7 +679,8 @@ export const blogs: BlogPost[] = [
     {
         id: 'buy-kashmiri-willow-cricket-bat-online-india',
         title: 'How to Buy a Kashmiri Willow Cricket Bat Online in India (2026 Guide)',
-        description: 'Want to buy a Kashmiri willow cricket bat online in India? Learn what to check, how to avoid fake bats, and where to get genuine Grade A Kashmir willow bats delivered free.',
+        seoTitle: 'Buy Kashmiri Willow Cricket Bat Online (India)',
+        description: 'How to buy a genuine Kashmiri willow cricket bat online in India: what to check, how to avoid fakes, and where to get Grade A bats delivered free.',
         category: 'Buying Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',

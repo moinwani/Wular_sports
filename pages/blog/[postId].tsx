@@ -2,7 +2,8 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import { BlogPostView } from '../../src/views/BlogPostView';
 import { BlogPost } from '../../src/types';
 import { blogForPage, BLOG_REVALIDATE_SECONDS } from '../../src/lib/blogServer';
-import { isLive, isoDateOf, livePosts, relatedTo, toSummary } from '../../src/lib/blog';
+import { cleanArticleHtml } from '../../src/lib/articleHtml';
+import { absoluteUrl, isLive, isoDateOf, livePosts, relatedTo, toSummary } from '../../src/lib/blog';
 
 interface Props {
     post: BlogPost;
@@ -25,24 +26,33 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
     const { posts } = await blogForPage();
-    const post = posts.find(b => b.id === params?.postId);
+    const found = posts.find(b => b.id === params?.postId);
     // Drafts and deleted posts are not on the website
-    if (!post || !isLive(post)) return { notFound: true, revalidate: 60 };
+    if (!found || !isLive(found)) return { notFound: true, revalidate: 60 };
+    // Cleaned here on the server — visitors' phones never download a sanitiser
+    const post = { ...found, content: cleanArticleHtml(found.content) };
     const relatedPosts = relatedTo(post, posts).map(p => ({ ...toSummary(p), content: '' })) as BlogPost[];
 
+    const published = isoDateOf(post);
+    const isTeam = /team|wular sports/i.test(post.author);
+    const words = post.content.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
     const articleSchema = {
         "@context": "https://schema.org",
         "@graph": [
             {
                 "@type": "BlogPosting",
-                "headline": post.title,
+                "headline": post.title.slice(0, 110),
                 "description": post.description,
-                "image": post.image,
-                "datePublished": isoDateOf(post) || post.date,
-                "author": {
-                    "@type": "Person",
-                    "name": post.author,
-                },
+                "image": [absoluteUrl(post.image)],
+                "datePublished": published || post.date,
+                "dateModified": post.modifiedAt || published || post.date,
+                "inLanguage": "en-IN",
+                "articleSection": post.category,
+                "wordCount": words,
+                // "Wular Sports Team" is the business, not a person
+                "author": isTeam
+                    ? { "@type": "Organization", "name": "Wular Sports", "url": "https://wularsports.com" }
+                    : { "@type": "Person", "name": post.author },
                 "publisher": {
                     "@type": "Organization",
                     "name": "Wular Sports",
@@ -56,6 +66,14 @@ export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
                     "@id": `https://wularsports.com/blog/${post.id}`,
                 },
             },
+            ...(post.faq?.length ? [{
+                "@type": "FAQPage",
+                "mainEntity": post.faq.map(f => ({
+                    "@type": "Question",
+                    "name": f.question,
+                    "acceptedAnswer": { "@type": "Answer", "text": f.answer },
+                })),
+            }] : []),
             {
                 "@type": "BreadcrumbList",
                 "itemListElement": [

@@ -1,4 +1,5 @@
 import { FC, useState } from 'react';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Testimonial } from '../../types';
@@ -123,11 +124,12 @@ export const VideoTestimonials: FC = () => {
                 {/* FEATURED HERO REVIEW */}
                 <div className="featured-hero" onClick={() => openReel(0)}>
                     {featuredThumb ? (
-                        <img
+                        <Image
                             src={featuredThumb}
                             alt={featured.name}
                             className="featured-hero-thumb"
-                            loading="lazy"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 800px"
                         />
                     ) : (
                         <div className="featured-hero-bg" />
@@ -169,7 +171,7 @@ export const VideoTestimonials: FC = () => {
                             >
                                 <div className="story-thumb-wrap">
                                     {thumb ? (
-                                        <img src={thumb} alt={t.name} className="story-thumb" loading="lazy" />
+                                        <Image src={thumb} alt={t.name} className="story-thumb" fill sizes="(max-width: 768px) 140px, 200px" />
                                     ) : (
                                         <div className="story-thumb-fallback" />
                                     )}

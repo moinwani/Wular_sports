@@ -8137,7 +8137,7 @@ img[loading="lazy"] {
 
 .testimonials-sub {
     text-align: center;
-    color: #777;
+    color: #999; /* #777 was too faint on black to read easily */
     font-size: 1rem;
     margin-bottom: 3rem;
 }

@@ -7,6 +7,8 @@ const nextConfig = {
             { protocol: 'https', hostname: 'cdn.jsdelivr.net' },
             // Product photos uploaded from the admin panel
             { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
+            // YouTube thumbnails on the reviews strip — resized, WebP, cached a month (YouTube's own cache is 2h)
+            { protocol: 'https', hostname: 'i.ytimg.com', pathname: '/vi/**' },
         ],
         formats: ['image/webp', 'image/avif'],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],

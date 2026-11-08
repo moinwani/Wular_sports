@@ -26,7 +26,7 @@ export const Catalog = memo(forwardRef<HTMLElement, CatalogProps>(({ onAddToCart
                     {Object.entries(categories).map(([title, productsInCategory]) => (
                         productsInCategory.length > 0 && (
                             <div key={title} className="catalog-category-group">
-                                <h3 className="category-subtitle" style={{
+                                <h2 className="category-subtitle" style={{
                                     fontSize: '1.5rem',
                                     color: 'var(--golden)',
                                     marginBottom: '1.5rem',
@@ -34,7 +34,7 @@ export const Catalog = memo(forwardRef<HTMLElement, CatalogProps>(({ onAddToCart
                                     textTransform: 'uppercase',
                                     borderLeft: '4px solid var(--golden)',
                                     paddingLeft: '1rem'
-                                }}>{title}</h3>
+                                }}>{title}</h2>
                                 <div className="catalog-grid">
                                     {productsInCategory.map(product => (
                                         <ProductCard key={product.id} product={product} onAddToCart={onAddToCart} onImageClick={onImageClick} onWatchVideo={onWatchVideo} />

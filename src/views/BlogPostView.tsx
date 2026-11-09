@@ -8,6 +8,7 @@ import { absoluteUrl, isoDateOf, ManagedPost, pageTitleFor } from '../lib/blog';
 import { getCDNUrl } from '../services/githubService';
 import { Breadcrumb } from '../components/common/Breadcrumb';
 import { Icon } from '../components/common/Icon';
+import { useToast } from '../context/ToastContext';
 
 interface BlogPostViewProps {
     post: BlogPost;
@@ -18,11 +19,28 @@ interface BlogPostViewProps {
 export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articleSchema }) => {
     const router = useRouter();
 
+    const { showToast } = useToast();
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [post.id]);
 
-
+    // Phones: the native share sheet (WhatsApp, Instagram, copy…). Elsewhere: copy the
+    // link. Only say "copied" when it really was — in-app browsers often block the clipboard.
+    const sharePost = async () => {
+        const url = `https://wularsports.com/blog/${post.id}`;
+        window.dataLayer?.push({ event: 'blog_share_link', post_id: post.id });
+        if (navigator.share) {
+            try { await navigator.share({ title: post.title, url }); return; }
+            catch (err: any) { if (err?.name === 'AbortError') return; /* fall back to copying */ }
+        }
+        try {
+            await navigator.clipboard.writeText(url);
+            showToast('Link copied — paste it anywhere to share', 'success');
+        } catch {
+            showToast(`Copy this link: ${url}`, 'info');
+        }
+    };
 
     return (
         <div className="blog-post-page">
@@ -96,14 +114,14 @@ export const BlogPostView: FC<BlogPostViewProps> = ({ post, relatedPosts, articl
                             <div className="share-post">
                                 <span>Share this article:</span>
                                 <div className="share-links">
-                                <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noreferrer" onClick={() => {
-                                    window.dataLayer.push({ event: 'blog_share_whatsapp', post_id: post.id, post_title: post.title });
+                                <a href={`https://wa.me/?text=${encodeURIComponent(post.title + ' https://wularsports.com/blog/' + post.id)}`} target="_blank" rel="noopener noreferrer" aria-label="Share on WhatsApp" onClick={() => {
+                                    window.dataLayer?.push({ event: 'blog_share_whatsapp', post_id: post.id, post_title: post.title });
                                 }}>
                                     <Icon name="fa-whatsapp" />
                                 </a>
-                                    <a href="#" onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(`https://wularsports.com/blog/${post.id}`); alert('Link copied!'); }}>
+                                    <button type="button" className="share-link-btn" aria-label="Share or copy the link to this article" onClick={sharePost}>
                                         <Icon name="fa-link" />
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>

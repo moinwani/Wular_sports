@@ -6,7 +6,7 @@ module.exports = {
     changefreq: 'weekly',
     priority: 0.7,
     // Products, new categories and blog posts are listed live in /server-sitemap.xml
-    exclude: ['/admin', '/checkout', '/order-success', '/404', '/server-sitemap.xml', '/category/*'],
+    exclude: ['/admin', '/checkout', '/order-success', '/review', '/404', '/server-sitemap.xml', '/category/*'],
     robotsTxtOptions: {
         policies: [
             // /api/photo/ serves product photos, which Google Images and link previews need

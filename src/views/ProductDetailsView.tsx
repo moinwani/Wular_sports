@@ -16,6 +16,7 @@ import { WatchBuyVideo } from '../components/product/WatchBuyVideo';
 import { ProductReviews } from '../components/product/ProductReviews';
 import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
+import { absoluteUrl } from '../lib/blog';
 
 export interface ProductDetailsViewProps {
     product: ProductFull;
@@ -219,7 +220,8 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 "category": product.category.join(", "),
                 "material": "Kashmiri Willow",
                 "countryOfOrigin": "IN",
-                "image": Array.isArray(product.image) ? product.image : [product.image],
+                // Full https:// addresses (admin-uploaded photos are stored as /api/photo/… paths)
+                "image": (Array.isArray(product.image) ? product.image : [product.image]).map(img => absoluteUrl(getCDNUrl(img))),
                 "description": product.description,
                 "aggregateRating": product.aggregateRating ? {
                     "@type": "AggregateRating",
@@ -237,11 +239,33 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     "url": `https://wularsports.com/product/${product.id}`,
                     "priceCurrency": "INR",
                     "price": product.price,
-                    "priceValidUntil": "2026-12-31",
+                    // Rolls forward on its own (pages are rebuilt every few minutes) — a fixed
+                    // date makes Google treat the price as expired once it passes
+                    "priceValidUntil": `${new Date().getFullYear() + 1}-12-31`,
                     "availability": "https://schema.org/InStock",
+                    "itemCondition": "https://schema.org/NewCondition",
                     "seller": {
                         "@type": "Organization",
                         "name": "Wular Sports"
+                    },
+                    // Free delivery across India: dispatched within 24 hours, 6–7 business days by India Post
+                    "shippingDetails": {
+                        "@type": "OfferShippingDetails",
+                        "shippingRate": { "@type": "MonetaryAmount", "value": 0, "currency": "INR" },
+                        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IN" },
+                        "deliveryTime": {
+                            "@type": "ShippingDeliveryTime",
+                            "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY" },
+                            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 7, "unitCode": "DAY" }
+                        }
+                    },
+                    // Same terms as the Return Policy page: 7 days from delivery
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "IN",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                        "merchantReturnDays": 7,
+                        "returnMethod": "https://schema.org/ReturnByMail"
                     }
                 }
             },

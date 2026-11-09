@@ -16,15 +16,30 @@ const nextConfig = {
         // resized photo can be kept for a month instead of being redone every minute
         minimumCacheTTL: 2678400,
     },
+    async redirects() {
+        return [
+            {
+                // One address for Google: www.wularsports.com → wularsports.com (permanent).
+                // /api is left alone so payment webhooks posted to the www address keep working.
+                source: '/:path((?!api/).*)',
+                has: [{ type: 'host', value: 'www.wularsports.com' }],
+                destination: 'https://wularsports.com/:path',
+                permanent: true,
+            },
+        ];
+    },
     async headers() {
         const csp = [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' https://*.clarity.ms https://apis.google.com https://accounts.google.com https://checkout.razorpay.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://*.googletagmanager.com https://*.google-analytics.com https://connect.facebook.net",
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+            // accounts.google.com: Google sign-in (One Tap, "Sign in with Google" on checkout and admin)
+            // needs its stylesheet, its iframe and its status check — all three were blocked before
+            "style-src 'self' 'unsafe-inline' https://accounts.google.com https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
             "img-src 'self' data: blob: https://cdn.jsdelivr.net https://*.public.blob.vercel-storage.com https://*.clarity.ms https://i.ytimg.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
-            "frame-src 'self' https://www.youtube.com https://api.razorpay.com https://*.googletagmanager.com",
-            "connect-src 'self' https://api.github.com https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.googletagmanager.com https://www.facebook.com",
+            "frame-src 'self' https://accounts.google.com https://www.youtube.com https://api.razorpay.com https://*.googletagmanager.com",
+            // *.analytics.google.com: Google Analytics 4 also sends data there (Google's own CSP guide)
+            "connect-src 'self' https://accounts.google.com https://*.firebaseio.com https://*.googleapis.com https://api.razorpay.com https://*.clarity.ms https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://script.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://www.facebook.com",
             "media-src 'self' https://cdn.jsdelivr.net",
         ].join('; ');
 

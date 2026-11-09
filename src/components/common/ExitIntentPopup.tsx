@@ -1,13 +1,25 @@
-import { FC, useState, useEffect, useCallback } from 'react';
+import { FC, useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { Icon } from './Icon';
-import { BUILT_IN_COUPONS } from '../../data/coupons';
-import { couponLabel } from '../../lib/marketing';
 
 const STORAGE_KEY = 'ws_exit_popup_shown';
-const COUPON = BUILT_IN_COUPONS.find(c => c.code === 'WELCOME100')!;
-const COUPON_CODE = COUPON.code;
+const COUPON_CODE = 'WELCOME100';
 const EXCLUDED_PATHS = ['/checkout', '/admin', '/order-success', '/review'];
+
+interface LiveCoupon { code: string; type: 'per_bat' | 'percent'; value: number; label: string }
+
+/** The offer as it stands right now — null if it's switched off or expired in
+ *  Admin → Marketing → Coupons (then the popup doesn't show at all) */
+async function liveCoupon(): Promise<LiveCoupon | null> {
+    try {
+        const r = await fetch(`/api/coupon?code=${COUPON_CODE}`);
+        if (!r.ok) return null;
+        const c = await r.json();
+        return c && c.code && Number(c.value) > 0 ? c : null;
+    } catch {
+        return null;
+    }
+}
 
 /**
  * Exit-intent email capture popup.
@@ -23,14 +35,22 @@ export const ExitIntentPopup: FC = () => {
     const [submitted, setSubmitted] = useState(false);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+    const [coupon, setCoupon] = useState<LiveCoupon | null>(null);
 
     const isExcluded = EXCLUDED_PATHS.some(p => router.pathname.startsWith(p));
 
-    const trigger = useCallback(() => {
+    const checking = useRef(false);
+    const trigger = useCallback(async () => {
+        if (checking.current) return;
         try {
             if (localStorage.getItem(STORAGE_KEY)) return;
-            localStorage.setItem(STORAGE_KEY, '1');
         } catch { /* private mode */ }
+        // Only promise a code that works at checkout today
+        checking.current = true;
+        const live = await liveCoupon();
+        if (!live) return; // offer is off: don't show (and don't use up the visitor's one popup)
+        try { localStorage.setItem(STORAGE_KEY, '1'); } catch { /* private mode */ }
+        setCoupon(live);
         setVisible(true);
         if (typeof window !== 'undefined' && (window as any).dataLayer) {
             (window as any).dataLayer.push({ event: 'exit_popup_shown' });
@@ -90,10 +110,14 @@ export const ExitIntentPopup: FC = () => {
         }
     };
 
-    if (!visible || isExcluded) return null;
+    if (!visible || isExcluded || !coupon) return null;
+
+    // e.g. "₹100 off per bat" / "10% off" — whatever the coupon is set to in the admin panel
+    const offer = coupon.label;
+    const short = coupon.type === 'percent' ? `${coupon.value}% off` : `₹${coupon.value} off`;
 
     return (
-        <div className="exit-popup-overlay" onClick={() => setVisible(false)} role="dialog" aria-modal="true">
+        <div className="exit-popup-overlay" onClick={() => setVisible(false)} role="dialog" aria-modal="true" aria-labelledby="exit-popup-title">
             <div className="exit-popup" onClick={(e) => e.stopPropagation()}>
                 <button className="exit-popup__close" onClick={() => setVisible(false)} aria-label="Close">
                     <Icon name="fa-times" />
@@ -102,9 +126,9 @@ export const ExitIntentPopup: FC = () => {
                 {submitted ? (
                     <>
                         <div className="exit-popup__emoji">🎉</div>
-                        <h3>Here's your code!</h3>
-                        <div className="exit-popup__code">{COUPON_CODE}</div>
-                        <p>{couponLabel(COUPON)} — enter it at checkout.</p>
+                        <h3 id="exit-popup-title">Here's your code!</h3>
+                        <div className="exit-popup__code">{coupon.code}</div>
+                        <p>{offer} — enter it at checkout.</p>
                         <button className="exit-popup__cta" onClick={() => setVisible(false)}>
                             Continue Shopping
                         </button>
@@ -112,7 +136,7 @@ export const ExitIntentPopup: FC = () => {
                 ) : (
                     <>
                         <div className="exit-popup__emoji">🏏</div>
-                        <h3>Wait! Get ₹100 off per bat</h3>
+                        <h3 id="exit-popup-title">Wait! Get {offer}</h3>
                         <p>Join the Wular Sports family and unlock your discount code instantly.</p>
                         <form onSubmit={handleSubmit}>
                             <input
@@ -126,7 +150,7 @@ export const ExitIntentPopup: FC = () => {
                             />
                             {error && <span className="error-message">{error}</span>}
                             <button type="submit" className="exit-popup__cta" disabled={busy}>
-                                {busy ? 'One moment…' : 'Get My ₹100 Off'}
+                                {busy ? 'One moment…' : `Get My ${short}`}
                             </button>
                         </form>
                         <button className="exit-popup__dismiss" onClick={() => setVisible(false)}>

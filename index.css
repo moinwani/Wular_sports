@@ -5006,7 +5006,10 @@ img[loading="lazy"] {
     gap: 1rem;
 }
 
-.share-links a {
+.share-links a,
+.share-links .share-link-btn {
+    border: none;
+    cursor: pointer;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -5018,7 +5021,8 @@ img[loading="lazy"] {
     transition: all 0.3s ease;
 }
 
-.share-links a:hover {
+.share-links a:hover,
+.share-links .share-link-btn:hover {
     background: var(--golden);
     color: #000;
     transform: translateY(-3px);

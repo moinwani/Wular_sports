@@ -51,6 +51,8 @@ export const ReviewView: FC = () => {
                 title="Rate Your Bat | Wular Sports"
                 description="Share your experience with your Wular Sports Kashmiri willow cricket bat."
                 canonicalUrl="https://wularsports.com/review"
+                // A form for customers, not a page to land on from Google
+                robots="noindex, follow"
             />
             <div className="container">
                 <div className="review-card">

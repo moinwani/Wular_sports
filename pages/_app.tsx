@@ -32,21 +32,23 @@ function AppShell({ Component, pageProps }: AppProps) {
     // Google One Tap ("Continue as …") — 4 seconds after the page has loaded, so
     // it never competes with the page itself. Not on checkout (it would cover the
     // form) or admin (it has its own sign-in). Firebase loads only if they tap it.
+    // Signing in only pre-fills checkout: it does NOT subscribe anyone to emails
+    // (the privacy policy promises newsletters only to people who opt in).
     useEffect(() => {
-        if (/^\/(checkout|admin)/.test(router.pathname)) return;
+        const excluded = () => /^\/(checkout|admin)/.test(window.location.pathname);
+        if (excluded()) return;
 
         const handleCredential = async (credential: string) => {
             try {
                 const { signInWithGoogle } = await import('../src/services/auth');
-                const { subscribeToNewsletter } = await import('../src/services/newsletter');
                 const user = await signInWithGoogle(credential);
-                if (user.email) await subscribeToNewsletter(user.email);
-                showToast(`Welcome back, ${user.displayName || 'Friend'}!`, 'success');
+                showToast(`Welcome, ${user.displayName || 'friend'}! Your details will be ready at checkout.`, 'success');
             } catch { /* silent */ }
         };
 
         let timer: ReturnType<typeof setTimeout> | undefined;
-        const begin = () => { timer = setTimeout(() => { startGoogleOneTap(handleCredential); }, 4000); };
+        // Checked again when it fires: the visitor may have reached checkout by then
+        const begin = () => { timer = setTimeout(() => { if (!excluded()) startGoogleOneTap(handleCredential); }, 4000); };
         if (document.readyState === 'complete') begin();
         else window.addEventListener('load', begin, { once: true });
         return () => {

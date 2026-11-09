@@ -83,8 +83,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(503).json({ status: 'in_progress' });
         }
         if (result.emailFailed) {
-            // Non-2xx makes Razorpay retry later; already-sent emails won't repeat
-            return res.status(502).json({ status: 'email_failed', emails: result.emails });
+            // The order IS confirmed — answer 200. A failure reply here made Razorpay
+            // retry for a day and could get the webhook switched off (the safety net
+            // for buyers who never return from their UPI app). Failed emails show
+            // in Admin → order details and can be re-sent from there.
+            console.error('Webhook: order confirmed but an email failed', found.ref.id, result.emails);
+            return res.status(200).json({ status: 'confirmed_email_failed', emails: result.emails });
         }
         return res.status(200).json({ status: 'ok' });
     } catch (err: any) {

@@ -5,7 +5,7 @@ export const PrivacyPolicyView: FC = () => (
     <div className="view policy-view">
         <SEOHead
             title="Privacy Policy | Wular Sports"
-            description="Read the Wular Sports privacy policy. Learn how we collect, use, and protect your personal information when you shop for Kashmiri willow cricket bats on wularsports.com."
+            description="The Wular Sports privacy policy: how we collect, use and protect your personal information when you shop for Kashmiri willow cricket bats on wularsports.com."
             canonicalUrl="https://wularsports.com/privacy-policy"
         />
         <div className="container">

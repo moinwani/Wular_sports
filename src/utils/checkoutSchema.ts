@@ -9,7 +9,8 @@ export const buildCheckoutSchema = (isIndianPhone: boolean, isIndiaOrder: boolea
     lastName: { required: false, type: 'name', minLength: 1, maxLength: 50 },
     email: { required: true, type: 'email', maxLength: 254 },
     phone: isIndianPhone
-        ? { required: true, type: 'phone', minLength: 10, maxLength: 10 }
+        // 'phone' reads the 10 digits out of "+91 98765 43210", "09876543210", … and checks them
+        ? { required: true, type: 'phone' }
         : { required: true, type: 'string', minLength: 6, maxLength: 15, pattern: /^\d{6,15}$/ },
     countryCode: { required: false, type: 'string', minLength: 1, maxLength: 7 },
     address: { required: true, type: 'address', minLength: 10, maxLength: 500 },

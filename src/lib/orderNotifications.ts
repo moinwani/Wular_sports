@@ -50,6 +50,9 @@ export async function postToBridge(payload: Record<string, any>): Promise<EmailR
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...payload, secret: process.env.EMAIL_BRIDGE_SECRET || '' }),
+            // Well inside the 60-second send lock, so a slow bridge can't let a
+            // second request send the same email again
+            signal: AbortSignal.timeout(25_000),
         });
         const text = await res.text();
         let result = '';
@@ -148,14 +151,20 @@ export async function confirmPaidOrder(
         const o = snap.data()!;
         const update: Record<string, any> = { updatedAt: FieldValue.serverTimestamp() };
 
+        // Cancelled after the payment had already been recorded (e.g. refunded at the
+        // buyer's request): a late webhook retry must not bring it back to be packed
+        if (o.status === 'cancelled' && o.paymentId) {
+            return { order: o, want: null, wantMeta: false, busy: false, prev: (o.emailStatus || {}) as EmailStatus };
+        }
+
         // COD keeps paymentStatus 'pending' (balance due at the door)
         const paidStatus = o.paymentMethod === 'full' ? 'completed' : 'pending';
         if (o.status === 'pending') {
             update.status = 'confirmed';
             update.paymentStatus = paidStatus;
         } else if (o.status === 'cancelled') {
-            // The owner cancelled it as abandoned, but the customer did pay —
-            // bring it back so it gets packed (and say so in the admin panel)
+            // The owner cancelled it as abandoned (no payment recorded), but the
+            // customer did pay — bring it back so it gets packed (and say so in the admin panel)
             update.status = 'confirmed';
             update.paymentStatus = paidStatus;
             update.reopenedAfterPayment = true;

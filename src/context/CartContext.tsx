@@ -14,6 +14,9 @@ interface CartContextType {
     updateQuantity: (id: string, quantity: number, size?: string) => void;
     clearCart: () => void;
     cartTotal: number;
+    /** Names of bats taken out of the cart because they're no longer for sale */
+    unavailable: string[];
+    dismissUnavailable: () => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -34,19 +37,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Keep prices, names and photos in the cart up to date with the live
     // catalog (e.g. after a price change in the admin panel). The server
     // always charges the live price; this makes the cart show it too.
-    const { products } = useCatalog();
+    const { products, loaded, live } = useCatalog();
+    const [unavailable, setUnavailable] = useState<string[]>([]);
     useEffect(() => {
-        setCart(prev => {
-            let changed = false;
-            const next = prev.map(item => {
-                const p = products.find(x => x.id === item.id);
-                if (!p || (p.price === item.price && p.originalPrice === item.originalPrice && p.name === item.name && JSON.stringify(p.image) === JSON.stringify(item.image))) return item;
-                changed = true;
-                return { ...item, price: p.price, originalPrice: p.originalPrice, name: p.name, image: p.image };
-            });
-            return changed ? next : prev;
-        });
-    }, [products]);
+        // Wait for real catalog data — the built-in starting list could put old
+        // prices into the cart for a moment (or for good, if the API failed)
+        if (!loaded) return;
+        let changed = false;
+        const gone: string[] = [];
+        const next: CartItem[] = [];
+        for (const item of cart) {
+            const p = products.find(x => x.id === item.id);
+            if (!p) {
+                // Only a just-fetched copy of the catalog is trusted to say a bat is
+                // gone (a page's built-in list may simply not know a newer bat)
+                if (live) { changed = true; gone.push(item.name); continue; }
+                next.push(item);
+                continue;
+            }
+            if (p.price === item.price && p.originalPrice === item.originalPrice && p.name === item.name && JSON.stringify(p.image) === JSON.stringify(item.image)) {
+                next.push(item);
+                continue;
+            }
+            changed = true;
+            next.push({ ...item, price: p.price, originalPrice: p.originalPrice, name: p.name, image: p.image });
+        }
+        if (changed) setCart(next);
+        if (gone.length) setUnavailable(prev => [...new Set([...prev, ...gone])]);
+    }, [products, loaded, live, cart]);
 
     const addToCart = (product: ProductFull, size: string | null, quantity = 1) => {
         setCart(prev => {
@@ -88,7 +106,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
             closeCart: () => setIsCartOpen(false),
             addToCart, removeFromCart, updateQuantity,
             clearCart: () => setCart([]),
-            cartTotal
+            cartTotal,
+            unavailable,
+            dismissUnavailable: () => setUnavailable([]),
         }}>
             {children}
         </CartContext.Provider>

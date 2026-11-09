@@ -30,6 +30,14 @@ const readBody = (req: NextApiRequest): Promise<Buffer> =>
         req.on('error', reject);
     });
 
+/** Image type from the file's first bytes (null if it isn't JPEG, PNG or WebP) */
+const sniffImageType = (b: Buffer): string | null => {
+    if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'image/jpeg';
+    if (b.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) return 'image/png';
+    if (b.subarray(0, 4).toString('latin1') === 'RIFF' && b.subarray(8, 12).toString('latin1') === 'WEBP') return 'image/webp';
+    return null;
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!(await isAdminRequest(req))) return res.status(403).json({ error: 'Admin access required' });
     if (!photosReady()) {
@@ -47,6 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(413).json({ error: 'Photo is too big (max 4 MB after shrinking)' });
             }
             if (body.length < 100) return res.status(400).json({ error: 'Empty file' });
+            // The bytes must really be the type the browser claimed
+            if (sniffImageType(body) !== type) return res.status(400).json({ error: 'That file isn’t a real JPG, PNG or WebP photo' });
             const url = await savePhoto(String(req.query.product || 'new'), String(req.query.name || 'photo'), body, type);
             return res.status(200).json({ url });
         }

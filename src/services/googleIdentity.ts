@@ -38,8 +38,9 @@ export async function startGoogleOneTap(onCredential: (credential: string) => vo
     id.initialize({
         client_id: clientId,
         callback: (response: { credential?: string }) => { if (response?.credential) onCredential(response.credential); },
-        auto_select: true,
-        cancel_on_tap_outside: false,
+        // The visitor taps "Continue as …" themselves (no silent automatic sign-in)
+        auto_select: false,
+        cancel_on_tap_outside: true,
     });
     id.prompt();
 }

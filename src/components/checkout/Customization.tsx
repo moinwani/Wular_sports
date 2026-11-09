@@ -105,6 +105,11 @@ export const Customization = memo(() => {
             newErrors.engravedName = 'Please enter name';
         }
 
+        // "Other brand" sticker needs the brand's name, or we can't make it
+        if (/other/i.test(formData.sticker || '') && !(formData.otherStickerBrand || '').trim()) {
+            newErrors.otherStickerBrand = 'Please enter the brand name';
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -237,6 +242,7 @@ export const Customization = memo(() => {
                             <div className="form-group">
                                 <label className="form-label">Specify brand (SG, SS, etc.)</label>
                                 <input className="input-engraved" type="text" name="otherStickerBrand" value={formData.otherStickerBrand || ''} onChange={handleChange} required />
+                                {errors.otherStickerBrand && <p className="error-message">{errors.otherStickerBrand}</p>}
                             </div>
                         )}
 

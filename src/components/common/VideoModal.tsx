@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useCatalog } from '../../context/CatalogContext';
 import { Testimonial } from '../../types';
 import { Icon } from './Icon';
+import { optimizedImg } from '../../utils/optimizedImg';
 
 export interface VideoModalProps {
     testimonials: Testimonial[];
@@ -211,7 +212,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                         gap: '0.6rem',
                                     }}>
                                         <img
-                                            src={Array.isArray(product.image) ? product.image[0] : product.image}
+                                            {...optimizedImg(Array.isArray(product.image) ? product.image[0] : product.image, '42px')}
                                             alt={product.name}
                                             style={{
                                                 width: '42px',
@@ -360,7 +361,7 @@ export const VideoModal: FC<VideoModalProps> = ({ testimonials, initialIndex, on
                                     {product && (
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', width: '100%' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', textAlign: 'left' }}>
-                                                <img src={Array.isArray(product.image) ? product.image[0] : product.image} alt={product.name} style={{ width: '70px', height: '70px' }} />
+                                                <img {...optimizedImg(Array.isArray(product.image) ? product.image[0] : product.image, '70px')} alt={product.name} style={{ width: '70px', height: '70px' }} />
                                                 <div>
                                                     <h4 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--golden)' }}>{product.name}</h4>
                                                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>₹{product.price.toLocaleString('en-IN')}</span>

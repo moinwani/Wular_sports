@@ -101,7 +101,7 @@ export const ComparisonView: FC = () => {
         <div className="view comparison-page">
             <SEOHead
                 title="Wular Sports vs Competitors: Hard Tennis Bat Comparison | Wular Sports"
-                description="Compare Wular Sports Legacy 2.0, Legacy 1.0, and Bahubali hard tennis bats side by side, and see how Wular Sports compares to KWE, Valley Willow, and Tramboo on willow, weight, edges, and price."
+                description="Compare Wular Sports Legacy 2.0, Legacy 1.0 and Bahubali hard tennis bats side by side, and against KWE, Valley Willow and Tramboo on willow, weight and price."
                 keywords="hard tennis bat comparison, Wular Sports vs KWE, Wular Sports vs Valley Willow, best hard tennis bat India, Kashmiri willow bat comparison"
                 canonicalUrl="https://wularsports.com/comparison"
                 structuredData={structuredData}

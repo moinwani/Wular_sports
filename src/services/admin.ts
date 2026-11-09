@@ -196,6 +196,9 @@ export const searchOrders = (orders: any[], searchTerm: string): any[] => {
         order.customerName?.toLowerCase().includes(term) ||
         order.customerEmail?.toLowerCase().includes(term) ||
         order.orderNumber?.toLowerCase().includes(term) ||
+        // The ID customers see on their confirmation page and email
+        String(order.id || '').toLowerCase().includes(term) ||
+        String(order.receipt || '').toLowerCase().includes(term) ||
         (digits.length >= 4 && String(order.customerPhone || '').replace(/\D/g, '').includes(digits))
     );
 };

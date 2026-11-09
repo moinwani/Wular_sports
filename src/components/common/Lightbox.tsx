@@ -1,5 +1,6 @@
 import { FC, useState, useRef, useMemo, useEffect, useCallback, TouchEvent, MouseEvent } from 'react';
 import { Icon } from './Icon';
+import { optimizedImg } from '../../utils/optimizedImg';
 
 export interface LightboxProps {
     gallery: {
@@ -108,7 +109,8 @@ export const Lightbox: FC<LightboxProps> = ({ gallery, onClose }) => {
                         {images.map((src, index) => (
                             <div key={src} className="lightbox-image-wrapper">
                                 <img
-                                    src={src}
+                                    {...optimizedImg(src, '100vw')}
+                                    loading={Math.abs(index - currentIndex) <= 1 ? 'eager' : 'lazy'}
                                     alt={`Full screen product view ${index + 1} of ${images.length}`}
                                     className={`lightbox-image ${isZoomed ? 'zoomed' : ''}`}
                                     onClick={handleImageClick}

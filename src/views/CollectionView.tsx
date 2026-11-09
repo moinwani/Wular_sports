@@ -1,6 +1,8 @@
 import React, { FC, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { SEOHead } from '../components/common/SEOHead';
+import { getCDNUrl } from '../services/githubService';
 import { useCatalog } from '../context/CatalogContext';
 import { productImages, productsIn } from '../lib/catalog';
 
@@ -65,17 +67,32 @@ export const CollectionView: FC = () => {
                     <h1 className="section-title">Shop by Category</h1>
                     <p style={{ marginBottom: '3rem', color: '#ccc' }}>Professional equipment for every type of game</p>
                     <div className="hub-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginTop: '2rem' }}>
-                        {hubCategories.map(cat => (
+                        {hubCategories.map((cat, catIdx) => (
                             <div key={cat.id} className="hub-card" onClick={() => router.push(cat.path)}
                                 style={{ cursor: 'pointer', position: 'relative', borderRadius: '15px', border: '2px solid var(--golden)', overflow: 'hidden', aspectRatio: '4/5', transition: 'transform 0.3s ease' }}>
                                 <div className="hub-card-slider" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-                                    {cat.images.map((img, idx) => (
-                                        <div key={idx} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundImage: `url(${img})`, backgroundSize: 'cover', backgroundPosition: 'center', opacity: (activeIndexes[cat.id] || 0) === idx ? 1 : 0, transition: 'opacity 1s ease-in-out', zIndex: 1 }} />
-                                    ))}
+                                    {cat.images.map((img, idx) => {
+                                        const active = activeIndexes[cat.id] || 0;
+                                        // Resized photos (they were the multi-MB originals as CSS
+                                        // backgrounds), and only up to one slide ahead is loaded
+                                        if (idx > active + 1 && !(active === cat.images.length - 1 && idx === 0)) return null;
+                                        return (
+                                            <div key={idx} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: active === idx ? 1 : 0, transition: 'opacity 1s ease-in-out', zIndex: 1 }}>
+                                                <Image
+                                                    src={getCDNUrl(img)}
+                                                    alt={idx === 0 ? `${cat.title} — Wular Sports Kashmiri willow bats` : ''}
+                                                    fill
+                                                    sizes="(max-width: 700px) 100vw, 400px"
+                                                    style={{ objectFit: 'cover' }}
+                                                    priority={catIdx === 0 && idx === 0}
+                                                />
+                                            </div>
+                                        );
+                                    })}
                                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '60%', background: 'linear-gradient(transparent, rgba(0,0,0,0.95))', zIndex: 2 }} />
                                 </div>
                                 <div className="hub-card-overlay" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '2rem 1.5rem', textAlign: 'left', zIndex: 3 }}>
-                                    <h3 style={{ color: 'var(--golden)', marginBottom: '0.5rem' }}>{cat.title}</h3>
+                                    <h2 style={{ color: 'var(--golden)', marginBottom: '0.5rem', fontSize: '1.17rem' }}>{cat.title}</h2>
                                     <p style={{ color: '#fff', fontSize: '0.9rem' }}>{cat.description}</p>
                                     <button className="btn" style={{ marginTop: '1rem', padding: '0.5rem 1.5rem', fontSize: '0.9rem' }}>Browse</button>
                                     <div style={{ display: 'flex', gap: '5px', marginTop: '1rem' }}>

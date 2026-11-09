@@ -30,11 +30,7 @@ export const webSiteSchema = {
     "name": "Wular Sports",
     "url": "https://wularsports.com/",
     "description": "Premium handcrafted Kashmiri willow cricket bats — hard tennis, soft tennis, and leather ball bats. Proudly made in Srinagar, Kashmir.",
-    "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://wularsports.com/collection?q={search_term_string}",
-        "query-input": "required name=search_term_string",
-    },
+    // (No SearchAction: the site has no search results page for Google to send people to)
 };
 
 export const localBusinessSchema = {

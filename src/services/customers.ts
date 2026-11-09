@@ -60,6 +60,9 @@ const digits = (s: any) => String(s || '').replace(/\D/g, '');
 const phoneKey = (phone: any) => { const d = digits(phone); return d.length >= 7 ? d.slice(-10) : ''; };
 const emailKey = (email: any) => String(email || '').trim().toLowerCase();
 const DAY = 86400000;
+/** Text from a stored field — anything else (a list or map someone forced into a
+ *  public form) becomes '' so one bad record can't break the admin panel */
+const text = (v: any): string => (typeof v === 'string' ? v : typeof v === 'number' ? String(v) : '');
 
 /** Customer key used for the admin "customerProfiles" store (tags/notes). */
 export const keyFor = (phone: any, email: any): string => phoneKey(phone) || emailKey(email);
@@ -100,35 +103,35 @@ export function buildCustomers(
         if (!key) continue;
         const c = get(key);
         c.orders.push(o);
-        c.name = c.name || o.customerName || '';
-        c.phone = c.phone || o.customerPhone || '';
-        c.email = c.email || o.customerEmail || '';
+        c.name = c.name || text(o.customerName);
+        c.phone = c.phone || text(o.customerPhone);
+        c.email = c.email || text(o.customerEmail);
         const a = o.customerAddress || {};
-        if (!c.city && a.city) { c.city = a.city; c.state = a.state || ''; c.country = a.country || 'India'; }
+        if (!c.city && text(a.city)) { c.city = text(a.city); c.state = text(a.state); c.country = text(a.country) || 'India'; }
         const src = o.source === 'whatsapp_pre_website' || o.channel === 'whatsapp' ? 'whatsapp' : 'website';
         if (!c.sources.includes(src)) c.sources.push(src);
     }
 
     for (const l of leads) {
-        const phone = l.phone ? `${l.countryCode || '+91'}${l.phone}` : '';
-        const key = resolve(phone, l.email);
+        const phone = text(l.phone) ? `${text(l.countryCode) || '+91'}${text(l.phone)}` : '';
+        const key = resolve(phone, text(l.email));
         if (!key) continue;
         const c = get(key);
         const prev = c.lead ? toDate(c.lead.updatedAt) : null;
         const cur = toDate(l.updatedAt);
         if (!c.lead || (cur && prev && cur > prev)) c.lead = l;
-        c.name = c.name || [l.firstName, l.lastName].filter(Boolean).join(' ');
+        c.name = c.name || [text(l.firstName), text(l.lastName)].filter(Boolean).join(' ');
         c.phone = c.phone || phone;
-        c.email = c.email || l.email || '';
-        if (!c.city && l.city) { c.city = l.city; c.state = l.state || ''; c.country = l.country || 'India'; }
+        c.email = c.email || text(l.email);
+        if (!c.city && text(l.city)) { c.city = text(l.city); c.state = text(l.state); c.country = text(l.country) || 'India'; }
     }
 
     for (const s of subscribers) {
-        const key = resolve('', s.email);
+        const key = resolve('', text(s.email));
         if (!key) continue;
         const c = get(key);
         c.subscribed = c.subscribed || s.status !== 'unsubscribed';
-        c.email = c.email || s.email || '';
+        c.email = c.email || text(s.email);
     }
 
     for (const c of byKey.values()) {

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import Razorpay from 'razorpay';
 import { getCatalog } from '../../src/lib/catalogServer';
+import { productSizes } from '../../src/lib/catalog';
 import { getClientIp, checkRateLimit } from '../../src/lib/rateLimit';
 import { auth, db, FieldValue } from '../../src/lib/firebaseAdmin';
 import { validateFormData } from '../../src/utils/inputValidation';
@@ -21,6 +22,12 @@ function getRazorpay(): Razorpay {
     return new Razorpay({ key_id, key_secret });
 }
 
+const FIELD_LABELS: Record<string, string> = {
+    firstName: 'first name', lastName: 'last name', email: 'email', phone: 'phone number',
+    address: 'address', city: 'city', state: 'state', zip: 'PIN code', country: 'country',
+};
+const fieldLabel = (f: string) => FIELD_LABELS[f] || 'details';
+
 async function verifyAuth(req: NextApiRequest): Promise<{ uid: string }> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -37,10 +44,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const ip = getClientIp(req);
-    const { allowed, retryAfterMs } = checkRateLimit(ip, 10);
+    // Own counter (it used to share one with the payment check, so verifying a
+    // payment could use up the buyer's attempts to start one)
+    const { allowed, retryAfterMs } = checkRateLimit(`create-order:${ip}`, 10);
     if (!allowed) {
         res.setHeader('Retry-After', Math.ceil((retryAfterMs || 0) / 1000).toString());
-        return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+        return res.status(429).json({ error: 'Too many attempts. Please wait a few minutes and try again, or order on WhatsApp.' });
     }
 
     let uid: string;
@@ -50,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Authentication required. Please sign in to continue.' });
     }
 
-    const { items, paymentMethod, receipt, notes, customer, coupon } = req.body;
+    const { items, paymentMethod, customer, coupon } = req.body;
     // Where this buyer came from (ad tags, Meta click ids, visitor Ref)
     const attribution = sanitizeAttribution(req.body.attribution);
 
@@ -73,9 +82,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         buildCheckoutSchema(isIndianPhone, isIndiaOrder)
     );
     if (!validation.valid) {
-        return res.status(400).json({ error: 'Invalid customer details' });
+        const first = Object.entries(validation.errors)[0];
+        return res.status(400).json({ error: first ? `Please check your ${fieldLabel(first[0])}: ${first[1]}` : 'Please check your details' });
     }
     const c = validation.sanitized! as Record<string, string>;
+    if (paymentMethod === 'cod' && (c.country || 'India') !== 'India') {
+        return res.status(400).json({ error: 'Cash on delivery is only available in India. Please choose Full Payment.' });
+    }
 
     // Compute amount server-side from the live catalog (prices set in the admin panel)
     const catalog = await getCatalog({ fresh: true });
@@ -94,8 +107,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         const qty = Number(item.quantity);
         if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
-            return res.status(400).json({ error: 'Invalid quantity' });
+            return res.status(400).json({ error: 'Please check the quantity in your cart (1–100 per bat).' });
         }
+        // The size must be one this bat actually comes in (an old saved cart can
+        // carry an empty or outdated one, leaving the owner to chase the buyer)
+        const sizes = productSizes(product);
+        let size = typeof item.size === 'string' ? item.size.trim().substring(0, 30) : '';
+        if (sizes.length === 1) size = sizes[0];
+        else if (sizes.length > 1 && !sizes.includes(size)) {
+            return res.status(400).json({ error: `Please choose a size for ${product.name} (remove it from your cart and add it again with a size).` });
+        } else if (sizes.length === 0) size = '';
         orderTotal += product.price * qty;
         totalBats += qty;
         orderItems.push({
@@ -103,7 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             productName: product.name,
             price: product.price,
             quantity: qty,
-            size: typeof item.size === 'string' ? item.size.substring(0, 30) : undefined,
+            size,
         });
     }
 
@@ -132,17 +153,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const isCOD = paymentMethod === 'cod';
     const bookingAmount = isCOD ? totalBats * COD_BOOKING_PER_BAT : 0;
+    if (isCOD && discountedTotal < bookingAmount) {
+        // e.g. a big coupon: the booking alone would be more than the order
+        return res.status(400).json({ error: 'Cash on delivery isn\'t available for this order. Please choose Full Payment.' });
+    }
     const remaining = isCOD ? discountedTotal - bookingAmount : 0;
     const codFee = isCOD ? Math.round(remaining * COD_FEE_PERCENT) : 0;
     const totalAtDoor = isCOD ? remaining + codFee : 0;
     const chargeAmount = isCOD ? bookingAmount : discountedTotal;
 
     try {
+        // Our reference for this checkout (made here — the browser used to make
+        // it with crypto.randomUUID, which older phones don't have)
+        const receipt = `ORD-${Date.now().toString(36).toUpperCase()}${Math.floor(Math.random() * 1296).toString(36).toUpperCase()}`;
         const order = await getRazorpay().orders.create({
             amount: chargeAmount * 100, // paise
             currency: 'INR',
-            receipt: (receipt || `rcpt_${Date.now()}`).toString().substring(0, 40),
-            notes: notes || {},
+            receipt,
+            // Capture automatically: a payment that's only "authorised" is refunded
+            // by Razorpay after a few days, even though the order looks paid
+            payment_capture: true,
+            // Built here from checked details (never passed through from the browser)
+            notes: { orderId: receipt, customerPhone: `${c.countryCode || '+91'}${c.phone}` },
         });
 
         // Persist the order server-side BEFORE payment. Even if the customer's
@@ -152,6 +184,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const orderDoc = await db.collection('orders').add({
             userId: uid,
             orderNumber: `WS${Date.now()}${Math.floor(Math.random() * 1000)}`,
+            receipt,
             customerName: `${c.firstName} ${c.lastName || ''}`.trim(),
             customerEmail: c.email,
             customerPhone: `${c.countryCode || '+91'}${c.phone}`,
@@ -198,6 +231,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     } catch (err: any) {
         console.error('Razorpay order creation failed:', err);
-        return res.status(500).json({ error: 'Failed to create payment order' });
+        return res.status(500).json({ error: 'We couldn\'t start the payment just now. Please try again in a minute, or order on WhatsApp.' });
     }
 }

@@ -21,11 +21,17 @@ export const Header: FC = memo(() => {
     const lastScrollY = useRef(0);
     const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    // Pinned = the visitor just touched the header: keep it showing for 3 s.
+    // (A ref, so the listeners below are set up once — re-subscribing on every
+    // change used to cancel the 3-second timer and leave the header stuck.)
+    const pinnedRef = useRef(false);
+    useEffect(() => { pinnedRef.current = isHeaderPinned; }, [isHeaderPinned]);
+
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
             const diff = currentScrollY - lastScrollY.current;
-            if (!isHeaderPinned) {
+            if (!pinnedRef.current) {
                 if (currentScrollY < 50) setIsHeaderVisible(true);
                 else if (diff > 5 && currentScrollY > 100) setIsHeaderVisible(false);
                 else if (diff < -5) setIsHeaderVisible(true);
@@ -44,7 +50,7 @@ export const Header: FC = memo(() => {
         const headerElement = document.querySelector('.header') as HTMLElement;
         if (headerElement) {
             headerElement.addEventListener('mouseenter', handleHeaderInteraction);
-            headerElement.addEventListener('touchstart', handleHeaderInteraction);
+            headerElement.addEventListener('touchstart', handleHeaderInteraction, { passive: true });
         }
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -54,7 +60,7 @@ export const Header: FC = memo(() => {
             }
             if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
         };
-    }, [isHeaderPinned]);
+    }, []);
 
     useEffect(() => {
         setIsMobileMenuOpen(false);
@@ -98,11 +104,11 @@ export const Header: FC = memo(() => {
                     <div className="nav-section-right">
                         <Link href="/blog" className="nav-link">Blog</Link>
                         <Link href="/about" className="nav-link">About</Link>
-                        <div className="nav-cart" onClick={openCart} role="button" aria-label="Open cart">
+                        <button type="button" className="nav-cart" onClick={openCart} aria-label={cartItemCount > 0 ? `Open cart (${cartItemCount} item${cartItemCount === 1 ? '' : 's'})` : 'Open cart'}>
                             <Icon name="fa-shopping-cart" aria-hidden="true" />
                             {cartItemCount > 0 && <span className="cart-badge">{cartItemCount}</span>}
                             <span className="cart-text">Cart</span>
-                        </div>
+                        </button>
                     </div>
                 </nav>
             </header>

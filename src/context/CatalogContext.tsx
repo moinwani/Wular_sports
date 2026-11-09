@@ -11,7 +11,11 @@ import { Category, DEFAULT_CATEGORIES, PublicCatalog, visibleProducts } from '..
 
 const BUILT_IN: PublicCatalog = { products: visibleProducts(BUILT_IN_PRODUCTS), categories: DEFAULT_CATEGORIES };
 
-const Ctx = createContext<PublicCatalog & { refresh: () => void }>({ ...BUILT_IN, refresh: () => {} });
+/** loaded: real catalog data (from the page or the API), not the built-in starting list.
+ *  live: the products are a just-fetched copy of the database (see refresh). */
+type CatalogValue = PublicCatalog & { refresh: () => void; loaded: boolean; live: boolean };
+
+const Ctx = createContext<CatalogValue>({ ...BUILT_IN, refresh: () => {}, loaded: false, live: false });
 
 export const CatalogProvider: FC<{ initial?: PublicCatalog | null; children: ReactNode }> = ({ initial, children }) => {
     // Last catalog seen (from a page or the API) — kept while moving between pages
@@ -34,18 +38,21 @@ export const CatalogProvider: FC<{ initial?: PublicCatalog | null; children: Rea
     }, [latest]);
 
     // Newest catalog fetched on request (e.g. at checkout); a new page's own data takes over again
-    const [fresh, setFresh] = useState<PublicCatalog | null>(null);
+    const [fresh, setFresh] = useState<(PublicCatalog & { live?: boolean }) | null>(null);
     useEffect(() => { if (initial) setFresh(null); }, [initial]);
 
     /** Fetch the newest catalog now (bypassing the short CDN cache) — e.g. when checkout opens */
     const refresh = useCallback(() => {
         fetch(`/api/catalog?fresh=${Date.now()}`)
             .then(r => (r.ok ? r.json() : null))
-            .then(data => { if (data?.products) setFresh({ products: data.products, categories: data.categories }); })
+            .then(data => { if (data?.products) setFresh({ products: data.products, categories: data.categories, live: data.live === true }); })
             .catch(() => { /* keep what we have */ });
     }, []);
 
-    const value = useMemo(() => ({ ...(fresh || initial || latest || BUILT_IN), refresh }), [fresh, initial, latest, refresh]);
+    const value = useMemo<CatalogValue>(() => {
+        const current = fresh || initial || latest || BUILT_IN;
+        return { products: current.products, categories: current.categories, refresh, loaded: current !== BUILT_IN, live: !!fresh?.live };
+    }, [fresh, initial, latest, refresh]);
     return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 };
 

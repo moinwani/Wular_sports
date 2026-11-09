@@ -1,7 +1,7 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { CartItem } from '../types';
-import { validateFormData } from '../utils/inputValidation';
+import { normalizeIndianPhone, validateFormData } from '../utils/inputValidation';
 import { buildCheckoutSchema } from '../utils/checkoutSchema';
 import { getVisitorRef } from '../utils/helpers';
 import { normalizeCouponCode } from '../data/coupons';
@@ -210,6 +210,87 @@ function loadRazorpayScript(): Promise<boolean> {
     });
 }
 
+/*
+ * Unfinished payments. Before the Razorpay window opens, the order it pays for
+ * is remembered in this browser. If the window is closed, the page reloads
+ * (e.g. Android closed the tab while the buyer was in their UPI app) or the
+ * payment check doesn't get through, the checkout asks the server whether that
+ * order was paid before letting the buyer pay again — and a retry reuses the
+ * same Razorpay order, which Razorpay never lets anyone pay twice.
+ */
+const PENDING_KEY = 'ws_pending_payment';
+const PENDING_MAX_AGE_MS = 45 * 60 * 1000;
+
+interface PendingPayment {
+    firestoreOrderId: string;
+    razorpayOrderId: string;
+    chargeAmount: number;
+    isCOD: boolean;
+    description: string;
+    /** what was being bought, so a changed cart or address gets a new order */
+    key: string;
+    createdAt: number;
+}
+
+const loadPending = (): PendingPayment | null => {
+    try {
+        const p = JSON.parse(localStorage.getItem(PENDING_KEY) || 'null');
+        return p && p.firestoreOrderId && Date.now() - p.createdAt < PENDING_MAX_AGE_MS ? p : null;
+    } catch {
+        return null;
+    }
+};
+const savePending = (p: PendingPayment) => { try { localStorage.setItem(PENDING_KEY, JSON.stringify(p)); } catch { /* private mode */ } };
+const clearPending = () => { try { localStorage.removeItem(PENDING_KEY); } catch { /* private mode */ } };
+
+/** Firebase sign-in token for the order APIs; `fresh` forces a new one (after a 401) */
+async function orderToken(fresh = false): Promise<string> {
+    const { ensureAuthenticated, getCurrentUser } = await import('../services/auth');
+    await ensureAuthenticated();
+    const user = getCurrentUser();
+    return user ? user.getIdToken(fresh) : '';
+}
+
+/** Ask the server whether an order has been paid (null = couldn't find out) */
+async function fetchOrderStatus(firestoreOrderId: string): Promise<{ paid: boolean; processing?: boolean } | null> {
+    try {
+        const res = await fetch('/api/order-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${await orderToken()}` },
+            body: JSON.stringify({ firestoreOrderId }),
+        });
+        return res.ok ? await res.json() : null;
+    } catch {
+        return null;
+    }
+}
+
+const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+/**
+ * Confirm a payment with the server, retrying through weak signal, an expired
+ * sign-in or a busy server. 'invalid' = Razorpay's signature didn't match.
+ * The sign-in token is only refreshed when the server says it expired — a
+ * dropped connection just retries with the token already in hand.
+ */
+async function verifyPayment(body: Record<string, string>): Promise<'ok' | 'invalid' | 'unreachable'> {
+    let token = await orderToken().catch(() => '');
+    for (let attempt = 0; attempt < 4; attempt++) {
+        if (attempt) await wait([0, 1500, 3000, 5000][attempt]);
+        try {
+            const res = await fetch('/api/verify-razorpay-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                body: JSON.stringify(body),
+            });
+            if (res.ok) return 'ok';
+            if (res.status === 400) return 'invalid';
+            if (res.status === 401) token = await orderToken(true).catch(() => token);
+        } catch { /* network — try again */ }
+    }
+    return 'unreachable';
+}
+
 interface CheckoutViewProps {
     cart: CartItem[];
     total: number;
@@ -247,14 +328,33 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
     const whatsAppUrlRef = useRef<string>('');
     const savedOrderIdRef = useRef<string>('');
     const submitLockRef = useRef(false);
+    // Payment flow: the success callback has fired / the order has been shown as placed
+    const paidRef = useRef(false);
+    const finishedRef = useRef(false);
+    // Razorpay reported a payment whose signature didn't check out (payment id)
+    const [paymentProblem, setPaymentProblem] = useState<string | null>(null);
     const [isEmailFromAuth, setIsEmailFromAuth] = useState(false);
     const [authedEmail, setAuthedEmail] = useState<string | null>(null);
-    const { clearCart } = useCart();
+    const { clearCart, unavailable, dismissUnavailable } = useCart();
 
     // Release the synchronous double-submit lock whenever processing ends
     useEffect(() => {
         if (!isProcessing) submitLockRef.current = false;
     }, [isProcessing]);
+
+    // Back on the checkout with a payment that wasn't finished here (e.g. Android
+    // closed the tab while the buyer was in their UPI app): if it went through,
+    // show the order instead of asking them to pay again
+    useEffect(() => {
+        const pending = loadPending();
+        if (!pending) return;
+        let cancelled = false;
+        fetchOrderStatus(pending.firestoreOrderId).then(status => {
+            if (!cancelled && status?.paid) finishPaidOrder(pending.firestoreOrderId, pending.isCOD, '');
+        });
+        return () => { cancelled = true; };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Lead capture: once the visitor has entered a reachable contact detail
     // (phone or email), save the partial form (debounced) so we can follow up
@@ -403,10 +503,11 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         let filteredValue = value;
         if (name === 'firstName' || name === 'lastName') {
             // Only letters, spaces, hyphens, apostrophes, and dots
-            filteredValue = value.replace(/[^a-zA-Z\s\-'\.]/g, '');
+            filteredValue = value.replace(/[^\p{L}\p{M}\s\-'\.]/gu, '');
         } else if (name === 'phone') {
-            // Digits only — 10 for India, up to 15 internationally
-            const maxDigits = formData.countryCode === '+91' ? 10 : 15;
+            // Digits only. India: room for a pasted/autofilled "+91 98765 43210" or
+            // "098765 43210" — tidied to the 10 digits when the field is left
+            const maxDigits = formData.countryCode === '+91' ? 14 : 15;
             filteredValue = value.replace(/\D/g, '').substring(0, maxDigits);
         } else if (name === 'zip') {
             if (formData.country === 'India') {
@@ -517,7 +618,8 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         amountPaise: number,
         description: string,
         sanitizedData: typeof formData,
-        onSuccess: (paymentId: string, rzpOrderId: string, signature: string) => void
+        onSuccess: (paymentId: string, rzpOrderId: string, signature: string) => void,
+        onDismiss: () => void
     ) => {
         const options = {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -541,15 +643,126 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 }
             },
             theme: { color: '#C9A84C' },
-            modal: {
-                ondismiss: () => {
-                    setIsProcessing(false);
-                    setFormError('Payment cancelled. Please try again to complete your order.');
-                }
-            }
+            modal: { ondismiss: onDismiss }
         };
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
+    };
+
+    /** The order is paid: thank the buyer, track the purchase once, empty the cart */
+    const finishPaidOrder = async (firestoreOrderId: string, isCOD: boolean, paymentId: string, sanitizedData?: typeof formData) => {
+        if (finishedRef.current) return;
+        finishedRef.current = true;
+        clearPending();
+
+        // This visitor is now a customer — stop showing them as a lead
+        import('../services/leads')
+            .then(({ markLeadConverted }) => markLeadConverted())
+            .catch(() => { /* best-effort */ });
+
+        // Order emails and the Meta purchase are sent by the server (verify
+        // endpoint + Razorpay webhook), so they go out even if this page dies.
+        // Same event id the server uses for Meta, so the pixel and the server
+        // copy are counted once.
+        const eventId = `purchase_${firestoreOrderId}`;
+        if (typeof window !== 'undefined' && window.dataLayer) {
+            const userData: Record<string, string> = {};
+            if (sanitizedData?.email) {
+                try { userData.em = await hashData(sanitizedData.email); } catch { /* silent */ }
+            }
+            if (sanitizedData?.phone) {
+                try {
+                    const phone = `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`.replace(/\D/g, '');
+                    userData.ph = await hashData(phone);
+                } catch { /* silent */ }
+            }
+            const payload: Record<string, any> = {
+                event: 'purchase',
+                event_id: eventId,
+                ecommerce: {
+                    transaction_id: firestoreOrderId,
+                    value: payable,
+                    currency: 'INR',
+                    coupon: appliedCoupon || undefined,
+                    payment_type: isCOD ? 'cod' : 'full',
+                    items: cart.map(item => ({
+                        item_id: item.id,
+                        item_name: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                    }))
+                }
+            };
+            if (Object.keys(userData).length > 0) payload.user_data = userData;
+            window.dataLayer.push(payload);
+        }
+
+        if (isCOD && sanitizedData) {
+            window.dataLayer?.push({
+                event: 'whatsapp_order_confirm',
+                source: 'checkout_cod',
+                type: 'order_confirmation',
+                order_id: firestoreOrderId,
+                total: payable,
+            });
+            const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
+            whatsAppUrlRef.current = whatsappUrl;
+            savedOrderIdRef.current = firestoreOrderId;
+            // Booking is paid and the order is saved — clear the cart now
+            clearCart();
+            setPendingWhatsApp({ whatsappUrl });
+            setIsProcessing(false);
+        } else {
+            onPlaceOrder({ id: firestoreOrderId, items: cart, total: payable, paymentId });
+        }
+    };
+
+    /** Razorpay's window was closed without a success callback */
+    const handleDismiss = async (pending: PendingPayment, sanitizedData: typeof formData) => {
+        if (paidRef.current) return; // the success callback is already handling it
+        // A UPI payment can complete after the window is closed — check first
+        const status = await fetchOrderStatus(pending.firestoreOrderId);
+        if (status?.paid) {
+            await finishPaidOrder(pending.firestoreOrderId, pending.isCOD, '', sanitizedData);
+            return;
+        }
+        setIsProcessing(false);
+        setFormError(status?.processing
+            ? 'Your bank is still confirming the payment. Please wait a minute, then tap Pay again — you won\'t be charged twice.'
+            : 'Payment not completed. Tap Pay to try again — you won\'t be charged twice.');
+    };
+
+    /** Razorpay says the payment went through */
+    const handlePaid = async (pending: PendingPayment, sanitizedData: typeof formData, paymentId: string, rzpOrderId: string, signature: string) => {
+        paidRef.current = true;
+        setIsProcessing(true);
+        const result = await verifyPayment({
+            razorpay_order_id: rzpOrderId,
+            razorpay_payment_id: paymentId,
+            razorpay_signature: signature,
+            firestoreOrderId: pending.firestoreOrderId,
+        });
+        if (result === 'invalid') {
+            setPaymentProblem(paymentId);
+            setIsProcessing(false);
+            return;
+        }
+        // Verified — or the check couldn't get through on a weak signal. Either way the
+        // money has been taken and the server confirms the order itself (Razorpay
+        // webhook), so never offer to pay again: show the order as placed.
+        await finishPaidOrder(pending.firestoreOrderId, pending.isCOD, paymentId, sanitizedData);
+    };
+
+    const startPayment = (pending: PendingPayment, sanitizedData: typeof formData) => {
+        paidRef.current = false;
+        openRazorpay(
+            pending.razorpayOrderId,
+            pending.chargeAmount * 100,
+            pending.description,
+            sanitizedData,
+            (paymentId, rzpOrderId, signature) => { handlePaid(pending, sanitizedData, paymentId, rzpOrderId, signature); },
+            () => { handleDismiss(pending, sanitizedData); }
+        );
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -581,165 +794,95 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                 return;
             }
 
-            const { ensureAuthenticated, getCurrentUser } = await import('../services/auth');
-            await ensureAuthenticated();
-            const user = getCurrentUser();
-            const token = user ? await user.getIdToken() : '';
-
-            const orderId = 'ORD-' + crypto.randomUUID().replace(/-/g, '').substring(0, 10).toUpperCase();
-            const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
             const isCOD = sanitizedData.paymentMethod === 'cod';
+            const totalBats = cart.reduce((acc, item) => acc + item.quantity, 0);
+            const items = cart.map(item => ({ id: item.id, quantity: item.quantity, size: item.size }));
+            const customer = {
+                firstName: sanitizedData.firstName,
+                lastName: sanitizedData.lastName,
+                email: sanitizedData.email,
+                phone: sanitizedData.phone,
+                countryCode: sanitizedData.countryCode,
+                address: sanitizedData.address,
+                city: sanitizedData.city,
+                state: sanitizedData.state,
+                zip: sanitizedData.zip,
+                country: sanitizedData.country,
+            };
+            const key = JSON.stringify({ items, method: sanitizedData.paymentMethod, coupon: appliedCoupon || '', customer });
 
-            // Create Razorpay order on server — amount is computed server-side
+            // Same cart and details as a payment that wasn't finished: was it paid
+            // after all? If not, retry it with the same Razorpay order (which can
+            // never be paid twice) instead of starting a second one.
+            const pending = loadPending();
+            if (pending && pending.key === key) {
+                const status = await fetchOrderStatus(pending.firestoreOrderId);
+                if (status?.paid) {
+                    await finishPaidOrder(pending.firestoreOrderId, pending.isCOD, '', sanitizedData);
+                    return;
+                }
+                if (status) {
+                    startPayment(pending, sanitizedData);
+                    return;
+                }
+                // Couldn't check — start a new order below
+            }
+
+            // Create the Razorpay order on the server — the amount is computed there.
+            // Shipping details go with it so the order is saved BEFORE payment and a
+            // paid order can never be lost even if this browser dies mid-payment.
             const res = await fetch('/api/create-razorpay-order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+                    'Authorization': `Bearer ${await orderToken()}`,
                 },
                 body: JSON.stringify({
-                    items: cart.map(item => ({ id: item.id, quantity: item.quantity, size: item.size })),
+                    items,
                     paymentMethod: sanitizedData.paymentMethod,
                     coupon: appliedCoupon || undefined,
                     // Which ad / post brought this buyer (for the Marketing tab and Meta)
                     attribution: getAttribution(),
-                    receipt: orderId,
-                    notes: { orderId, customerPhone: sanitizedData.phone },
-                    // Shipping details so the order is persisted server-side
-                    // BEFORE payment — a paid order can never be lost even if
-                    // this browser dies mid-payment.
-                    customer: {
-                        firstName: sanitizedData.firstName,
-                        lastName: sanitizedData.lastName,
-                        email: sanitizedData.email,
-                        phone: sanitizedData.phone,
-                        countryCode: sanitizedData.countryCode,
-                        address: sanitizedData.address,
-                        city: sanitizedData.city,
-                        state: sanitizedData.state,
-                        zip: sanitizedData.zip,
-                        country: sanitizedData.country,
-                    },
+                    customer,
                 }),
             });
-
+            const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.error || 'Failed to initiate payment');
+                // The server's message says what to fix (a size, a bat no longer sold, a coupon…)
+                setFormError(res.status === 401
+                    ? 'Your session expired. Please tap Pay again.'
+                    : data.error || 'Something went wrong. Please try again or contact us on WhatsApp.');
+                setIsProcessing(false);
+                return;
             }
 
-            const { orderId: razorpayOrderId, chargeAmount, firestoreOrderId } = await res.json();
-            const description = isCOD
-                ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
-                : `Full Payment — Wular Sports Order`;
+            // The server prices every order from the live catalog. If a price changed
+            // since this page loaded, show the new total before taking any money.
+            if (Number(data.orderTotal) !== payable) {
+                refreshCatalog();
+                setFormError(`A price was just updated — your total is now ₹${Number(data.orderTotal).toLocaleString('en-IN')}. Please check it and tap Pay again.`);
+                setIsProcessing(false);
+                return;
+            }
 
-            openRazorpay(razorpayOrderId, chargeAmount * 100, description, sanitizedData, async (paymentId: string, rzpOrderId: string, signature: string) => {
-                // Verify payment signature server-side before processing
-                try {
-                    const verifyRes = await fetch('/api/verify-razorpay-payment', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({
-                            razorpay_order_id: rzpOrderId,
-                            razorpay_payment_id: paymentId,
-                            razorpay_signature: signature,
-                            firestoreOrderId,
-                        }),
-                    });
-                    if (!verifyRes.ok) {
-                        setFormError('Payment verification failed. Please contact us on WhatsApp with your payment ID: ' + paymentId);
-                        setIsProcessing(false);
-                        return;
-                    }
-                } catch {
-                    setFormError('Unable to verify payment. Please contact us on WhatsApp with your payment ID: ' + paymentId);
-                    setIsProcessing(false);
-                    return;
-                }
-
-                // This visitor is now a customer — stop showing them as a lead
-                import('../services/leads')
-                    .then(({ markLeadConverted }) => markLeadConverted())
-                    .catch(() => { /* best-effort */ });
-
-                // Order emails are sent by the server (verify endpoint +
-                // Razorpay webhook), so they go out even if this page dies.
-
-                // Same event id the server uses when it reports this purchase
-                // to Meta, so the pixel and the server copy are counted once
-                const eventId = `purchase_${firestoreOrderId}`;
-
-                // GA4 / GTM: track purchase with Advanced Matching
-                if (typeof window !== 'undefined' && window.dataLayer) {
-                    const userData: Record<string, string> = {};
-                    if (sanitizedData.email) {
-                        try { userData.em = await hashData(sanitizedData.email); } catch { /* silent */ }
-                    }
-                    if (sanitizedData.phone) {
-                        try {
-                            const phone = `${sanitizedData.countryCode || '+91'}${sanitizedData.phone}`.replace(/\D/g, '');
-                            userData.ph = await hashData(phone);
-                        } catch { /* silent */ }
-                    }
-
-                    const payload: Record<string, any> = {
-                        event: 'purchase',
-                        event_id: eventId,
-                        ecommerce: {
-                            transaction_id: firestoreOrderId,
-                            value: payable,
-                            currency: 'INR',
-                            coupon: appliedCoupon || undefined,
-                            payment_type: isCOD ? 'cod' : 'full',
-                            items: cart.map(item => ({
-                                item_id: item.id,
-                                item_name: item.name,
-                                price: item.price,
-                                quantity: item.quantity,
-                            }))
-                        }
-                    };
-                    if (Object.keys(userData).length > 0) {
-                        payload.user_data = userData;
-                    }
-                    window.dataLayer.push(payload);
-                }
-
-                // The Meta Conversions API purchase is sent by the server once
-                // payment is confirmed (verify endpoint + Razorpay webhook).
-
-                if (isCOD) {
-                    // For COD: open WhatsApp to confirm delivery details
-                    window.dataLayer.push({
-                        event: 'whatsapp_order_confirm',
-                        source: 'checkout_cod',
-                        type: 'order_confirmation',
-                        order_id: firestoreOrderId,
-                        total: payable,
-                    });
-                    const whatsappUrl = buildWhatsAppUrl(firestoreOrderId, sanitizedData);
-                    whatsAppUrlRef.current = whatsappUrl;
-                    savedOrderIdRef.current = firestoreOrderId;
-                    // Booking is paid and the order is saved — clear the cart now
-                    // so it can't be re-submitted for a duplicate charge.
-                    clearCart();
-                    window.open(whatsappUrl, '_blank');
-                    setPendingWhatsApp({ whatsappUrl });
-                    setIsProcessing(false);
-                } else {
-                    // Full payment: go straight to success
-                    onPlaceOrder({ id: firestoreOrderId, items: cart, total: payable, paymentId });
-                }
-            });
-
+            const next: PendingPayment = {
+                firestoreOrderId: data.firestoreOrderId,
+                razorpayOrderId: data.orderId,
+                chargeAmount: Number(data.chargeAmount),
+                isCOD,
+                description: isCOD
+                    ? `COD Booking — ₹${COD_BOOKING_PER_BAT} × ${totalBats} bat(s)`
+                    : `Full Payment — Wular Sports Order`,
+                key,
+                createdAt: Date.now(),
+            };
+            savePending(next);
+            startPayment(next, sanitizedData);
         } catch (error: any) {
             console.error('Order process failed:', error);
-            setFormError(error.message?.includes('authenticate')
-                ? 'Unable to process order. Please refresh the page and try again.'
-                : 'Something went wrong. Please try again or contact us on WhatsApp.'
+            setFormError(/authenticat|Unable to process/i.test(error?.message || '')
+                ? 'Unable to start your order. Please refresh the page and try again.'
+                : 'Something went wrong. Please check your connection and try again, or contact us on WhatsApp.'
             );
             setIsProcessing(false);
         }
@@ -756,12 +899,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         <div className="whatsapp-confirm-icon">
                             <Icon name="fa-whatsapp" />
                         </div>
-                        <h2>Almost done — send the WhatsApp message!</h2>
-                        <p>We've opened WhatsApp with your order details pre-filled. <strong>Please tap Send</strong> to confirm your order with us.</p>
+                        <h2>Order placed — booking paid ✅</h2>
+                        <p>One last step: <strong>send us your order on WhatsApp</strong> so we can confirm your delivery details. The message is already written — just tap Send.</p>
 
                         {whatsAppReminderVisible && (
                             <div className="whatsapp-reminder-banner">
-                                <Icon name="fa-exclamation-circle" /> Looks like you came back without sending — your order isn't confirmed yet!
+                                <Icon name="fa-exclamation-circle" /> Please send the WhatsApp message — it helps us confirm your delivery quickly.
                             </div>
                         )}
 
@@ -780,7 +923,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 });
                             }}
                         >
-                            <Icon name="fa-whatsapp" /> Open WhatsApp Again
+                            <Icon name="fa-whatsapp" /> Send Order on WhatsApp
                         </a>
                         <button
                             className="btn btn-confirm-sent"
@@ -793,7 +936,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 onPlaceOrder({ id: savedOrderIdRef.current });
                             }}
                         >
-                            <Icon name="fa-check-circle" /> I've Sent the Message
+                            <Icon name="fa-check-circle" /> Done — I've Sent It
                         </button>
                         </div>
                         <p className="whatsapp-confirm-note">Once we receive your message, we'll process and ship your order within 24 hours.</p>
@@ -803,9 +946,28 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         );
     }
 
+    if (paymentProblem) {
+        const help = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(`Hi Wular Sports, I paid for my order but the website couldn't confirm it. Payment ID: ${paymentProblem}`)}`;
+        return (
+            <div className="container checkout-empty">
+                <SEOHead title="Checkout | Wular Sports" robots="noindex, nofollow" canonicalUrl="https://wularsports.com/checkout" />
+                <h2>We've received a payment but couldn't confirm it automatically</h2>
+                <p style={{ color: '#bbb', margin: '1rem 0' }}>Please don't pay again. Send us your payment ID on WhatsApp and we'll confirm your order right away.</p>
+                <p style={{ margin: '0 0 1.5rem' }}>Payment ID: <strong>{paymentProblem}</strong></p>
+                <a className="btn" href={help} target="_blank" rel="noopener noreferrer">Message Us on WhatsApp</a>
+            </div>
+        );
+    }
+
     if (cart.length === 0) {
         return (
             <div className="container checkout-empty">
+                <SEOHead title="Checkout | Wular Sports" robots="noindex, nofollow" canonicalUrl="https://wularsports.com/checkout" />
+                {unavailable.length > 0 && (
+                    <p className="checkout-unavailable" role="status">
+                        {unavailable.join(', ')} {unavailable.length === 1 ? 'is' : 'are'} no longer available and {unavailable.length === 1 ? 'was' : 'were'} removed from your cart.
+                    </p>
+                )}
                 <h2>Your cart is empty</h2>
                 <button className="btn" onClick={() => router.push('/')}>Continue Shopping</button>
             </div>
@@ -864,6 +1026,12 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                         </div>
                     </div>
                 </div>
+                {unavailable.length > 0 && (
+                    <div className="checkout-unavailable" role="status">
+                        <span>{unavailable.join(', ')} {unavailable.length === 1 ? 'is' : 'are'} no longer available and {unavailable.length === 1 ? 'was' : 'were'} removed from your cart.</span>
+                        <button type="button" onClick={dismissUnavailable} aria-label="Dismiss">×</button>
+                    </div>
+                )}
                 {formError && (
                     <div className="alert-error" role="alert" aria-live="assertive" style={{
                         backgroundColor: '#d32f2f',
@@ -967,7 +1135,10 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                         disabled={isProcessing}
                                         className={fieldErrors.phone ? 'error' : ''}
                                         placeholder={isIndianPhone ? '10-digit number' : 'Phone number'}
-                                        maxLength={isIndianPhone ? 10 : 15}
+                                        maxLength={20}
+                                        onBlur={() => {
+                                            if (isIndianPhone) setFormData(prev => ({ ...prev, phone: normalizeIndianPhone(prev.phone) }));
+                                        }}
                                         inputMode="numeric"
                                         autoComplete="tel-national"
                                     />

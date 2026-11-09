@@ -1,6 +1,7 @@
 import { FC, memo, useState } from 'react';
 import Link from 'next/link';
-import { createWhatsAppLink } from '../../utils/helpers';
+import { whatsAppLinkWithRef } from '../../utils/helpers';
+import { useVisitorRef } from '../../hooks/useVisitorRef';
 import { INSTAGRAM_LINK, YOUTUBE_LINK } from '../../data/constants';
 import { subscribe } from '../../services/subscribe';
 import { useToast } from '../../context/ToastContext';
@@ -8,6 +9,7 @@ import { Icon } from './Icon';
 import { useCatalog } from '../../context/CatalogContext';
 
 export const Footer: FC = memo(() => {
+    const visitorRef = useVisitorRef();
     const { categories } = useCatalog();
     const { showToast } = useToast();
     const [email, setEmail] = useState('');
@@ -34,7 +36,7 @@ export const Footer: FC = memo(() => {
                     <h2 className="footer-section-title">Get In Touch</h2>
                     <div className="footer-title-bar"></div>
                     <p className="footer-contact-hint">Have questions? Reach out to us directly!</p>
-                    <a href={createWhatsAppLink("Hello, I have a question.")} target="_blank" rel="noopener noreferrer" className="btn-chat-whatsapp" onClick={() => {
+                    <a href={whatsAppLinkWithRef("Hello, I have a question.", visitorRef)} target="_blank" rel="noopener noreferrer" className="btn-chat-whatsapp" onClick={() => {
                         import('../../services/leads').then(({ trackWhatsAppClick }) =>
                             trackWhatsAppClick('footer')
                         ).catch(() => { /* best-effort */ });
@@ -77,7 +79,7 @@ export const Footer: FC = memo(() => {
                         <Link href="/return-policy" className="legal-link">Return Policy</Link>
                         <Link href="/terms-conditions" className="legal-link">Terms &amp; Conditions</Link>
                     </div>
-                        <span className="copyright">© 2026 WULAR SPORTS</span>
+                        <span className="copyright">© {new Date().getFullYear()} WULAR SPORTS</span>
                     </div>
                     <div className="footer-social-group">
                         <a href={INSTAGRAM_LINK} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="fa-instagram" /></a>

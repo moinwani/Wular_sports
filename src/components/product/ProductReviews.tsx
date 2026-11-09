@@ -48,7 +48,7 @@ export const ProductReviews: FC<ProductReviewsProps> = ({ productId }) => {
         return () => { cancelled = true; };
     }, [near, productId]);
 
-    if (reviews === null) return <div ref={markerRef} aria-hidden="true" />;
+    if (reviews === null) return <div ref={markerRef} id="product-reviews" aria-hidden="true" />;
 
     if (reviews.length === 0) {
         return (
@@ -65,7 +65,7 @@ export const ProductReviews: FC<ProductReviewsProps> = ({ productId }) => {
     const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 
     return (
-        <section className="product-reviews">
+        <section className="product-reviews" id="product-reviews">
             <h2 className="section-title">Customer Reviews</h2>
             <div className="reviews-summary">
                 <span className="reviews-avg">{avg.toFixed(1)}</span>
@@ -81,7 +81,7 @@ export const ProductReviews: FC<ProductReviewsProps> = ({ productId }) => {
                         <div className="review-item__head">
                             <Stars value={review.rating} />
                             <span className="review-item__meta">
-                                {review.name || 'Verified Buyer'}
+                                {review.name || 'Customer'}
                                 {review.city ? ` · ${review.city}` : ''}
                             </span>
                         </div>

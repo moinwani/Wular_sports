@@ -6798,3 +6798,11 @@ body.has-buy-bar .product-details-page { padding-bottom: 6rem; }
 .blog-faq__item summary::after { content: '+'; float: right; color: var(--golden); }
 .blog-faq__item[open] summary::after { content: '−'; }
 .blog-faq__item p { margin: 0; padding: 0 1rem 1rem; color: #bbb; line-height: 1.7; }
+
+/* Product page: customer video reviews of this bat */
+.pdp-video-reviews { padding-top: 1rem; }
+.pdp-video-review-link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.5rem; color: var(--golden); font-size: 0.88rem; text-decoration: none; }
+.pdp-video-review-link:hover { text-decoration: underline; }
+
+/* Header cart is a real button (keyboard + screen readers); keep its old look */
+button.nav-cart { background: none; border: 0; font: inherit; line-height: inherit; }

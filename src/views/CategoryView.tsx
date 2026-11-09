@@ -131,7 +131,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
                     <ul className="category-perks">
                         <li>Handcrafted in Kashmir</li>
                         <li>Free delivery</li>
-                        <li>Cash on delivery</li>
+                        <li>Cash on delivery (₹500/bat booking)</li>
                         <li>7-day returns</li>
                     </ul>
                 </div>

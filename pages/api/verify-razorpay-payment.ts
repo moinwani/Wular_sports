@@ -27,7 +27,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const ip = getClientIp(req);
-    const { allowed, retryAfterMs } = checkRateLimit(ip, 20);
+    // Own counter: a payment check must never be refused because the same
+    // connection just started payments (it used to share one with create-order)
+    const { allowed, retryAfterMs } = checkRateLimit(`verify:${ip}`, 30);
     if (!allowed) {
         res.setHeader('Retry-After', Math.ceil((retryAfterMs || 0) / 1000).toString());
         return res.status(429).json({ error: 'Too many requests. Please try again later.' });

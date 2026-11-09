@@ -35,6 +35,10 @@ export async function getCatalog(opts: { fresh?: boolean } = {}): Promise<Catalo
         return catalog;
     } catch (err: any) {
         console.error('Catalog: Firestore unavailable, using the built-in list —', err?.message);
+        // A fresh read was asked for (pricing an order, refreshing a page): say it
+        // failed instead of quietly handing back an old cached copy, so an order is
+        // never priced from out-of-date prices
+        if (opts.fresh) return { ...(cache?.catalog || BUILT_IN_CATALOG), failed: true };
         return cache?.catalog || { ...BUILT_IN_CATALOG, failed: true };
     }
 }

@@ -25,11 +25,14 @@ export const getVisitorRef = (): string => {
     }
 };
 
-export const createWhatsAppLink = (message: string) => {
-    const ref = getVisitorRef();
+/** WhatsApp link with a given Ref code (use with useVisitorRef in rendered links) */
+export const whatsAppLinkWithRef = (message: string, ref: string) => {
     const fullMessage = ref ? `${message}\n\n(Ref: ${ref})` : message;
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(fullMessage)}`;
 };
+
+/** WhatsApp link with this visitor's Ref — for click handlers (in the browser) */
+export const createWhatsAppLink = (message: string) => whatsAppLinkWithRef(message, getVisitorRef());
 
 export const getSpecIcon = (specText: string): string => {
     const text = specText.toLowerCase();

@@ -2,6 +2,9 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 /**
+ * Not on the admin panel: Clarity records sessions, and the admin screens show
+ * customers' names, phone numbers and addresses.
+ *
  * Tracking (Google Tag Manager → GA4 / Meta pixel, and Microsoft Clarity) starts
  * as soon as the visitor first touches, scrolls or types — or 5 seconds after
  * the page has loaded, whichever comes first. Until then the phone spends its
@@ -10,7 +13,9 @@ import { Html, Head, Main, NextScript } from 'next/document';
  * the scripts arrive.
  */
 const DEFERRED_TRACKING = `(function(w,d){
-w.dataLayer=w.dataLayer||[];w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+w.dataLayer=w.dataLayer||[];
+if(w.location.pathname.indexOf('/admin')===0)return;
+w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
 w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};
 var started=false,ev=['pointerdown','touchstart','scroll','keydown','mousemove'];
 function add(src){var s=d.createElement('script');s.async=true;s.src=src;d.head.appendChild(s);}

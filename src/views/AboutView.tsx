@@ -40,7 +40,7 @@ export const AboutView: FC = () => (
     <div className="view about-page">
         <SEOHead
             title="About Wular Sports | Kashmiri Willow Cricket Bat Makers from Srinagar"
-            description="Wular Sports is a Kashmiri willow cricket bat manufacturer based in Srinagar, Kashmir. We handcraft hard tennis, soft tennis, and leather ball bats for cricketers across India. Learn our story."
+            description="Wular Sports handcrafts Kashmiri willow cricket bats in Srinagar, Kashmir — hard tennis, soft tennis and leather ball bats for cricketers across India."
             keywords="about Wular Sports, Kashmiri willow bat manufacturer, cricket bat makers Kashmir, Srinagar cricket bats, handcrafted cricket bats India"
             canonicalUrl="https://wularsports.com/about"
             structuredData={structuredData}

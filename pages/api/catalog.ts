@@ -8,5 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const catalog = await getCatalog();
     // Short CDN cache: admin edits show up within about a minute
     res.setHeader('Cache-Control', catalog.failed ? 'no-store' : 'public, s-maxage=60, stale-while-revalidate=600');
-    return res.status(200).json(toPublicCatalog(catalog));
+    // live: the products really came from the database just now (the checkout
+    // relies on this before taking unavailable bats out of a saved cart)
+    return res.status(200).json({ ...toPublicCatalog(catalog), live: !catalog.failed });
 }

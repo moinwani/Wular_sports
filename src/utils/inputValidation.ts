@@ -33,29 +33,47 @@ export function isValidEmail(email: string): boolean {
   
   // RFC 5322 compliant email regex (simplified but secure)
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  return emailRegex.test(email);
+  // …and the domain must end in a real ending (.com, .in, …) — "name@gmail"
+  // would pass the pattern above, but the confirmation email could never arrive
+  return emailRegex.test(email) && /\.[a-zA-Z]{2,}$/.test(email);
 }
 
 /**
- * Validate phone number — exactly 10 digits (country code is entered separately)
+ * An Indian mobile number as the 10 digits after +91, from however it was
+ * typed, pasted or autofilled: "98765 43210", "+91 98765 43210",
+ * "09876543210", "919876543210" all become "9876543210". Anything that isn't
+ * one of those shapes is returned as its digits (and then fails validation)
+ * — never cut down to 10 digits, which used to turn "09876543210" into the
+ * wrong number "0987654321".
+ */
+export function normalizeIndianPhone(phone: string): string {
+  const d = String(phone ?? '').replace(/\D/g, '');
+  if (d.length === 11 && d.startsWith('0')) return d.slice(1);
+  if (d.length === 12 && d.startsWith('91')) return d.slice(2);
+  if (d.length === 13 && d.startsWith('091')) return d.slice(3);
+  if (d.length === 14 && d.startsWith('0091')) return d.slice(4);
+  return d;
+}
+
+/**
+ * Validate an Indian mobile number (country code is entered separately):
+ * 10 digits starting 6–9, in any of the shapes normalizeIndianPhone accepts
  */
 export function isValidPhone(phone: string): boolean {
   if (typeof phone !== 'string') {
     return false;
   }
-
-  const cleaned = phone.replace(/[\s\-\(\)]/g, '');
-  return /^\d{10}$/.test(cleaned);
+  return /^[6-9]\d{9}$/.test(normalizeIndianPhone(phone));
 }
 
 /**
- * Sanitize phone number — digits only, max 10
+ * Sanitize phone number — the 10-digit form
  */
 export function sanitizePhone(phone: string): string {
   if (typeof phone !== 'string') {
     return '';
   }
-  return phone.replace(/[^\d]/g, '').substring(0, 10);
+  return normalizeIndianPhone(phone);
 }
 
 /**
@@ -66,7 +84,8 @@ export function isValidZip(zip: string): boolean {
     return false;
   }
   
-  const zipRegex = /^\d{6}$/;
+  // 6 digits, never starting with 0 (no Indian PIN code does)
+  const zipRegex = /^[1-9]\d{5}$/;
   return zipRegex.test(zip);
 }
 
@@ -74,12 +93,13 @@ export function isValidZip(zip: string): boolean {
  * Validate name (letters, spaces, and common name characters)
  */
 export function isValidName(name: string): boolean {
-  if (typeof name !== 'string' || name.length < 2 || name.length > 100) {
+  // Length limits come from the form's schema (a last name like "K" is fine)
+  if (typeof name !== 'string' || name.length < 1 || name.length > 100) {
     return false;
   }
   
-  // Allow letters, spaces, hyphens, apostrophes, and dots
-  const nameRegex = /^[a-zA-Z\s\-'\.]+$/;
+  // Letters in any script (so "राहुल" works too), spaces, hyphens, apostrophes and dots
+  const nameRegex = /^[\p{L}\p{M}\s\-'\.]+$/u;
   return nameRegex.test(name);
 }
 
@@ -157,8 +177,16 @@ export function validateFormData(data: Record<string, any>, schema: ValidationSc
         rule.type === 'zip' || rule.type === 'name' || rule.type === 'address') {
       const stringValue = typeof value === 'string' ? value : String(value);
       
-      // Sanitize first
-      let sanitizedValue = sanitizeString(stringValue, rule.maxLength || 1000);
+      // Sanitize first — without cutting it short: something too long is
+      // rejected below rather than quietly chopped (which could drop the end
+      // of an address or the last digit of a phone number)
+      let sanitizedValue = sanitizeString(stringValue, 100000);
+
+      // Phone numbers: read the 10 digits out of "+91 98765 43210" etc. before
+      // checking the length
+      if (rule.type === 'phone') {
+        sanitizedValue = normalizeIndianPhone(sanitizedValue);
+      }
       
       // Length validation
       if (rule.minLength && sanitizedValue.length < rule.minLength) {
@@ -177,12 +205,9 @@ export function validateFormData(data: Record<string, any>, schema: ValidationSc
         continue;
       }
       
-      if (rule.type === 'phone') {
-        if (!isValidPhone(sanitizedValue)) {
-          errors[field] = 'Invalid phone number';
-          continue;
-        }
-        sanitizedValue = sanitizePhone(sanitizedValue);
+      if (rule.type === 'phone' && !isValidPhone(sanitizedValue)) {
+        errors[field] = 'Enter a 10-digit mobile number';
+        continue;
       }
       
       if (rule.type === 'zip' && !isValidZip(sanitizedValue)) {

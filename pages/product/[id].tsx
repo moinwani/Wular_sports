@@ -14,6 +14,9 @@ export default function ProductPage({ product }: Props) {
 
     return (
         <ProductDetailsView
+            // A fresh page per bat: without this, moving to another bat from
+            // "More to Explore" kept the last bat's quantity, size and photo
+            key={product.id}
             product={product}
             onAddToCart={(p, s, q) => {
                 addToCart(p, s, q);

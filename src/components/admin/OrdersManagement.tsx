@@ -55,6 +55,10 @@ export const OrdersManagement: FC = () => {
         // One mis-tap shouldn't cancel a paid order
         if (newStatus === 'cancelled' && order && order.status !== 'pending'
             && !confirm(`Cancel ${order.customerName || 'this'}’s order? It’s marked as paid — remember to refund the customer if needed.`)) return;
+        // A website order still 'pending' never finished paying (not even a COD booking)
+        const o: any = order;
+        if (o && o.status === 'pending' && o.channel !== 'whatsapp' && ['processing', 'shipped', 'delivered'].includes(newStatus)
+            && !confirm(`${o.customerName || 'This customer'} never finished paying for this order${o.paymentMethod === 'cod' ? ' (the ₹' + Number(o.bookingAmount || 0).toLocaleString('en-IN') + ' COD booking wasn’t paid)' : ''}. Mark it as ${newStatus} anyway?`)) return;
         setUpdating(true);
         try {
             await updateOrderStatus(orderId, newStatus);
@@ -348,7 +352,9 @@ export const OrdersManagement: FC = () => {
                                 </div>
                                 {selectedOrder.paymentMethod === 'cod' && selectedOrder.channel !== 'whatsapp' && (
                                     <div className="order-cod-box">
-                                        <p><span>Booking paid online</span><span>₹{Number(selectedOrder.bookingAmount || 0).toLocaleString('en-IN')}</span></p>
+                                        {selectedOrder.status === 'pending'
+                                            ? <p className="order-cod-unpaid"><span>Booking NOT paid — checkout wasn’t finished</span><span>₹{Number(selectedOrder.bookingAmount || 0).toLocaleString('en-IN')}</span></p>
+                                            : <p><span>Booking paid online</span><span>₹{Number(selectedOrder.bookingAmount || 0).toLocaleString('en-IN')}</span></p>}
                                         <p><span>COD fee (5%)</span><span>₹{Number(selectedOrder.codFee || 0).toLocaleString('en-IN')}</span></p>
                                         <p><strong>Collect at the door</strong><strong>₹{Number(selectedOrder.totalAtDoor || 0).toLocaleString('en-IN')}</strong></p>
                                     </div>

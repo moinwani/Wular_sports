@@ -2,6 +2,7 @@ import { FC, memo } from 'react';
 import { Sidebar } from '../common/Sidebar';
 import { CartItem } from '../../types';
 import { Icon } from '../common/Icon';
+import { optimizedImg } from '../../utils/optimizedImg';
 
 export interface CartSidebarProps {
     isOpen: boolean;
@@ -22,6 +23,7 @@ export const CartSidebar: FC<CartSidebarProps> = memo(({ isOpen, onClose, cart, 
                         <Icon name="fa-truck-fast" />
                         <div className="cod-notice-text">
                             <strong>Cash on Delivery Available!</strong>
+                            <p>Pay ₹500/bat now, the rest at your door (+5% COD fee)</p>
                         </div>
                     </div>
                 )}
@@ -33,7 +35,7 @@ export const CartSidebar: FC<CartSidebarProps> = memo(({ isOpen, onClose, cart, 
                 <div className="cart-items">
                     {cart.map(item => (
                         <div className="cart-item" key={`${item.id}-${item.size || 'default'}`}>
-                            <img src={Array.isArray(item.image) ? item.image[0] : item.image} alt={item.name} className="cart-item-image" />
+                            <img {...optimizedImg(Array.isArray(item.image) ? item.image[0] : item.image, '80px')} alt={item.name} className="cart-item-image" width={80} height={80} />
                             <div className="cart-item-details">
                                 <p className="cart-item-name">
                                     {item.name}

@@ -99,14 +99,14 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
                 )}
                 <div className="product-price">
                     <span className="current-price">₹{product.price.toLocaleString('en-IN')}</span>
-                    {product.originalPrice && (
+                    {product.originalPrice > product.price && (
                         <>
                             <span className="original-price">₹{product.originalPrice.toLocaleString('en-IN')}</span>
                             <span className="discount-amount">Save ₹{discountAmount.toLocaleString('en-IN')}</span>
                         </>
                     )}
                 </div>
-                <p className="product-card-perks">Free delivery · Cash on delivery</p>
+                <p className="product-card-perks">Free delivery · COD (₹500 booking)</p>
                 <button className="btn-view-details" onClick={handleViewDetails}>
                     View Details
                 </button>

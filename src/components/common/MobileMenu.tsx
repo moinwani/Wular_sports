@@ -60,7 +60,7 @@ export const MobileMenu: FC<MobileMenuProps> = ({ isOpen, onClose }) => {
                             ).catch(() => { /* best-effort */ });
                         }}><Icon name="fa-whatsapp" /></a>
                     </div>
-                    <p className="mobile-menu-copyright">© 2026 Wular Sports</p>
+                    <p className="mobile-menu-copyright">© {new Date().getFullYear()} Wular Sports</p>
                 </div>
             </div>
         </>

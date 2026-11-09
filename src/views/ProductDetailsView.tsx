@@ -1,7 +1,9 @@
 import { FC, useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { ProductFull } from '../types';
-import { createWhatsAppLink } from '../utils/helpers';
+import { whatsAppLinkWithRef } from '../utils/helpers';
+import { useVisitorRef } from '../hooks/useVisitorRef';
+import { getYouTubeId, testimonialsFor } from '../data/testimonials';
 import { useCatalog, categoryPathFor } from '../context/CatalogContext';
 import { productHighlights, productSizes, productsIn, splitProductName } from '../lib/catalog';
 import { useRouter } from 'next/router';
@@ -58,6 +60,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     const [lightboxIndex, setLightboxIndex] = useState(0);
     const [scrollPhase] = useState<ScrollPhase>('normal');
     const [isMobile, setIsMobile] = useState(false);
+    const visitorRef = useVisitorRef();
     useEffect(() => {
         document.body.classList.toggle('has-buy-bar', showBuyBar && isMobile);
         return () => document.body.classList.remove('has-buy-bar');
@@ -120,7 +123,11 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
     // One size (e.g. AK-47 is only 35 inch) is added automatically; several → customer picks
     const sizes = productSizes(product);
     const [titleMain, titleSub] = splitProductName(product.name);
-    const rating = product.aggregateRating;
+    // Star rating = the customer video reviews shown on this page (Google only
+    // allows ratings that the page itself shows); a rating typed into the admin
+    // panel is only used for the line under the name when there are none
+    const videoReviews = testimonialsFor(product.id);
+    const rating = videoReviews.rating || product.aggregateRating;
     const highlights = productHighlights(product);
     const singleSize = sizes.length === 1 ? sizes[0] : null;
     const hasSizes = sizes.length > 1;
@@ -223,13 +230,19 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 // Full https:// addresses (admin-uploaded photos are stored as /api/photo/… paths)
                 "image": (Array.isArray(product.image) ? product.image : [product.image]).map(img => absoluteUrl(getCDNUrl(img))),
                 "description": product.description,
-                "aggregateRating": product.aggregateRating ? {
+                "aggregateRating": videoReviews.rating ? {
                     "@type": "AggregateRating",
-                    "ratingValue": product.aggregateRating.ratingValue,
-                    "reviewCount": product.aggregateRating.reviewCount,
-                    "bestRating": product.aggregateRating.bestRating,
-                    "worstRating": product.aggregateRating.worstRating,
+                    "ratingValue": videoReviews.rating.ratingValue,
+                    "reviewCount": videoReviews.rating.reviewCount,
+                    "bestRating": 5,
+                    "worstRating": 1,
                 } : undefined,
+                "review": videoReviews.reviews.length ? videoReviews.reviews.map(t => ({
+                    "@type": "Review",
+                    "author": { "@type": "Person", "name": t.name },
+                    "reviewRating": { "@type": "Rating", "ratingValue": t.rating, "bestRating": 5, "worstRating": 1 },
+                    "reviewBody": t.comment,
+                })) : undefined,
                 "brand": {
                     "@type": "Brand",
                     "name": "Wular Sports"
@@ -256,7 +269,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                         "deliveryTime": {
                             "@type": "ShippingDeliveryTime",
                             "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 1, "unitCode": "DAY" },
-                            "transitTime": { "@type": "QuantitativeValue", "minValue": 5, "maxValue": 7, "unitCode": "DAY" }
+                            "transitTime": { "@type": "QuantitativeValue", "minValue": 6, "maxValue": 7, "unitCode": "DAY" }
                         }
                     },
                     // Same terms as the Return Policy page: 7 days from delivery
@@ -277,36 +290,6 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     { "@type": "ListItem", "position": 3, "name": product.category.join(" & "), "item": `https://wularsports.com${categoryPath}` },
                     { "@type": "ListItem", "position": 4, "name": product.name },
                 ]
-            },
-            {
-                "@type": "FAQPage",
-                "mainEntity": [
-                    {
-                        "@type": "Question",
-                        "name": "What is this cricket bat made of?",
-                        "acceptedAnswer": { "@type": "Answer", "text": product.description }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "What comes with the bat?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Each bat comes with a free bat cover, premium toe guard, extra grip, and is fully knocked-in and oiled — ready to play out of the box." }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "How long does delivery take?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "We dispatch within 24 hours. Delivery takes 6-7 business days via India Post. You will receive a tracking ID within 24 hours of dispatch." }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "Can I return or exchange the bat?",
-                        "acceptedAnswer": { "@type": "Answer", "text": "Yes. We offer a 7-day return policy. The bat must be unused and in original packaging. Contact us on WhatsApp within 7 days of delivery to initiate a return." }
-                    },
-                    {
-                        "@type": "Question",
-                        "name": "What sizes are available?",
-                        "acceptedAnswer": { "@type": "Answer", "text": `This bat is available in ${product.specs.find(s => s.toLowerCase().includes('height'))?.split(':')[1]?.trim() || 'standard'} size.` }
-                    }
-                ]
             }
         ]
     };
@@ -318,7 +301,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 title={`${product.name} | Wular Sports`}
                 description={metaDescription(product)}
                 keywords={`${product.name}, buy ${product.name}, ${product.category.join(', ')}, cricket bat price, Kashmir willow bat`}
-                ogImage={productImage}
+                ogImage={`/_next/image?url=${encodeURIComponent(getCDNUrl(productImage))}&w=1200&q=75`}
                 ogType="product"
                 canonicalUrl={`https://wularsports.com/product/${product.id}`}
                 structuredData={structuredData}
@@ -391,14 +374,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                         <div className="product-header-clean">
                             <h1 className="product-title-premium">
                                 {titleMain}
-                                {titleSub && <span className="product-title-sub">{titleSub}</span>}
+                                {titleSub && <>{' '}<span className="product-title-sub">{titleSub}</span></>}
                             </h1>
 
                             {rating && rating.reviewCount > 0 ? (
                                 <button
                                     type="button"
                                     className="product-rating-line"
-                                    onClick={() => document.querySelector('.product-reviews')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                                    onClick={() => (document.getElementById('video-reviews') || document.getElementById('product-reviews'))?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                                     aria-label={`${rating.ratingValue} · ${rating.reviewCount} review${rating.reviewCount === 1 ? '' : 's'} — rated ${rating.ratingValue} out of 5, read reviews`}
                                 >
                                     <span className="product-rating-stars" aria-hidden="true">★★★★★</span>
@@ -414,7 +397,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                             {/* Price Section */}
                             <div className="product-price-section-premium">
                                 <div className="price-main-premium">₹{product.price.toLocaleString('en-IN')}</div>
-                                {product.originalPrice && (
+                                {product.originalPrice > product.price && (
                                     <div className="price-secondary-premium">
                                         <span className="price-original-strike">₹{product.originalPrice.toLocaleString('en-IN')}</span>
                                         <span className="discount-badge-premium">Save {discountPercentage}%</span>
@@ -460,7 +443,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                             <ul className="trust-strip-pdp">
                                 <li><Icon name="fa-truck-fast" /> Free delivery across India</li>
-                                <li><Icon name="fa-money-bill-wave" /> Cash on delivery</li>
+                                <li><Icon name="fa-money-bill-wave" /> Cash on delivery (₹500/bat booking)</li>
                                 <li><Icon name="fa-undo-alt" /> 7-day easy returns</li>
                                 <li><Icon name="fa-shield-alt" /> 1-year warranty</li>
                             </ul>
@@ -525,7 +508,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                             {/* Order on WhatsApp Button */}
                         <a
-                            href={createWhatsAppLink(`Hi, I want to order: ${product.name} (Qty: ${quantity})`)}
+                            href={whatsAppLinkWithRef(`Hi, I want to order: ${product.name} (Qty: ${quantity})`, visitorRef)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="btn-whatsapp-order-premium"
@@ -669,7 +652,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                                 </li>
                                             </ul>
                                             <div className="value-highlight">
-                                                <strong>Total Value: ₹{product.price.toLocaleString('en-IN')}</strong>
+                                                <strong>Total Value: ₹{(product.price + 800).toLocaleString('en-IN')}</strong>
                                                 <span className="you-save">You Save: ₹800 (All Free)</span>
                                             </div>
                                         </div>
@@ -791,7 +774,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
 
                                             <div className="contact-options-clean">
                                             <a
-                                                href={createWhatsAppLink(`Hi, I'm interested in ${product.name}`)}
+                                                href={whatsAppLinkWithRef(`Hi, I'm interested in ${product.name}`, visitorRef)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="contact-option-btn whatsapp"
@@ -812,7 +795,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             </a>
 
                                             <a
-                                                href={createWhatsAppLink(`Hi, I want to see ${product.name} on Video Call`)}
+                                                href={whatsAppLinkWithRef(`Hi, I want to see ${product.name} on Video Call`, visitorRef)}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="contact-option-btn video"
@@ -847,7 +830,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                             <div className="shipping-info-clean">
                                                 <p className="shipping-note-clean">
                                                     <Icon name="fa-info-circle" />
-                                                    <strong>Note:</strong> Orders take 2-3 working days to dispatch. All orders shipped by air for express delivery.
+                                                    <strong>Note:</strong> Orders are dispatched within 24 hours by India Post and usually arrive in 6–7 business days.
                                                 </p>
                                             </div>
                                         </div>
@@ -858,6 +841,41 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                     </div>
                 </div>
             </div>
+
+            {/* Customer video reviews of this bat (also what the star rating is based on) */}
+            {videoReviews.reviews.length > 0 && (
+                <div className="container">
+                    <section className="product-reviews pdp-video-reviews" id="video-reviews">
+                        <h2 className="section-title">What Players Say</h2>
+                        <div className="reviews-summary">
+                            <span className="reviews-avg">{videoReviews.rating!.ratingValue}</span>
+                            <div>
+                                <span className="review-stars" aria-label={`${videoReviews.rating!.ratingValue} out of 5 stars`}>{[1, 2, 3, 4, 5].map(n => <span key={n} className={n <= Math.round(Number(videoReviews.rating!.ratingValue)) ? 'star-on' : 'star-off'}>★</span>)}</span>
+                                <p className="reviews-count">{videoReviews.rating!.reviewCount} video review{videoReviews.rating!.reviewCount === 1 ? '' : 's'} from players</p>
+                            </div>
+                        </div>
+                        <div className="reviews-list">
+                            {videoReviews.reviews.map(t => (
+                                <div key={t.id} className="review-item">
+                                    <div className="review-item__head">
+                                        <span className="review-stars" aria-label={`${t.rating} out of 5 stars`}>{[1, 2, 3, 4, 5].map(n => <span key={n} className={n <= t.rating ? 'star-on' : 'star-off'}>★</span>)}</span>
+                                        <span className="review-item__meta">{t.name}{t.isRepeatCustomer ? ' · Repeat customer' : ''}</span>
+                                    </div>
+                                    <p className="review-item__text">{t.comment}</p>
+                                    <a
+                                        href={`https://www.youtube.com/shorts/${getYouTubeId(t.url)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="pdp-video-review-link"
+                                    >
+                                        <Icon name="fa-play" /> Watch {t.name.split(' ')[0]}&apos;s video
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            )}
 
             {/* Customer Reviews */}
             <div className="container">

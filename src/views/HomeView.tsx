@@ -7,6 +7,8 @@ import { About } from '../components/home/About';
 import { SEOHead } from '../components/common/SEOHead';
 import { organizationSchema, localBusinessSchema, navigationSchema, webSiteSchema } from '../data/schemas';
 import { ProductFull } from '../types';
+import { useCatalog } from '../context/CatalogContext';
+import { faqSchema, homeFaq } from '../lib/seoContent';
 
 interface HomeViewProps {
     onShopCollectionClick: () => void;
@@ -18,6 +20,11 @@ interface HomeViewProps {
 export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart, onImageClick, onWatchVideo }) => {
     const catalogRef = useRef<HTMLElement>(null);
 
+    // Kashmir willow questions, answered with live prices — shown at the foot of
+    // the page and given to Google as FAQ data
+    const { products } = useCatalog();
+    const faq = homeFaq(products);
+
     const structuredData = {
         "@context": "https://schema.org",
         "@graph": [
@@ -25,6 +32,7 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
             localBusinessSchema,
             webSiteSchema,
             navigationSchema,
+            faqSchema(faq),
         ]
     };
 
@@ -43,6 +51,17 @@ export const HomeView: FC<HomeViewProps> = ({ onShopCollectionClick, onAddToCart
             <VideoTestimonials />
             <Customization />
             <About />
+            <section className="category-extra category-faq home-faq">
+                <div className="container">
+                    <h2>Kashmir willow cricket bats: common questions</h2>
+                    {faq.map(f => (
+                        <details key={f.question} className="blog-faq__item">
+                            <summary>{f.question}</summary>
+                            <p>{f.answer}</p>
+                        </details>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 };

@@ -5,6 +5,104 @@ Allow: /api/photo/
 Disallow: /admin
 Disallow: /api
 
+# GPTBot
+User-agent: GPTBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# OAI-SearchBot
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# ChatGPT-User
+User-agent: ChatGPT-User
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# ClaudeBot
+User-agent: ClaudeBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Claude-SearchBot
+User-agent: Claude-SearchBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Claude-User
+User-agent: Claude-User
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# PerplexityBot
+User-agent: PerplexityBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Perplexity-User
+User-agent: Perplexity-User
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Google-Extended
+User-agent: Google-Extended
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Applebot-Extended
+User-agent: Applebot-Extended
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# Amazonbot
+User-agent: Amazonbot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# DuckAssistBot
+User-agent: DuckAssistBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# meta-externalagent
+User-agent: meta-externalagent
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
+# CCBot
+User-agent: CCBot
+Allow: /
+Allow: /api/photo/
+Disallow: /admin
+Disallow: /api
+
 # Host
 Host: https://wularsports.com
 

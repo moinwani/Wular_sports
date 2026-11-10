@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { cleanArticleHtml } from '../../../src/lib/articleHtml';
 import { db, FieldValue } from '../../../src/lib/firebaseAdmin';
 import { isAdminRequest } from '../../../src/lib/adminAuth';
-import { BUILT_IN_BLOG, getBlog } from '../../../src/lib/blogServer';
+import { BUILT_IN_BLOG, getBlog, unseededBuiltIns } from '../../../src/lib/blogServer';
+import { submitToIndexNow } from '../../../src/lib/indexNow';
 import { BlogError, ManagedPost, cleanPost, isoDateOf } from '../../../src/lib/blog';
 import { deleteUnusedPhotos } from '../../../src/lib/productPhotos';
 
@@ -23,12 +24,18 @@ const fail = (msg: string): never => { throw new BlogError(msg); };
 /** Article HTML without scripts, event handlers or other unsafe markup */
 const sanitize = cleanArticleHtml;
 
-/** The first change copies the built-in posts into Firestore, so everything is edited in one place. */
+/**
+ * The first change copies the built-in posts into Firestore, so everything is
+ * edited in one place. Posts added to the site's code later (new guides) are
+ * copied in the same way before any change, and remembered in siteMeta/blog —
+ * so deleting one here keeps it deleted.
+ */
 async function ensureManaged() {
     const any = await db.collection(POSTS).limit(1).get();
-    if (!any.empty) return;
+    const toSeed = any.empty ? BUILT_IN_BLOG.posts : await unseededBuiltIns();
+    if (!toSeed.length) return;
     const batch = db.batch();
-    BUILT_IN_BLOG.posts.forEach(p => {
+    toSeed.forEach(p => {
         batch.set(db.collection(POSTS).doc(p.id), {
             ...JSON.parse(JSON.stringify(p)),
             publishedAt: isoDateOf(p),
@@ -36,6 +43,7 @@ async function ensureManaged() {
             createdAt: FieldValue.serverTimestamp(),
         });
     });
+    batch.set(db.collection('siteMeta').doc('blog'), { seededIds: FieldValue.arrayUnion(...BUILT_IN_BLOG.posts.map(p => p.id)) }, { merge: true });
     await batch.commit();
 }
 
@@ -48,6 +56,8 @@ async function allPostPages(): Promise<string[]> {
 async function refreshPages(res: NextApiResponse, paths: string[]): Promise<string[]> {
     const list = [...new Set(paths)];
     const results = await Promise.allSettled(list.map(p => res.revalidate(p)));
+    // Tell Bing (and so ChatGPT search / Copilot) which pages just changed
+    await submitToIndexNow(list);
     return list.filter((p, i) => {
         const r = results[i];
         if (r.status === 'rejected') console.error('revalidate failed', p, (r.reason as any)?.message);

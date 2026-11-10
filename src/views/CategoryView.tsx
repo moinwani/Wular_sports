@@ -1,5 +1,7 @@
 import React, { FC, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { ProductFull } from '../types';
+import { Faq, Guide, categoryPageTitle, faqSchema, shortName, specOf } from '../lib/seoContent';
 import { ProductCard } from '../components/product/ProductCard';
 import { SEOHead } from '../components/common/SEOHead';
 import { Breadcrumb } from '../components/common/Breadcrumb';
@@ -16,6 +18,17 @@ interface CategoryViewProps {
     keywords: string;
     canonicalUrl: string;
     products: ProductFull[];
+    /** Keyword-led page title (the starting price and brand are added to it) */
+    seoTitle?: string;
+    /** Questions and answers shown on the page and given to Google as FAQ data */
+    faq?: Faq[];
+    faqHeading?: string;
+    /** Blog posts linked as buying guides */
+    guides?: Guide[];
+    /** Shortcut links under the intro (the tennis hub links to its two categories) */
+    links?: { href: string; label: string }[];
+    /** Show which ball each bat is for in the comparison table (pages mixing categories) */
+    showCategory?: boolean;
     onImageClick: (images: string[], startIndex: number) => void;
     onAddToCart: (product: ProductFull, size: string | null) => void;
     onWatchVideo: (url: string, ref: React.RefObject<HTMLButtonElement>) => void;
@@ -36,6 +49,12 @@ export const CategoryView: FC<CategoryViewProps> = ({
     keywords,
     canonicalUrl,
     products,
+    seoTitle,
+    faq,
+    faqHeading,
+    guides,
+    links,
+    showCategory,
     onImageClick,
     onAddToCart,
     onWatchVideo
@@ -100,14 +119,17 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         "item": canonicalUrl
                     }
                 ]
-            }
+            },
+            ...(faq && faq.length ? [faqSchema(faq)] : []),
         ]
     };
 
     return (
         <div className="view category-view">
             <SEOHead
-                title={`${/kashmir/i.test(title) ? title : `Kashmir Willow ${title}`} | Wular Sports`}
+                title={seoTitle
+                    ? categoryPageTitle(seoTitle, products)
+                    : `${/kashmir/i.test(title) ? title : `Kashmir Willow ${title}`} | Wular Sports`}
                 description={description}
                 keywords={keywords}
                 ogType="website"
@@ -134,6 +156,11 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         <li>Cash on delivery (₹500/bat booking)</li>
                         <li>7-day returns</li>
                     </ul>
+                    {links && links.length > 0 && (
+                        <p className="category-sublinks">
+                            {links.map(l => <Link key={l.href} href={l.href}>{l.label}</Link>)}
+                        </p>
+                    )}
                 </div>
             </section>
 
@@ -196,6 +223,41 @@ export const CategoryView: FC<CategoryViewProps> = ({
                 </div>
             </section>
 
+            {/* Side-by-side specs: easy for shoppers to scan, and for Google / AI tools to quote */}
+            {products.length > 1 && (
+                <section className="category-extra category-compare">
+                    <div className="container">
+                        <h2>Compare our {title.toLowerCase()}</h2>
+                        <div className="category-compare__scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Bat</th>
+                                        {showCategory && <th scope="col">For</th>}
+                                        <th scope="col">Weight</th>
+                                        <th scope="col">Edges</th>
+                                        <th scope="col">Profile</th>
+                                        <th scope="col">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {products.map(p => (
+                                        <tr key={p.id}>
+                                            <th scope="row"><Link href={`/product/${p.id}`}>{shortName(p)}</Link></th>
+                                            {showCategory && <td>{p.category.join(', ')}</td>}
+                                            <td>{specOf(p, 'weight') || '—'}</td>
+                                            <td>{specOf(p, 'edge') || '—'}</td>
+                                            <td>{specOf(p, 'scoop profile') || '—'}</td>
+                                            <td>₹{p.price.toLocaleString('en-IN')}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {bodyText && (
                 <section className="category-about">
                     <div className="container">
@@ -204,6 +266,31 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         <button type="button" className="category-about__more" onClick={() => setAboutOpen(o => !o)} aria-expanded={aboutOpen}>
                             {aboutOpen ? 'Show less' : 'Read more'}
                         </button>
+                    </div>
+                </section>
+            )}
+
+            {faq && faq.length > 0 && (
+                <section className="category-extra category-faq">
+                    <div className="container">
+                        <h2>{faqHeading || `${title}: common questions`}</h2>
+                        {faq.map(f => (
+                            <details key={f.question} className="blog-faq__item">
+                                <summary>{f.question}</summary>
+                                <p>{f.answer}</p>
+                            </details>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {guides && guides.length > 0 && (
+                <section className="category-extra category-guides">
+                    <div className="container">
+                        <h2>Buying guides</h2>
+                        <ul>
+                            {guides.map(g => <li key={g.id}><Link href={`/blog/${g.id}`}>{g.title}</Link></li>)}
+                        </ul>
                     </div>
                 </section>
             )}

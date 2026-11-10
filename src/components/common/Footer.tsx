@@ -70,6 +70,7 @@ export const Footer: FC = memo(() => {
                         {categories.map(c => (
                             <Link key={c.id} href={c.path} className="legal-link">{c.title}</Link>
                         ))}
+                        <Link href="/tennis-cricket-bats" className="legal-link">Tennis Cricket Bats</Link>
                         <Link href="/about" className="legal-link">About Us</Link>
                         <Link href="/blog" className="legal-link">Wular Insights</Link>
                         <Link href="/comparison" className="legal-link">Bat Comparison</Link>

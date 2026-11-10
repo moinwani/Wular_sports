@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { submitToIndexNow } from '../../../src/lib/indexNow';
 import { db, FieldValue } from '../../../src/lib/firebaseAdmin';
 import { isAdminRequest } from '../../../src/lib/adminAuth';
 import { BUILT_IN_CATALOG, getCatalog, invalidateCatalog } from '../../../src/lib/catalogServer';
@@ -52,6 +53,8 @@ async function refreshPages(res: NextApiResponse, paths: string[]): Promise<stri
     // In parallel, so refreshing every product page still finishes in a few seconds
     const list = [...new Set(paths)];
     const results = await Promise.allSettled(list.map(p => res.revalidate(p)));
+    // Tell Bing (and so ChatGPT search / Copilot) which pages just changed
+    await submitToIndexNow(list.filter(p => p !== '/review'));
     return list.filter((p, i) => {
         const r = results[i];
         if (r.status === 'rejected') console.error('revalidate failed', p, (r.reason as any)?.message);
@@ -59,7 +62,7 @@ async function refreshPages(res: NextApiResponse, paths: string[]): Promise<stri
     });
 }
 
-const LIST_PAGES = ['/', '/collection', '/review'];
+const LIST_PAGES = ['/', '/collection', '/tennis-cricket-bats', '/review'];
 
 /** Every product page shows other products ("More to explore") and feeds the cart its prices */
 async function allProductPages(): Promise<string[]> {

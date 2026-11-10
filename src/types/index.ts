@@ -15,6 +15,8 @@ export interface BlogPost {
     faq?: { question: string; answer: string }[];
     /** Shorter title for Google's results (the page heading stays the full title) */
     seoTitle?: string;
+    /** YYYY-MM-DD of the last real content update — shown to Google as dateModified */
+    modifiedAt?: string;
 }
 
 export interface ProductFull {

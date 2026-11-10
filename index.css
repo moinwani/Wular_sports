@@ -6831,3 +6831,9 @@ button.nav-cart { background: none; border: 0; font: inherit; line-height: inher
     .category-compare th, .category-compare td { padding: 0.55rem 0.6rem; }
     .category-compare tbody th { white-space: normal; min-width: 96px; }
 }
+
+/* Tables inside blog articles (comparison tables): readable on dark, scroll sideways on phones */
+.blog-content-body table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem; }
+.blog-content-body th, .blog-content-body td { padding: 0.65rem 0.8rem; border: 1px solid #2a2a2a; text-align: left; vertical-align: top; line-height: 1.5; }
+.blog-content-body thead th { background: #161616; color: var(--golden); font-weight: 600; white-space: nowrap; }
+.blog-content-body tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }

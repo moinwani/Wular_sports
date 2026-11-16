@@ -1,10 +1,11 @@
 import { blogs } from '../data/blogs';
 import { blogsGrowth } from '../data/blogsGrowth';
+import { blogsGuides } from '../data/blogsGuides';
 import { isoDateOf } from './blog';
 import type { ManagedPost } from './blog';
 
 /** Every post that ships with the site's code */
-const BUILT_IN_POSTS: ManagedPost[] = [...blogsGrowth, ...blogs];
+const BUILT_IN_POSTS: ManagedPost[] = [...blogsGuides, ...blogsGrowth, ...blogs];
 
 /**
  * Server-side blog: posts from Firestore (managed in Admin → Blog), or the

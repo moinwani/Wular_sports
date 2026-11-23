@@ -39,6 +39,7 @@ export const MarketingSetup: FC = () => {
     const { marketing, orders } = useAdminData();
     const [testCode, setTestCode] = useState('');
     const [test, setTest] = useState<{ busy: boolean; text?: string; ok?: boolean }>({ busy: false });
+    const [oaiTest, setOaiTest] = useState<{ busy: boolean; text?: string; ok?: boolean }>({ busy: false });
     const [now] = useState(() => Date.now());
 
     const health = useMemo(() => {
@@ -58,8 +59,17 @@ export const MarketingSetup: FC = () => {
             lastError: failed.sort((a, b) => String(b.metaPurchase.at).localeCompare(String(a.metaPurchase.at)))[0]?.metaPurchase?.reason || '',
             skipped: metaOf(reported, 'skipped').length,
         };
+        const oaiReported = recent.filter(o => o.openaiOrder);
+        const oaiFailed = oaiReported.filter(o => o.openaiOrder?.status === 'error');
+        const openai = {
+            sent: oaiReported.filter(o => o.openaiOrder?.status === 'sent').length,
+            failed: oaiFailed.length,
+            lastError: oaiFailed.sort((a, b) => String(b.openaiOrder.at).localeCompare(String(a.openaiOrder.at)))[0]?.openaiOrder?.reason || '',
+            fromChatGpt: web.filter(o => o.attribution?.oppref).length,
+        };
         return {
             meta,
+            openai,
             webOrders: web.length,
             taggedOrders: tagged.length,
             recordedSales: recorded.length,
@@ -79,6 +89,17 @@ export const MarketingSetup: FC = () => {
         });
     };
 
+    const checkOpenAi = async () => {
+        setOaiTest({ busy: true });
+        const r = await marketingAction('openaiTest', {}).catch(() => ({ error: 'Could not reach the server.' }));
+        if (r.error) return setOaiTest({ busy: false, ok: false, text: r.error });
+        setOaiTest({
+            busy: false,
+            ok: r.status === 'sent',
+            text: r.status === 'sent' ? 'Connected — OpenAI accepted the key and the order format. (Test only: nothing was recorded.)' : `${r.status}: ${r.reason}`,
+        });
+    };
+
     const exampleCode = marketing.campaigns.find(c => c.code)?.code || 'L2';
 
     return (
@@ -95,6 +116,12 @@ export const MarketingSetup: FC = () => {
                         Meta confirmed receiving {health.meta.whatsappSent} WhatsApp sale{health.meta.whatsappSent === 1 ? '' : 's'} and {health.meta.websiteSent} website sale{health.meta.websiteSent === 1 ? '' : 's'}.
                         {health.meta.failed > 0 && <> {health.meta.failed} were rejected — last reason: “{health.meta.lastError}”.</>}
                         {health.meta.skipped > 0 && <> {health.meta.skipped} skipped (older than 7 days).</>}
+                    </Check>
+                    <Check ok={!!marketing.openaiConfigured}>
+                        {marketing.openaiConfigured
+                            ? `OpenAI (ChatGPT ads) is connected — orders are reported from the server too. ${health.openai.sent} confirmed${health.openai.fromChatGpt ? `, ${health.openai.fromChatGpt} website order${health.openai.fromChatGpt === 1 ? '' : 's'} came from a ChatGPT ad click` : ''}.`
+                            : 'OpenAI isn’t connected on the server (OPENAI_CAPI_KEY missing in Vercel). The browser pixel still works.'}
+                        {health.openai.failed > 0 && <> {health.openai.failed} rejected — last reason: “{health.openai.lastError}”.</>}
                     </Check>
                     <Check ok={health.taggedOrders > 0}>
                         {health.taggedOrders} of {health.webOrders} website orders came from a tagged Meta ad link.
@@ -145,6 +172,15 @@ export const MarketingSetup: FC = () => {
                     <button className="btn" onClick={sendTest} disabled={test.busy || !testCode || !marketing.metaConfigured}>{test.busy ? 'Sending…' : 'Send test purchase'}</button>
                 </div>
                 {test.text && <p className={test.ok ? 'crm-ok' : 'crm-warn'}>{test.text}</p>}
+            </section>
+
+            <section className="an-panel">
+                <div className="an-head"><h2>Test the OpenAI connection</h2></div>
+                <p className="mk-p">Checks your Conversions API key with OpenAI using a test order. Nothing is recorded in Ads Manager.</p>
+                <div className="mk-copy__row">
+                    <button className="btn" onClick={checkOpenAi} disabled={oaiTest.busy || !marketing.openaiConfigured}>{oaiTest.busy ? 'Checking…' : 'Check OpenAI connection'}</button>
+                </div>
+                {oaiTest.text && <p className={oaiTest.ok ? 'crm-ok' : 'crm-warn'}>{oaiTest.text}</p>}
             </section>
         </div>
     );

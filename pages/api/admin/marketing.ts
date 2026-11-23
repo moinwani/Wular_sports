@@ -7,14 +7,15 @@ import {
     Campaign, CouponDef, SpendEntry, PLATFORMS, SOURCES, normalizeCode, platformSource, sanitizeAttribution,
 } from '../../../src/lib/marketing';
 import { metaConfigured, phoneDigits, purchaseFromOrder, sendPurchase } from '../../../src/lib/metaCapi';
+import { openaiConfigured, orderEventFromOrder, sendOpenAiEvent, sendOpenAiOrder } from '../../../src/lib/openaiCapi';
 
 /**
  * Admin-only marketing store (Admin SDK — these collections stay closed to
  * browsers by the default-deny Firestore rule, no rules change needed).
  *
- *  GET → { campaigns, spend, coupons, visitors, metaConfigured }
+ *  GET → { campaigns, spend, coupons, visitors, metaConfigured, openaiConfigured }
  *  POST { action: 'saveCampaign' | 'deleteCampaign' | 'saveSpend' | 'deleteSpend'
- *               | 'saveCoupon' | 'deleteCoupon' | 'setOrderSource' | 'recordSale' | 'metaTest', … }
+ *               | 'saveCoupon' | 'deleteCoupon' | 'setOrderSource' | 'recordSale' | 'metaTest' | 'openaiTest', … }
  */
 
 const CAMPAIGNS = 'marketingCampaigns';
@@ -287,6 +288,12 @@ async function recordSale(b: any) {
         await ref.update({ metaPurchase: meta });
     }
 
+    let openai = null;
+    if (b.sendToOpenAi !== false && openaiConfigured()) {
+        openai = await sendOpenAiOrder(ref.id, order, 'chat', createdAt);
+        await ref.update({ openaiOrder: openai });
+    }
+
     // Their checkout lead (if any) is now a customer
     const leads = await db.collection('leads').where('phone', '==', phone10).limit(5).get();
     await Promise.all(leads.docs.map(d => d.ref.update({ status: 'converted' })));
@@ -294,6 +301,7 @@ async function recordSale(b: any) {
     return {
         orderId: ref.id,
         meta,
+        openai,
         foundWebsiteVisit: !!(web?.first || web?.last),
     };
 }
@@ -307,7 +315,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         if (req.method === 'GET') {
-            return res.status(200).json({ ...(await loadAll()), metaConfigured: metaConfigured() });
+            return res.status(200).json({ ...(await loadAll()), metaConfigured: metaConfigured(), openaiConfigured: openaiConfigured() });
         }
         if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -382,6 +390,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     value: 1, orderId: 'TEST', items: [{ id: 'test', quantity: 1, price: 1 }],
                     phone: '9999999999', name: 'Test Buyer', city: 'Srinagar', state: 'Jammu and Kashmir', testCode,
                 });
+                return res.status(200).json(r);
+            }
+            case 'openaiTest': {
+                // validate_only: OpenAI checks the key and the event shape but saves nothing
+                const now = Date.now();
+                const r = await sendOpenAiEvent(orderEventFromOrder(`test_${now}`, {
+                    total: 1, items: [{ id: 'test', productName: 'Test bat', price: 1, quantity: 1 }],
+                    customerPhone: '+919999999999', customerName: 'Test Buyer',
+                    customerAddress: { city: 'Srinagar', state: 'Jammu and Kashmir', pincode: '190001', country: 'India' },
+                    client: { ip: '127.0.0.1', userAgent: 'wularsports-admin-test', pageUrl: 'https://wularsports.com/checkout' },
+                }, 'website', now), { validateOnly: true });
                 return res.status(200).json(r);
             }
             default:

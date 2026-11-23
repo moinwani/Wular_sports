@@ -14,6 +14,9 @@ import { getVisitorRef } from './helpers';
 
 const KEY = 'ws_attr';
 const FBC_KEY = 'ws_fbc';
+const OPPREF_KEY = 'ws_oppref';
+/** ChatGPT ads credit a click for 30 days */
+const OPPREF_MS = 30 * 86400000;
 const KEEP_MS = 90 * 86400000;
 const PARAMS: [keyof Touch, string][] = [
     ['source', 'utm_source'], ['medium', 'utm_medium'], ['campaign', 'utm_campaign'],
@@ -51,6 +54,9 @@ export const captureAttribution = () => {
     if (typeof window === 'undefined') return;
     try {
         const url = new URL(window.location.href);
+        // ChatGPT ad click id — our own copy, in case the OpenAI pixel is blocked
+        const oppref = url.searchParams.get('oppref');
+        if (oppref) localStorage.setItem(OPPREF_KEY, JSON.stringify({ v: oppref.slice(0, 1000), at: Date.now() }));
         const t: Touch = {};
         for (const [k, q] of PARAMS) {
             const v = url.searchParams.get(q);
@@ -92,6 +98,16 @@ export const getAttribution = (): Attribution => {
     }
     if (fbp) a.fbp = fbp;
     if (fbc) a.fbc = fbc;
+    let oppref = cookie('__oppref');
+    if (!oppref) {
+        try {
+            const o = JSON.parse(localStorage.getItem(OPPREF_KEY) || 'null');
+            if (o?.v && Date.now() - Number(o.at) <= OPPREF_MS) oppref = String(o.v);
+        } catch { /* blocked */ }
+    }
+    if (oppref) a.oppref = oppref;
+    const obref = cookie('__obref');
+    if (obref) a.obref = obref;
     const ref = getVisitorRef();
     if (ref) a.ref = ref;
     return a;

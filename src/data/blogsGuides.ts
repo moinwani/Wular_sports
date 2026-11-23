@@ -88,6 +88,7 @@ export const blogsGuides: BlogPost[] = [
         description: 'Which bat is best for box cricket and turf cricket? Match the bat to the ball your arena uses, then choose weight, scoop and length for short boundaries.',
         category: 'Buying Guides',
         ...WHEN,
+        modifiedAt: '2026-11-24',
         readTime: '6 min read',
         image: `${IMG}/ak47-honeycomb/IMG_7831.JPG`,
         content: `<p>The best bat for box cricket is a light Kashmir willow tennis bat that you can swing fast in a small space. If your arena uses a light tennis ball or a soft ball, choose a soft tennis bat of 820–950 grams with a scoop. If it uses a heavy tennis ball, choose a hard tennis bat of 950–1050 grams. Ask the venue or your team which ball is used before you buy, because that one fact decides the bat.</p>
@@ -122,7 +123,7 @@ export const blogsGuides: BlogPost[] = [
 <tbody>
 <tr><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a></td><td>Light tennis ball, soft ball and tape ball box cricket</td><td>820–950 g</td><td>Honeycomb scoop</td></tr>
 <tr><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></td><td>Heavy tennis ball turf tournaments, players who want a lighter pickup</td><td>980–1100 g</td><td>Ramp scoop</td></tr>
-<tr><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td>Heavy tennis ball, all-round play</td><td>950–1050 g</td><td>Non-scoop, flat face</td></tr>
+<tr><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td>Heavy tennis ball, all-round play</td><td>950–1050 g</td><td>Scoop with drilled shoulders</td></tr>
 </tbody>
 </table>
 <p>For most casual and office box cricket, the AK-47 Edition is the one to pick: it is our lightest bat and is made for the light ball that most arenas use. If your group plays with a heavy tennis ball, start with the Legacy Edition 1.0 and ask for a weight near the lower end of its range. Every bat is handcrafted in Srinagar and arrives knocked-in and oiled with a bat cover, toe guard and extra grip. Current prices are on each product page.</p>

@@ -6,7 +6,7 @@ export const products: ProductFull[] = [
         sku: "WS-LEGACY20",
         name: "Legacy Edition 2.0 — Kashmiri Willow Hard Tennis Bat",
         category: ["Hard Tennis"],
-        description: "The Legacy Edition 2.0 is a premium hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for tournament-level players who want maximum power and durability without paying English willow prices. It features a naturally seasoned 3-year Kashmiri willow blade, a ramp scoop profile for explosive stroke play, and a premium Singapore cane handle that absorbs vibration on mishits. Weighing 980–1100 grams with 48–52 mm edges and a 4.5-inch face, it is ideal for hard tennis ball cricket and priced at ₹3,499.\n\nUnlike mass-produced bats, every Legacy 2.0 is hard-pressed for maximum durability, fully knocked and oiled, and hand-finished in our Srinagar workshop — so it arrives match-ready out of the box. Each bat ships with a free bat bag, premium chemical toe guard, and an extra grip, plus free delivery across India and a 1-year warranty.",
+        description: "The Legacy Edition 2.0 is a premium hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for tournament-level players who want maximum power and durability without paying English willow prices. It features a naturally seasoned 3-year Kashmiri willow blade, a ramp scoop profile for explosive stroke play, and a premium Singapore cane handle that absorbs vibration on mishits. Weighing 980–1100 grams with 48–52 mm edges and a 4.5-inch face, it is ideal for hard tennis ball cricket and priced at ₹3,499.\n\nUnlike mass-produced bats, every Legacy 2.0 is hard-pressed for maximum durability, fully knocked and oiled, and hand-finished in our Srinagar workshop — so it arrives match-ready out of the box. Each bat ships with a free bat bag, premium chemical toe guard, and an extra grip, plus free delivery across India and a 6-month handle warranty.",
         image: [
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826302_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826303_w.jpg",
@@ -39,7 +39,7 @@ export const products: ProductFull[] = [
         sku: "WS-LEGACY10",
         name: "Legacy Edition 1.0 — Kashmiri Willow Hard Tennis Bat",
         category: ["Hard Tennis"],
-        description: "The Legacy Edition 1.0 is a handcrafted hard tennis cricket bat made in Srinagar, Kashmir, designed for club and tournament players who want professional performance at an entry-friendly price. It features a Grade A Kashmiri willow blade, a flat non-scoop face for solid all-round stroke play, and a Singapore cane handle that absorbs shock on mishits. Weighing 950–1,050 grams with 48–52 mm edges and a 4.4-inch face, it is ideal for hard tennis ball cricket and priced at ₹2,799.\n\nUnlike mass-produced bats, every Legacy 1.0 is hard-pressed for extra durability, fully knocked and oiled, and hand-finished in Srinagar — arriving game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery anywhere in India and a 1-year warranty.",
+        description: "The Legacy Edition 1.0 is a handcrafted hard tennis cricket bat made in Srinagar, Kashmir, designed for club and tournament players who want professional performance at an entry-friendly price. It features a Grade A Kashmiri willow blade, a scoop with drilled shoulders for a lighter, quicker pickup, and a Singapore cane handle that absorbs shock on mishits. Weighing 950–1,050 grams with 48–52 mm edges and a 4.4-inch face, it is ideal for hard tennis ball cricket and priced at ₹2,799.\n\nUnlike mass-produced bats, every Legacy 1.0 is hard-pressed for extra durability, fully knocked and oiled, and hand-finished in Srinagar — arriving game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery anywhere in India and a 6-month handle warranty.",
         image: [
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826391_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826392_w.jpg",
@@ -60,7 +60,7 @@ export const products: ProductFull[] = [
             "Height: Available in 35 and 36 inches",
             "Face: 4.4 inches",
             "Handle: Singapore cane",
-            "Scoop Profile: Non-scoop (flat face)",
+            "Scoop Profile: Scoop with drilled shoulders",
             "Free delivery across India",
             "Free bat bag",
             "Premium toe guard",
@@ -75,7 +75,7 @@ export const products: ProductFull[] = [
         sku: "WS-BAHUBALI",
         name: "Bahubali Edition — Kashmiri Willow Hard Tennis Bat",
         category: ["Hard Tennis"],
-        description: "The Bahubali Edition is a hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for aggressive players who want explosive, boundary-clearing power. It features a wide Kashmiri willow blade with a 4.4-inch face, thick 46–52 mm edges for a larger sweet spot, and a flat non-scoop profile that maximises raw hitting weight. Weighing 950–1,100 grams, it is ideal for hard tennis ball cricket and priced at ₹2,999.\n\nUnlike mass-produced bats, every Bahubali is hard-pressed, fully knocked and oiled, and hand-finished in our Srinagar workshop — themed in bold wine red and black. Each bat ships game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery across India and a 1-year warranty.",
+        description: "The Bahubali Edition is a hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for aggressive players who want explosive, boundary-clearing power. It features a wide Kashmiri willow blade with a 4.4-inch face, thick 46–52 mm edges for a larger sweet spot, and a flat non-scoop profile that maximises raw hitting weight. Weighing 950–1,100 grams, it is ideal for hard tennis ball cricket and priced at ₹2,999.\n\nUnlike mass-produced bats, every Bahubali is hard-pressed, fully knocked and oiled, and hand-finished in our Srinagar workshop — themed in bold wine red and black. Each bat ships game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery across India and a 6-month handle warranty.",
         image: [
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826379_w.jpg",

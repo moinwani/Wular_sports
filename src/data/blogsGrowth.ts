@@ -20,7 +20,7 @@ export const blogsGrowth: BlogPost[] = [
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 10, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '6 min read',
         image: `${IMG}/legacy-2.0/photo_6078080698049826303_w.jpg`,
         content: `<p>The right tennis cricket bat depends first on the ball you play with. For a heavy (hard) tennis ball of about 130–140 grams, choose a Kashmir willow bat of 950–1100 grams with thick 46–52 mm edges. For a light tennis ball or tape ball, choose a lighter bat of 820–950 grams, ideally with a scoop. Get the ball type and the weight right and most other choices fall into place.</p>
@@ -54,7 +54,7 @@ export const blogsGrowth: BlogPost[] = [
 <thead><tr><th>Bat</th><th>Ball</th><th>Weight</th><th>Edges</th><th>Profile</th></tr></thead>
 <tbody>
 <tr><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a></td><td>Soft tennis, tape ball</td><td>820–950 g</td><td>40–45 mm</td><td>Honeycomb scoop</td></tr>
-<tr><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td>Hard tennis</td><td>950–1050 g</td><td>48–52 mm</td><td>Non-scoop, flat face</td></tr>
+<tr><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td>Hard tennis</td><td>950–1050 g</td><td>48–52 mm</td><td>Scoop with drilled shoulders</td></tr>
 <tr><td><a href="/product/bahubali-edition">Bahubali Edition</a></td><td>Hard tennis</td><td>950–1100 g</td><td>46–52 mm</td><td>Non-scoop, flat face</td></tr>
 <tr><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></td><td>Hard tennis</td><td>980–1100 g</td><td>48–52 mm</td><td>Ramp scoop</td></tr>
 <tr><td><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td><td>Hard tennis</td><td>950–1050 g</td><td>About 50 mm</td><td>Arch scoop, drilled back</td></tr>
@@ -199,13 +199,13 @@ export const blogsGrowth: BlogPost[] = [
     },
     {
         id: 'kashmir-willow-bat-price-india',
-        title: 'Kashmir Willow Bat Price in India (2026): What Each Budget Gets You',
-        seoTitle: 'Kashmir Willow Bat Price in India (2026)',
+        title: 'Kashmir Willow Bat Price in India (2027): What Each Budget Gets You',
+        seoTitle: 'Kashmir Willow Bat Price in India (2027)',
         description: 'Kashmir willow bat prices in India explained: what you get under ₹1,500, at ₹1,500–3,000, ₹3,000–5,000 and above, and what actually drives the price.',
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 10, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '5 min read',
         image: `${IMG}/bahubali/photo_6078080698049826379_w.jpg`,
         content: `<p>Kashmir willow cricket bats in India typically cost between about ₹1,000 and ₹6,000. Under ₹1,500 you get a basic bat for casual play; ₹1,500–₹3,000 buys a solid tennis ball bat; ₹3,000–₹5,000 gets better-seasoned, better-finished willow for tournament tennis cricket or club leather ball cricket; and above ₹5,000 you are paying for the best Kashmir clefts or entering English willow territory.</p>
@@ -219,7 +219,7 @@ export const blogsGrowth: BlogPost[] = [
 <tr><td>Above ₹5,000</td><td>The top Kashmir clefts and player-grade finishing, or entry-level English willow</td><td>Serious league players</td></tr>
 </tbody>
 </table>
-<p>These bands are a guide to the Indian market in 2026, not fixed rules. A well-made ₹2,800 bat will outperform a careless ₹4,500 one.</p>
+<p>These bands are a guide to the Indian market going into 2027, not fixed rules. A well-made ₹2,800 bat will outperform a careless ₹4,500 one.</p>
 <h2>What decides the price of a Kashmir willow bat?</h2>
 <ul>
 <li><strong>The cleft.</strong> Straight-grained, clean, well-balanced clefts are a small share of what a maker buys, so they cost more. Our guide to <a href="/blog/kashmir-willow-grades-explained">Kashmir willow grades</a> explains what the grades mean.</li>

@@ -2,6 +2,7 @@ import type { DocumentReference } from 'firebase-admin/firestore';
 import { db, FieldValue, Timestamp } from './firebaseAdmin';
 import { ADMIN_EMAIL } from '../data/constants';
 import { metaConfigured, purchaseFromOrder, sendPurchase } from './metaCapi';
+import { openaiConfigured, sendOpenAiOrder } from './openaiCapi';
 import { orderProblem } from './orderIntegrity';
 
 /**
@@ -13,7 +14,7 @@ import { orderProblem } from './orderIntegrity';
  * browser verify call and the Razorpay webhook call confirmPaidOrder(); a
  * per-order lock plus per-recipient status make it safe for both to fire:
  * each email is sent exactly once, and a failed one is retried on the next call.
- * The Meta purchase event rides on the same lock.
+ * The Meta and OpenAI purchase events ride on the same lock.
  */
 
 export type EmailResult = 'sent' | 'skipped' | string; // anything else = failure reason
@@ -154,7 +155,7 @@ export async function confirmPaidOrder(
         // Cancelled after the payment had already been recorded (e.g. refunded at the
         // buyer's request): a late webhook retry must not bring it back to be packed
         if (o.status === 'cancelled' && o.paymentId) {
-            return { order: o, want: null, wantMeta: false, busy: false, prev: (o.emailStatus || {}) as EmailStatus };
+            return { order: o, want: null, wantMeta: false, wantOpenAi: false, busy: false, prev: (o.emailStatus || {}) as EmailStatus };
         }
 
         // COD keeps paymentStatus 'pending' (balance due at the door)
@@ -184,8 +185,10 @@ export async function confirmPaidOrder(
         };
         const metaDone = ['sent', 'skipped'].includes(o.metaPurchase?.status);
         const wantMeta = !metaDone && metaConfigured();
+        const openAiDone = ['sent', 'skipped'].includes(o.openaiOrder?.status);
+        const wantOpenAi = !openAiDone && openaiConfigured();
         const locked = o.emailLockUntil && o.emailLockUntil.toMillis() > Date.now();
-        const shouldSend = (want.admin || want.customer || wantMeta) && !locked;
+        const shouldSend = (want.admin || want.customer || wantMeta || wantOpenAi) && !locked;
         if (shouldSend) update.emailLockUntil = Timestamp.fromMillis(Date.now() + LOCK_MS);
 
         tx.update(ref, update);
@@ -198,7 +201,8 @@ export async function confirmPaidOrder(
             order,
             want: shouldSend ? want : null,
             wantMeta: shouldSend && wantMeta,
-            busy: !!locked && (want.admin || want.customer || wantMeta),
+            wantOpenAi: shouldSend && wantOpenAi,
+            busy: !!locked && (want.admin || want.customer || wantMeta || wantOpenAi),
             prev,
         };
     });
@@ -211,10 +215,14 @@ export async function confirmPaidOrder(
     if (!claim) return { found: false, emailFailed: false };
     if (!claim.want) return { found: true, emails: claim.prev, emailFailed: false, inProgress: claim.busy };
 
-    const [sent, meta] = await Promise.all([
+    const channel = claim.order.channel === 'whatsapp' ? 'chat' : 'website';
+    const [sent, meta, openai] = await Promise.all([
         sendOrderEmails(ref.id, claim.order, claim.want),
         claim.wantMeta
-            ? sendPurchase(purchaseFromOrder(ref.id, claim.order, claim.order.channel === 'whatsapp' ? 'chat' : 'website', Date.now()))
+            ? sendPurchase(purchaseFromOrder(ref.id, claim.order, channel, Date.now()))
+            : Promise.resolve(null),
+        claim.wantOpenAi
+            ? sendOpenAiOrder(ref.id, claim.order, channel, Date.now())
             : Promise.resolve(null),
     ]);
     const merged: EmailStatus = { ...claim.prev, ...sent };
@@ -223,6 +231,7 @@ export async function confirmPaidOrder(
         emailLockUntil: FieldValue.delete(),
         ...(merged.admin === 'sent' && !claim.order.notifiedAt ? { notifiedAt: FieldValue.serverTimestamp() } : {}),
         ...(meta ? { metaPurchase: meta } : {}),
+        ...(openai ? { openaiOrder: openai } : {}),
     });
 
     const failed = (r?: EmailResult) => !!r && r !== 'sent' && r !== 'skipped';

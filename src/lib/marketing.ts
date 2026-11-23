@@ -76,6 +76,9 @@ export interface Attribution {
     /** Meta browser ids — let Meta match the purchase to the ad click */
     fbp?: string;
     fbc?: string;
+    /** OpenAI (ChatGPT ads) click id from the landing URL, and the pixel's __obref cookie */
+    oppref?: string;
+    obref?: string;
     /** Visitor Ref code, the same one put in WhatsApp messages from the site */
     ref?: string;
     /** Set by the owner in the admin panel; always wins */
@@ -149,6 +152,11 @@ export const sanitizeAttribution = (a: any): Attribution | undefined => {
     if (fbp && /^fb\.\d\.\d+\.\d+$/.test(fbp)) out.fbp = fbp;
     if (fbc && /^fb\.\d\.\d+\.\S+$/.test(fbc)) out.fbc = fbc;
     if (ref && /^WS-[A-Z0-9]{6}$/.test(ref)) out.ref = ref;
+    // Opaque OpenAI tokens: passed on unchanged, so only length and charset are checked
+    const oppref = clip(a.oppref, 1000);
+    const obref = clip(a.obref, 500);
+    if (oppref && /^[A-Za-z0-9_\-=.~%+/]+$/.test(oppref)) out.oppref = oppref;
+    if (obref && /^[A-Za-z0-9_\-=.~%+/:]+$/.test(obref)) out.obref = obref;
     return Object.keys(out).length ? out : undefined;
 };
 

@@ -267,6 +267,7 @@ export interface MarketingData {
     coupons: CouponDef[];
     visitors: VisitorTrail[];
     metaConfigured: boolean;
+    openaiConfigured?: boolean;
 }
 
 export const fetchMarketing = async (): Promise<MarketingData> => {

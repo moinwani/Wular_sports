@@ -19,6 +19,7 @@ import { ProductReviews } from '../components/product/ProductReviews';
 import { ProductCard } from '../components/product/ProductCard';
 import { getCDNUrl } from '../services/githubService';
 import { absoluteUrl } from '../lib/blog';
+import { oaiProductViewed, oaiItemsAdded } from '../services/openaiPixel';
 
 export interface ProductDetailsViewProps {
     product: ProductFull;
@@ -100,6 +101,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 }
             });
         }
+        if (product) oaiProductViewed({ id: product.id, name: product.name, price: product.price });
     }, []);
 
     // Store scroll container ref from VerticalImageGallery
@@ -174,6 +176,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                 }
             });
         }
+        oaiItemsAdded([{ id: product.id, name: product.name, price: product.price, quantity: itemData.quantity || 1 }]);
 
         // "Buy now" skips the cart drawer and goes straight to checkout
         if (goToCheckout) {

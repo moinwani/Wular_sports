@@ -12,6 +12,7 @@ import { captureAttribution } from '../src/utils/attributionCapture';
 import { startGoogleOneTap } from '../src/services/googleIdentity';
 import { CatalogProvider } from '../src/context/CatalogContext';
 import '../index.css';
+import { oaiPageViewed } from '../src/services/openaiPixel';
 
 declare global {
     interface Window {
@@ -64,6 +65,7 @@ function AppShell({ Component, pageProps }: AppProps) {
             if (window.dataLayer) {
                 window.dataLayer.push({ event: 'page_view', page: url });
             }
+            oaiPageViewed(url);
         };
 
         handleRouteChange(window.location.pathname);

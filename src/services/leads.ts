@@ -3,6 +3,7 @@ import { getFirestoreDb } from './firebase-firestore';
 import { CartItem } from '../types';
 import { getVisitorRef } from '../utils/helpers';
 import { syncVisitor } from '../utils/attributionCapture';
+import { oaiLeadCreated } from './openaiPixel';
 
 /**
  * Checkout lead capture.
@@ -77,6 +78,7 @@ export const trackWhatsAppClick = async (
                 ...(extra || {}),
             });
         }
+        oaiLeadCreated();
 
         // Remember which ad brought this visitor, under the Ref code that
         // travels in their WhatsApp message

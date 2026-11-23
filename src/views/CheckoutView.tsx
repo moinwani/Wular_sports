@@ -13,6 +13,7 @@ import { Icon } from '../components/common/Icon';
 import { CheckoutAuth } from '../components/checkout/CheckoutAuth';
 import { useCart } from '../context/CartContext';
 import { useCatalog } from '../context/CatalogContext';
+import { oaiCheckoutStarted, oaiOrderCreated } from '../services/openaiPixel';
 
 const hashData = async (value: string): Promise<string> => {
     const encoder = new TextEncoder();
@@ -418,6 +419,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             }
             window.dataLayer.push(payload);
         })();
+        oaiCheckoutStarted(cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })), total);
     }, []);
 
     // Live auth state — optional convenience: prefill email when signed in.
@@ -696,6 +698,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             if (Object.keys(userData).length > 0) payload.user_data = userData;
             window.dataLayer.push(payload);
         }
+        oaiOrderCreated(firestoreOrderId, cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })), payable);
 
         if (isCOD && sanitizedData) {
             window.dataLayer?.push({

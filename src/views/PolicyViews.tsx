@@ -33,7 +33,7 @@ export const PrivacyPolicyView: FC = () => (
                 <h3>Data Security:</h3>
                 <p>We implement strict measures to secure your data and never share your information with unauthorized third parties.</p>
                 <h3>Third-Party Services:</h3>
-                <p>We use trusted services like Razorpay for payment processing and WhatsApp for order communication. These services have their own privacy policies.</p>
+                <p>We use trusted services like Razorpay for payment processing and WhatsApp for order communication. To understand how visitors use our site and how well our ads work, we use analytics and advertising measurement tools from Google (Analytics and Tag Manager), Microsoft (Clarity), Meta and OpenAI. These services have their own privacy policies.</p>
                 <h3>Your Rights:</h3>
                 <p>You may request access, correction, or deletion of your personal data at any time.</p>
             </div>

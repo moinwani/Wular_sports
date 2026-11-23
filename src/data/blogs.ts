@@ -3,190 +3,6 @@ import { blogsNew } from './blogsNew';
 
 export const blogs: BlogPost[] = [
     {
-        id: 'kashmiri-willow-cricket-bat-buying-guide-2025',
-        title: 'Kashmiri Willow Cricket Bat: Complete Buying Guide (2025)',
-        seoTitle: 'Kashmiri Willow Cricket Bat: Buying Guide',
-        description: 'Everything about Kashmiri willow cricket bats: durability, performance, price vs English willow, and how to choose the best bat for your game.',
-        category: 'Guides',
-        author: 'Wular Sports Team',
-        date: 'Jan 30, 2026',
-        modifiedAt: '2026-11-10',
-        readTime: '10 min read',
-        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826302_w.jpg',
-        content: `
-            <p>If you're searching for a <strong>kashmiri willow cricket bat</strong> that delivers power, durability, and value for money, you've come to the right place. Whether you're a club cricketer, a leather ball player, or someone who plays serious tennis ball cricket, understanding Kashmiri willow can help you make a smart buying decision.</p>
-
-            <h2>What is Kashmiri Willow?</h2>
-            <p>Kashmiri willow is a type of cricket bat willow grown primarily in the Kashmir Valley of India. Unlike English willow (Salix Alba Caerulea), which is grown in England, Kashmiri willow comes from a different species of willow tree that thrives in the cooler climate of the Himalayas.</p>
-            
-            <p>The wood is denser and heavier than English willow, which gives it unique playing characteristics. While it may not have the same "ping" as a premium English willow bat straight out of the box, Kashmiri willow offers excellent durability and is significantly more affordable—making it the go-to choice for millions of cricketers across India.</p>
-
-            <h3>Key Characteristics:</h3>
-            <ul>
-                <li><strong>Denser grain structure</strong> – More compact wood fibers</li>
-                <li><strong>Heavier weight</strong> – Typically 50-100 grams heavier than English willow</li>
-                <li><strong>Natural durability</strong> – Requires less maintenance and lasts longer</li>
-                <li><strong>Affordable pricing</strong> – 60-80% cheaper than English willow bats</li>
-            </ul>
-
-            <h2>Kashmiri Willow vs English Willow: The Real Comparison</h2>
-            <p>Let's break down the key differences to help you decide which is right for you:</p>
-
-            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
-                <tr style="background: rgba(255,255,255,0.1);">
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Feature</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Kashmiri Willow</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">English Willow</th>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Price Range</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹2,000 – ₹8,000</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹8,000 – ₹50,000+</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Weight</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Heavier (1,150g – 1,300g)</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Lighter (1,100g – 1,200g)</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Durability</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Excellent (2-3 seasons)</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Good (1-2 seasons with care)</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Best For</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Club cricket, practice, leather ball</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Professional, competitive cricket</td>
-                </tr>
-            </table>
-
-            <h3>When to Choose Kashmiri Willow:</h3>
-            <ul>
-                <li>You play <strong>club-level or recreational cricket</strong></li>
-                <li>You need a <strong>practice bat</strong> that can handle rough use</li>
-                <li>You play on <strong>hard, abrasive Indian pitches</strong></li>
-                <li>You want <strong>maximum value for money</strong></li>
-                <li>You play <strong>leather ball cricket</strong> regularly</li>
-            </ul>
-
-            <h2>Performance in Indian Playing Conditions</h2>
-            <p>India's cricket conditions are unique—dusty pitches, extreme heat, and varied playing surfaces. Here's why Kashmiri willow excels:</p>
-
-            <h3>1. Heat Resistance</h3>
-            <p>Indian summers can reach 45°C. Kashmiri willow's denser structure makes it less prone to cracking in extreme heat compared to English willow.</p>
-
-            <h3>2. Rough Pitch Durability</h3>
-            <p>Most club and street cricket happens on concrete, matting, or hard mud wickets. Kashmiri willow handles these abrasive surfaces much better, lasting 2-3 full seasons with proper care.</p>
-
-            <h3>3. Leather Ball Suitability</h3>
-            <p>Many players assume Kashmiri willow is only for tennis ball cricket—this is a myth. A well-made <strong>kashmiri willow bat for leather ball</strong> cricket performs excellently, especially for:</p>
-            <ul>
-                <li>Opening batsmen who face new ball seam movement</li>
-                <li>Players who value durability over extreme lightness</li>
-                <li>Club cricketers playing weekend matches</li>
-            </ul>
-
-            <p>Brands like <strong>Wular Sports</strong> design their <a href="/leather-cricket-bats">Leather Ball Cricket Bats</a> with Grade A+ Kashmiri willow, offering 5-12 clear grains, proper pressing, and professional-grade finishing.</p>
-
-            <h2>Who Should Buy a Kashmiri Willow Cricket Bat?</h2>
-            <p>Kashmiri willow is perfect for:</p>
-
-            <h3>1. Beginner to Intermediate Players</h3>
-            <p>If you're learning the game or playing at the club level, Kashmiri willow offers the best balance of performance and price.</p>
-
-            <h3>2. Tennis Ball Cricket Enthusiasts</h3>
-            <p>For hard tennis and soft tennis cricket, Kashmiri willow is ideal. Check out <strong>Wular Sports'</strong> range of <a href="/hard-tennis-bats">Hard Tennis Cricket Bats</a> and <a href="/soft-tennis-bats">Soft Tennis Cricket Bats</a> designed specifically for Indian playing conditions.</p>
-
-            <h3>3. Budget-Conscious Buyers</h3>
-            <p>If you want a quality bat without spending ₹10,000+, Kashmiri willow delivers excellent value.</p>
-
-            <h2>Which Kashmiri Willow Bat Should You Start With?</h2>
-            <p>Match the bat to the ball you play with most. For hard tennis ball cricket, the <a href="/product/legacy-edition">Legacy Edition 1.0</a> is our all-round starting point and the <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> adds longer-seasoned willow and a ramp scoop. For light tennis ball and tape ball cricket, the <a href="/product/ak-47-honeycomb">AK-47 Edition</a> is a lighter honeycomb scoop bat. For leather ball cricket, see the <a href="/product/standard-leather-bat">Leather Cricket Bat</a> in Grade A+ Kashmir willow. You can compare every tennis ball bat side by side on our <a href="/tennis-cricket-bats">tennis cricket bats</a> page.</p>
-
-            <h2>Kashmir Willow Bat Price Guide (2025)</h2>
-            <p>Here's what you can expect to pay:</p>
-
-            <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
-                <tr style="background: rgba(255,255,255,0.1);">
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Grade</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Price Range</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Features</th>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Entry Level</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹2,000 – ₹3,500</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">4-6 grains, basic pressing, practice use</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Mid Range</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹3,500 – ₹5,500</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">6-8 grains, good pressing, club cricket</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><strong>Premium</strong></td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">₹5,500 – ₹8,000</td>
-                    <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">8-12 grains, hard pressed, leather ball ready</td>
-                </tr>
-            </table>
-
-            <p><strong>Best Value:</strong> The ₹4,000-₹6,000 range offers the sweet spot of quality and affordability for most players.</p>
-
-            <h2>Frequently Asked Questions (FAQs)</h2>
-
-            <h3>1. Is Kashmiri willow good for leather ball cricket?</h3>
-            <p><strong>Yes!</strong> A Grade A or A+ Kashmiri willow bat with 8-12 grains is excellent for leather ball cricket, especially at the club level. It offers durability and power, though it may be slightly heavier than English willow.</p>
-
-            <h3>2. How long does a Kashmiri willow bat last?</h3>
-            <p>With proper care, a quality Kashmiri willow bat lasts <strong>2-3 full seasons</strong> (or 40-60 matches). This is longer than most English willow bats, which typically last 1-2 seasons.</p>
-
-            <h3>3. Do I need to knock in a Kashmiri willow bat?</h3>
-            <p><strong>Yes.</strong> Even though Kashmiri willow is denser, knocking-in compresses the fibers and prevents cracking. Spend 150-200 strikes with a mallet before using it in matches.</p>
-
-            <h3>4. Why is Kashmiri willow cheaper than English willow?</h3>
-            <p>Kashmiri willow is more abundant, grows faster, and requires less processing. English willow is rare, takes longer to mature (15+ years), and has a more complex supply chain, making it expensive.</p>
-
-            <h2>Final Thoughts</h2>
-            <p>If you're looking for a <strong>reliable, affordable, and durable cricket bat</strong> that performs well in Indian conditions, a Kashmiri willow bat is an excellent choice. It's perfect for club cricket, practice sessions, and even leather ball matches—without breaking the bank.</p>
-
-            <p>The key is to buy from a reputable brand that uses quality wood, proper seasoning, and professional craftsmanship. A well-made Kashmiri willow bat can serve you for years, helping you score runs and enjoy the game.</p>
-
-            <div class="blog-cta-final">
-                <h3>Ready to Find Your Perfect Bat?</h3>
-                <p>Explore the Wular Sports collection to find bats designed for power, balance, and durability—crafted specifically for Indian playing conditions.</p>
-                <div class="cta-btns">
-                    <a href="/collection" class="btn">Shop Cricket Bats</a>
-                    <a href="/leather-cricket-bats" class="btn btn-secondary">View Leather Ball Bats</a>
-                </div>
-            </div>
-        `,
-        faq: [
-            {
-                question: "Is Kashmiri willow good for leather ball cricket?",
-                answer: "Yes! A Grade A or A+ Kashmiri willow bat with 8–12 grains is excellent for leather ball cricket, especially at the club level. It offers outstanding durability and power, and is significantly more affordable than English willow."
-            },
-            {
-                question: "How long does a Kashmiri willow cricket bat last?",
-                answer: "With proper care, a quality Kashmiri willow bat lasts 2–3 full seasons (around 40–60 matches). This is often longer than mid-range English willow bats, which typically last 1–2 seasons."
-            },
-            {
-                question: "Do I need to knock in a Kashmiri willow bat?",
-                answer: "Yes. Even though Kashmiri willow is denser, knocking-in compresses the wood fibers and prevents cracking during play. Spend 150–200 strikes with a mallet before using the bat in matches."
-            },
-            {
-                question: "Why is Kashmiri willow cheaper than English willow?",
-                answer: "Kashmiri willow is more abundant, grows faster, and requires less complex processing. English willow takes 15+ years to mature and has a complex supply chain, which drives up its price. Kashmiri willow offers excellent value for money."
-            },
-            {
-                question: "What is the best Kashmiri willow cricket bat for hard tennis ball?",
-                answer: "For hard tennis ball cricket, look for a bat with a weight range of 980–1100 grams, edge thickness of 48–52mm, and a hard-pressed Kashmiri willow blade. The Wular Sports Legacy Edition 2.0 is engineered specifically for hard tennis ball tournament play."
-            },
-            {
-                question: "What is the difference between scoop and non-scoop cricket bats?",
-                answer: "A scoop bat has wood removed from the back of the blade (either a ramp scoop or honeycomb scoop) to reduce weight and improve swing speed. A non-scoop bat has a solid flat back, offering more mass behind the ball for maximum power. Scoop bats suit soft tennis and lightweight play; non-scoop bats suit hard tennis and leather ball cricket."
-            }
-        ]
-    },
-    {
         id: 'choosing-the-right-bat-weight',
         title: 'Choosing the Right Bat Weight: The Science of Power',
         seoTitle: 'Cricket Bat Weight Guide: Pick the Right Weight',
@@ -194,7 +10,7 @@ export const blogs: BlogPost[] = [
         category: 'Guides',
         author: 'Wular Sports Team',
         date: 'Jan 05, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg',
         content: `
@@ -250,7 +66,7 @@ export const blogs: BlogPost[] = [
             <p>If you are strong through the shoulders and forearms and like to hit straight and over mid-wicket, you can use the upper half of the range: about 1,050–1,100 g for hard tennis. The <a href="/product/bahubali-edition">Bahubali Edition</a> (950–1,100 g, flat non-scoop face) and the Legacy Edition 2.0 (980–1,100 g, ramp scoop) both go up to that weight.</p>
 
             <h3>Timers, wristy players and openers</h3>
-            <p>If your game is built on placement, late cuts and quick hands against fast bowling, stay between 950 and 1,020 g. The Legacy Edition 1.0 (950–1,050 g) covers this range with 48–52 mm edges and a flat face.</p>
+            <p>If your game is built on placement, late cuts and quick hands against fast bowling, stay between 950 and 1,020 g. The Legacy Edition 1.0 (950–1,050 g) covers this range with 48–52 mm edges and a scoop with drilled shoulders that keeps the pickup light.</p>
 
             <h3>Soft tennis and tape ball players</h3>
             <p>Go light. The AK-47 Edition weighs 820–950 g because its honeycomb scoop takes wood out of the back of the blade. A lighter <a href="/soft-tennis-bats">soft tennis bat</a> lets you swing hard at a ball that does not need much mass behind it.</p>
@@ -760,7 +576,7 @@ export const blogs: BlogPost[] = [
         category: 'Tactics',
         author: 'Wular Sports Team',
         date: 'Jan 24, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7836.JPG',
         content: `
@@ -820,7 +636,7 @@ export const blogs: BlogPost[] = [
             <table style="width:100%; border-collapse: collapse; margin: 20px 0;">
             <thead><tr style="background: rgba(255,255,255,0.1);"><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Bat</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Profile</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Weight and edges</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Good for</th></tr></thead>
             <tbody>
-            <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Non-scoop, flat face</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,050 g, 48–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">All-round play and a first serious hard tennis bat</td></tr>
+            <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Scoop with drilled shoulders</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,050 g, 48–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">All-round play and a first serious hard tennis bat</td></tr>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/bahubali-edition">Bahubali Edition</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Non-scoop, flat face</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,100 g, 46–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Power hitters who want full wood behind the ball</td></tr>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Legacy Edition 2.0</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Ramp scoop (minimal)</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">980–1,100 g, 48–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Regular tournament players; 4.5-inch face</td></tr>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Mughal-arch scoop, drilled back</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,050 g, about 50 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Players who want the premium option</td></tr>
@@ -888,7 +704,7 @@ export const blogs: BlogPost[] = [
         category: 'Craftsmanship',
         author: 'Wular Sports Team',
         date: 'Jan 23, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826383_w.jpg',
         content: `
@@ -954,7 +770,7 @@ export const blogs: BlogPost[] = [
             <ul>
             <li>The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> uses Kashmiri willow naturally seasoned for 3 years and is hard pressed, with a minimal ramp scoop.</li>
             <li>The <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a> is made from the top 3% of clefts and hard pressed 5 times, with a Mughal-arch scoop and a drilled back.</li>
-            <li>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is a Grade A Kashmiri willow bat with a flat, non-scoop face and 48–52 mm edges.</li>
+            <li>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is a Grade A Kashmiri willow bat with a scoop, drilled shoulders and 48–52 mm edges.</li>
             <li>The <a href="/product/standard-leather-bat">Leather Cricket Bat</a> uses Grade A+ Kashmiri willow with 5–12 grains.</li>
             </ul>
             <p>Every bat ships knocked-in and oiled, with a bat cover, toe guard and extra grip. For a closer look at the workshop, read <a href="/blog/behind-the-craft-wular-sports-srinagar">how Wular Sports bats are handcrafted in Srinagar</a>. To learn why we use cane, see our post on <a href="/blog/the-singapore-cane-handle-advantage">Singapore cane handles</a>.</p>
@@ -998,13 +814,13 @@ export const blogs: BlogPost[] = [
     },
     {
         id: 'best-kashmiri-willow-cricket-bat-under-3000',
-        title: 'Best Kashmiri Willow Cricket Bat Under ₹3000 in 2026',
-        seoTitle: 'Best Kashmiri Willow Bat Under ₹3000 (2026)',
+        title: 'Best Kashmiri Willow Cricket Bat Under ₹3000 in 2027',
+        seoTitle: 'Best Kashmiri Willow Bat Under ₹3000 (2027)',
         description: 'The best Kashmiri willow cricket bats under ₹3000 for hard tennis, soft tennis and leather ball cricket, compared for value, build and pickup.',
         category: 'Buying Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826395_w.jpg',
         content: `
@@ -1022,7 +838,7 @@ export const blogs: BlogPost[] = [
 
             <h2>Best Hard Tennis Cricket Bat Under ₹3000</h2>
             <h3>Wular Sports Legacy Edition 1.0 — ₹2,799</h3>
-            <p>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is our flagship hard tennis bat under ₹3,000. It's built from Grade A Kashmiri willow with a Singapore cane handle, hard-pressed blade, and a flat non-scoop face for maximum power transfer. Weight: 950–1050g. Ideal for club, gully, and tournament hard tennis cricket.</p>
+            <p>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is our flagship hard tennis bat under ₹3,000. It's built from Grade A Kashmiri willow with a Singapore cane handle, hard-pressed blade, and a scoop with drilled shoulders that makes it quick to pick up without thinning the edges. Weight: 950–1050g. Ideal for club, gully, and tournament hard tennis cricket.</p>
 
             <div class="blog-cta-inline">
                 <h4>Legacy Edition 1.0 — ₹2,799</h4>
@@ -1247,13 +1063,13 @@ export const blogs: BlogPost[] = [
     },
     {
         id: 'buy-kashmiri-willow-cricket-bat-online-india',
-        title: 'How to Buy a Kashmiri Willow Cricket Bat Online in India (2026 Guide)',
+        title: 'How to Buy a Kashmiri Willow Cricket Bat Online in India (2027 Guide)',
         seoTitle: 'Buy Kashmiri Willow Cricket Bat Online (India)',
         description: 'How to buy a genuine Kashmiri willow cricket bat online in India: what to check, how to avoid fakes, and where to get Grade A bats delivered free.',
         category: 'Buying Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
-        modifiedAt: '2026-11-10',
+        modifiedAt: '2026-11-24',
         readTime: '7 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826306_w.jpg',
         content: `

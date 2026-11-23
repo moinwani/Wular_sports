@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
@@ -17,7 +18,10 @@ const nextConfig = {
         minimumCacheTTL: 2678400,
     },
     async redirects() {
+        // Blog posts taken off the site → the post that replaced each one
+        const retired = JSON.parse(readFileSync(new URL('./src/data/retiredPosts.json', import.meta.url), 'utf8'));
         return [
+            ...Object.entries(retired).map(([from, to]) => ({ source: `/blog/${from}`, destination: to, permanent: true })),
             {
                 // One address for Google: www.wularsports.com → wularsports.com (permanent).
                 // /api is left alone so payment webhooks posted to the www address keep working.

@@ -13,7 +13,7 @@ import { BlogPost } from '../types';
 const IMG = 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products';
 const KNIGHT_IMG = '/api/photo/products/new/whatsapp-image-2026-10-26-at-12.41.11-pm-JFMNDXJCijmcvrfPKGNyGYEGJzrE7s.jpg';
 
-const WHEN = { author: 'Moin Wani', date: 'Nov 23, 2026', modifiedAt: '2026-11-23' };
+const WHEN = { author: 'Moin Wani', date: 'Nov 23, 2026', modifiedAt: '2026-11-24' };
 
 const DISCLOSURE = '<p><em>A note before you read: we make cricket bats in Srinagar, so the picks in this guide come from our own range. The checklist works for any bat from any maker. Use it to judge ours, and everyone else’s.</em></p>';
 
@@ -34,6 +34,7 @@ ${DISCLOSURE}
 <table>
 <thead><tr><th>If you are…</th><th>Look for</th><th>Our pick</th></tr></thead>
 <tbody>
+<tr><td>On a budget, and you want a quick pickup</td><td>A scoop on pressed willow, 950–1050 g</td><td><a href="/product/legacy-edition">Legacy Edition 1.0</a>: scoop with drilled shoulders, 950–1050 g, 48–52 mm edges, Singapore cane, ₹2,799</td></tr>
 <tr><td>A straight power hitter who wants all the wood behind the ball</td><td>Flat back (non-scoop), 950–1100 g, thick edges</td><td><a href="/product/bahubali-edition">Bahubali Edition</a>: flat face, 950–1100 g, 46–52 mm edges, ₹2,999</td></tr>
 <tr><td>An all-round attacker who wants thick edges and a quicker pickup</td><td>A light ramp scoop, 48–52 mm edges, seasoned willow</td><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a>: willow seasoned for 3 years, ramp scoop, 980–1100 g, 48–52 mm edges, ₹3,499</td></tr>
 <tr><td>A regular tournament player who wants our best willow</td><td>Top-grade clefts, heavy pressing, a cane handle built for impact</td><td><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a>: top 3% of our clefts, pressed five times, Mughal-arch scoop, around 50 mm edges, 950–1050 g, ₹3,999</td></tr>
@@ -60,12 +61,14 @@ ${DISCLOSURE}
 <h3>8. What happens after you buy</h3>
 <p>Ask what the warranty actually covers, how returns work and whether the bat arrives knocked-in and oiled. A long warranty that covers nothing useful is worth less than a short one that covers the part most likely to fail. Our Knight Edition, for example, carries a 6-month handle replacement guarantee: if the handle breaks or comes loose in normal play within 6 months, we replace it with a brand-new bat.</p>
 <h2>Our picks for 2027, in more detail</h2>
+<h3>Legacy Edition 1.0: the best value</h3>
+<p>The <a href="/product/legacy-edition">Legacy Edition 1.0</a> is our most affordable hard tennis bat at ₹2,799. It is made from Grade A Kashmir willow with a scoop and drilled shoulders, which take weight out of the back so the bat picks up light, while the 48–52 mm edges stay thick. It weighs 950–1050 g, has a Singapore cane handle and comes in 35 and 36 inch. It suits players who want a proper pressed hard tennis bat without paying for premium clefts, and it is a good first hard tennis bat.</p>
 <h3>Bahubali Edition: for straight, flat-out power</h3>
-<p>The <a href="/product/bahubali-edition">Bahubali Edition</a> has a flat (non-scoop) back, so all the willow sits behind the ball. It weighs 950–1100 g with 46–52 mm edges and costs ₹2,999. It suits big players who hit straight and like to feel the weight of the bat through the shot. The trade-off: a flat bat at the heavier end feels heavier in the hands than a scooped bat of the same weight, so if you rely on quick wrists, look at the Legacy 2.0 instead.</p>
+<p>The <a href="/product/bahubali-edition">Bahubali Edition</a> has a flat (non-scoop) back, so all the willow sits behind the ball. It weighs 950–1100 g with 46–52 mm edges and costs ₹2,999. It suits big players who hit straight and like to feel the weight of the bat through the shot. The trade-off: a flat bat at the heavier end feels heavier in the hands than a scooped bat of the same weight, so if you rely on quick wrists, look at the Legacy 1.0 or 2.0 instead.</p>
 <h3>Legacy Edition 2.0: the all-rounder</h3>
 <p>The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> is made from Kashmir willow naturally seasoned for 3 years, with a ramp scoop, 48–52 mm edges, a 4.5-inch face and a Singapore cane handle. It weighs 980–1100 g and costs ₹3,499. The light ramp scoop keeps the bat quick to swing without taking strength out of the middle, which makes it a good fit for players who attack every ball but also need to defend and rotate the strike. We have written a full <a href="/blog/legacy-edition-2-0-review-best-hard-tennis-bat-under-3500">Legacy 2.0 review</a> if you want more detail.</p>
 <h3>Knight Edition: our best willow, for serious players</h3>
-<p>The <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a> is made only from the top 3% of the willow clefts we source, hard-pressed five times. It has a Mughal-arch scoop on the back, edges of around 50 mm and a Singapore cane handle with three rubber strips, at 950–1050 g in 35 and 36 inch. It costs ₹3,999 and carries the 6-month handle replacement guarantee. Is it worth the extra? If you play tournaments most weekends, yes: the better willow and extra pressing are what keep a bat performing through a long season. If you play a few casual games a month, the Legacy 2.0 or Bahubali will serve you just as well.</p>
+<p>The <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a> is made only from the top 3% of the willow clefts we source, hard-pressed five times. It has a Mughal-arch scoop on the back, edges of around 50 mm and a Singapore cane handle with three rubber strips, at 950–1050 g in 35 and 36 inch. It costs ₹3,999 and carries the 6-month handle replacement guarantee. Is it worth the extra? If you play tournaments most weekends, yes: the better willow and extra pressing are what keep a bat performing through a long season. If you play a few casual games a month, the Legacy 1.0, Legacy 2.0 or Bahubali will serve you just as well.</p>
 <h2>Match the bat to your ball</h2>
 <p>Hard tennis balls are not all the same. Lighter hard tennis balls (around 130 g) are easier on a bat; heavier ones (140 g and up) hit the blade harder and reward a well-pressed bat with thick edges. If your local tournaments use heavy balls, lean towards the Knight or the Legacy 2.0. Our guide to <a href="/blog/hard-tennis-ball-weight-guide-130g-140g">hard tennis ball weights</a> goes into this. And never use a soft tennis bat with a hard tennis ball: it is built lighter and can crack.</p>
 <h2>Five mistakes to avoid when you buy a hard tennis bat in 2027</h2>
@@ -80,11 +83,11 @@ ${DISCLOSURE}
 <p>Buying a bat online means you cannot hold it first, so ask for what you would check in a shop: the actual weight of the bat you will receive, clear photos or a video of the face and edges, and how returns work. On WhatsApp (+91 93206 22451) we can show you bats on a live video call before you order, so you can see the grains and the shape for yourself. Every bat comes with free delivery across India, and you can pay in full online or choose cash on delivery with a small booking amount.</p>
 <p>Still not sure? Read our <a href="/blog/tennis-cricket-bat-buying-guide-india">tennis cricket bat buying guide</a>, or message us with your height, the ball you play with and how you bat, and we will tell you honestly which bat fits.</p>`,
         faq: [
-            { question: 'Which is the best hard tennis bat in 2027?', answer: 'There is no single best bat for everyone. Choose a well-pressed Kashmir willow bat of 950–1100 g with 46–52 mm edges that you can swing fast. From our range, the Bahubali Edition suits straight power hitters, the Legacy Edition 2.0 suits all-round attackers, and the Knight Edition is our top-grade bat for regular tournament players.' },
+            { question: 'Which is the best hard tennis bat in 2027?', answer: 'There is no single best bat for everyone. Choose a well-pressed Kashmir willow bat of 950–1100 g with 46–52 mm edges that you can swing fast. From our range, the Legacy Edition 1.0 is the best value with a quick pickup, the Bahubali Edition suits straight power hitters, the Legacy Edition 2.0 suits all-round attackers, and the Knight Edition is our top-grade bat for regular tournament players.' },
             { question: 'What weight should a hard tennis bat be?', answer: 'Most adult players are comfortable between 950 g and 1100 g. Choose the heaviest bat you can still swing quickly every ball for a whole innings; if your wrists tire or the bat drags, go lighter.' },
             { question: 'Is a scoop bat or a flat bat better for hard tennis?', answer: 'Both work. A light ramp or arch scoop makes the bat quicker to swing while keeping the middle strong; a flat back keeps all the wood behind the ball for straight power. Pick by how you bat, not by which looks better.' },
             { question: 'Is Kashmir willow good for hard tennis cricket?', answer: 'Yes. Kashmir willow is denser and harder than English willow, so it copes better with repeated hits from a hard tennis ball, and it costs much less. Look for well-seasoned, hard-pressed willow.' },
-            { question: 'How much should I spend on a hard tennis bat?', answer: 'A good handcrafted Kashmir willow hard tennis bat usually costs a few thousand rupees. Our hard tennis bats range from ₹2,999 to ₹3,999 with free delivery. Spend more only if you play often enough to benefit from top-grade willow and extra pressing.' },
+            { question: 'How much should I spend on a hard tennis bat?', answer: 'A good handcrafted Kashmir willow hard tennis bat usually costs a few thousand rupees. Our hard tennis bats range from ₹2,799 to ₹3,999 with free delivery. Spend more only if you play often enough to benefit from top-grade willow and extra pressing.' },
         ],
     },
     {
@@ -102,7 +105,7 @@ ${DISCLOSURE}
 <table>
 <thead><tr><th>Ball</th><th>What the bat needs</th><th>Typical weight</th><th>Our bat</th></tr></thead>
 <tbody>
-<tr><td>Hard tennis ball</td><td>Dense, hard-pressed willow, thick edges, cane handle</td><td>950–1100 g</td><td><a href="/product/bahubali-edition">Bahubali</a>, <a href="/product/legacy-edition-2.0">Legacy 2.0</a>, <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight</a> (₹2,999–₹3,999)</td></tr>
+<tr><td>Hard tennis ball</td><td>Dense, hard-pressed willow, thick edges, cane handle</td><td>950–1100 g</td><td><a href="/product/legacy-edition">Legacy 1.0</a>, <a href="/product/bahubali-edition">Bahubali</a>, <a href="/product/legacy-edition-2.0">Legacy 2.0</a>, <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight</a> (₹2,799–₹3,999)</td></tr>
 <tr><td>Soft (light) tennis ball or tape ball</td><td>A lighter blade with a deeper scoop for fast swings</td><td>820–950 g</td><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a>, honeycomb scoop, ₹1,999</td></tr>
 <tr><td>Leather ball</td><td>A heavier, non-scoop blade made and prepared for a hard leather ball</td><td>1150–1250 g (ours)</td><td><a href="/product/standard-leather-bat">Leather Cricket Bat</a>, ₹4,799</td></tr>
 </tbody>
@@ -111,6 +114,7 @@ ${DISCLOSURE}
 <h2>Best Kashmir willow bat for hard tennis cricket</h2>
 <p>Hard tennis is where Kashmir willow is at its best. The wood is denser and harder than English willow, so a well-pressed blade copes with hundreds of hits from a heavy tennis ball. Look for 950–1100 g, 46–52 mm edges, a cane handle and willow that has been seasoned properly.</p>
 <ul>
+<li><strong>Best value, with a quick pickup:</strong> the <a href="/product/legacy-edition">Legacy Edition 1.0</a>, Grade A willow with a scoop and drilled shoulders, 48–52 mm edges, at ₹2,799.</li>
 <li><strong>For straight power:</strong> the <a href="/product/bahubali-edition">Bahubali Edition</a>, a flat-back bat with 46–52 mm edges at ₹2,999.</li>
 <li><strong>For all-round attacking batting:</strong> the <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a>, 3-year seasoned willow with a ramp scoop and a Singapore cane handle at ₹3,499.</li>
 <li><strong>For regular tournament players:</strong> the <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a>, made from the top 3% of our clefts and pressed five times, at ₹3,999.</li>
@@ -132,14 +136,14 @@ ${DISCLOSURE}
 </ul>
 <p>Our guide to <a href="/blog/kashmir-willow-grades-explained">Kashmir willow grades</a> explains why grade labels are not standard and what to check instead.</p>
 <h2>Step 3: set a realistic budget</h2>
-<p>As a rough guide to our own range in 2027: soft tennis bats start around ₹2,000, good hard tennis bats sit around ₹3,000–₹3,500, our top-grade hard tennis bat is ₹3,999 and our leather ball bat is ₹4,799. Higher prices should come with better willow, longer seasoning, more pressing or a better handle, so ask what the extra money buys. Our <a href="/blog/kashmir-willow-bat-price-india">Kashmir willow bat price guide</a> breaks this down further.</p>
+<p>As a rough guide to our own range in 2027: soft tennis bats start around ₹2,000, good hard tennis bats sit around ₹2,800–₹3,500, our top-grade hard tennis bat is ₹3,999 and our leather ball bat is ₹4,799. Higher prices should come with better willow, longer seasoning, more pressing or a better handle, so ask what the extra money buys. Our <a href="/blog/kashmir-willow-bat-price-india">Kashmir willow bat price guide</a> breaks this down further.</p>
 <h2>Why buy a bat made in Kashmir?</h2>
 <p>Kashmir willow grows in the Kashmir Valley, and the bat makers of the valley have shaped it for generations. Buying from a maker in Kashmir means you can ask the person who made the bat about the wood, the pressing and the shape, rather than a reseller. Every Wular Sports bat is handcrafted in Srinagar, knocked-in and oiled before dispatch, and delivered free across India. You can read <a href="/blog/behind-the-craft-wular-sports-srinagar">how we make our bats</a>, or message us on WhatsApp (+91 93206 22451) to see a bat on a live video call before you order.</p>`,
         faq: [
             { question: 'Which is the best Kashmir willow bat in 2027?', answer: 'It depends on the ball. For hard tennis, choose a well-pressed 950–1100 g bat with 46–52 mm edges; for soft tennis or tape ball, a lighter 820–950 g scooped bat; for leather ball, a heavier non-scoop bat that has been properly knocked-in.' },
             { question: 'Is Kashmir willow better than English willow?', answer: 'For tennis ball cricket, Kashmir willow is usually the better choice because it is denser, more durable and much cheaper. For high-level leather ball cricket, English willow is lighter for its size and has more rebound, which is why most top players use it.' },
             { question: 'Can I use a Kashmir willow bat for leather ball cricket?', answer: 'Yes, a good Kashmir willow leather bat works well for club cricket, practice and players moving up from tennis ball cricket. Make sure it is made for leather ball and knocked-in before use. Do not use a tennis ball bat with a leather ball.' },
-            { question: 'How much does a good Kashmir willow bat cost?', answer: 'Our Kashmir willow bats cost ₹1,999 to ₹4,799 with free delivery across India: soft tennis from ₹1,999, hard tennis from ₹2,999 to ₹3,999 and leather ball at ₹4,799.' },
+            { question: 'How much does a good Kashmir willow bat cost?', answer: 'Our Kashmir willow bats cost ₹1,999 to ₹4,799 with free delivery across India: soft tennis from ₹1,999, hard tennis from ₹2,799 to ₹3,999 and leather ball at ₹4,799.' },
         ],
     },
     {
@@ -174,7 +178,7 @@ ${DISCLOSURE}
 <h3>For light tennis ball and tape ball cricket</h3>
 <p>Our <a href="/product/ak-47-honeycomb">AK-47 Edition</a> is a soft tennis bat of 820–950 g with a honeycomb scoop that keeps it light and quick to swing. At ₹1,999 it is our most affordable bat and an easy first bat for street and turf cricket. It is made for light tennis balls and tape balls only. Do not use it with a hard tennis ball.</p>
 <h3>For hard tennis ball cricket</h3>
-<p>If your friends or local tournaments use a hard tennis ball, you need a properly pressed hard tennis bat, even as a beginner, because a light bat will not survive the ball. Ask for a piece at the lighter end of the range. The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> (₹3,499) has a light ramp scoop that makes it easier to swing than a flat bat of the same weight. The <a href="/product/bahubali-edition">Bahubali Edition</a> (₹2,999) is a flat-back bat that suits bigger, stronger beginners. You do not need our top-grade Knight Edition to start; it makes more sense once you are playing tournaments regularly.</p>
+<p>If your friends or local tournaments use a hard tennis ball, you need a properly pressed hard tennis bat, even as a beginner, because a light bat will not survive the ball. Ask for a piece at the lighter end of the range. The <a href="/product/legacy-edition">Legacy Edition 1.0</a> (₹2,799) is the natural first choice: 950–1050 g, with a scoop and drilled shoulders that make it easy to pick up, and our most affordable hard tennis bat. The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> (₹3,499) has a light ramp scoop on longer-seasoned willow if you want to spend a little more. The <a href="/product/bahubali-edition">Bahubali Edition</a> (₹2,999) is a flat-back bat that suits bigger, stronger beginners. You do not need our top-grade Knight Edition to start; it makes more sense once you are playing tournaments regularly.</p>
 <h3>For leather ball cricket</h3>
 <p>For a first leather ball bat, a good Kashmir willow bat is the sensible choice: it is tough and costs far less than English willow, which matters while you are still learning. Our <a href="/product/standard-leather-bat">Leather Cricket Bat</a> (1150–1250 g, ₹4,799) suits adult beginners. Spend on safety gear first: a helmet, pads, gloves and an abdominal guard are not optional with a leather ball. Read our <a href="/blog/from-tennis-to-leather-transition-guide">tennis to leather transition guide</a> before your first session.</p>
 <h2>Six mistakes beginners make (and how to avoid them)</h2>
@@ -219,6 +223,7 @@ ${DISCLOSURE}
 <thead><tr><th>Scoop</th><th>What it looks like</th><th>How it plays</th><th>Best for</th><th>Our bat</th></tr></thead>
 <tbody>
 <tr><td>Flat (non-scoop)</td><td>A full, flat back</td><td>All the wood behind the ball; feels heavier in the hands</td><td>Straight power hitting with a hard tennis ball</td><td><a href="/product/bahubali-edition">Bahubali Edition</a></td></tr>
+<tr><td>Scoop with drilled shoulders</td><td>A scooped back with drilled shoulders</td><td>Light pickup, thick edges kept</td><td>Hard tennis on a budget</td><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td></tr>
 <tr><td>Ramp scoop</td><td>A shallow channel that slopes into the back</td><td>Slightly quicker pickup, middle stays strong</td><td>All-round hard tennis batting</td><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></td></tr>
 <tr><td>Arch scoop with drilled back</td><td>An arch-shaped scoop, ours modelled on the Mughal arch</td><td>Quick to swing with big edges kept</td><td>Regular hard tennis tournament players</td><td><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td></tr>
 <tr><td>Honeycomb scoop</td><td>A pattern of hollows across the back</td><td>Very light and whippy, fastest swing</td><td>Soft tennis ball and tape ball only</td><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a></td></tr>
@@ -227,6 +232,7 @@ ${DISCLOSURE}
 <h2>Best scoop bat for hard tennis ball cricket</h2>
 <p>For a hard tennis ball, choose a moderate scoop on well-pressed willow, or no scoop at all. A ramp scoop or an arch scoop takes weight out of the back while leaving a solid middle, which is the right balance for a heavy ball hitting the bat hundreds of times.</p>
 <ul>
+<li><strong><a href="/product/legacy-edition">Legacy Edition 1.0</a></strong>: scoop with drilled shoulders, Grade A Kashmir willow, 48–52 mm edges, 950–1050 g, ₹2,799. The value pick.</li>
 <li><strong><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></strong>: ramp scoop, 3-year seasoned Kashmir willow, 48–52 mm edges, 980–1100 g, ₹3,499. A good all-rounder.</li>
 <li><strong><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></strong>: Mughal-arch scoop on the top 3% of our clefts, pressed five times, edges of around 50 mm, 950–1050 g, ₹3,999. Our pick for players who play hard tennis every weekend.</li>
 </ul>

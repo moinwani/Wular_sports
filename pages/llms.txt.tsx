@@ -70,7 +70,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
         ...homeFaq(products).flatMap(f => [`### ${f.question}`, f.answer, '']),
         '## More',
         '',
-        `- [Bat comparison](${SITE}/comparison): Wular Sports hard tennis bats side by side and against other Kashmiri brands`,
+        `- [Bat comparison](${SITE}/comparison): Wular Sports hard tennis bats side by side`,
         `- [About Wular Sports](${SITE}/about): the workshop, the craft and the people`,
         `- [Return policy](${SITE}/return-policy)`,
         '- Instagram: https://www.instagram.com/wular.sports',

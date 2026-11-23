@@ -448,7 +448,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 <li><Icon name="fa-truck-fast" /> Free delivery across India</li>
                                 <li><Icon name="fa-money-bill-wave" /> Cash on delivery (₹500/bat booking)</li>
                                 <li><Icon name="fa-undo-alt" /> 7-day easy returns</li>
-                                <li><Icon name="fa-shield-alt" /> 1-year warranty</li>
+                                <li><Icon name="fa-shield-alt" /> 6-month handle warranty</li>
                             </ul>
 
                             {/* Primary CTA with Quantity */}

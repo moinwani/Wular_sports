@@ -281,7 +281,9 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                         "applicableCountry": "IN",
                         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
                         "merchantReturnDays": 7,
-                        "returnMethod": "https://schema.org/ReturnByMail"
+                        "returnMethod": "https://schema.org/ReturnByMail",
+                        // The buyer posts the bat back and shipping is non-refundable (Return Policy page)
+                        "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
                     }
                 }
             },

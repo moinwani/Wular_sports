@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ProductFull } from '../../types';
 import { getCDNUrl } from '../../services/githubService';
 import { productSizes, splitProductName } from '../../lib/catalog';
+import { oaiItemsAdded } from '../../services/openaiPixel';
 
 export interface ProductCardProps {
     product: ProductFull;
@@ -47,6 +48,7 @@ export const ProductCard: FC<ProductCardProps> = memo(({ product, onAddToCart })
                 }
             });
         }
+        oaiItemsAdded([{ id: product.id, name: product.name, price: product.price, quantity: 1 }]);
     };
 
     const handleViewDetails = (e: React.MouseEvent) => {

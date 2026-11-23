@@ -27,11 +27,23 @@ ev.forEach(function(e){w.addEventListener(e,start,{capture:true,passive:true})})
 if(d.readyState==='complete')setTimeout(start,5000);else w.addEventListener('load',function(){setTimeout(start,5000)});
 })(window,document);`;
 
+/**
+ * OpenAI Ads measurement pixel (ChatGPT ads), Pixel ID 9PvsxTZQb7RNGwGkdNNxgH.
+ * OpenAI's own setup snippet, loaded async near the top of <head>; not on the
+ * admin panel. Events are sent from src/services/openaiPixel.ts.
+ * Set debug:true temporarily to see the pixel's activity in the browser console.
+ */
+const OPENAI_PIXEL = `(function(w){if(w.location.pathname.indexOf('/admin')===0)return;
+!function(w,d,s,u){if(w.oaiq)return;var q=function(){q.q.push(arguments)};q.q=[];w.oaiq=q;var j=d.createElement(s);j.async=1;j.src=u;var f=d.getElementsByTagName(s)[0];f.parentNode.insertBefore(j,f);}(window,document,"script","https://bzrcdn.openai.com/sdk/oaiq.min.js");
+oaiq("init",{pixelId:"9PvsxTZQb7RNGwGkdNNxgH",debug:false});
+})(window);`;
+
 export default function Document() {
     return (
         <Html lang="en">
             <Head>
                 <meta charSet="UTF-8" />
+                <script dangerouslySetInnerHTML={{ __html: OPENAI_PIXEL }} />
                 <link rel="icon" href="https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/brand/site-icon.png" type="image/png" />
                 {/* Our own fonts (public/fonts) — the two used above the fold load first */}
                 <link rel="preload" href="/fonts/oswald-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />

@@ -137,6 +137,15 @@ ${DISCLOSURE}
 <p>Our guide to <a href="/blog/kashmir-willow-grades-explained">Kashmir willow grades</a> explains why grade labels are not standard and what to check instead.</p>
 <h2>Step 3: set a realistic budget</h2>
 <p>As a rough guide to our own range in 2027: soft tennis bats start around ₹2,000, good hard tennis bats sit around ₹2,800–₹3,500, our top-grade hard tennis bat is ₹3,999 and our leather ball bat is ₹4,799. Higher prices should come with better willow, longer seasoning, more pressing or a better handle, so ask what the extra money buys. Our <a href="/blog/kashmir-willow-bat-price-india">Kashmir willow bat price guide</a> breaks this down further.</p>
+<h2>How to buy a Kashmir willow bat online safely</h2>
+<p>Buying online means you cannot pick the bat up first, so ask for everything you would check in a shop:</p>
+<ul>
+<li><strong>The exact weight</strong> of the bat you will receive, not just a range.</li>
+<li><strong>Photos or a video of that bat</strong>: the face, the edges and the grains. On WhatsApp we can show you the bat on a live video call.</li>
+<li><strong>Who made it.</strong> A maker can tell you how the willow was seasoned and pressed; a reseller often cannot.</li>
+<li><strong>How you pay.</strong> Cash on delivery lowers the risk on a first order. With us you pay a small booking online and the rest at your door.</li>
+<li><strong>Returns and warranty in writing.</strong> Check the return window and exactly what the warranty covers before you pay.</li>
+</ul>
 <h2>Why buy a bat made in Kashmir?</h2>
 <p>Kashmir willow grows in the Kashmir Valley, and the bat makers of the valley have shaped it for generations. Buying from a maker in Kashmir means you can ask the person who made the bat about the wood, the pressing and the shape, rather than a reseller. Every Wular Sports bat is handcrafted in Srinagar, knocked-in and oiled before dispatch, and delivered free across India. You can read <a href="/blog/behind-the-craft-wular-sports-srinagar">how we make our bats</a>, or message us on WhatsApp (+91 93206 22451) to see a bat on a live video call before you order.</p>`,
         faq: [

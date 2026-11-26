@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { SEOHead } from '../components/common/SEOHead';
 import { Icon } from '../components/common/Icon';
+import { showReviewOptIn } from '../services/googleCustomerReviews';
 
 export const OrderSuccessView: FC = () => {
     const router = useRouter();
@@ -10,6 +11,11 @@ export const OrderSuccessView: FC = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    // Google Customer Reviews survey offer (only right after checkout)
+    useEffect(() => {
+        if (router.isReady) showReviewOptIn(orderId);
+    }, [router.isReady, orderId]);
 
     return (
         <div className="view order-success-view">

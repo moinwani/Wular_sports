@@ -1,4 +1,5 @@
 import { FC, useState, useEffect, useRef } from 'react';
+import { REVIEW_OPTIN_KEY } from '../services/googleCustomerReviews';
 import { useRouter } from 'next/router';
 import { CartItem } from '../types';
 import { normalizeIndianPhone, validateFormData } from '../utils/inputValidation';
@@ -656,6 +657,13 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
         if (finishedRef.current) return;
         finishedRef.current = true;
         clearPending();
+
+        // Google Customer Reviews: the confirmation page offers the buyer a
+        // Google survey after delivery (India orders, where we know the
+        // delivery time). Session only, read once, never stored elsewhere.
+        if (sanitizedData?.email && (sanitizedData.country || 'India') === 'India') {
+            try { sessionStorage.setItem(REVIEW_OPTIN_KEY, JSON.stringify({ id: firestoreOrderId, email: sanitizedData.email })); } catch { /* private mode */ }
+        }
 
         // This visitor is now a customer — stop showing them as a lead
         import('../services/leads')

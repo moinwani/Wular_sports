@@ -5,25 +5,34 @@ import { Html, Head, Main, NextScript } from 'next/document';
  * Not on the admin panel: Clarity records sessions, and the admin screens show
  * customers' names, phone numbers and addresses.
  *
- * Tracking (Google Tag Manager → GA4 / Meta pixel, and Microsoft Clarity) starts
+ * Tracking (Google Tag Manager → GA4 / Meta pixel, the Google tag GTM-PMX4WSX4
+ * for Google Ads conversions, and Microsoft Clarity) starts
  * as soon as the visitor first touches, scrolls or types — or 5 seconds after
  * the page has loaded, whichever comes first. Until then the phone spends its
  * time showing the page instead of running tracking code. Nothing is lost:
  * events pushed to dataLayer / clarity() before that are queued and sent once
  * the scripts arrive.
+ *
+ * A visitor arriving from a Google ad (gclid / gbraid / wbraid in the address)
+ * gets the tags straight away: the Google tag must read the ad click from the
+ * landing address before the visitor moves to another page.
  */
 const DEFERRED_TRACKING = `(function(w,d){
 w.dataLayer=w.dataLayer||[];
 if(w.location.pathname.indexOf('/admin')===0)return;
 w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+w.gtag=w.gtag||function(){w.dataLayer.push(arguments)};
+w.gtag('js',new Date());
 w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};
 var started=false,ev=['pointerdown','touchstart','scroll','keydown','mousemove'];
 function add(src){var s=d.createElement('script');s.async=true;s.src=src;d.head.appendChild(s);}
 function start(){if(started)return;started=true;
 ev.forEach(function(e){w.removeEventListener(e,start,true)});
 add('https://www.googletagmanager.com/gtm.js?id=GTM-MFRCHQ8X');
+add('https://www.googletagmanager.com/gtm.js?id=GTM-PMX4WSX4');
 add('https://www.clarity.ms/tag/tn1mu1gwo1');}
 ev.forEach(function(e){w.addEventListener(e,start,{capture:true,passive:true})});
+if(/[?&](gclid|gbraid|wbraid)=/.test(w.location.search)){start();return;}
 if(d.readyState==='complete')setTimeout(start,5000);else w.addEventListener('load',function(){setTimeout(start,5000)});
 })(window,document);`;
 

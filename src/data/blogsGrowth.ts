@@ -20,7 +20,7 @@ export const blogsGrowth: BlogPost[] = [
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 10, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '6 min read',
         image: `${IMG}/legacy-2.0/photo_6078080698049826303_w.jpg`,
         content: `<p>The right tennis cricket bat depends first on the ball you play with. For a heavy (hard) tennis ball of about 130–140 grams, choose a Kashmir willow bat of 950–1100 grams with thick 46–52 mm edges. For a light tennis ball or tape ball, choose a lighter bat of 820–950 grams, ideally with a scoop. Get the ball type and the weight right and most other choices fall into place.</p>
@@ -69,7 +69,7 @@ export const blogsGrowth: BlogPost[] = [
 <li><strong>Preparation:</strong> the bat should arrive knocked-in and oiled, or you will need to do it before playing.</li>
 <li><strong>Delivery and returns:</strong> check delivery time, return window and whether cash on delivery is offered.</li>
 </ul>
-<p>At Wular Sports, delivery is free across India, orders are dispatched within 24 hours, returns are accepted within 7 days, and cash on delivery is available with a ₹500 per bat booking. If you are unsure which bat suits you, message us on WhatsApp and we will help you choose.</p>`,
+<p>At Wular Sports, delivery is free across India, orders are dispatched within 24 hours, defective bats can be returned within 3 days of delivery, and cash on delivery is available with a ₹500 per bat booking. If you are unsure which bat suits you, message us on WhatsApp and we will help you choose.</p>`,
         faq: [
             { question: 'Which bat is best for tennis ball cricket?', answer: 'For a heavy tennis ball, a Kashmir willow hard tennis bat of 950–1100 grams with 46–52 mm edges. For a light tennis ball or tape ball, a soft tennis bat of 820–950 grams, ideally with a scoop.' },
             { question: 'Can I use a leather bat for tennis ball cricket?', answer: 'You can, but it will feel slow. Leather ball bats weigh 1150–1250 grams and are shaped for a hard leather ball, while tennis bats are lighter and designed for bat speed.' },

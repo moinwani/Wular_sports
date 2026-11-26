@@ -154,7 +154,7 @@ export const CategoryView: FC<CategoryViewProps> = ({
                         <li>Handcrafted in Kashmir</li>
                         <li>Free delivery</li>
                         <li>Cash on delivery (₹500/bat booking)</li>
-                        <li>7-day returns</li>
+                        <li>3-day returns on defective bats</li>
                     </ul>
                     {links && links.length > 0 && (
                         <p className="category-sublinks">

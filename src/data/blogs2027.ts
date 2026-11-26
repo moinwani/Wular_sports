@@ -362,7 +362,7 @@ ${DISCLOSURE}
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 25, 2026',
-        modifiedAt: '2026-11-25',
+        modifiedAt: '2026-11-26',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG',
         content: `<p>The price of English willow cricket bats has climbed steeply, with elite bats now sitting around £1,000 — and the rise has been sharp enough that the MCC changed the laws of the game in response, legalising laminated bats in February 2026. For most amateur players, the smart answer to that cost pressure is simple: buy handcrafted Kashmir willow, which is dense, durable and dramatically cheaper. Here's a plain-language breakdown of why prices are soaring and where the value now sits.</p>
@@ -393,7 +393,7 @@ ${DISCLOSURE}
 <ol>
 <li><strong>Set your budget first.</strong> If a ₹4,000–₹5,000 bat does the job, do not get nudged toward a ₹50,000+ English willow name.</li>
 <li><strong>Check the construction.</strong> A solid, single-piece Kashmir willow bat is fully legal and traditional, even as laminated Type D bats enter the market.</li>
-<li><strong>Look at the whole package.</strong> Wular Sports offers free India delivery, a 1-year warranty, 7-day returns and cash-on-delivery — so the value is not only in the sticker price.</li>
+<li><strong>Look at the whole package.</strong> Wular Sports offers free India delivery, a 1-year warranty, 3-day returns on defective bats and cash-on-delivery — so the value is not only in the sticker price.</li>
 <li><strong>Talk to someone who makes them.</strong> Not sure which bat fits your game and budget? Message us on WhatsApp at +91 93206 22451 and we will help.</li>
 </ol>
 
@@ -417,7 +417,7 @@ ${DISCLOSURE}
             },
             {
                 question: "What extras does Wular Sports offer?",
-                answer: "Every bat comes with free India delivery, a 1-year warranty, 7-day returns and cash-on-delivery. You can reach us on WhatsApp at +91 93206 22451."
+                answer: "Every bat comes with free India delivery, a 1-year warranty, 3-day returns on defective bats and cash-on-delivery. You can reach us on WhatsApp at +91 93206 22451."
             },
         ]
     },
@@ -430,7 +430,7 @@ ${DISCLOSURE}
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 25, 2026',
-        modifiedAt: '2026-11-25',
+        modifiedAt: '2026-11-26',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG',
         content: `<p>Kashmir willow was granted a Geographical Indication (GI) tag in 2025, the first formal legal recognition of Srinagar's handcrafted cricket bat trade. The tag is welcome news, but it lands at a difficult moment: the industry is under strain from cleft shortage, smuggling and wetland loss. This guide explains what the GI tag actually means, why authenticity matters, and the practical checks — <strong>seasoning, pressing, cane handle and maker transparency</strong> — you can use to spot a genuine handcrafted Srinagar bat before you buy.</p>
@@ -461,7 +461,7 @@ ${DISCLOSURE}
 
 <h2>Where Wular Sports fits in</h2>
 <p>Wular Sports is a handcrafted Kashmiri willow bat manufacturer in Srinagar, Jammu & Kashmir. The factory was established in 2015 by founder Moin Wani, and the brand has sold online since 2025. This guide is written from that perspective, so the honest disclosure is simple: Wular Sports makes and sells bats, and the picks below come from its own range.</p>
-<p>What a real Srinagar maker can offer in 2027 is direct access. Wular Sports publishes its specifications openly, offers a live video call on WhatsApp (+91 93206 22451) so you can see the bat before you buy, and backs its range with free India delivery, a 1-year warranty, 7-day returns and cash on delivery.</p>
+<p>What a real Srinagar maker can offer in 2027 is direct access. Wular Sports publishes its specifications openly, offers a live video call on WhatsApp (+91 93206 22451) so you can see the bat before you buy, and backs its range with free India delivery, a 1-year warranty, 3-day returns on defective bats and cash on delivery.</p>
 
 <h2>Two bats that show the difference</h2>
 <p>If you want to see the checks above in practice, two bats in the Wular Sports range make useful anchors.</p>
@@ -487,7 +487,7 @@ ${DISCLOSURE}
             },
             {
                 question: "How can I verify Wular Sports is a real Srinagar maker?",
-                answer: "Wular Sports is based in Srinagar, Jammu & Kashmir, with a factory established in 2015. It publishes full specifications, offers a live video call on WhatsApp (+91 93206 22451), and backs sales with free India delivery, a 1-year warranty, 7-day returns and COD."
+                answer: "Wular Sports is based in Srinagar, Jammu & Kashmir, with a factory established in 2015. It publishes full specifications, offers a live video call on WhatsApp (+91 93206 22451), and backs sales with free India delivery, a 1-year warranty, 3-day returns on defective bats and COD."
             },
         ]
     },
@@ -500,7 +500,7 @@ ${DISCLOSURE}
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 25, 2026',
-        modifiedAt: '2026-11-25',
+        modifiedAt: '2026-11-26',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7834.JPG',
         content: `<p>The first-ever ICC Women's Champions Trophy will be played in India from 14 to 28 February 2027, in the T20I format. Six teams — Australia, England, India, New Zealand, South Africa and Sri Lanka — will compete across Mumbai's Cricket Club of India (CCI) ground and Vadodara. Because the event is brand new, here is a plain-English guide to what it is, how it works, and the lightweight gear that suits women's and youth cricket.</p>
@@ -552,7 +552,7 @@ ${DISCLOSURE}
 <p>Bat size matters as much as weight. A 35-inch bat such as the AK-47 suits many young and adult players, but a shorter player is often better served by a smaller size. If you are unsure, check the sizing guidance on the product page or ask the maker directly before you order.</p>
 
 <h2>A fair disclosure</h2>
-<p>Wular Sports is a handcrafted Kashmiri willow bat manufacturer in Srinagar, Jammu & Kashmir, founded by Moin Wani with a factory established in 2015 and online sales since 2025. The bats mentioned above come from its own range, so treat them as the maker's own recommendations rather than an independent review. Every Wular bat ships with free India delivery, a 1-year warranty, 7-day returns and cash on delivery, and you can reach the team on WhatsApp at +91 93206 22451.</p>`,
+<p>Wular Sports is a handcrafted Kashmiri willow bat manufacturer in Srinagar, Jammu & Kashmir, founded by Moin Wani with a factory established in 2015 and online sales since 2025. The bats mentioned above come from its own range, so treat them as the maker's own recommendations rather than an independent review. Every Wular bat ships with free India delivery, a 1-year warranty, 3-day returns on defective bats and cash on delivery, and you can reach the team on WhatsApp at +91 93206 22451.</p>`,
         faq: [
             {
                 question: "When is the Women's Champions Trophy 2027?",
@@ -585,7 +585,7 @@ ${DISCLOSURE}
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 25, 2026',
-        modifiedAt: '2026-11-25',
+        modifiedAt: '2026-11-26',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826379_w.jpg',
         content: `<p>The ICC Men's Cricket World Cup 2027 runs from 2 October to 21 November 2027, hosted across South Africa, Zimbabwe and Namibia, with 14 teams playing 57 matches at 12 venues. India face Pakistan on 10 October 2027 at the Wanderers in Johannesburg, and the final is on 21 November 2027 in Johannesburg. Here is the schedule as announced, followed by our honest advice on the bat worth buying before the tournament turns every street into a gully match.</p>
@@ -625,7 +625,7 @@ ${DISCLOSURE}
 <h3>For soft tennis and tape ball cricket</h3>
 <p>With a light tennis ball or a tape ball, bat speed beats mass. Our <a href="/product/ak-47-honeycomb">AK-47 Edition</a> (₹1,999) is a soft tennis bat of 820–950 g with a honeycomb scoop that makes it quick and whippy. It is built for soft tennis and tape ball only, so do not use it against a hard tennis ball.</p>
 <h2>Why buy your bat before the tournament starts?</h2>
-<p>Demand for cricket bats rises sharply in the run-up to a World Cup, and popular weights and models sell out fastest in the final weeks before the opening match. Buying early gives you time to choose the right weight, run the bat in over a few net sessions and avoid the October rush. Every Wular Sports bat ships free across India with a 1-year warranty, 7-day returns and cash on delivery, and you can message us on WhatsApp at +91 93206 22451 if you want help choosing a weight.</p>
+<p>Demand for cricket bats rises sharply in the run-up to a World Cup, and popular weights and models sell out fastest in the final weeks before the opening match. Buying early gives you time to choose the right weight, run the bat in over a few net sessions and avoid the October rush. Every Wular Sports bat ships free across India with a 1-year warranty, 3-day returns on defective bats and cash on delivery, and you can message us on WhatsApp at +91 93206 22451 if you want help choosing a weight.</p>
 <p>If you are not sure which ball your local games use, tell us what you play and we will point you to the right bat rather than the most expensive one.</p>`,
         faq: [
             {
@@ -659,7 +659,7 @@ ${DISCLOSURE}
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 25, 2026',
-        modifiedAt: '2026-11-25',
+        modifiedAt: '2026-11-26',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826391_w.jpg',
         content: `<p>IPL 2027, the 20th season of the tournament, is targeted to start on 10 March 2027 and run to a final on 15 May 2027, with 74 matches across 10 teams — the BCCI has ruled out expanding to 12. RCB won the title in 2025 and again in 2026, so they enter the new season chasing a third straight crown. Here are the season facts, then our honest guide to the gully-cricket bat every fan reaches for once the IPL kicks off.</p>
@@ -697,7 +697,7 @@ ${DISCLOSURE}
 <h2>Why does Kashmir willow suit gully cricket?</h2>
 <p>Gully cricket is hard on bats: tennis balls, taped balls and uneven surfaces all take a toll. Kashmir willow is dense and tough, which is why it is the standard wood for tennis ball cricket in India, and every Wular Sports bat is handcrafted from it in our Srinagar workshop. It gives you a bat that can take the punishment of daily street cricket without the price of a match-grade English willow blade.</p>
 <h2>Why buy your bat early, before the season starts?</h2>
-<p>Once the IPL begins, demand for cricket bats jumps, and the most popular weights sell out fastest in the first few weeks. Buying ahead of the 10 March target gives you time to pick the right weight and get used to the bat in a few net sessions. Every Wular Sports bat ships free across India with a 1-year warranty, 7-day returns and cash on delivery, and you can message us on WhatsApp at +91 93206 22451 if you are unsure which weight to choose.</p>
+<p>Once the IPL begins, demand for cricket bats jumps, and the most popular weights sell out fastest in the first few weeks. Buying ahead of the 10 March target gives you time to pick the right weight and get used to the bat in a few net sessions. Every Wular Sports bat ships free across India with a 1-year warranty, 3-day returns on defective bats and cash on delivery, and you can message us on WhatsApp at +91 93206 22451 if you are unsure which weight to choose.</p>
 <p>If you are not sure whether your local games use a hard tennis ball or a soft tennis ball, tell us what you play and we will tell you which bat suits it — we would rather you buy the right ₹1,999 bat than the wrong ₹3,999 one.</p>`,
         faq: [
             {

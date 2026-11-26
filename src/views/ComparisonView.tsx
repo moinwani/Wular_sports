@@ -18,7 +18,7 @@ const faqs = [
     },
     {
         question: 'How do I compare a Wular Sports bat with bats from other makers?',
-        answer: 'Compare the same things for every bat: how long the willow was seasoned, how the blade was pressed, the exact weight, the edge thickness, the scoop, the handle and what the warranty covers. Every Wular Sports bat is hard-pressed, naturally seasoned, fitted with a Singapore cane handle and shipped knocked-in and oiled, with free delivery and 7-day returns.',
+        answer: 'Compare the same things for every bat: how long the willow was seasoned, how the blade was pressed, the exact weight, the edge thickness, the scoop, the handle and what the warranty covers. Every Wular Sports bat is hard-pressed, naturally seasoned, fitted with a Singapore cane handle and shipped knocked-in and oiled, with free delivery and 3-day returns on defective bats.',
     },
     {
         question: 'Do these bats come ready to play out of the box?',
@@ -167,7 +167,7 @@ export const ComparisonView: FC = () => {
                     <li><strong>Singapore cane handles</strong> — superior shock absorption on mishits.</li>
                     <li><strong>Scooped and flat options</strong> — so you can choose a quicker pickup or raw power.</li>
                     <li><strong>Ready to play out of the box</strong> — every bat ships fully knocked and oiled with a toe guard, bat bag, and extra grip.</li>
-                    <li><strong>6-month handle warranty, free India-wide delivery, 7-day returns, and COD</strong> — so buying online carries little risk.</li>
+                    <li><strong>6-month handle warranty, free India-wide delivery, 3-day returns on defective bats, and COD</strong> — so buying online carries little risk.</li>
                 </ul>
 
                 <h2>Which One Should You Choose?</h2>

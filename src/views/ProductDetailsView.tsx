@@ -275,12 +275,14 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                             "transitTime": { "@type": "QuantitativeValue", "minValue": 6, "maxValue": 7, "unitCode": "DAY" }
                         }
                     },
-                    // Same terms as the Return Policy page: 7 days from delivery
+                    // Same terms as the Return Policy page: defective bats only, 3 days from delivery
                     "hasMerchantReturnPolicy": {
                         "@type": "MerchantReturnPolicy",
                         "applicableCountry": "IN",
                         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-                        "merchantReturnDays": 7,
+                        "merchantReturnDays": 3,
+                        // Only defective (damaged) bats are accepted back
+                        "itemCondition": "https://schema.org/DamagedCondition",
                         "returnMethod": "https://schema.org/ReturnByMail",
                         // The buyer posts the bat back and shipping is non-refundable (Return Policy page)
                         "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
@@ -449,7 +451,7 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                             <ul className="trust-strip-pdp">
                                 <li><Icon name="fa-truck-fast" /> Free delivery across India</li>
                                 <li><Icon name="fa-money-bill-wave" /> Cash on delivery (₹500/bat booking)</li>
-                                <li><Icon name="fa-undo-alt" /> 7-day easy returns</li>
+                                <li><Icon name="fa-undo-alt" /> Defective bats returnable within 3 days</li>
                                 <li><Icon name="fa-shield-alt" /> 6-month handle warranty</li>
                             </ul>
 
@@ -736,29 +738,29 @@ export const ProductDetailsView: FC<ProductDetailsViewProps> = ({ product, onAdd
                                 {openSection === 'returns' && (
                                     <div className="tab-panel active">
                                         <div className="returns-section-clean">
-                                            <h2 className="returns-title">Hassle-Free Returns</h2>
+                                            <h2 className="returns-title">Returns for Defective Bats</h2>
 
                                             <div className="returns-info">
                                                 <div className="policy-note">
                                                     <Icon name="fa-undo-alt" />
-                                                    <p>We offer a <strong>7-day return policy</strong> for all our products.</p>
+                                                    <p>If your bat arrives <strong>defective</strong>, report it within <strong>3 days of delivery</strong> and we will replace it or refund you.</p>
                                                 </div>
 
                                                 <div className="return-conditions">
                                                     <h4>Return Conditions</h4>
                                                     <ul>
-                                                        <li>Product must be <strong>unused</strong> and in its <strong>original condition</strong>.</li>
-                                                        <li>Original packaging must be intact.</li>
-                                                        <li>Used or damaged products will not be eligible for return.</li>
+                                                        <li>Only <strong>defective</strong> bats can be returned: a manufacturing defect, or damage in delivery.</li>
+                                                        <li>Bats that are not defective cannot be returned, so ask us on WhatsApp before ordering if you are unsure.</li>
+                                                        <li>Wear from playing is not a defect. You post the bat back and pay the return shipping.</li>
                                                     </ul>
                                                 </div>
 
                                                 <div className="return-process">
                                                     <h4>How to Initiate a Return</h4>
-                                                    <p>Contact us on <strong>WhatsApp</strong> within 7 days of delivery. Please provide:</p>
+                                                    <p>Contact us on <strong>WhatsApp</strong> within 3 days of delivery. Please provide:</p>
                                                     <ol>
                                                         <li>Your Order ID.</li>
-                                                        <li>Photo/Video proof showing the product is unused and in original condition.</li>
+                                                        <li>Clear photos or a video of the defect.</li>
                                                     </ol>
                                                 </div>
                                             </div>

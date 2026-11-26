@@ -1329,7 +1329,7 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
                                 </div>
                                 <div className="secure-badge">
                                     <Icon name="fa-undo-alt" />
-                                    <span>Easy Returns</span>
+                                    <span>Defect Returns</span>
                                 </div>
                             </div>
                         </div>

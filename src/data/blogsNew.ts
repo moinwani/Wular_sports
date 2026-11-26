@@ -9,7 +9,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Reviews',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '10 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826304_w.jpg',
         content: `<p>Yes, for most hard tennis ball players the Legacy Edition 2.0 is the best bat under ₹3,500 from Wular Sports — it pairs three-year naturally seasoned Kashmir willow with a hard-pressed, ramp scoop profile and a premium Singapore cane handle, all for ₹3,499 (MRP ₹4,600). It ships fully knocked and oiled so you can go straight to the middle, and it carries a 6-month handle warranty with free delivery anywhere in India. This review explains exactly who should buy it, who should save money with the <a href="/product/legacy-edition">Legacy 1.0</a> instead, and how it performs against a hard tennis ball.</p>
@@ -49,7 +49,7 @@ export const blogsNew: BlogPost[] = [
 <h2>How does it actually perform with a hard tennis ball?</h2>
 <p>Hard tennis ball cricket punishes a bat in two ways: the heavier ball tests the face, and the short, punchy format rewards bat speed. The 2.0 handles both. The 4.5" face offers a slightly larger hitting area than a 4.4" bat, so off-centre hits carry better, and the Singapore cane handle absorbs the sting you feel when a quick ball finds the splice. Because it arrives pre-knocked, there is no dead first month — the sweet spot is working from the very first net. It will not turn a tennis ball into a leather ball, and no bat will, but it extracts close to the maximum from this format.</p>
 <h2>Is ₹3,499 good value, and who should buy it?</h2>
-<p>At ₹3,499 against an MRP of ₹4,600, the 2.0 delivers the most complete package we make for hard tennis: the widest face, the longest seasoning and the best handle. It is the right buy if you play tape-ball or hard tennis several times a week, open the batting, or simply want one bat that will last multiple seasons. Because every Wular Sports bat includes a 6-month handle warranty, 7-day returns, cash-on-delivery and free India-wide delivery, the risk is low — you can order on WhatsApp at +91 93206 22451 and check the pickup before you commit.</p>
+<p>At ₹3,499 against an MRP of ₹4,600, the 2.0 delivers the most complete package we make for hard tennis: the widest face, the longest seasoning and the best handle. It is the right buy if you play tape-ball or hard tennis several times a week, open the batting, or simply want one bat that will last multiple seasons. Because every Wular Sports bat includes a 6-month handle warranty, 3-day returns on defective bats, cash-on-delivery and free India-wide delivery, the risk is low — you can order on WhatsApp at +91 93206 22451 and check the pickup before you commit.</p>
 <h2>Who should NOT buy the Legacy Edition 2.0?</h2>
 <p>The 2.0 is not for everyone, and being honest about that will save you money. If you only play occasional gully cricket with friends, or you are buying your first bat and still settling into your game, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 will do everything you need for ₹700 less. If you face a soft tennis ball rather than a hard one, the 2.0's hard-pressed, heavier build is wasted — a lighter scoop bat like our AK-47 is the right tool for that game. And if you are on a very tight budget, the <a href="/product/bahubali-edition">Bahubali</a> gives you a hard-pressed feel at ₹2,999. The 2.0 earns its price only when you play hard tennis or tape-ball cricket often enough to feel the difference that seasoning and balance make.</p>
 <h2>Who should choose the Legacy 1.0 or Bahubali instead?</h2>
@@ -74,7 +74,7 @@ export const blogsNew: BlogPost[] = [
             },
             {
                 question: "Does the Legacy Edition 2.0 come with a warranty?",
-                answer: "Yes. Every Wular Sports bat includes a 6-month handle warranty, 7-day returns and cash-on-delivery, with free delivery anywhere in India."
+                answer: "Yes. Every Wular Sports bat includes a 6-month handle warranty, 3-day returns on defective bats and cash-on-delivery, with free delivery anywhere in India."
             },
             {
                 question: "Which weight should I choose?",
@@ -102,7 +102,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Materials',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '11 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826392_w.jpg',
         content: `<p>For tennis ball cricket, Kashmir willow is almost always the better choice — it costs far less, is more forgiving against a lighter ball, and is widely available in hard-pressed, scoop-profile shapes built for tape-ball and hard tennis. English willow's softer, drier grain produces a bigger "ping" and a larger sweet spot for leather-ball cricket, but that advantage matters far less with a tennis ball and you typically pay several times the price for it. Unless you primarily play proper leather-ball cricket, choose Kashmir willow.</p>
@@ -125,7 +125,7 @@ export const blogsNew: BlogPost[] = [
 <h2>Common myths about Kashmir willow, debunked</h2>
 <p>Kashmir willow carries a few old myths that deserve a straight answer. The first is that it is "cheap wood" — it is simply more abundant and grown locally, so it costs less without being inferior for its purpose. The second is that it cannot produce a big sweet spot; a well-pressed, properly seasoned Kashmir willow bat with a full face and thick edges hits every bit as hard as most players can use. The third is that it does not last — in reality its density makes it more resistant to the dents and bruises of tennis-ball cricket than softer English willow. The truth is that Kashmir willow, prepared properly, is one of the best value-for-money bat materials in the world.</p>
 <h2>Which Wular Sports bats use Kashmir willow?</h2>
-<p>All of our handcrafted bats are Kashmir willow, sourced and seasoned in the valley around Srinagar. For hard tennis, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 is the all-round pick, the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> at ₹3,499 is the premium three-year seasoned option, and the <a href="/product/bahubali-edition">Bahubali</a> at ₹2,999 is the hard-pressed choice. Each is fully knocked and oiled and covered by a 6-month handle warranty, 7-day returns, cash-on-delivery and free delivery across India.</p>
+<p>All of our handcrafted bats are Kashmir willow, sourced and seasoned in the valley around Srinagar. For hard tennis, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 is the all-round pick, the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> at ₹3,499 is the premium three-year seasoned option, and the <a href="/product/bahubali-edition">Bahubali</a> at ₹2,999 is the hard-pressed choice. Each is fully knocked and oiled and covered by a 6-month handle warranty, 3-day returns on defective bats, cash-on-delivery and free delivery across India.</p>
 <h2>How to care for a Kashmir willow bat</h2>
 <p>Kashmir willow rewards a little maintenance with a long life. Keep the bat dry and store it indoors away from direct sun, because moisture and heat are what cause fine cracks along the grain. Lightly oil the face once or twice a season with raw linseed oil to stop it drying out, and avoid hitting a damp, waterlogged ball that can bruise the edges. Every Wular Sports bat leaves Srinagar knocked and oiled, so there is no preparation work to do — just maintain that finish and the bat will stay lively for two to three seasons of regular tennis-ball cricket.</p>
 <h2>How does your willow choice affect your budget over time?</h2>
@@ -185,7 +185,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '8 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826380_w.jpg',
         content: `<p>Hard tennis balls come in a few weight classes, and that weight quietly decides how the ball comes off your bat. A standard 130g ball rewards a balanced, medium-weight Kashmir willow blade, while a 140g or heavier ball asks for a firmer, harder-pressed face with strong edges. Here is exactly how each weight behaves and which Wular Sports hard-tennis bat matches it.</p>
@@ -250,7 +250,7 @@ export const blogsNew: BlogPost[] = [
             },
             {
                 question: "What warranty, returns and payment options do I get?",
-                answer: "Every Wular bat includes a 6-month handle warranty, 7-day returns, cash on delivery (COD) and free delivery across India."
+                answer: "Every Wular bat includes a 6-month handle warranty, 3-day returns on defective bats, cash on delivery (COD) and free delivery across India."
             },
         ]
     },
@@ -262,7 +262,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7834.JPG',
         content: `<p>Hard tennis, soft tennis and tape ball are three very different games, and each one wants a different kind of bat. Hard tennis and tape ball cricket demand a firmer, heavier Kashmir willow blade, while soft tennis cricket needs a light, quick bat with a forgiving scoop profile. Here is exactly how the three formats differ and which Wular Sports bat fits each one.</p>
@@ -339,7 +339,7 @@ export const blogsNew: BlogPost[] = [
             },
             {
                 question: "What delivery, warranty and returns do Wular offer?",
-                answer: "Free delivery India-wide, a 6-month handle warranty, 7-day returns and cash on delivery (COD) on every order."
+                answer: "Free delivery India-wide, a 6-month handle warranty, 3-day returns on defective bats and cash on delivery (COD) on every order."
             },
             {
                 question: "What is the cheapest way to get started in hard tennis cricket?",
@@ -355,7 +355,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Craftsmanship',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG',
         content: `<p>Wular Sports is a handcrafted Kashmiri Willow cricket bat manufacturer based in Srinagar, Jammu & Kashmir, India, with a factory running since 2015 and an online store live since 2025. Every bat is made by hand from naturally seasoned willow, fitted with a Singapore cane handle and fully knocked and oiled before it ships. Here is how the craft works, step by step, from founder Moin Wani's workshop to your kit bag.</p>
@@ -391,7 +391,7 @@ export const blogsNew: BlogPost[] = [
 <ul>
 <li><strong>Free delivery</strong> anywhere in India.</li>
 <li><strong>A 6-month handle warranty</strong> on your bat.</li>
-<li><strong>7-day returns</strong> if it is not the right fit.</li>
+<li><strong>3-day returns on defective bats</strong>, if your bat arrives with a defect.</li>
 <li><strong>Cash on delivery (COD)</strong> so you can pay on arrival.</li>
 </ul>
 <h2>How to reach the workshop</h2>
@@ -513,7 +513,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-26',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826391_w.jpg',
         content: `<p>Choosing the right hard tennis bat comes down to four things: weight, scoop profile, edge size and handle. Match a bat of roughly 950–1100g with the right scoop for your style, look for 46–52mm edges, and insist on a Singapore cane handle, and you will get a bat that suits your game rather than one you fight against. Here is exactly how to decide, using the Wular Sports range as a reference.</p>
@@ -550,14 +550,14 @@ export const blogsNew: BlogPost[] = [
 
 <h2>What should you avoid when buying a hard tennis bat?</h2>
 <p>Avoid buying on looks alone. A bat with no stated weight, no edge size and no handle type is a gamble. Avoid raw, unseasoned willow that you are expected to knock and oil yourself over weeks unless you genuinely enjoy that work. And avoid bats with no warranty or return policy, because a hard tennis bat takes real punishment and you want protection if it fails.</p>
-<p>The simplest way to dodge all of these problems is to buy from a maker that publishes its specs and finishes its bats. The full <a href="/hard-tennis-bats">Wular Sports hard tennis range</a> ships seasoned, hard-pressed, knocked and oiled, with free delivery, a 6-month handle warranty, seven-day returns and cash-on-delivery. If you play the softer ball version of the game, the lighter, honeycomb-scooped <a href="/soft-tennis-bats">AK-47 soft tennis bat</a> is the equivalent choice for that format.</p>
+<p>The simplest way to dodge all of these problems is to buy from a maker that publishes its specs and finishes its bats. The full <a href="/hard-tennis-bats">Wular Sports hard tennis range</a> ships seasoned, hard-pressed, knocked and oiled, with free delivery, a 6-month handle warranty, 3-day returns on defective bats and cash-on-delivery. If you play the softer ball version of the game, the lighter, honeycomb-scooped <a href="/soft-tennis-bats">AK-47 soft tennis bat</a> is the equivalent choice for that format.</p>
 <h2>How do you match bat size to your height?</h2>
 <p>Hard tennis bats are usually offered in 35-inch and 36-inch lengths. As a rule of thumb, players under about 5ft 8in suit a 35-inch bat, while taller players, and those who like to reach forward, prefer 36 inches. The difference is small but real: a bat that is too long feels sluggish and hard to control, while one that is too short forces you to over-reach. If you are between sizes, choose the shorter bat for quicker hands and the longer bat for a longer reach — and remember the Wular Sports range is available in both 35 and 36 inches.</p>
 
 <h2>How do you test pickup and balance before you commit?</h2>
-<p>Hold the bat in your top hand only, as you would at the crease, and feel how it swings through. A well-balanced bat should feel lively, not head-heavy, and should not strain your wrist after a few practice swings. Then grip it with both hands and check where the weight sits — the best hard tennis bats carry their mass through the middle and edges rather than the toe. Because every Wular bat is hard-pressed and fitted with a Singapore cane handle, the balance is designed to feel natural from the first swing, and the seven-day return policy means you can confirm it at home risk-free.</p>
+<p>Hold the bat in your top hand only, as you would at the crease, and feel how it swings through. A well-balanced bat should feel lively, not head-heavy, and should not strain your wrist after a few practice swings. Then grip it with both hands and check where the weight sits — the best hard tennis bats carry their mass through the middle and edges rather than the toe. Because every Wular bat is hard-pressed and fitted with a Singapore cane handle, the balance is designed to feel natural from the first swing, and if it arrives with a defect, you can report it within 3 days of delivery for a replacement or refund.</p>
 <h2>Should you buy your bat online or from a local shop?</h2>
-<p>Both work, but buying online has one big advantage: you can see the exact specs before you pay. A local shop lets you feel the bat in hand, which is valuable, but many shops cannot tell you the willow grade, seasoning period or pressing details with certainty. Buying direct from a maker that publishes its specs — and offers a seven-day return so you can check the balance at home — gives you the best of both. That is the model Wular Sports uses, with free delivery, cash on delivery and a 6-month handle warranty across India.</p>
+<p>Both work, but buying online has one big advantage: you can see the exact specs before you pay. A local shop lets you feel the bat in hand, which is valuable, but many shops cannot tell you the willow grade, seasoning period or pressing details with certainty. Buying direct from a maker that publishes its specs — and answers your questions on WhatsApp before you buy — gives you the best of both. That is the model Wular Sports uses, with free delivery, cash on delivery and a 6-month handle warranty across India.</p>
 <h2>What is the best first hard tennis bat for a beginner?</h2>
 <p>For most beginners the <a href="/product/legacy-edition">Legacy 1.0</a> is the safest starting point: Grade A Kashmir willow, a scoop that keeps the pickup light and a 950–1050g weight that most adults can handle. Start there, learn your preferred weight and profile through a season of play, and only then upgrade to a ramp scoop or a heavier blade if your game genuinely asks for it.</p>`,
         faq: [

@@ -45,30 +45,42 @@ export const ReturnPolicyView: FC = () => (
     <div className="view policy-view">
         <SEOHead
             title="Return Policy | Wular Sports"
-            description="Wular Sports return and refund policy for cricket bats. Understand our 7-day return window, conditions, and how to initiate a return for Kashmiri willow bats."
+            description="Wular Sports return policy: defective bats can be returned within 3 days of delivery. How to report a defect, return shipping, and replacements or refunds."
             canonicalUrl="https://wularsports.com/return-policy"
         />
         <div className="container">
             <h1 className="section-title">Return Policy</h1>
             <div className="policy-content">
-                <p><strong>Effective Date:</strong> 17/07/2025</p>
-                <p>We at Wular Sports aim to provide high-quality cricket bats and gear. However, if you're not satisfied, here's our return policy:</p>
-                <h3>Return Eligibility:</h3>
+                <p><strong>Effective Date:</strong> 26/11/2026</p>
+                <p>Every Wular Sports bat is handcrafted and checked before dispatch. If your bat arrives defective, we will put it right. This is our return policy:</p>
+                <h3>Which Bats Can Be Returned:</h3>
                 <ul>
-                    <li>Return requests must be raised within 7 days of delivery.</li>
-                    <li>Product must be unused, in original condition, and with all tags and packaging intact.</li>
-                    <li>Customized bats (name engraved or special finishes) cannot be returned unless damaged or defective.</li>
+                    <li>We accept returns of <strong>defective bats only</strong>: a bat with a manufacturing defect, or one damaged in delivery (for example, a cracked blade, a broken or loose handle, or the wrong bat sent).</li>
+                    <li>Bats that are not defective cannot be returned. We do not accept returns for a change of mind or a different weight or size preference, so please ask us on WhatsApp before ordering if you are unsure which bat to choose.</li>
+                    <li>Wear from playing (surface cracks, marks or dents on the face and edges after use) is not a defect.</li>
                 </ul>
-                <h3>Refund Process:</h3>
+                <h3>Return Window:</h3>
                 <ul>
-                    <li>Once the return is approved and product is received, refund will be initiated within 5–7 business days.</li>
-                    <li>Refunds will be made to the original payment method or UPI account as applicable.</li>
-                    <li>Shipping and handling charges are non-refundable.</li>
+                    <li>A defect must be reported within <strong>3 days of delivery</strong>.</li>
+                    <li>Requests made after 3 days cannot be accepted.</li>
                 </ul>
-                <h3>Damaged Products:</h3>
-                <p>If the product is damaged during delivery, please contact us immediately with photos, and we will replace or refund as per the case.</p>
-                <h3>How to Initiate a Return:</h3>
-                <p>Contact us via WhatsApp or email with Tracking ID and reason for return.</p>
+                <h3>How to Return a Defective Bat:</h3>
+                <ol>
+                    <li>Within 3 days of delivery, contact us on WhatsApp or email with your Order ID and clear photos or a video of the defect.</li>
+                    <li>We will review your request within 24–48 hours and confirm whether the return is approved.</li>
+                    <li>Once approved, post the bat back to us in its original packaging, with its cover and accessories.</li>
+                </ol>
+                <h3>Return Shipping:</h3>
+                <p>The customer posts the bat back and pays the return shipping charges. The original delivery charges are not refundable.</p>
+                <h3>Replacement or Refund:</h3>
+                <ul>
+                    <li>When we receive the bat and confirm the defect, we will send a replacement or give a refund, depending on the case.</li>
+                    <li>Refunds are initiated within 5–7 business days of receiving the bat, to the original payment method or UPI account.</li>
+                </ul>
+                <h3>Customised Bats:</h3>
+                <p>Customised bats (name engraved, special finishes or custom specifications) follow the same rule: they can be returned only if defective.</p>
+                <h3>Handle Warranty:</h3>
+                <p>Where a bat comes with a handle warranty, that warranty applies separately under its own terms and is not limited to the 3-day return window.</p>
             </div>
         </div>
     </div>

@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
         `- Price range: ${priceRange(products)} (Indian rupees), free delivery across India included`,
         '- Delivery: dispatched within 24 hours by India Post, usually 6–7 business days',
         '- Payment: online (UPI, cards, net banking) or cash on delivery with a ₹500 per bat booking; a 5% COD fee applies to the balance',
-        '- Returns: within 7 days of delivery',
+        '- Returns: defective bats only, reported within 3 days of delivery; the customer posts the bat back and pays return shipping',
         '- Sizes: most bats come in 35 inch and 36 inch',
         '- Custom bats: weight, blade, handle, finish and stickers can be customised to order',
         '- Orders and questions: WhatsApp +91 93206 22451, wularsports@gmail.com',

@@ -11,7 +11,7 @@ Wular Sports is a handcrafted Kashmiri Willow cricket bat manufacturer based in 
 ## Key facts
 
 - Every bat: naturally seasoned (1–3 year) Kashmir willow, hard-pressed, Singapore cane handle, fully knocked & oiled before shipping
-- Free delivery across India, 1-year warranty, 7-day returns, cash on delivery
+- Free delivery across India, 1-year warranty, 3-day returns on defective bats, cash on delivery
 - WhatsApp: +91 93206 22451 · Email: wularsports@gmail.com
 
 ## For AI assistants and agents

@@ -287,6 +287,7 @@ export const blogsGuides: BlogPost[] = [
         description: 'How to choose the best leather cricket bat under ₹5,000 in India: why Kashmir willow wins at this price, what to check, and what our leather bat offers.',
         category: 'Buying Guides',
         ...WHEN,
+        modifiedAt: '2026-11-26',
         readTime: '6 min read',
         image: `${IMG}/leather-bat/IMG_3479.JPG`,
         content: `<p>Under ₹5,000, the best leather cricket bat you can buy in India is a top-grade Kashmir willow bat. At this price, English willow bats are the lowest grades with visible flaws, while the same money buys Kashmir willow from the top of its range. Look for a clean face with straight grains, a weight of 1150–1250 grams, a cane handle, and a bat that arrives knocked-in and oiled.</p>
@@ -325,7 +326,7 @@ export const blogsGuides: BlogPost[] = [
 <tr><td>Sizes</td><td>35 and 36 inch</td></tr>
 <tr><td>Preparation</td><td>Knocked-in and oiled before dispatch</td></tr>
 <tr><td>Included</td><td>Bat cover, toe guard and extra grip</td></tr>
-<tr><td>Delivery and returns</td><td>Free delivery across India, 7-day returns</td></tr>
+<tr><td>Delivery and returns</td><td>Free delivery across India, 3-day returns on defective bats</td></tr>
 </tbody>
 </table>
 <p>It is handcrafted in Srinagar, and you can ask for a particular weight within the range when you order. If you want your name engraved or a different sticker, use the <a href="/#customize">custom bat builder</a>.</p>

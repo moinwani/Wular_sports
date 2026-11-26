@@ -52,7 +52,7 @@ export const categoryPageTitle = (seoTitle: string, products: Pick<ProductFull, 
 
 const DELIVERY: Faq = {
     question: 'How long does delivery take, and is cash on delivery available?',
-    answer: 'Every order is dispatched within 24 hours by India Post and usually arrives in 6–7 business days, with free delivery anywhere in India. Cash on delivery is available: you pay a ₹500 booking per bat online and the rest at your door (a 5% COD fee applies to the balance). Returns are accepted within 7 days of delivery.',
+    answer: 'Every order is dispatched within 24 hours by India Post and usually arrives in 6–7 business days, with free delivery anywhere in India. Cash on delivery is available: you pay a ₹500 booking per bat online and the rest at your door (a 5% COD fee applies to the balance). Defective bats can be returned within 3 days of delivery.',
 };
 
 const READY: Faq = {

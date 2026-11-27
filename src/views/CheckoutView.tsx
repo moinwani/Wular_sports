@@ -16,6 +16,9 @@ import { useCart } from '../context/CartContext';
 import { useCatalog } from '../context/CatalogContext';
 import { oaiCheckoutStarted, oaiOrderCreated } from '../services/openaiPixel';
 
+/** Google Ads conversion action "Purchase" (account AW-18597608223) */
+const GOOGLE_ADS_PURCHASE = 'AW-18597608223/oZd5CKnq38AdEJ_2g6RF';
+
 const hashData = async (value: string): Promise<string> => {
     const encoder = new TextEncoder();
     const data = encoder.encode(value.trim().toLowerCase());
@@ -707,6 +710,18 @@ export const CheckoutView: FC<CheckoutViewProps> = ({ cart, total, onPlaceOrder 
             window.dataLayer.push(payload);
         }
         oaiOrderCreated(firestoreOrderId, cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })), payable);
+
+        // Google Ads purchase conversion (the Google tag is loaded in _document).
+        // Full order value, and the order id so Google never counts one order twice.
+        const gtag = typeof window !== 'undefined' ? (window as any).gtag : undefined;
+        if (typeof gtag === 'function') {
+            gtag('event', 'conversion', {
+                send_to: GOOGLE_ADS_PURCHASE,
+                value: payable,
+                currency: 'INR',
+                transaction_id: firestoreOrderId,
+            });
+        }
 
         if (isCOD && sanitizedData) {
             window.dataLayer?.push({

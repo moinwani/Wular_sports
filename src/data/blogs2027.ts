@@ -726,4 +726,364 @@ ${DISCLOSURE}
             },
         ]
     },
+    {
+        id: 'asia-cup-2027-schedule-odi-bat-guide',
+        title: 'Asia Cup 2027: Dates, Venues, ODI Format Explained + the Bat for ODI-Style Nets',
+        seoTitle: 'Asia Cup 2027: ODI Dates, Venues & the Right Bat',
+        description: 'Asia Cup 2027 runs 18 Jun–4 Jul in Bangladesh with 8 teams and 19 ODIs. Here is the leather-ball bat for ODI-style net practice.',
+        category: 'Buying Guides',
+        author: 'Moin Wani',
+        date: 'Nov 28, 2026',
+        modifiedAt: '2026-11-28',
+        readTime: '7 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3479.JPG',
+        content: `<p>The Asia Cup 2027 runs from 18 June to 4 July 2027, is hosted by Bangladesh, and reverts to the One-Day International (ODI) format with 8 teams contesting 19 matches. Because ODIs are played with a leather ball, the bat that makes the most sense for ODI-style nets is Wular Sports' Leather Grade A+ at ₹4,799; if your cricket is still a hard tennis ball, the Legacy 2.0 at ₹3,499 is the stronger pick. One honest note before we go further: Wular Sports is a handcrafted Kashmiri Willow cricket bat maker in Srinagar, Jammu & Kashmir, so every bat named below is from our own range.</p>
+
+<h2>When and where is the Asia Cup 2027?</h2>
+<p>The tournament runs from 18 June to 4 July 2027 and is hosted by Bangladesh. It brings together 8 teams for 19 matches in a compact, three-week window. That short, sharp schedule is exactly what sends club and amateur batters back to the nets in June and July — and it is the right moment to check whether your bat is actually built for the ball you will face.</p>
+
+<table>
+<thead>
+<tr><th>Asia Cup 2027 key facts</th><th>Details</th></tr>
+</thead>
+<tbody>
+<tr><td>Dates</td><td>18 June – 4 July 2027</td></tr>
+<tr><td>Host</td><td>Bangladesh</td></tr>
+<tr><td>Format</td><td>ODI (50 overs)</td></tr>
+<tr><td>Teams</td><td>8</td></tr>
+<tr><td>Matches</td><td>19</td></tr>
+</tbody>
+</table>
+
+<h2>Why is the Asia Cup 2027 back to the ODI format?</h2>
+<p>The Asia Cup alternates between the 50-over and 20-over formats from edition to edition, and 2027 is a 50-over year. That matters more than most casual players realise, because a one-day game is played with a hard leather ball rather than the softer tennis ball many of us train with at home or in the park. A bat tuned for a tennis ball will not give you the same pick-up, edge, or middle response against a leather ball.</p>
+
+<h3>What a leather ball asks of your bat</h3>
+<p>A leather ball is heavier, harder, and comes off the face faster, so you want more willow in the hitting area, fuller edges, and a weight that punches the ball through the field without feeling like a sledgehammer. That is exactly what the <a href="/product/standard-leather-bat">Leather Grade A+</a> is shaped for.</p>
+
+<h2>Which bat should I use for leather-ball nets?</h2>
+<p>For ODI-style nets, our recommendation is the <a href="/product/standard-leather-bat">Leather Grade A+</a> at ₹4,799. It is a single-piece Kashmir willow bat with 5–12 grains and a playing weight of 1150–1250g, which gives it the presence a leather ball demands. The extra mass helps the bat hold its line against a hard ball, and the fuller profile gives you a larger middle for driving and punching through the covers.</p>
+<p>If you are stepping up from a tennis-ball bat and want the closest thing to a proper 50-over bat without paying English willow prices, this is the model to look at. It carries the same 1-year warranty and free delivery across India as the rest of our range, with cash on delivery available.</p>
+
+<h2>Which Wular bat suits tennis-ball players?</h2>
+<p>If your cricket is still mostly a hard tennis ball, the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> at ₹3,499 is our pick. It uses three-year seasoned willow, a ramp scoop, and 48–52mm edges at 980–1100g, which gives quick pick-up and a lively middle against a tennis ball. It is built for hard tennis, so it will not punish your wrists the way a heavy leather-ball bat can, and it leaves the heavier bat for the day you face a real leather ball.</p>
+<p>If you want a slightly cheaper hard tennis option, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 is a Grade A Kashmir willow bat with a scoop and drilled shoulders at 950–1050g and 48–52mm edges. The point is the same either way: a tennis ball and a leather ball reward different bats, so choose for the cricket you actually play.</p>
+
+<h2>What do you get with a Wular Sports bat?</h2>
+<p>Every bat is handcrafted in our Srinagar factory, which was established in 2015, and we have sold online since 2025. Each order includes free India delivery, a 1-year warranty, and cash on delivery. If you want to talk through sizing, weight, or which willow suits your game before you buy, message us on WhatsApp at +91 93206 22451.</p>
+
+<p>To summarise: the Asia Cup 2027 is an ODI tournament, so train like it. The Leather Grade A+ is the sensible leather-ball option, and the Legacy 2.0 covers hard tennis. Match the bat to the ball you actually face and you will get far more out of every net session this June and July.</p>`,
+        faq: [
+            {
+                question: "When is the Asia Cup 2027?",
+                answer: "It runs from 18 June to 4 July 2027, hosted by Bangladesh."
+            },
+            {
+                question: "What format is the Asia Cup 2027?",
+                answer: "It reverts to the ODI (50-over) format, with 8 teams playing 19 matches."
+            },
+            {
+                question: "Which bat is best for leather-ball nets?",
+                answer: "The Leather Grade A+ at ₹4,799 — a single-piece Kashmir willow bat with 5–12 grains and a 1150–1250g playing weight."
+            },
+            {
+                question: "I play with a hard tennis ball. Which bat should I buy?",
+                answer: "The Legacy 2.0 at ₹3,499 — three-year seasoned willow, a ramp scoop, and 48–52mm edges at 980–1100g."
+            },
+            {
+                question: "Does Wular Sports deliver across India?",
+                answer: "Yes — free India delivery, a 1-year warranty, and cash on delivery. WhatsApp +91 93206 22451."
+            },
+        ]
+    },
+
+    {
+        id: 'wtc-final-2027-oval-red-ball-bat-guide',
+        title: 'WTC Final 2027 at The Oval: Date, Venue & the Red-Ball Bat You Need',
+        seoTitle: 'WTC Final 2027 at The Oval: Date & the Red-Ball Bat',
+        description: 'The WTC Final 2027 is in June at The Oval, London. Here is the single-piece Kashmir willow red-ball bat for club players.',
+        category: 'Buying Guides',
+        author: 'Moin Wani',
+        date: 'Nov 28, 2026',
+        modifiedAt: '2026-11-28',
+        readTime: '6 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3480.JPG',
+        content: `<p>The World Test Championship (2025–27) Final is played in June 2027 at The Oval in London, a red-ball Test between the cycle's top two sides. If watching a Test makes you want a proper red-ball bat for club cricket, the sensible choice is Wular Sports' Leather Grade A+ at ₹4,799 — a single-piece Kashmir willow bat that does the red-ball job for a fraction of an English willow price. Disclosure, as always: Wular Sports is a handcrafted Kashmiri Willow bat maker in Srinagar, Jammu & Kashmir, and the bat below is from our own range.</p>
+
+<h2>When and where is the WTC Final 2027?</h2>
+<p>The final of the 2025–27 World Test Championship cycle is in June 2027 at The Oval in London. It is the culmination of two years of red-ball cricket, and it is a pure Test match — five days, a red ball, and the patience that the longest format rewards.</p>
+
+<table>
+<thead>
+<tr><th>WTC Final 2027 key facts</th><th>Details</th></tr>
+</thead>
+<tbody>
+<tr><td>Event</td><td>WTC Final (2025–27 cycle)</td></tr>
+<tr><td>Date</td><td>June 2027</td></tr>
+<tr><td>Venue</td><td>The Oval, London</td></tr>
+<tr><td>Format</td><td>Test (red ball)</td></tr>
+</tbody>
+</table>
+
+<h2>Why does a red-ball Test demand a different bat?</h2>
+<p>A Test is the format that respects hand-crafted willow most. It is a long game against a hard red ball, so batters want control, a full middle, and a bat that holds its shape over a long innings rather than a hollow club that flatters only against a soft ball. That is exactly the kind of buyer the WTC Final inspires — someone who appreciates the craft of a bat, not just a sticker on the back.</p>
+
+<h2>Do you need English willow for club Test cricket?</h2>
+<p>No. English willow bats are superb, but top examples routinely approach £1,000, which is a serious outlay for a club player who might face a red ball a few times a month. A well-made single-piece Kashmir willow bat gives you a genuine, hand-crafted blade for a small fraction of that price, and it is more than enough for club and league red-ball cricket.</p>
+
+<h3>Kashmir willow vs English willow at club level</h3>
+<p>For a club player, the difference that matters most is price and availability, not the name on the cleft. Kashmir willow is the wood we hand-craft into bats in our Srinagar factory, and a single-piece blade like the Leather Grade A+ is built to meet a hard ball. Spend the £1,000 if you are playing professionally; for everyone else, the smarter money goes on a well-made Kashmir willow bat and more net time.</p>
+
+<h2>Why the Leather Grade A+ fits red-ball nets</h2>
+<p>Our recommendation is the <a href="/product/standard-leather-bat">Leather Grade A+</a> at ₹4,799. It is a single-piece Kashmir willow bat with 5–12 grains and a playing weight of 1150–1250g, so it has the weight and presence to meet a red ball properly. The fuller profile gives you a bigger middle for the leave-and-punch style that Test batting rewards, and the mass helps the bat hold its line when a quick bowler tests your technique.</p>
+<p>It is the sensible red-ball option for a club player who wants a hand-crafted willow bat without handing over £1,000 for an English willow equivalent. It also arrives with our standard cover: free India delivery, a 1-year warranty, and cash on delivery.</p>
+
+<h2>What do you get with a Wular Sports bat?</h2>
+<p>Every bat is made by hand in our Srinagar factory, established in 2015, and we have sold online since 2025. The range covers hard tennis, soft tennis, and leather-ball cricket, so there is a bat for whichever ball you actually play with — if your game is hard tennis rather than leather, the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> at ₹3,499 is the hard tennis pick. If you want a second opinion on weight or grading, message us on WhatsApp at +91 93206 22451.</p>
+
+<p>If the WTC Final gets you thinking about a proper red-ball bat this year, the Leather Grade A+ is the straightforward answer: a single-piece Kashmir willow bat that respects the craft of Test cricket without the English willow price tag.</p>`,
+        faq: [
+            {
+                question: "When is the WTC Final 2027?",
+                answer: "The final of the 2025–27 World Test Championship cycle is in June 2027 at The Oval in London."
+            },
+            {
+                question: "Which bat should a club player use for red-ball cricket?",
+                answer: "The Leather Grade A+ at ₹4,799 — a single-piece Kashmir willow bat."
+            },
+            {
+                question: "Do I need an English willow bat for Test cricket?",
+                answer: "Not at club level. A handcrafted single-piece Kashmir willow bat is a sensible, far cheaper option than a £1,000 English willow bat."
+            },
+            {
+                question: "What specs does the Leather Grade A+ have?",
+                answer: "A single-piece Kashmir willow blade with 5–12 grains and a playing weight of 1150–1250g."
+            },
+            {
+                question: "What delivery and support does Wular Sports offer?",
+                answer: "Free India delivery, a 1-year warranty, and cash on delivery. WhatsApp +91 93206 22451."
+            },
+        ]
+    },
+
+    {
+        id: 'ashes-2027-schedule-england-vs-australia',
+        title: 'Ashes 2027: England vs Australia Test Schedule + the Budget \'English Willow\' Bat',
+        seoTitle: 'Ashes 2027 Schedule: Budget English Willow Bat',
+        description: 'The Ashes 2027 sees Australia tour England for 5 Tests from around 18 Jun. Here is the budget single-piece willow alternative to English willow.',
+        category: 'Buying Guides',
+        author: 'Moin Wani',
+        date: 'Nov 28, 2026',
+        modifiedAt: '2026-11-28',
+        readTime: '6 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_3481.JPG',
+        content: `<p>The Ashes 2027 sees Australia tour England for 5 Tests starting around 18 June 2027. With top English willow bats routinely running near £1,000, the budget-conscious club batter's answer is Wular Sports' Leather Grade A+ at ₹4,799 — a single-piece Kashmir willow bat that plays the red-ball role for far less money. The honest note up front: Wular Sports is a handcrafted Kashmiri Willow bat maker in Srinagar, Jammu & Kashmir, and this pick comes from our own range.</p>
+
+<h2>When is the Ashes 2027?</h2>
+<p>Australia tours England for 5 Tests starting around 18 June 2027. That is the classic Ashes shape — five long red-ball matches across an English summer. Beyond that start window we are not going to guess at individual dates or venues; schedules for a series this far out can still shift, so we will update this page as confirmed fixtures land.</p>
+
+<table>
+<thead>
+<tr><th>Ashes 2027 key facts</th><th>Details</th></tr>
+</thead>
+<tbody>
+<tr><td>Series</td><td>The Ashes 2027</td></tr>
+<tr><td>Tour</td><td>Australia in England</td></tr>
+<tr><td>Matches</td><td>5 Tests</td></tr>
+<tr><td>Start</td><td>Around 18 June 2027</td></tr>
+</tbody>
+</table>
+
+<h2>Why do English willow bats cost so much?</h2>
+<p>An English willow bat is the benchmark in cricket, and that reputation shows in the price — top clefts finished into premium bats commonly run close to £1,000. For a club player watching the Ashes and itching to bat, that is a steep ask, especially when the same money could buy several seasons of nets, gear, and match fees.</p>
+
+<h2>Is Kashmir willow a real alternative?</h2>
+<p>It is, and it is what we build with. A single-piece Kashmir willow bat gives you a genuine hand-crafted blade at a fraction of the English willow price. It will not carry the English willow name, but for club and league red-ball cricket it does the job honestly, and that is what most batters actually need.</p>
+
+<h2>What makes a bat "budget" without feeling cheap?</h2>
+<p>"Budget" should not mean a hollow, over-dried club that sounds dead off a hard ball. A sensible budget red-ball bat is one that spends your money on the willow itself rather than on a brand name. The Leather Grade A+ is a single-piece blade — no layers glued up to fake thickness — with 5–12 visible grains and a proper 1150–1250g playing weight, which is the profile of a serious bat, not a toy.</p>
+
+<h2>Why the Leather Grade A+ suits red-ball cricket</h2>
+<p>Our recommendation is the <a href="/product/standard-leather-bat">Leather Grade A+</a> at ₹4,799. It is a single-piece Kashmir willow bat with 5–12 grains and a playing weight of 1150–1250g, which gives it the mass and presence a red ball demands. The fuller profile means a bigger middle for the front-foot driving and back-foot punching that an English summer rewards, and the weight helps the bat hold its line against seam bowling.</p>
+<p>If your cricket is hard tennis rather than leather, the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> at ₹3,499 is the better fit — three-year seasoned willow, a ramp scoop, and 48–52mm edges at 980–1100g. But for the Ashes-inspired red-ball player, the Leather Grade A+ is the one to reach for.</p>
+
+<h2>What do you get with a Wular Sports bat?</h2>
+<p>Every bat is handcrafted in our Srinagar factory, which was established in 2015, and we have sold online since 2025. Orders include free India delivery, a 1-year warranty, and cash on delivery. If you want help choosing between a leather-ball and a tennis-ball bat, message us on WhatsApp at +91 93206 22451.</p>
+
+<p>When the Ashes starts around 18 June 2027, you can watch the world's best with a proper red-ball bat of your own — without paying English willow money. The Leather Grade A+ is the budget single-piece alternative that gets you there.</p>`,
+        faq: [
+            {
+                question: "When does the Ashes 2027 start?",
+                answer: "Australia tours England for 5 Tests starting around 18 June 2027."
+            },
+            {
+                question: "Which bat is a budget English willow alternative?",
+                answer: "The Leather Grade A+ at ₹4,799 — a single-piece Kashmir willow bat."
+            },
+            {
+                question: "How much does an English willow bat cost?",
+                answer: "Top English willow bats commonly run around £1,000, while the Leather Grade A+ is ₹4,799."
+            },
+            {
+                question: "Is the Leather Grade A+ good for red-ball cricket?",
+                answer: "Yes — it is a single-piece willow bat with 5–12 grains and a 1150–1250g playing weight, sensible for club red-ball cricket."
+            },
+            {
+                question: "What delivery and support does Wular Sports offer?",
+                answer: "Free India delivery, a 1-year warranty, and cash on delivery. WhatsApp +91 93206 22451."
+            },
+        ]
+    },
+
+    {
+        id: 'cricket-in-2027-complete-calendar',
+        title: 'Cricket in 2027: The Complete Tournament Calendar (IPL, Asia Cup, Ashes, World Cup) + Bat Buying Guide',
+        seoTitle: 'Cricket in 2027: Full Tournament Calendar + Bat Buying Guide',
+        description: 'The 2027 cricket calendar mapped month by month — IPL, Asia Cup, Ashes, WTC Final and World Cup — plus which Wular Sports bat suits each season.',
+        category: 'Buying Guides',
+        author: 'Moin Wani',
+        date: 'Nov 28, 2026',
+        modifiedAt: '2026-11-28',
+        readTime: '6 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg',
+        content: `<p>Here is your month-by-month guide to the 2027 cricket calendar, running from the inaugural Women's Champions Trophy in February to the Men's World Cup final in Johannesburg in November. We map the IPL, Asia Cup, Ashes, WTC Final and the World Cup using the dates available right now, then suggest which bat suits each part of the season. Wular Sports makes the bats we link to, so every pick below is from our own range.</p>
+
+<h2>What does the 2027 cricket calendar look like, month by month?</h2>
+
+<p>2027 is one of the fullest years the game has had. It opens with a brand-new ICC event, carries the biggest T20 league on earth, then stacks the English summer with three marquee assignments before closing with a 14-team World Cup. Here is how it lines up.</p>
+
+<table>
+<thead><tr><th>Window</th><th>Event</th><th>Key detail</th></tr></thead>
+<tbody>
+<tr><td>14–28 Feb</td><td>ICC Women's Champions Trophy</td><td>Inaugural edition, India, T20I format</td></tr>
+<tr><td>10 Mar – 15 May</td><td>IPL 2027</td><td>20th season, 74 matches, 10 teams</td></tr>
+<tr><td>June</td><td>WTC Final</td><td>The Oval</td></tr>
+<tr><td>~18 Jun onward</td><td>The Ashes</td><td>5 Tests</td></tr>
+<tr><td>18 Jun – 4 Jul</td><td>Asia Cup</td><td>Bangladesh, ODI, 8 teams</td></tr>
+<tr><td>2 Oct – 21 Nov</td><td>ICC Men's World Cup</td><td>South Africa/Zimbabwe/Namibia, 14 teams, 57 matches, final 21 Nov Johannesburg</td></tr>
+</tbody>
+</table>
+
+<p>A couple of these windows are targets rather than locked fixtures — the IPL start and final dates in particular — so use this as a planning guide and double-check the official schedules closer to the time.</p>
+
+<h2>Which events should I actually follow in 2027?</h2>
+
+<p>Each marquee event has its own post on this site if you want the detail. The <a href="/blog/ipl-2027-season-guide-gully-cricket-bat">IPL 2027</a> is the competition's 20th season, following back-to-back RCB titles in 2025 and 2026. The <a href="/blog/womens-champions-trophy-2027-guide">Women's Champions Trophy</a> is the tournament's first-ever edition, played as a T20I event in India. In the English summer, the <a href="/blog/ashes-2027-schedule-england-vs-australia">Ashes</a> brings five Tests from around 18 June, and the <a href="/blog/wtc-final-2027-oval-red-ball-bat-guide">WTC Final</a> is set for The Oval. The <a href="/blog/asia-cup-2027-schedule-odi-bat-guide">Asia Cup</a> runs 18 June to 4 July in Bangladesh as an eight-team ODI. The year then ends with the <a href="/blog/icc-cricket-world-cup-2027-schedule-bat-guide">Men's World Cup</a> across South Africa, Zimbabwe and Namibia, with 57 matches and a final on 21 November in Johannesburg. If your mind is already on what comes after, cricket returns to the Olympics at LA28 — our explainer on <a href="/blog/cricket-olympics-2028-la28-guide">cricket at the 2028 Olympics</a> covers the build-up.</p>
+
+<h2>Which bat should I buy for each part of 2027?</h2>
+
+<p>The honest answer depends on the cricket you actually play, not the cricket on television. Most of us play tennis-ball cricket, so that is where we start.</p>
+
+<ul>
+<li><strong>Soft-tennis and gully cricket:</strong> the <a href="/product/ak-47-honeycomb">AK-47</a> (₹1,999) is our lightest bat, with a honeycomb scoop and an 820–950g weight built for quick, casual games.</li>
+<li><strong>Hard-tennis cricket:</strong> the <a href="/product/legacy-edition">Legacy 1.0</a> (₹2,799) is the entry point, with Grade A willow, a scoop with drilled shoulders and 48–52mm edges. The <a href="/product/legacy-edition-2.0">Legacy 2.0</a> (₹3,499) steps up to 3-year seasoned willow with a ramp scoop. The <a href="/product/bahubali-edition">Bahubali</a> (₹2,999) goes heavier with a scooped back profile and a 950–1100g build.</li>
+<li><strong>Serious hard-tennis and leather-ball nets:</strong> the <a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a> (₹3,999) uses the top 3% of clefts pressed five times, and the <a href="/product/standard-leather-bat">Leather Grade A+</a> (₹4,799) is built for leather-ball cricket with 5–12 grains and a 1150–1250g weight.</li>
+</ul>
+
+<p>If you are buying on the back of IPL or World Cup hype, a hard-tennis bat you will genuinely use beats a premium bat that never leaves its cover. Every bat above ships free across India with a 1-year warranty, 3-day returns on defective bats and cash on delivery.</p>
+
+<h2>What if I only have time for one event in 2027?</h2>
+
+<p>Most Indian fans will say the IPL, but the <a href="/blog/icc-cricket-world-cup-2027-schedule-bat-guide">Men's World Cup</a> is the year's biggest prize — a 14-team, 57-match tournament ending in Johannesburg on 21 November. If you want high-stakes cricket across formats, the English summer gives you the Ashes, the Asia Cup and the WTC Final almost back to back. Whichever you pick, it is a good year to have a bat in your hand.</p>
+
+<h2>When is the best time to buy a bat in 2027?</h2>
+
+<p>Demand spikes around the IPL and the World Cup, so buying a little earlier — before the season's buzz peaks — gives you the pick of stock and time to get used to the bat. If you play year-round gully cricket, there is no wrong month. If you want a leather-ball bat for World Cup season, order before October so it is knocked in and ready by the knockout rounds.</p>`,
+        faq: [
+            {
+                question: "When does IPL 2027 start and when is the final?",
+                answer: "IPL 2027 is the 20th season, targeting a 10 March start and a 15 May final, with 74 matches and 10 teams. RCB won both the 2025 and 2026 editions."
+            },
+            {
+                question: "Where is the 2027 ICC Men's World Cup played?",
+                answer: "Across South Africa, Zimbabwe and Namibia from 2 October to 21 November 2027, with 14 teams, 57 matches and the final on 21 November in Johannesburg."
+            },
+            {
+                question: "Is the Women's Champions Trophy in 2027 the first one?",
+                answer: "Yes, it is the inaugural ICC Women's Champions Trophy, played from 14 to 28 February 2027 in India as a T20I tournament."
+            },
+            {
+                question: "What is the difference between the Asia Cup and the Ashes in 2027?",
+                answer: "The Asia Cup is an eight-team ODI in Bangladesh from 18 June to 4 July, while the Ashes is a five-Test series starting around 18 June. The WTC Final is also in June, at The Oval."
+            },
+            {
+                question: "Which Wular Sports bat should a beginner buy?",
+                answer: "For soft-tennis cricket, the AK-47 (₹1,999); for hard tennis, the Legacy 1.0 (₹2,799) or the heavier Bahubali (₹2,999). All ship free across India with a 1-year warranty, 3-day returns on defective bats and COD."
+            },
+        ]
+    },
+
+    {
+        id: 'cricket-olympics-2028-la28-guide',
+        title: 'Cricket at the 2028 Olympics (LA28): Everything We Know + the Gear Shift It Will Cause',
+        seoTitle: 'Cricket at the 2028 Olympics (LA28): What We Know + Gear Shift',
+        description: 'Cricket returns to the Olympics at LA28 in T20 format, with qualification confirmed and the stadium build underway — and it will change the gear we all buy.',
+        category: 'Buying Guides',
+        author: 'Moin Wani',
+        date: 'Nov 28, 2026',
+        modifiedAt: '2026-11-28',
+        readTime: '5 min read',
+        image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826302_w.jpg',
+        content: `<p>Cricket is coming back to the Olympics at LA28 in 2028, and it will be played in the T20 format. Qualification and the format are now confirmed, and the Los Angeles stadium build is already underway. This is our early explainer on why it matters, what we know so far, and what the build-up means for the gear you will buy over the next two years.</p>
+
+<h2>What do we actually know about cricket at LA28?</h2>
+
+<p>The confirmed basics are short and significant. Cricket returns to the Olympic programme at the 2028 Los Angeles Games, played in the T20 format. The qualification pathway and the format have both been confirmed, and construction on the Los Angeles stadium is already in progress. It is a 2028 event — but the build-up is happening right now, through 2027.</p>
+
+<h2>Why does the Olympic return matter for the sport?</h2>
+
+<p>Olympic inclusion puts cricket in front of an audience that never watches a franchise league or a bilateral series. For boards and broadcasters, that means new markets and new funding. For the grassroots, it means the same thing in practice: more people trying the game for the first time, usually in casual tennis-ball formats rather than full leather-ball club cricket. It is the same pattern seen in other sports that joined the Games — visibility first, then participation, then a broader pipeline of players and equipment.</p>
+
+<h2>What is already happening behind the scenes?</h2>
+
+<p>Two things tell you this is real rather than a rumour: the qualification and format are confirmed, and the Los Angeles stadium build is underway. That is concrete, funded progress, not a wish. The window to prepare — for teams and for the equipment side of the game — is the next two years, and for manufacturers like us that means a runway to meet a new wave of first-time players.</p>
+
+<h2>Why does the T20 format fit the Olympics?</h2>
+
+<p>The T20 format suits a multi-sport event because matches are short, finish in a single session and are built for television. It is also the easiest version of cricket for a new Olympic audience to understand — and the easiest for a first-time player to imitate in the park. That matters for participation as much as it does for viewing figures.</p>
+
+<h2>What gear shift will Olympic cricket cause?</h2>
+
+<p>When a sport joins the Olympics, the sharpest spike is almost always at the casual end. Expect more gully and tennis-ball cricket through 2027 as the game's profile rises, and with it more demand for affordable, well-made bats rather than premium match bats. That is exactly the part of the range we build for. To be honest about our position: Wular Sports is a bat maker, and the products below are our own.</p>
+
+<h2>Which bat should I pick up to get started now?</h2>
+
+<ul>
+<li><strong>Soft-tennis cricket:</strong> the <a href="/product/ak-47-honeycomb">AK-47</a> (₹1,999) is our lightest bat, with a honeycomb scoop and an 820–950g weight made for quick, casual games.</li>
+<li><strong>Hard-tennis cricket:</strong> the <a href="/product/legacy-edition">Legacy 1.0</a> (₹2,799) is the classic entry point — Grade A Kashmir willow, a scoop with drilled shoulders and 48–52mm edges.</li>
+<li><strong>Heavier hard-tennis hitting:</strong> the <a href="/product/bahubali-edition">Bahubali</a> (₹2,999) uses a scooped back profile and a 950–1100g build for a bigger feel.</li>
+</ul>
+
+<p>All three ship free across India with a 1-year warranty, 3-day returns on defective bats and cash on delivery, so the barrier to starting is low.</p>
+
+<h2>Why does Olympic qualification change the game?</h2>
+
+<p>An Olympic spot gives boards — especially smaller ones — a concrete target to build towards, and it gives players a stage that sits outside the usual bilateral calendar. We are not going to speculate on which teams make it; the point is that the pathway is now confirmed, which means preparation has already started across the sport, not just in the traditional Test nations.</p>
+
+<h2>Do I really need to wait until 2028?</h2>
+
+<p>No. The whole point of Olympic inclusion is that the sport grows before the Games, not after them. You do not need a ticket to Los Angeles to be part of it — a tennis-ball bat and a patch of ground are enough. If you want the full schedule of what 2027 holds in the meantime, start with our <a href="/blog/cricket-in-2027-complete-calendar">2027 tournament calendar</a>, and if leather-ball cricket is more your thing, see the <a href="/blog/icc-cricket-world-cup-2027-schedule-bat-guide">2027 Men's World Cup</a> guide.</p>`,
+        faq: [
+            {
+                question: "Is cricket definitely in the 2028 Olympics?",
+                answer: "Yes. Cricket returns to the Olympic programme at the 2028 Los Angeles Games (LA28), played in the T20 format. Qualification and the format are confirmed, and the LA stadium build is underway."
+            },
+            {
+                question: "What format will Olympic cricket use at LA28?",
+                answer: "T20. The shorter format keeps matches to a single session and fits the Olympics' broadcast-friendly schedule."
+            },
+            {
+                question: "When exactly is Olympic cricket being played?",
+                answer: "At the Los Angeles 2028 Games. It is a 2028 event, but the build-up and the rise in casual cricket is already happening through 2027."
+            },
+            {
+                question: "Why should I care about Olympic cricket now?",
+                answer: "Because the sport's profile rises before the Games, and that growth shows up first in casual and gully cricket — the formats most people play with a tennis-ball bat."
+            },
+            {
+                question: "Which bat should I buy to start playing now?",
+                answer: "For soft-tennis cricket, the AK-47 (₹1,999); for hard tennis, the Legacy 1.0 (₹2,799) or Bahubali (₹2,999). All ship free across India with a 1-year warranty, 3-day returns on defective bats and COD."
+            },
+        ]
+    },
 ];

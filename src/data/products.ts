@@ -75,7 +75,7 @@ export const products: ProductFull[] = [
         sku: "WS-BAHUBALI",
         name: "Bahubali Edition — Kashmiri Willow Hard Tennis Bat",
         category: ["Hard Tennis"],
-        description: "The Bahubali Edition is a hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for aggressive players who want explosive, boundary-clearing power. It features a wide Kashmiri willow blade with a 4.4-inch face, thick 46–52 mm edges for a larger sweet spot, and a flat non-scoop profile that maximises raw hitting weight. Weighing 950–1,100 grams, it is ideal for hard tennis ball cricket and priced at ₹2,999.\n\nUnlike mass-produced bats, every Bahubali is hard-pressed, fully knocked and oiled, and hand-finished in our Srinagar workshop — themed in bold wine red and black. Each bat ships game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery across India and a 6-month handle warranty.",
+        description: "The Bahubali Edition is a hard tennis cricket bat handcrafted in Srinagar, Kashmir, designed for aggressive players who want explosive, boundary-clearing power. It features a wide Kashmiri willow blade with a 4.4-inch face, thick 46–52 mm edges for a larger sweet spot, and a scooped back for a quicker pickup. Weighing 950–1,100 grams, it is ideal for hard tennis ball cricket and priced at ₹2,999.\n\nUnlike mass-produced bats, every Bahubali is hard-pressed, fully knocked and oiled, and hand-finished in our Srinagar workshop — themed in bold wine red and black. Each bat ships game-ready with a free bat bag, premium toe guard, and an extra grip, plus free delivery across India and a 6-month handle warranty.",
         image: [
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg",
             "https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826379_w.jpg",
@@ -93,7 +93,7 @@ export const products: ProductFull[] = [
             "Edge: 46–52 mm",
             "Height: Available in 35 and 36 inches",
             "Face: 4.4 inches",
-            "Scoop Profile: Non-scoop (flat face)",
+            "Scoop Profile: Scooped back",
             "Free delivery across India",
             "Free bat bag",
             "Premium toe guard",

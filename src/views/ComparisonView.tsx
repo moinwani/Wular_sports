@@ -6,11 +6,11 @@ import { Icon } from '../components/common/Icon';
 const faqs = [
     {
         question: 'Which Wular Sports hard tennis bat is best for power hitting?',
-        answer: 'For raw, boundary-clearing power the Bahubali Edition is the go-to — its flat (non-scoop) profile keeps more wood in the blade and its 46–52 mm edges create a large sweet spot. For explosive stroke play with easier pickup, the Legacy Edition 2.0 (ramp scoop, hard-pressed, 3-year seasoned willow) is the best all-round choice.',
+        answer: 'For raw, boundary-clearing power the Bahubali Edition is the go-to — it goes up to 1,100 g and its thick 46–52 mm edges create a large sweet spot. For explosive stroke play with easier pickup, the Legacy Edition 2.0 (ramp scoop, hard-pressed, 3-year seasoned willow) is the best all-round choice.',
     },
     {
         question: 'What is the difference between a ramp scoop and a non-scoop bat?',
-        answer: 'A ramp scoop removes a shallow channel of wood from the back of the blade to redistribute weight, improving pickup and balance (Legacy Edition 2.0). A non-scoop (flat) bat keeps that wood in place, adding raw hitting mass behind the ball (Bahubali Edition). The Legacy Edition 1.0 has a scoop with drilled shoulders for a lighter pickup.',
+        answer: 'A ramp scoop removes a shallow channel of wood from the back of the blade to redistribute weight, improving pickup and balance (Legacy Edition 2.0). A non-scoop (flat) bat keeps that wood in place, adding raw hitting mass behind the ball; all our tennis ball bats are scooped. The Legacy Edition 1.0 has a scoop with drilled shoulders for a lighter pickup.',
     },
     {
         question: 'Is the Legacy Edition 2.0 worth the extra cost over the Legacy 1.0?',
@@ -51,7 +51,7 @@ const rows: { label: string; l1: string; l2: string; bh: string }[] = [
     { label: 'Weight', l1: '950–1,050 g', l2: '980–1,100 g', bh: '950–1,100 g' },
     { label: 'Edges', l1: '48–52 mm', l2: '48–52 mm', bh: '46–52 mm' },
     { label: 'Face width', l1: '4.4 inches', l2: '4.5 inches', bh: '4.4 inches' },
-    { label: 'Scoop profile', l1: 'Scoop with drilled shoulders', l2: 'Ramp scoop (minimal)', bh: 'Flat (non-scoop)' },
+    { label: 'Scoop profile', l1: 'Scoop with drilled shoulders', l2: 'Ramp scoop (minimal)', bh: 'Scooped back' },
     { label: 'Handle', l1: 'Singapore cane', l2: 'Premium Singapore cane', bh: 'Singapore cane' },
     { label: 'Processing', l1: 'Hard pressed', l2: 'Hard pressed', bh: 'Hard pressed' },
     { label: 'Sizes', l1: '35 / 36 inch', l2: '35 / 36 inch', bh: '35 / 36 inch' },

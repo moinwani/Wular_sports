@@ -10,7 +10,7 @@ export const blogs: BlogPost[] = [
         category: 'Guides',
         author: 'Wular Sports Team',
         date: 'Jan 05, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-28',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg',
         content: `
@@ -63,7 +63,7 @@ export const blogs: BlogPost[] = [
 
             <h2>Which bat weight suits my playing style?</h2>
             <h3>Power hitters and bottom-hand players</h3>
-            <p>If you are strong through the shoulders and forearms and like to hit straight and over mid-wicket, you can use the upper half of the range: about 1,050–1,100 g for hard tennis. The <a href="/product/bahubali-edition">Bahubali Edition</a> (950–1,100 g, flat non-scoop face) and the Legacy Edition 2.0 (980–1,100 g, ramp scoop) both go up to that weight.</p>
+            <p>If you are strong through the shoulders and forearms and like to hit straight and over mid-wicket, you can use the upper half of the range: about 1,050–1,100 g for hard tennis. The <a href="/product/bahubali-edition">Bahubali Edition</a> (950–1,100 g, scooped back) and the Legacy Edition 2.0 (980–1,100 g, ramp scoop) both go up to that weight.</p>
 
             <h3>Timers, wristy players and openers</h3>
             <p>If your game is built on placement, late cuts and quick hands against fast bowling, stay between 950 and 1,020 g. The Legacy Edition 1.0 (950–1,050 g) covers this range with 48–52 mm edges and a scoop with drilled shoulders that keeps the pickup light.</p>
@@ -576,7 +576,7 @@ export const blogs: BlogPost[] = [
         category: 'Tactics',
         author: 'Wular Sports Team',
         date: 'Jan 24, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-28',
         readTime: '5 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7836.JPG',
         content: `
@@ -637,7 +637,7 @@ export const blogs: BlogPost[] = [
             <thead><tr style="background: rgba(255,255,255,0.1);"><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Bat</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Profile</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Weight and edges</th><th style="padding: 12px; text-align: left; border: 1px solid rgba(255,255,255,0.2);">Good for</th></tr></thead>
             <tbody>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Scoop with drilled shoulders</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,050 g, 48–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">All-round play and a first serious hard tennis bat</td></tr>
-            <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/bahubali-edition">Bahubali Edition</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Non-scoop, flat face</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,100 g, 46–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Power hitters who want full wood behind the ball</td></tr>
+            <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/bahubali-edition">Bahubali Edition</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Scooped back</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,100 g, 46–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Power hitters who want a heavier bat, up to 1,100 g</td></tr>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Legacy Edition 2.0</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Ramp scoop (minimal)</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">980–1,100 g, 48–52 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Regular tournament players; 4.5-inch face</td></tr>
             <tr><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);"><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Mughal-arch scoop, drilled back</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">950–1,050 g, about 50 mm</td><td style="padding: 12px; border: 1px solid rgba(255,255,255,0.2);">Players who want the premium option</td></tr>
             </tbody>
@@ -704,7 +704,7 @@ export const blogs: BlogPost[] = [
         category: 'Buying Guides',
         author: 'Wular Sports Team',
         date: 'Apr 21, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-28',
         readTime: '6 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826395_w.jpg',
         content: `
@@ -769,7 +769,7 @@ export const blogs: BlogPost[] = [
             </table>
 
             <h2>Best Power-Hitting Bat Under ₹3000: Bahubali Edition</h2>
-            <p>If you hit hard and straight, look at the <a href="/product/bahubali-edition">Bahubali Edition</a>, which was also priced under ₹3,000 at the time of writing. It is a non-scoop, flat-faced hard tennis bat weighing 950–1100 grams, with thick 46–52 mm edges and a 4.4-inch face. All of its wood sits behind the ball, so it feels heavier and more solid than a scooped bat and rewards full swings. Choose it over the Legacy 1.0 if raw power matters more to you than a lighter pickup.</p>
+            <p>If you hit hard and straight, look at the <a href="/product/bahubali-edition">Bahubali Edition</a>, which was also priced under ₹3,000 at the time of writing. It is a scooped hard tennis bat weighing 950–1100 grams, with thick 46–52 mm edges and a 4.4-inch face. All of its wood sits behind the ball, so it feels heavier and more solid than a scooped bat and rewards full swings. Choose it over the Legacy 1.0 if raw power matters more to you than a lighter pickup.</p>
 
             <h2>Hard Tennis or Soft Tennis: Which Bat Under ₹3000 Should You Buy?</h2>
             <p>Buy for the ball you actually play with. A heavy tennis ball of about 130–140 grams needs a hard tennis bat of 950–1100 grams with thick edges; a light tennis ball or tape ball needs a lighter bat of 820–950 grams.</p>

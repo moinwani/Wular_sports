@@ -9,12 +9,12 @@ export const blogsNew: BlogPost[] = [
         category: 'Reviews',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '10 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-2.0/photo_6078080698049826304_w.jpg',
         content: `<p>Yes, for most hard tennis ball players the Legacy Edition 2.0 is the best bat under ₹3,500 from Wular Sports — it pairs three-year naturally seasoned Kashmir willow with a hard-pressed, ramp scoop profile and a premium Singapore cane handle, all for ₹3,499 (MRP ₹4,600). It ships fully knocked and oiled so you can go straight to the middle, and it carries a 6-month handle warranty with free delivery anywhere in India. This review explains exactly who should buy it, who should save money with the <a href="/product/legacy-edition">Legacy 1.0</a> instead, and how it performs against a hard tennis ball.</p>
 <h2>What makes the Legacy Edition 2.0 different from the Legacy 1.0?</h2>
-<p>Both are handcrafted Kashmir willow bats from our Srinagar factory, but the 2.0 sits a clear step above. The biggest differences are the willow, the face and the profile. The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> uses premium Kashmir willow that has been naturally seasoned for three years, which dries the fibres and produces a crisper, more consistent response. The 1.0 is a Grade A Kashmir willow bat with a flat, non-scoop profile, while the 2.0 carries a ramp scoop that removes dead wood from the shoulders and improves pickup without shrinking the power area.</p>
+<p>Both are handcrafted Kashmir willow bats from our Srinagar factory, but the 2.0 sits a clear step above. The biggest differences are the willow, the face and the profile. The <a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a> uses premium Kashmir willow that has been naturally seasoned for three years, which dries the fibres and produces a crisper, more consistent response. The 1.0 is a Grade A Kashmir willow bat with a scoop and drilled shoulders, while the 2.0 carries a ramp scoop that removes dead wood from the shoulders and improves pickup without shrinking the power area.</p>
 <h3>Ramp scoop, wider face and premium cane</h3>
 <p>Beyond the willow, the 2.0 widens the face to 4.5" against the 1.0's 4.4", and upgrades to a premium Singapore cane handle that flexes less and dampens vibration on mishits. The 2.0 is also hard-pressed for a firmer, more durable blade, and it adds a chemical toe guard for extra protection against a scuffed pitch. Both bats arrive knocked and oiled, so neither needs hours of home knocking-in before the first net.</p>
 <h3>Legacy 1.0 vs Legacy 2.0 vs Bahubali: quick comparison</h3>
@@ -26,7 +26,7 @@ export const blogsNew: BlogPost[] = [
 <tr><td>Edges</td><td>48–52mm</td><td>48–52mm</td><td>46–52mm</td></tr>
 <tr><td>Face</td><td>4.4"</td><td>4.5"</td><td>4.4"</td></tr>
 <tr><td>Handle</td><td>Singapore cane</td><td>Premium Singapore cane</td><td>Not specified</td></tr>
-<tr><td>Profile</td><td>Flat, non-scoop</td><td>Ramp scoop</td><td>Flat, non-scoop</td></tr>
+<tr><td>Profile</td><td>Scoop, drilled shoulders</td><td>Ramp scoop</td><td>Scooped back</td></tr>
 <tr><td>Ready to play</td><td>Knocked + oiled, toe guard</td><td>Knocked + oiled, chemical toe guard</td><td>Knocked + oiled</td></tr>
 </table>
 <h2>Is three-year seasoned Kashmir willow really better?</h2>
@@ -45,7 +45,7 @@ export const blogsNew: BlogPost[] = [
 <li><strong>Profile:</strong> Ramp scoop, hard-pressed</li>
 <li><strong>Extras:</strong> Chemical toe guard, fully knocked and oiled before shipping</li>
 </ul>
-<p>If the 2.0 is sold out or you want a lower price point, the scooped <a href="/product/legacy-edition">Legacy 1.0</a> and the flat-faced wine red/black <a href="/product/bahubali-edition">Bahubali</a> are both strong alternatives that we cover in our buying guide.</p>
+<p>If the 2.0 is sold out or you want a lower price point, the scooped <a href="/product/legacy-edition">Legacy 1.0</a> and the wine red/black <a href="/product/bahubali-edition">Bahubali</a> are both strong alternatives that we cover in our buying guide.</p>
 <h2>How does it actually perform with a hard tennis ball?</h2>
 <p>Hard tennis ball cricket punishes a bat in two ways: the heavier ball tests the face, and the short, punchy format rewards bat speed. The 2.0 handles both. The 4.5" face offers a slightly larger hitting area than a 4.4" bat, so off-centre hits carry better, and the Singapore cane handle absorbs the sting you feel when a quick ball finds the splice. Because it arrives pre-knocked, there is no dead first month — the sweet spot is working from the very first net. It will not turn a tennis ball into a leather ball, and no bat will, but it extracts close to the maximum from this format.</p>
 <h2>Is ₹3,499 good value, and who should buy it?</h2>
@@ -53,7 +53,7 @@ export const blogsNew: BlogPost[] = [
 <h2>Who should NOT buy the Legacy Edition 2.0?</h2>
 <p>The 2.0 is not for everyone, and being honest about that will save you money. If you only play occasional gully cricket with friends, or you are buying your first bat and still settling into your game, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 will do everything you need for ₹700 less. If you face a soft tennis ball rather than a hard one, the 2.0's hard-pressed, heavier build is wasted — a lighter scoop bat like our AK-47 is the right tool for that game. And if you are on a very tight budget, the <a href="/product/bahubali-edition">Bahubali</a> gives you a hard-pressed feel at ₹2,999. The 2.0 earns its price only when you play hard tennis or tape-ball cricket often enough to feel the difference that seasoning and balance make.</p>
 <h2>Who should choose the Legacy 1.0 or Bahubali instead?</h2>
-<p>If you play casually or are buying a second bat, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 gives you the same 48–52mm edges and Singapore cane handle, with its own scoop and drilled shoulders, for ₹700 less. The <a href="/product/bahubali-edition">Bahubali</a> at ₹2,999 is the pick if you want the character of a hard-pressed bat with a flat, non-scoop face in the wine red/black finish. For soft tennis with a lighter ball, our AK-47 is the lighter option. Ultimately the 2.0 is the flagship — buy it if you want the best hard tennis bat we currently make under ₹3,500.</p>
+<p>If you play casually or are buying a second bat, the <a href="/product/legacy-edition">Legacy 1.0</a> at ₹2,799 gives you the same 48–52mm edges and Singapore cane handle, with its own scoop and drilled shoulders, for ₹700 less. The <a href="/product/bahubali-edition">Bahubali</a> at ₹2,999 is the pick if you want the character of a hard-pressed bat with a scooped back in the wine red/black finish. For soft tennis with a lighter ball, our AK-47 is the lighter option. Ultimately the 2.0 is the flagship — buy it if you want the best hard tennis bat we currently make under ₹3,500.</p>
 <h2>Common mistakes to avoid when choosing a hard tennis bat</h2>
 <p>Most disappointing bat purchases come down to the same handful of mistakes. The first is buying on looks or a famous name instead of published specs — a bat with no stated weight, edge size or handle type is a gamble. The second is ignoring seasoning and pressing, which matter more than the tree itself at this price. The third is buying a bat that arrives raw and then never finishing the knocking-in properly, which shortens its life. The fourth is picking the wrong profile for your game: a flat non-scoop bat rewards front-foot timing, while a ramp scoop like the 2.0's suits players who cut and pull and want faster hands. Avoid those four and you are most of the way to a bat you will keep for seasons.</p>
 <h2>How to care for your Legacy Edition 2.0 so it lasts</h2>
@@ -86,7 +86,7 @@ export const blogsNew: BlogPost[] = [
             },
             {
                 question: "What is the difference between a ramp scoop and a flat, non-scoop bat?",
-                answer: "A ramp scoop removes a shallow channel of wood from the back of the blade to improve pickup and bat speed while keeping thick edges, as on the Legacy 2.0. A flat non-scoop bat keeps maximum wood for a heavier, more traditional feel, as on the Bahubali."
+                answer: "A ramp scoop removes a shallow channel of wood from the back of the blade to improve pickup and bat speed while keeping thick edges, as on the Legacy 2.0. A flat non-scoop bat keeps maximum wood for a heavier, more traditional feel; every Wular tennis ball bat is scooped."
             },
             {
                 question: "Can I use the Legacy Edition 2.0 for leather ball cricket?",
@@ -185,7 +185,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '8 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826380_w.jpg',
         content: `<p>Hard tennis balls come in a few weight classes, and that weight quietly decides how the ball comes off your bat. A standard 130g ball rewards a balanced, medium-weight Kashmir willow blade, while a 140g or heavier ball asks for a firmer, harder-pressed face with strong edges. Here is exactly how each weight behaves and which Wular Sports hard-tennis bat matches it.</p>
@@ -200,7 +200,7 @@ export const blogsNew: BlogPost[] = [
 <h2>Does a heavier ball always need a heavier bat?</h2>
 <p>Not necessarily. The instinct is to reach for the heaviest bat you can find, but for hard tennis that often works against you. What a heavier ball actually needs is a firmer face and a well-pressed blade, not simply more grams. A bat that is too heavy slows your hands, and against a 140g ball you still need to react quickly to swing and pace. This is why Wular keeps its hard-tennis bats between 950g and 1100g and leans on hard-pressed willow and strong edges to do the work, rather than bloating the weight. A balanced mid-weight blade with a hard face will middle a heavy ball far more consistently than a heavy, sluggish bat.</p>
 <h2>Which Wular Sports hard-tennis bat suits each ball weight?</h2>
-<p>Wular Sports keeps three hard-tennis bats, and each one maps neatly onto a ball weight. The <a href="/product/legacy-edition">Legacy 1.0</a> is the all-rounder for everyday 130g cricket, with Grade A Kashmir willow, 48–52mm edges and a scoop with drilled shoulders. The <a href="/product/legacy-edition-2.0">Legacy 2.0</a> is the upgrade for heavier, faster balls, built from premium three-year seasoned Kashmir willow with a ramp scoop and a hard-pressed face. The <a href="/product/bahubali-edition">Bahubali</a> sits between them, pairing around one-year seasoned willow with a flat non-scoop profile in wine red and black for 130g–140g play. You can compare all three in the <a href="/hard-tennis-bats">full hard-tennis range</a>.</p>
+<p>Wular Sports keeps three hard-tennis bats, and each one maps neatly onto a ball weight. The <a href="/product/legacy-edition">Legacy 1.0</a> is the all-rounder for everyday 130g cricket, with Grade A Kashmir willow, 48–52mm edges and a scoop with drilled shoulders. The <a href="/product/legacy-edition-2.0">Legacy 2.0</a> is the upgrade for heavier, faster balls, built from premium three-year seasoned Kashmir willow with a ramp scoop and a hard-pressed face. The <a href="/product/bahubali-edition">Bahubali</a> sits between them, pairing around one-year seasoned willow with a scooped back in wine red and black for 130g–140g play. You can compare all three in the <a href="/hard-tennis-bats">full hard-tennis range</a>.</p>
 <h3>Which bat for a 130g hard tennis ball?</h3>
 <p>For a standard 130g ball, the Legacy 1.0 is the natural starting point. At ₹2,799 (MRP ₹4,000), its 950–1050g weight and scooped back give a quick pickup, clean timing and easy placement without forcing you to over-swing. If you want a touch more punch and also face the occasional 140g ball, the Bahubali at ₹2,999 (MRP ₹4,500) covers the same range with a firmer, deeper feel.</p>
 <h3>Which bat for a 140g or heavy ball?</h3>
@@ -214,7 +214,7 @@ export const blogsNew: BlogPost[] = [
 <tr><td><strong>Weight</strong></td><td>950–1050g</td><td>980–1100g</td><td>950–1100g</td></tr>
 <tr><td><strong>Edges</strong></td><td>48–52mm</td><td>48–52mm</td><td>46–52mm</td></tr>
 <tr><td><strong>Face</strong></td><td>4.4"</td><td>4.5"</td><td>4.4"</td></tr>
-<tr><td><strong>Profile</strong></td><td>Flat, non-scoop</td><td>Ramp scoop, hard-pressed</td><td>Flat non-scoop, wine red/black</td></tr>
+<tr><td><strong>Profile</strong></td><td>Scoop, drilled shoulders</td><td>Ramp scoop, hard-pressed</td><td>Scooped back, wine red/black</td></tr>
 <tr><td><strong>Best for</strong></td><td>130g everyday</td><td>140g and heavy balls</td><td>130g–140g all-round</td></tr>
 </tbody>
 </table>
@@ -262,7 +262,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/ak47-honeycomb/IMG_7834.JPG',
         content: `<p>Hard tennis, soft tennis and tape ball are three very different games, and each one wants a different kind of bat. Hard tennis and tape ball cricket demand a firmer, heavier Kashmir willow blade, while soft tennis cricket needs a light, quick bat with a forgiving scoop profile. Here is exactly how the three formats differ and which Wular Sports bat fits each one.</p>
@@ -279,7 +279,7 @@ export const blogsNew: BlogPost[] = [
 <tr><td><strong>Ball</strong></td><td>Firm, heavier tennis ball</td><td>Soft, light tennis ball</td><td>Tennis ball wrapped in tape</td></tr>
 <tr><td><strong>Pace and bounce</strong></td><td>Faster, truer bounce</td><td>Slower, softer bounce</td><td>Skids and swings more</td></tr>
 <tr><td><strong>Ideal bat weight</strong></td><td>950–1100g</td><td>820–950g</td><td>950–1100g</td></tr>
-<tr><td><strong>Profile</strong></td><td>Firm, hard-pressed face</td><td>Deep scoop, light pick-up</td><td>Flat non-scoop face</td></tr>
+<tr><td><strong>Profile</strong></td><td>Firm, hard-pressed face</td><td>Deep scoop, light pick-up</td><td>Firm, well-pressed face</td></tr>
 <tr><td><strong>Wular pick</strong></td><td>Legacy 1.0 / Legacy 2.0 / Bahubali</td><td>AK-47</td><td>Bahubali / Legacy 1.0</td></tr>
 </tbody>
 </table>
@@ -298,7 +298,7 @@ export const blogsNew: BlogPost[] = [
 <tr><td><strong>Weight</strong></td><td>820–950g</td><td>950–1050g</td><td>980–1100g</td><td>950–1100g</td></tr>
 <tr><td><strong>Edges</strong></td><td>40–45mm</td><td>48–52mm</td><td>48–52mm</td><td>46–52mm</td></tr>
 <tr><td><strong>Face</strong></td><td>4.3"</td><td>4.4"</td><td>4.5"</td><td>4.4"</td></tr>
-<tr><td><strong>Profile</strong></td><td>Honeycomb scoop</td><td>Flat non-scoop</td><td>Ramp scoop, hard-pressed</td><td>Flat non-scoop</td></tr>
+<tr><td><strong>Profile</strong></td><td>Honeycomb scoop</td><td>Scoop, drilled shoulders</td><td>Ramp scoop, hard-pressed</td><td>Scooped back</td></tr>
 <tr><td><strong>Best for</strong></td><td>Soft tennis</td><td>Hard tennis / tape ball</td><td>Hard tennis (heavy balls)</td><td>Hard tennis / tape ball</td></tr>
 </tbody>
 </table>
@@ -327,7 +327,7 @@ export const blogsNew: BlogPost[] = [
             },
             {
                 question: "Which bat should I use for tape ball cricket?",
-                answer: "A mid-weight hard-tennis bat such as the Bahubali or Legacy 1.0 is ideal, because the taped ball skids and swings more than a plain tennis ball and needs a firm, flat face for timing."
+                answer: "A mid-weight hard-tennis bat such as the Bahubali or Legacy 1.0 is ideal, because the taped ball skids and swings more than a plain tennis ball and needs a firm, well-pressed face for timing."
             },
             {
                 question: "Can I use the AK-47 for hard tennis cricket?",
@@ -355,7 +355,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Craftsmanship',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/leather-bat/IMG_8444.PNG',
         content: `<p>Wular Sports is a handcrafted Kashmiri Willow cricket bat manufacturer based in Srinagar, Jammu & Kashmir, India, with a factory running since 2015 and an online store live since 2025. Every bat is made by hand from naturally seasoned willow, fitted with a Singapore cane handle and fully knocked and oiled before it ships. Here is how the craft works, step by step, from founder Moin Wani's workshop to your kit bag.</p>
@@ -368,11 +368,11 @@ export const blogsNew: BlogPost[] = [
 <h3>Seasoning and pressing</h3>
 <p>Seasoning is where the quality is decided. Wular's willow rests naturally for one to three years, which lets the moisture leave the wood slowly and evenly. A properly seasoned cleft is lighter, stronger and less likely to crack. After shaping, the blade is hard-pressed, which compresses the face and creates the sweet spot that makes the ball ping off the middle.</p>
 <h3>Profiles and scoops</h3>
-<p>Wular offers a few distinct profiles, each built for a different player. The ramp scoop on the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> adds pickup and power for hard tennis and heavy balls, the scoop and drilled shoulders on the <a href="/product/legacy-edition">Legacy 1.0</a> make it quick to pick up, the flat non-scoop back of the <a href="/product/bahubali-edition">Bahubali</a> keeps all the wood behind the ball, and the honeycomb scoop on the <a href="/product/ak-47-honeycomb">AK-47</a> strips weight for quick, soft tennis play.</p>
+<p>Wular offers a few distinct profiles, each built for a different player. The ramp scoop on the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> adds pickup and power for hard tennis and heavy balls, the scoop and drilled shoulders on the <a href="/product/legacy-edition">Legacy 1.0</a> make it quick to pick up, the scooped <a href="/product/bahubali-edition">Bahubali</a> goes up to 1100g for heavy hitters, and the honeycomb scoop on the <a href="/product/ak-47-honeycomb">AK-47</a> strips weight for quick, soft tennis play.</p>
 <h3>Handles and finish</h3>
 <p>Every bat is fitted with a Singapore cane handle, which absorbs the shock of a hard ball and gives a secure, controlled feel in the top hand. The bat is then oiled and knocked-in in the workshop — a step many makers leave to the buyer. Because Wular does it before shipping, the bat is genuinely ready to play the day it arrives, not weeks later.</p>
 <h2>Which Wular Sports bat should you choose?</h2>
-<p>Your choice comes down to the ball you face. Hard tennis and tape ball players should look at the scooped Legacy 1.0 or the flat-faced Bahubali, stepping up to the hard-pressed Legacy 2.0 for heavier balls. Soft tennis players want the light, scooped AK-47. And if you play with a proper leather ball, the Grade A+ <a href="/leather-cricket-bats">leather cricket bat</a> is built for it, with 5–12 grains, 1150–1250g and a non-scoop profile.</p>
+<p>Your choice comes down to the ball you face. Hard tennis and tape ball players should look at the scooped Legacy 1.0 or the Bahubali, stepping up to the hard-pressed Legacy 2.0 for heavier balls. Soft tennis players want the light, scooped AK-47. And if you play with a proper leather ball, the Grade A+ <a href="/leather-cricket-bats">leather cricket bat</a> is built for it, with 5–12 grains, 1150–1250g and a non-scoop profile.</p>
 <h2>The full Wular Sports range at a glance</h2>
 <table>
 <thead><tr><th>Feature</th><th>Legacy 1.0</th><th>Legacy 2.0</th><th>Bahubali</th><th>AK-47</th><th>Leather</th></tr></thead>
@@ -382,7 +382,7 @@ export const blogsNew: BlogPost[] = [
 <tr><td><strong>Weight</strong></td><td>950–1050g</td><td>980–1100g</td><td>950–1100g</td><td>820–950g</td><td>1150–1250g</td></tr>
 <tr><td><strong>Edges</strong></td><td>48–52mm</td><td>48–52mm</td><td>46–52mm</td><td>40–45mm</td><td>—</td></tr>
 <tr><td><strong>Face</strong></td><td>4.4"</td><td>4.5"</td><td>4.4"</td><td>4.3"</td><td>—</td></tr>
-<tr><td><strong>Profile</strong></td><td>Flat non-scoop</td><td>Ramp scoop, hard-pressed</td><td>Flat non-scoop</td><td>Honeycomb scoop</td><td>Non-scoop</td></tr>
+<tr><td><strong>Profile</strong></td><td>Scoop, drilled shoulders</td><td>Ramp scoop, hard-pressed</td><td>Scooped back</td><td>Honeycomb scoop</td><td>Non-scoop</td></tr>
 <tr><td><strong>Best for</strong></td><td>Hard tennis</td><td>Hard tennis, heavy balls</td><td>Hard tennis / tape ball</td><td>Soft tennis</td><td>Leather-ball cricket</td></tr>
 </tbody>
 </table>
@@ -398,7 +398,7 @@ export const blogsNew: BlogPost[] = [
 <p>If you want to ask about a bat, check stock or simply talk willow, the team is easy to reach. Message on WhatsApp at +91 93206 22451, email wularsports@gmail.com, or follow @wular.sports on Instagram and @wularsports on YouTube to watch the bats take shape. Whether you are a gully regular or a club cricketer, the same handcrafted standard goes into every blade that leaves Srinagar.</p>
 <p>Written by Moin Wani, founder of Wular Sports. Published Jul 15, 2026.</p>
 <h2>How does Wular Sports control quality in the workshop?</h2>
-<p>Every bat passes through the same hands and the same checks before it leaves Srinagar. The willow cleft is inspected for grain and density, shaped to its profile, hard-pressed, and fitted with a Singapore cane handle. Before dispatch the bat is oiled, knocked in and checked for balance, edge shape and finish. Because the workshop is small and founder-run, a single pair of eyes — Moin Wani's — sees each blade through from cleft to courier. That consistency is what keeps the scooped Legacy 1.0, the ramp-scooped Legacy 2.0 and the flat-faced Bahubali playing to the same standard, bat after bat.</p>
+<p>Every bat passes through the same hands and the same checks before it leaves Srinagar. The willow cleft is inspected for grain and density, shaped to its profile, hard-pressed, and fitted with a Singapore cane handle. Before dispatch the bat is oiled, knocked in and checked for balance, edge shape and finish. Because the workshop is small and founder-run, a single pair of eyes — Moin Wani's — sees each blade through from cleft to courier. That consistency is what keeps the scooped Legacy 1.0, the ramp-scooped Legacy 2.0 and the scooped Bahubali playing to the same standard, bat after bat.</p>
 
 <h2>Can I order a customised bat?</h2>
 <p>Yes. Wular Sports offers full customisation for both tennis and leather ball bats, including blade profile, scoop, weight range, length, handle type, toe guard, sticker design and finish. Custom bats are handmade to order from the same seasoned Kashmir willow used in the standard range, so the build quality is identical. To place a custom order, use the customisation section on the <a href="/">homepage</a> or message the workshop directly on WhatsApp at +91 93206 22451 and describe exactly what you want.</p>
@@ -441,7 +441,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Materials',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-24',
+        modifiedAt: '2026-11-28',
         readTime: '8 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/bahubali/photo_6078080698049826381_w.jpg',
         content: `<p>Kashmiri willow is perfect for hard tennis cricket because it is dense, naturally fibrous and far more affordable than English willow, which matters when the bat is punished by a heavy tennis ball game after game. When that willow is seasoned for one to three years, hard-pressed and paired with a Singapore cane handle, it produces the punch, pickup and durability a hard tennis bat needs. This is exactly how Wular Sports builds its bats in Srinagar.</p>
@@ -464,7 +464,7 @@ export const blogsNew: BlogPost[] = [
 
 <h2>How do scoop profiles work with Kashmir willow?</h2>
 <p>The scoop is the concave shaping taken out of the back of the blade. A flat non-scoop profile keeps maximum wood in the bat for a heavier, more powerful feel, while a ramp scoop removes weight from the back to improve pickup and bat speed without sacrificing the edges. Both work, and the right choice depends on your game.</p>
-<p>Kashmir willow is dense enough to carry a deep scoop without losing power, which is why the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> uses a ramp scoop and the Legacy 1.0 a scoop with drilled shoulders for faster bat speed, while the Bahubali keeps a flat non-scoop profile for raw punch. That flexibility is another reason Kashmir willow suits the format so well.</p>
+<p>Kashmir willow is dense enough to carry a deep scoop without losing power, which is why the <a href="/product/legacy-edition-2.0">Legacy 2.0</a> uses a ramp scoop and the Legacy 1.0 a scoop with drilled shoulders for faster bat speed, while the Bahubali pairs its scoop with thick edges and up to 1100g of willow for raw punch. That flexibility is another reason Kashmir willow suits the format so well.</p>
 
 <h2>How do you know a Kashmir willow bat is genuinely finished?</h2>
 <p>A quality hard tennis bat should arrive knocked and oiled. Knocking compresses the fibres further and closes the face so the bat is ready for match balls immediately, while oiling protects the willow from drying out or soaking up moisture. Many bats are sold raw and expect the player to do weeks of preparation.</p>
@@ -513,7 +513,7 @@ export const blogsNew: BlogPost[] = [
         category: 'Guides',
         author: 'Moin Wani',
         date: 'Jul 15, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '9 min read',
         image: 'https://cdn.jsdelivr.net/gh/moinwani/Wular_sports@main/assets/images/products/legacy-1.0/photo_6078080698049826391_w.jpg',
         content: `<p>Choosing the right hard tennis bat comes down to four things: weight, scoop profile, edge size and handle. Match a bat of roughly 950–1100g with the right scoop for your style, look for 46–52mm edges, and insist on a Singapore cane handle, and you will get a bat that suits your game rather than one you fight against. Here is exactly how to decide, using the Wular Sports range as a reference.</p>
@@ -526,7 +526,7 @@ export const blogsNew: BlogPost[] = [
 <p>The scoop is the shaping taken out of the back of the blade. It changes the bat's balance and pickup without changing the face. The two main options in hard tennis cricket are a flat non-scoop and a ramp scoop.</p>
 <p>A flat non-scoop bat keeps the maximum amount of willow in the blade, which gives a heavier, more solid feel and more raw power. A ramp scoop removes wood from the back toward the toe, shifting the balance toward the handle for a lighter pickup and faster bat speed, while the edges stay thick.</p>
 <h3>Which players should choose a flat non-scoop bat?</h3>
-<p>Choose a flat non-scoop profile if you hit straight and value raw power over bat speed, or if you simply prefer a traditionally weighted bat. The <a href="/product/bahubali-edition">Bahubali</a> is a flat non-scoop bat built for exactly that feel.</p>
+<p>Choose a flat non-scoop profile if you hit straight and value raw power over bat speed, or if you simply prefer a traditionally weighted bat. All our tennis ball bats are scooped; if you want a heavier feel, choose the <a href="/product/bahubali-edition">Bahubali</a> at the top of its 950–1100g range.</p>
 <h3>Which players should choose a ramp scoop bat?</h3>
 <p>Choose a ramp scoop if you play all around the wicket, cut and pull often, or want to generate speed through the ball without sacrificing edge size. The <a href="/product/legacy-edition-2.0">Legacy 2.0</a> uses a ramp scoop over three-year-seasoned willow for a fast, punchy pickup.</p>
 
@@ -544,7 +544,7 @@ export const blogsNew: BlogPost[] = [
 <tbody>
 <tr><td>Front-foot timer</td><td><a href="/product/legacy-edition">Legacy 1.0</a></td><td>950–1050g, scoop with drilled shoulders, Grade A willow, toe guard</td></tr>
 <tr><td>Aggressive all-round hitter</td><td><a href="/product/legacy-edition-2.0">Legacy 2.0</a></td><td>3-yr seasoned willow, ramp scoop, 48–52mm edges</td></tr>
-<tr><td>Budget power player</td><td><a href="/product/bahubali-edition">Bahubali</a></td><td>950–1100g flat profile, 46–52mm edges</td></tr>
+<tr><td>Budget power player</td><td><a href="/product/bahubali-edition">Bahubali</a></td><td>950–1100g scooped profile, 46–52mm edges</td></tr>
 </tbody>
 </table>
 

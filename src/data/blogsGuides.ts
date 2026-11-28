@@ -150,6 +150,7 @@ export const blogsGuides: BlogPost[] = [
         description: 'What makes a tennis cricket bat hit long sixes: bat speed, edge thickness, sweet spot and profile. How to choose a power hitting bat for hard or soft tennis.',
         category: 'Buying Guides',
         ...WHEN,
+        modifiedAt: '2026-11-28',
         readTime: '6 min read',
         image: `${IMG}/bahubali/photo_6078080698049826379_w.jpg`,
         content: `<p>The best bat for hitting sixes in tennis ball cricket is the heaviest bat you can still swing at full speed. For a heavy tennis ball that usually means a Kashmir willow hard tennis bat of 1000–1100 grams with 48–52 mm edges and a low to middle sweet spot. For a light tennis ball or tape ball it means a lighter bat of 850–950 grams with a scoop, because with a light ball bat speed counts for more than weight.</p>
@@ -187,7 +188,7 @@ export const blogsGuides: BlogPost[] = [
 <table>
 <thead><tr><th>Bat</th><th>Ball</th><th>Weight</th><th>Edges</th><th>Suits</th></tr></thead>
 <tbody>
-<tr><td><a href="/product/bahubali-edition">Bahubali Edition</a></td><td>Hard tennis</td><td>950–1100 g</td><td>46–52 mm</td><td>Straight power hitters who want maximum wood behind the ball</td></tr>
+<tr><td><a href="/product/bahubali-edition">Bahubali Edition</a></td><td>Hard tennis</td><td>950–1100 g</td><td>46–52 mm</td><td>Power hitters who want a heavier bat, up to 1100 g</td></tr>
 <tr><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></td><td>Hard tennis</td><td>980–1100 g</td><td>48–52 mm</td><td>Hitters who want thick edges with a lighter, faster pickup</td></tr>
 <tr><td><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td><td>Hard tennis</td><td>950–1050 g</td><td>About 50 mm</td><td>Players who want our top hard tennis bat with an arch scoop</td></tr>
 <tr><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a></td><td>Soft tennis, tape ball</td><td>820–950 g</td><td>40–45 mm</td><td>Fast swingers clearing the rope with a light ball</td></tr>

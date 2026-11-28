@@ -20,7 +20,7 @@ export const blogsGrowth: BlogPost[] = [
         category: 'Buying Guides',
         author: 'Moin Wani',
         date: 'Nov 10, 2026',
-        modifiedAt: '2026-11-26',
+        modifiedAt: '2026-11-28',
         readTime: '6 min read',
         image: `${IMG}/legacy-2.0/photo_6078080698049826303_w.jpg`,
         content: `<p>The right tennis cricket bat depends first on the ball you play with. For a heavy (hard) tennis ball of about 130–140 grams, choose a Kashmir willow bat of 950–1100 grams with thick 46–52 mm edges. For a light tennis ball or tape ball, choose a lighter bat of 820–950 grams, ideally with a scoop. Get the ball type and the weight right and most other choices fall into place.</p>
@@ -55,7 +55,7 @@ export const blogsGrowth: BlogPost[] = [
 <tbody>
 <tr><td><a href="/product/ak-47-honeycomb">AK-47 Edition</a></td><td>Soft tennis, tape ball</td><td>820–950 g</td><td>40–45 mm</td><td>Honeycomb scoop</td></tr>
 <tr><td><a href="/product/legacy-edition">Legacy Edition 1.0</a></td><td>Hard tennis</td><td>950–1050 g</td><td>48–52 mm</td><td>Scoop with drilled shoulders</td></tr>
-<tr><td><a href="/product/bahubali-edition">Bahubali Edition</a></td><td>Hard tennis</td><td>950–1100 g</td><td>46–52 mm</td><td>Non-scoop, flat face</td></tr>
+<tr><td><a href="/product/bahubali-edition">Bahubali Edition</a></td><td>Hard tennis</td><td>950–1100 g</td><td>46–52 mm</td><td>Scooped back</td></tr>
 <tr><td><a href="/product/legacy-edition-2.0">Legacy Edition 2.0</a></td><td>Hard tennis</td><td>980–1100 g</td><td>48–52 mm</td><td>Ramp scoop</td></tr>
 <tr><td><a href="/product/knight-edition-kashmiri-willow-hard-tennis-bat">Knight Edition</a></td><td>Hard tennis</td><td>950–1050 g</td><td>About 50 mm</td><td>Arch scoop, drilled back</td></tr>
 </tbody>
